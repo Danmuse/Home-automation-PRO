@@ -31,11 +31,11 @@ This home automation project aims to create a system that enables the control an
 - [ ] Illustrations of the experience and trials.
 - [ ] Component's datasheet.
 
-@AgustinOrdonez, @Danmuse, @cyepez4698 and @DiCerso General Software developers.	
-@AgustinOrdonez, @Danmuse, @cyepez4698 and @DiCerso General Hardware developers.	
-@DiCerso and @Danmuse GUI aplication developers and Setup managers.	
-@AgustinOrdonez and @cyepez4698 Documentation managers.	
-@DiCerso Back-End developer.	
-@cyepez4698 Quality assurance.	
-@AgustinOrdonez Project assistant.	
-@Danmuse Doxygen editor.	
+	General Software Developers: @AgustinOrdonez, @Danmuse, @cyepez4698, and @DiCerso
+	General Hardware Developers: @AgustinOrdonez, @Danmuse, @cyepez4698, and @DiCerso
+	GUI Application Developers and Setup Managers: @DiCerso and @Danmuse
+	Documentation Managers: @AgustinOrdonez and @cyepez4698
+	Back-End Developer: @DiCerso
+	Quality Assurance: @cyepez4698
+	Project Assistant: @AgustinOrdonez
+	Doxygen Editor: @Danmuse
