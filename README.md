@@ -5,13 +5,13 @@ This home automation project aims to create a system that enables the control an
 ### __Hardware & Setup__
 
 - [ ] Identification of the sensors, modules and controllers used.
-	- LPC845-BRK.
-	- ESP8266 WiFi module.
-	- Voice recognition module.
-	- Display OLED SSD1306.
-	- RGBs LEDs with PWM control.
-	- Flame sensor KY-026.
-	- Micro SD module (Optional).
+- LPC845-BRK.
+- ESP8266 WiFi module.
+- Voice recognition module.
+- Display OLED SSD1306.
+- RGBs LEDs with PWM control.
+- Flame sensor KY-026.
+- Micro SD module (Optional).
 - [ ] Development board (Schematic and PCB).
 - [ ] Project setup with wireless connections.
 - [x] 1:200 scale house model.
@@ -31,11 +31,11 @@ This home automation project aims to create a system that enables the control an
 - [ ] Illustrations of the experience and trials.
 - [ ] Component's datasheet.
 
-	General Software Developers: @AgustinOrdonez, @Danmuse, @cyepez4698, and @DiCerso
-	General Hardware Developers: @AgustinOrdonez, @Danmuse, @cyepez4698, and @DiCerso
-	GUI Application Developers and Setup Managers: @DiCerso and @Danmuse
-	Documentation Managers: @AgustinOrdonez and @cyepez4698
-	Back-End Developer: @DiCerso
-	Quality Assurance: @cyepez4698
-	Project Assistant: @AgustinOrdonez
-	Doxygen Editor: @Danmuse
+General Software Developers: __@AgustinOrdonez__ ~ __@Danmuse__ ~ __@cyepez4698__ ~ __@DiCerso__  
+General Hardware Developers: __@AgustinOrdonez__ ~ __@Danmuse__ ~ __@cyepez4698__ ~ __@DiCerso__  
+GUI Application Developers and Setup Managers: __@DiCerso__ ~ __@Danmuse__  
+Documentation Managers: __@AgustinOrdonez__ ~ __@cyepez4698__  
+Back-End Developer: __@DiCerso__  
+Quality Assurance: __@cyepez4698__  
+Project Assistant: __@AgustinOrdonez__  
+Doxygen Editor: __@Danmuse__  
