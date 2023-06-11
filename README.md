@@ -1,10 +1,10 @@
 ## 📕️ __Overview__
 
-This home automation project aims to create a system that enables the control and monitoring of Internet of Things (**IoT**) devices, including but not limited to, smart home appliances, security systems, and lighting systems. The system uses a WiFi module to connect to the internet and receive commands from a centralized management interface. Additionally, voice recognition technology is implemented to enable users to interact with the system using voice commands. The overall management of various sensors and actuators is handled by the **LPC845** microcontroller, which allows for efficient and reliable communication between the system components. With this system in place, users can enjoy the convenience of managing their home devices with ease and flexibility, using the latest technologies available.
+This home automation project aims to create a system that enables the control and monitoring of Internet of Things (**IoT**) devices, including but not limited to, smart home appliances, security systems, and lighting systems. The system uses a WiFi module to connect to the internet and receive commands from a centralized management interface. Additionally, voice recognition technology is implemented to enable users to interact with the system using voice commands. The overall management of various sensors and actuators is handled by the **LPC845-BRK** controller, which allows for efficient and reliable communication between the system components. With this system in place, users can enjoy the convenience of managing their home devices with ease and flexibility, using the latest technologies available.
 
 ### 🔌️ __Hardware & Setup__
 
-- [ ] Identification of the sensors, modules and controllers used. `DDM ~ 1.5`
+- [ ] [Identification of the sensors, modules and controllers used.](https://github.com/Danmuse/Home-automation/issues/3) `DDM ~ 1.5`
 - LPC845-BRK.
 - ESP8266 WiFi module.
 - Voice recognition module.
@@ -14,9 +14,9 @@ This home automation project aims to create a system that enables the control an
 - Infrared sensor KY-032 or HW-201.
 - RFID RC-522 reader (Optional).
 - Micro SD module (Optional).
+- [ ] [Restorations of the house model.](https://github.com/Danmuse/Home-automation/issues/1) `DDM ~ 17`
 - [ ] Development board (Schematic and PCB).
 - [ ] Project setup with wireless connections.
-- [ ] Restorations of the house model. `DDM ~ 17`
 - [x] 1:18 scale house model.
 
 ### 👨‍💻️ __Software & GUI APP__
@@ -29,7 +29,7 @@ This home automation project aims to create a system that enables the control an
 
 ### 📚️ __Documentation & Doxygen__
 
-- [ ] Use of [**Doxygen v1.9.6.**](https://www.doxygen.nl/download.html) for code documentation.
+- [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2)
 - [ ] Detailed project report.
 - [ ] Illustrations of the experience and trials.
 - [ ] Component's datasheet.
