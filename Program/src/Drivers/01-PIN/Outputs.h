@@ -15,7 +15,7 @@ class Outputs {
 public:
 	virtual void SetPin(void) = 0;
 	virtual void ClearPin(void) = 0;
-	virtual void SetTogglePin(void) = 0;
+	virtual void TogglePin(void) = 0;
 	virtual void SetDirOutputs(void) = 0;
 	virtual void SetPinResistor(void) = 0;
 	virtual ~Outputs() = default;

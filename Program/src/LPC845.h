@@ -884,7 +884,7 @@ typedef struct {
    -- DAC Peripheral Access Layer
    ---------------------------------------------------------------------------- */
 /** Interrupt Number Definitions */
-#define NUMBER_OF_INT_VECTORS 48                 /**< Number of interrupts in the Vector table */
+#define NUMBER_OF_INT_VECTORS 	48                 /**< Number of interrupts in the Vector table */
 
 typedef enum IRQn {
   /* Auxiliary constants */
@@ -961,9 +961,7 @@ typedef struct {
   __O  uint32_t DIRNOT[2];
 } GPIO_Type;
 
-#define	 GPIO  		( (GPIO_Type* ) 0xA0000000UL )
-
-#define	 BYTE_SIZE 	32
+#define	GPIO  			((GPIO_Type *) 0xA0000000UL)
 
 //! Index for the IOCON Register PORT0
 const uint8_t IOCON_INDEX_PIO0[BYTE_SIZE] = {
@@ -984,17 +982,18 @@ const uint8_t IOCON_INDEX_PIO1[BYTE_SIZE] = {
 /**
   \brief  Structure type to access the System Timer (SysTick).
  */
-typedef struct
-{
+typedef struct {
   __IO uint32_t CTRL;     /*!< Offset: 0x000 (R/W)  SysTick Control and Status Register */
   __IO uint32_t RELOAD;   /*!< Offset: 0x004 (R/W)  SysTick Reload Value Register */
   __IO uint32_t CURR;     /*!< Offset: 0x008 (R/W)  SysTick Current Value Register */
   __I  uint32_t CALIB;    /*!< Offset: 0x00C (R/ )  SysTick Calibration Register */
 } SysTick_t;
 
-#define SysTick   	( (SysTick_t *) 0xE000E010UL)   /*!< SysTick configuration structure */
+#define SysTick   		((SysTick_t *) 0xE000E010UL)	/*!< SysTick configuration structure */
 
-#define FREQ_CLOCK	(30000000UL)					/*!< SysTick CTRL: COUNTFLAG Position */
+#define FREQ_CLOCK_MCU 	(12000000UL)					/*!< SysTick CTRL: COUNTFLAG Position */
+
+#define FREQ_SYSTICK	(1000)
 
 // #define SysTick_CTRL_COUNTFLAG_Pos     	16U
 /*!< COUNTFLAG Mask */
@@ -1977,16 +1976,16 @@ typedef struct {
 
 /* SWM - Peripheral instance base addresses */
 /** Peripheral SWM0 base address */
-#define SWM0_BASE                                (0x4000C000u)
+#define SWM0_BASE                       (0x4000C000u)
 /** Peripheral SWM0 base pointer */
-#define SWM0                                     ((SWM_Type *)SWM0_BASE)
+#define SWM0                            ((SWM_Type *)SWM0_BASE)
 /** Array initializer of SWM peripheral base addresses */
-#define SWM_BASE_ADDRS                           { SWM0_BASE }
+#define SWM_BASE_ADDRS                  { SWM0_BASE }
 /** Array initializer of SWM peripheral base pointers */
-#define SWM_BASE_PTRS                            { SWM0 }
+#define SWM_BASE_PTRS                   { SWM0 }
 
 // La siguiente funcion macro nos permite tener todas las mascaras de canales necesarios en una unica definicion
-#define		SWM_PINENABLE0_ADC_MASK(x)		(1 << (14 + x))
+#define	SWM_PINENABLE0_ADC_MASK(x)		(1 << (14 + x))
 
 /*!
  * @}

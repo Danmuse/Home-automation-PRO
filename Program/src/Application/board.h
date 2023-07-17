@@ -9,8 +9,10 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
+#include "PLL.h"
 #include "GPIO.h"
-#include "Callback.h"
+#include "systick.h"
+#include "Timers.h"
 
 extern Gpio LED_RED;
 extern Gpio LED_GREEN;
@@ -18,9 +20,8 @@ extern Gpio LED_BLUE;
 
 extern Gpio UserSwitch;
 
-void initDevice(void);
+extern Timers g_timers_list;
 
-//! UNUSED Function
-void myCallback(void); //!< Scheduler - It is executed as many times as the time set in the SysTick which is the function called in SysTick_Handler.
+void initDevice(void);
 
 #endif /* BOARD_H_ */

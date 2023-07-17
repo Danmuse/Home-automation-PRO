@@ -7,11 +7,11 @@
 
 #include "Callback.h"
 
-extern std::list<Callback*> g_callbacklist;
+std::list<Callback*> g_callback_list;
 
 Callback::Callback(void (*function)(void)) :
 m_callback{function} {
-	if (m_callback != nullptr) g_callbacklist.push_back(this);
+	if (m_callback != nullptr) g_callback_list.push_back(this);
 }
 
 void Callback::myCallback(void) {

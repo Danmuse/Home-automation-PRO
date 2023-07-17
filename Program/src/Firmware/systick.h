@@ -9,10 +9,10 @@
 #ifndef SYSTICK_H_
 #define SYSTICK_H_
 
-#include <list>
-#include "board.h"
+#include "LPC845.h"
+#include "Callback.h"
 
-extern uint8_t flagInterruptTicks;
+extern uint32_t g_systick_freq;
 
 #if defined (__cplusplus)
 extern "C" {
@@ -20,11 +20,6 @@ extern "C" {
 }
 #endif
 
-#define FREQ_CLOCK_MCU 12000000
-
 void initSysTick(uint32_t period_us);
-
-//! UNUSED Function
-void installCallbackSysTick(void (*myCallback)(void));
 
 #endif /* SYSTICK_H_ */

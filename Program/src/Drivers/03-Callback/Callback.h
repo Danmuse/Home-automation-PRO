@@ -9,7 +9,8 @@
 #ifndef CALLBACK_H_
 #define CALLBACK_H_
 
-#include "systick.h"
+#include <list>
+#include "utils.h"
 
 class Callback {
 private:
@@ -17,7 +18,9 @@ private:
 public:
 	Callback(void (*function)(void) = nullptr);
 	virtual void myCallback(void);
-	~Callback();
+	virtual ~Callback();
 };
+
+extern std::list<Callback*> g_callback_list;
 
 #endif /* CALLBACK_H_ */

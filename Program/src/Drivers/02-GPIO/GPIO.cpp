@@ -39,7 +39,7 @@ void Gpio::SetDirInputs(void) {
 	GPIO->DIRCLR[this->m_port] |= (1 << this->m_bit);
 }
 
-void Gpio::SetTogglePin(void) {
+void Gpio::TogglePin(void) {
 	GPIO->NOT[this->m_port] |= (1 << this->m_bit);
 }
 
@@ -85,7 +85,7 @@ uint8_t Gpio::SetDir(void) {
 	return this->m_error;
 }
 
-uint8_t Gpio::SetToggleDir(void) {
+uint8_t Gpio::ToggleDir(void) {
 	GPIO->DIRNOT[this->m_port] |= (1 << this->m_bit);
 	if (this->m_direction == OUTPUT) this->m_direction = INPUT;
 	else if (this->m_direction == INPUT) this->m_direction = OUTPUT;

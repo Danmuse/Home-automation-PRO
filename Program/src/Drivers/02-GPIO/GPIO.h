@@ -41,13 +41,13 @@ public:
 	void ClearPin(void) override;
 	void SetDirOutputs(void) override;
 	void SetDirInputs(void) override;
-	void SetTogglePin(void) override;
+	void TogglePin(void) override;
 	uint8_t GetPin(void) const override;
 	void SetPinMode(void) override;
 	void SetPinResistor(void) override;
-	uint8_t SetToggleDir(void);
+	uint8_t ToggleDir(void);
 	uint8_t SetDir(void);
-	~Gpio();
+	virtual ~Gpio();
 };
 
 #endif /* GPIO_H_ */
