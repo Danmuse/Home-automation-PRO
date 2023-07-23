@@ -9,10 +9,10 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
+#include <Drivers/05-Timers/Timers.h>
 #include "PLL.h"
 #include "GPIO.h"
 #include "systick.h"
-#include "Timers.h"
 
 extern Gpio LED_RED;
 extern Gpio LED_GREEN;

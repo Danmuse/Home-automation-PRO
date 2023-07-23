@@ -9,7 +9,7 @@
 #ifndef TIMERS_H_
 #define TIMERS_H_
 
-#include "Timer.h"
+#include <Drivers/04-Timer/Timer.h>
 
 class Timers {
 private:

@@ -16,18 +16,22 @@
 typedef	unsigned char 		uint8_t;
 typedef	char 				int8_t;
 typedef	short unsigned int 	uint16_t;
-typedef	short  int 			int16_t;
+typedef	short int 			int16_t;
 typedef	unsigned int 		uint32_t;
 typedef	int 				int32_t;
 
-#define	INT32_MAX			(2147483647) 	//!< Valor máximo del INT32
-#define	INT32_MIN			(-2147483648) 	//!< Valor mínimo del INT32
-#define	UINT32_MAX			(4294967295) 	//!< Valor máximo del UINT32
+#define	INT32_MAX			(2147483647) 	//!< Maximum value of the INT32 variable type.
+#define	INT32_MIN			(-2147483648) 	//!< Minimum value of the INT32 variable type.
+#define	UINT32_MAX			(4294967295) 	//!< Maximum value of the UINT32 variable type.
 
-#define	INT8_MAX			(127)			//!< Valor máximo del INT8
-#define	INT8_MIN			(-128)			//!< Valor mínimo del INT8
-#define	UINT8_MAX			(255)			//!< Valor máximo del UINT8
+#define	INT16_MAX			(32767) 		//!< Maximum value of the INT16 variable type.
+#define	INT16_MIN			(-32768) 		//!< Minimum value of the INT16 variable type.
+#define	UINT16_MAX			(65535) 		//!< Maximum value of the UINT16 variable type.
 
-#define BYTE_SIZE			32
+#define	INT8_MAX			(127)			//!< Maximum value of the INT8 variable type.
+#define	INT8_MIN			(-128)			//!< Minimum value of the INT8 variable type.
+#define	UINT8_MAX			(255)			//!< Maximum value of the UINT8 variable type.
+
+#define REGISTER_BYTE_SIZE	32
 
 #endif /* UTILS_H_ */
