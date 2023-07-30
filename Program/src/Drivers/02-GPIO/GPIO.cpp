@@ -13,10 +13,10 @@ m_bit{bit},
 m_mode{mode},
 m_direction{direction},
 m_activity{activity} {
-	this->m_error = Gpio::OK;
-	if ((m_port != Gpio::PORT0) && (m_port != Gpio::PORT1))	this->m_error = Gpio::ERROR;
-    else if (m_port == Gpio::PORT0 && m_bit >= Gpio::B_PORT0) this->m_error = Gpio::ERROR;
-    else if (m_port == Gpio::PORT1 && m_bit >= Gpio::B_PORT1) this->m_error = Gpio::ERROR;
+	this->m_error = OK;
+	if ((m_port != PORT0) && (m_port != PORT1))	this->m_error = ERROR;
+    else if (m_port == PORT0 && m_bit >= B_PORT0) this->m_error = ERROR;
+    else if (m_port == PORT1 && m_bit >= B_PORT1) this->m_error = ERROR;
 	SYSCON->SYSAHBCLKCTRL0 |= ((1 << CLK_GPIO0) | (1 << CLK_GPIO1) | (1 << CLK_IOCON));
 	this->SetDir();
 }
@@ -44,7 +44,7 @@ void Gpio::TogglePin(void) {
 }
 
 uint8_t Gpio::GetPin(void) const {
-	return	this->m_activity == Gpio::HIGH ?
+	return	this->m_activity == HIGH ?
 			((GPIO->PIN[this->m_port] >> this->m_bit) & 0x01) :
 			!((GPIO->PIN[this->m_port] >> this->m_bit) & 0x01);
 }

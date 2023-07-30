@@ -33,7 +33,7 @@ public:
 	void SetTimer(uint32_t time);
 	void GetTimer(uint32_t &time) const;
 	uint32_t GetTimer(void) const;
-	void SetmrStandBy(standby_t action);
+	void StandBy(standby_t action);
 	void TimerStop(void);
 	error_t TimerEvent(void);
 	Timer& operator=(uint32_t counter);

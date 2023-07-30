@@ -9,7 +9,7 @@
 #ifndef TIMERS_H_
 #define TIMERS_H_
 
-#include <Drivers/04-Timer/Timer.h>
+#include "Timer.h"
 
 class Timers {
 private:
@@ -18,6 +18,8 @@ public:
 	Timers();
 	Timers& operator<<(Timer* timer);
 	Timers& operator<<(Timer& timer);
+	void AllStandBy(Timer::standby_t action);
+	void TimerStops(void);
 	void TimerEvents(void);
 	virtual ~Timers();
 };

@@ -9,9 +9,9 @@
 
 AsyncComm *g_usart[5];
 
-UART::UART(Gpio::port_t portTX, uint8_t pinTX, Gpio::port_t portRX,	uint8_t pinRX, USART_Type *usart, uint32_t baudrate, bits_de_datos BitsDeDatos,	parity_t parity, uint32_t maxRX, uint32_t maxTX) :
-m_TX{Gpio(portTX, pinTX)},
-m_RX{Gpio(portRX, pinRX)},
+UART::UART(Gpio::port_t portTX, uint8_t pinTX, Gpio::port_t portRX,	uint8_t pinRX, USART_Type *usart, uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX) :
+m_TX{Gpio(portTX, pinTX, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW)},
+m_RX{Gpio(portRX, pinRX, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW)},
 m_usart{usart} {
 	m_bufferRX = new uint8_t[maxRX];	// buffer de Rx
 	m_indexRXIn = m_indexRXOut = 0;		// indices del bufer e Rx
@@ -25,7 +25,7 @@ m_usart{usart} {
 
 	this->EnableClock();
 	this->EnableSW();
-	this->Config(baudrate, BitsDeDatos, parity);
+	this->Config(baudrate, data_bits, parity);
 }
 
 void UART::pushRX(uint8_t data) {
@@ -110,21 +110,21 @@ void UART::DisableInterupt(void) {
 
 void UART::EnableSW(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = ((this->m_tx.m_bit + this->m_tx.m_port * 0x20) << 0) | ((this->m_rx.m_bit + this->m_rx.m_port * 0x20) << 8);
-	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = ((this->m_tx.m_bit + this->m_tx.m_port * 0x20) << 8) | ((this->m_rx.m_bit + this->m_rx.m_port * 0x20) << 16);
-	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 = ((this->m_tx.m_bit + this->m_tx.m_port * 0x20) << 16) | ((this->m_rx.m_bit + this->m_rx.m_port * 0x20) << 24);
+	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 0) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 8);
+	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 8) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 16);
+	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 16) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 24);
 	if (this->m_usart == USART3) {
-		SWM->PINASSIGN.PINASSIGN11 = ((this->m_tx.m_bit + this->m_tx.m_port * 0x20) << 24);
-		SWM->PINASSIGN.PINASSIGN12 = ((this->m_rx.m_bit + this->m_rx.m_port * 0x20) << 0);
+		SWM->PINASSIGN.PINASSIGN11 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 24);
+		SWM->PINASSIGN.PINASSIGN12 = ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 0);
 	}
-	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 = (this->m_tx.m_bit + this->m_tx.m_port * 0x20) << 16) | ((this->m_rx.m_bit + this->m_rx.m_port * 0x20) << 24);
+	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 16) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 24);
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void UART::Config(uint32_t baudrate, bits_de_datos BitsDeDatos, parity_t parity) {
+void UART::Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 	uint8_t iser = 0;
 	this->m_usart->CFG = (0 << 0) // 0 = DISABLE 		1 = ENABLE
-	| (BitsDeDatos << 2) 		  // 0 = 7 BITS 		1 = 8 BITS 		2 = 9 BITS
+	| (data_bits << 2) 		  	  // 0 = 7 BITS 		1 = 8 BITS 		2 = 9 BITS
 	| (parity << 4)		 		  // 0 = NOPARITY 		2 = PAR 		3 = IMPAR
 	| (0 << 6)			 		  // 0 = 1 BIT STOP  	1 = 2 BIT STOP
 	| (0 << 9)			 		  // 0 = NOFLOWCONTROL 	1 = FLOWCONTROL
@@ -135,7 +135,7 @@ void UART::Config(uint32_t baudrate, bits_de_datos BitsDeDatos, parity_t parity)
 	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1;
 	this->m_usart->CTL = 0;
 
-	this->m_usart->INTENSET = (1 << 0);	// RX interrupcion
+	this->m_usart->INTENSET = (1 << 0);	// RX interruption
 
 	if (this->m_usart == USART0) iser = 3;
 	if (this->m_usart == USART1) iser = 4;
@@ -148,7 +148,7 @@ void UART::Config(uint32_t baudrate, bits_de_datos BitsDeDatos, parity_t parity)
 	this->m_usart->CFG |= (1 << 0);		// Enable USART
 }
 
-void UART::SetBaudRate (uint32_t baudrate) {
+void UART::SetBaudRate(uint32_t baudrate) {
 	this->m_usart->CFG &= ~(1 << 0);	// Disable UART
 	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1;	// Change baudrate
 	this->m_usart->CFG |= (1 << 0);		// Enable UART
@@ -203,6 +203,8 @@ void UART::UART_IRQHandler(void) {
 		}
 	}
 }
+
+UART::~UART() { }
 
 void UART0_IRQHandler(void) {
 	g_usart[0]->UART_IRQHandler();

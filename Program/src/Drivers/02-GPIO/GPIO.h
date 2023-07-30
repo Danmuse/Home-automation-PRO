@@ -18,13 +18,6 @@
 #define CLK_IOCON 20
 
 class Gpio : public Inputs, public Outputs {
-protected:
-	const uint8_t m_port;
-	const uint8_t m_bit;
-	const uint8_t m_mode;
-	uint8_t m_direction;
-	const uint8_t m_activity;
-	uint8_t m_error;
 public:
 	enum port_t				{ PORT0, PORT1 };
 	enum max_bits_port_t	{ B_PORT0 = 31, B_PORT1 = 9 };
@@ -35,6 +28,14 @@ public:
 	enum activity_t			{ LOW, HIGH };
 	enum error_t			{ OK, ERROR };
 
+	const port_t m_port;
+	const uint8_t m_bit;
+protected:
+	const uint8_t m_mode;
+	direction_t m_direction;
+	const activity_t m_activity;
+	error_t m_error;
+public:
 	Gpio() = delete;
 	Gpio(port_t port, uint8_t bit, uint8_t mode, direction_t direction, activity_t activity);
 	void SetPin(void) override;

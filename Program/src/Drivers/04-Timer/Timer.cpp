@@ -1,11 +1,11 @@
-/*/*!
+/*!
  * @file Timer.h
  * @par Author & Doxygen Editor
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @date 05/07/2023 22:02:36
  */
 
-#include <Drivers/04-Timer/Timer.h>
+#include "Timer.h"
 
 Timer::Timer() : Callback(),
 m_TmrRun{0},
@@ -29,21 +29,21 @@ void Timer::TimerStart(uint32_t counter, const Timer_Handler handler, const base
 	switch(base) {
 	case DEC:
 		counter *= DECIMALS;
-		break;
+	break;
 	case SEC:
 		counter *= (DECIMALS * SECONDS);
-		break;
+	break;
 	case MIN:
 		counter *= (DECIMALS * SECONDS * MINUTES);
-		break;
+	break;
 	case HOUR:
 		counter *= (DECIMALS * SECONDS * MINUTES * HOURS);
-		break;
+	break;
 	case DAY:
 		counter *= (DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
-		break;
+	break;
 	default:
-		break;
+	break;
 	}
 
 	if (counter) {
@@ -62,21 +62,21 @@ void Timer::TimerStart(uint32_t counter) {
 	switch(this->m_TmrBase) {
 	case DEC:
 		counter *= DECIMALS;
-		break;
+	break;
 	case SEC:
 		counter *= (DECIMALS * SECONDS);
-		break;
+	break;
 	case MIN:
 		counter *= (DECIMALS * SECONDS * MINUTES);
-		break;
+	break;
 	case HOUR:
 		counter *= (DECIMALS * SECONDS * MINUTES * HOURS);
-		break;
+	break;
 	case DAY:
 		counter *= (DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
-		break;
+	break;
 	default:
-		break;
+	break;
 	}
 
 	if (counter) {
@@ -92,21 +92,21 @@ void Timer::SetTimer(uint32_t time) {
 	switch(this->m_TmrBase) {
 	case DEC:
 		time *= DECIMALS;
-		break;
+	break;
 	case SEC:
 		time *= (DECIMALS * SECONDS);
-		break;
+	break;
 	case MIN:
 		time *= (DECIMALS * SECONDS * MINUTES);
-		break;
+	break;
 	case HOUR:
 		time *= (DECIMALS * SECONDS * MINUTES * HOURS);
-		break;
+	break;
 	case DAY:
 		time *= (DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
-		break;
+	break;
 	default:
-		break;
+	break;
 	}
 
 	if (!time) this->m_TmrEvent = true;
@@ -119,21 +119,21 @@ void Timer::GetTimer(uint32_t &time) const {
 	switch(this->m_TmrBase) {
 	case DEC:
 		time /= DECIMALS;
-		break;
+	break;
 	case SEC:
 		time /= (DECIMALS * SECONDS);
-		break;
+	break;
 	case MIN:
 		time /= (DECIMALS * SECONDS * MINUTES);
-		break;
+	break;
 	case HOUR:
 		time /= (DECIMALS * SECONDS * MINUTES * HOURS);
-		break;
+	break;
 	case DAY:
 		time /= (DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
-		break;
+	break;
 	default:
-		break;
+	break;
 	}
 }
 
@@ -141,7 +141,7 @@ uint32_t Timer::GetTimer(void) const {
 	return this->m_TmrRun;
 }
 
-void Timer::SetmrStandBy(standby_t action) {
+void Timer::StandBy(standby_t action) {
 	this->m_TmrStandBy = action;
 }
 

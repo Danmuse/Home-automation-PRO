@@ -11,7 +11,7 @@
 
 #include <Drivers/05-Timers/Timers.h>
 #include "PLL.h"
-#include "GPIO.h"
+#include "PWM.h"
 #include "systick.h"
 
 extern Gpio LED_RED;
