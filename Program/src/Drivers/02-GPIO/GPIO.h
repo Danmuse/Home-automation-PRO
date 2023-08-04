@@ -37,6 +37,7 @@ protected:
 	error_t m_error;
 public:
 	Gpio() = delete;
+	Gpio(const Gpio &original);
 	Gpio(port_t port, uint8_t bit, uint8_t mode, direction_t direction, activity_t activity);
 	void SetPin(void) override;
 	void ClearPin(void) override;

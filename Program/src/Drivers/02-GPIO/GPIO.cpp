@@ -7,6 +7,14 @@
 
 #include "GPIO.h"
 
+Gpio::Gpio(const Gpio &original) :
+m_port{original.m_port},
+m_bit{original.m_bit},
+m_mode{original.m_mode},
+m_direction{original.m_direction},
+m_activity{original.m_activity},
+m_error{original.m_error} { }
+
 Gpio::Gpio(port_t port, uint8_t bit, uint8_t mode, direction_t direction, activity_t activity) :
 m_port{port},
 m_bit{bit},
@@ -22,7 +30,7 @@ m_activity{activity} {
 }
 
 void Gpio::SetPin(void) {
-	if (this->m_activity == HIGH) GPIO->SET[this->m_port] |= (1 << this->m_bit);
+	if (this->m_activity == LOW) GPIO->SET[this->m_port] |= (1 << this->m_bit);
 	else GPIO->CLR[this->m_port] |= (1 << this->m_bit);
 }
 
@@ -80,6 +88,7 @@ uint8_t Gpio::SetDir(void) {
 		} else if (this->m_direction == OUTPUT) {
 			this->SetDirOutputs();
 			this->SetPinMode();
+			this->m_activity == LOW ? this->ClearPin() : this->SetPin();
 		}
 	}
 	return this->m_error;

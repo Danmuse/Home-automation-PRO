@@ -3,7 +3,7 @@
  * @par Author & Doxygen Editor
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @date 14/06/2023 20:36:24
- * @brief Outputs API (Application Programming Interface).
+ * @brief Outputs Abstract Class API (Application Programming Interface).
  */
 
 #ifndef OUTPUTS_H_
