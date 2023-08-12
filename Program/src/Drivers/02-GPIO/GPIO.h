@@ -49,6 +49,7 @@ public:
 	void SetPinResistor(void) override;
 	uint8_t ToggleDir(void);
 	uint8_t SetDir(void);
+	activity_t getActivity(void)const;
 	virtual ~Gpio();
 };
 

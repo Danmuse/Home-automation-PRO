@@ -101,4 +101,8 @@ uint8_t Gpio::ToggleDir(void) {
 	return this->SetDir();
 }
 
+Gpio::activity_t Gpio::getActivity(void)const{
+	return m_activity;
+}
+
 Gpio::~Gpio() { }
