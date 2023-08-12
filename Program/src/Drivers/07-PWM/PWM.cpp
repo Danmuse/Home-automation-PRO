@@ -1,77 +1,99 @@
 /*/*!
  * @file PWM.cpp
  * @par Author & Doxygen Editor
- * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
- * @date 23/07/2023 13:38:36
+ * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@frba.utn.edu.ar</a>
+ * @date 12/08/2023 00:11:27
  */
 
 #include "PWM.h"
 
-PWM::PWM(port_t port, uint8_t bit, activity_t activity, pwm_channel_t channel) : Gpio(port, bit, PUSHPULL, OUTPUT, activity),
-m_pwm_channel{channel},
-m_timeON{0},
-m_timeOFF{0} { }
+PWM::PWM(const Gpio &outputPort, const uint8_t pwmOutput, float duty,
+         const Gpio::activity_t pwmActivity, uint32_t frequency) :
+        m_outputPort{outputPort}, m_pwmOutput{pwmOutput},
+        m_pwmActivity{pwmActivity}, m_frequency{frequency} {
+    //Copying object by reference because it is a global object which won't be destroyed
 
-void PWM::SetTon(uint32_t time, pwm_time_unit_t unit) {
-	this->m_timeON = time;
-	if (unit == MILLI_SEC) this->m_timeON *= 1000;
-	if (unit == SEC) this->m_timeON *= 1000000;
+    this->enable();
 
-	this->SetTime(this->m_timeON * (FREQ_CLOCK_MCU / 1000000), this->m_pwm_channel);
+    setDuty(duty);
+
 }
 
-void PWM::SetPeriod(uint32_t time, pwm_time_unit_t unit) {
-	this->m_timeOFF = time;
-	if (unit == MILLI_SEC) this->m_timeOFF *= 1000;
-	if (unit == SEC) this->m_timeOFF *= 1000000;
-	this->m_timeOFF -= this->m_timeON;
 
-	this->SetTime((this->m_timeON + this->m_timeOFF) * (FREQ_CLOCK_MCU / 1000000), 0);
+void PWM::bindOutput(const Gpio::port_t port, const uint8_t bit) const {
+    uint8_t offset;
+    if (m_pwmOutput > 0 && m_pwmOutput < 7) {
+        offset = (8 * (m_pwmOutput - 1));
+        SWM0->PINASSIGN.PINASSIGN8 &= (((32 * port + bit) << offset) | ~(255 << offset)); //Hve to set since bit 24
+    }
+    else {
+        //Ignoring >7....
+        offset = 24;
+        SWM0->PINASSIGN.PINASSIGN7 &= (((32 * port + bit) << offset) | ~(255 << offset)); //Hve to set since bit 24
+    }
 }
 
-void PWM::InitPeriod(uint32_t timeON, uint32_t timeOFF, pwm_time_unit_t unit) {
-	this->SetSwitchMatrizSCTOUT(this->m_bit, this->m_port, this->m_pwm_channel - 1);
-
-	this->SetUnify(true);
-	this->SetAutoLimit(true);
-
-	this->m_timeON = timeON;
-	this->m_timeOFF = timeOFF;
-	if (unit == SEC) {
-		this->m_timeON *= 1000000;
-		this->m_timeOFF *= 1000000;
-	}
-	if (unit == MILLI_SEC) {
-		this->m_timeON *= 1000;
-		this->m_timeOFF *= 1000;
-	}
-
-	this->SetTime((this->m_timeON + this->m_timeOFF) * (FREQ_CLOCK_MCU / 1000000), 0);	/*	CHANNEL 0 ALWAYS IS THE PERIOD	*/
-	this->SetTime(this->m_timeON * (FREQ_CLOCK_MCU / 1000000), this->m_pwm_channel);	/*	Setteo del tiempo de encendido	*/
-
-	if (this->m_activity == HIGH) {
-		SCT->OUT[this->m_pwm_channel - 1].SET = (1 << 0); // Event 0 sets OUT0
-		SCT->OUT[this->m_pwm_channel - 1].CLR = (1 << this->m_pwm_channel); // event 1 clear OUT0
-
-		SCT->OUTPUT &= ~(1 << (this->m_pwm_channel - 1)); // Default clear OUT[m_pwm_channel]
-		SCT->RES &= ~(0b11 << ((this->m_pwm_channel - 1) * 2)); // Clean the buffer if necessary
-		SCT->RES |= (0b10 << ((this->m_pwm_channel - 1) * 2)); 	// Conflict: Inactive state takes precedence
-	} else {
-		SCT->OUT[this->m_pwm_channel - 1].CLR = (1 << 0);
-		SCT->OUT[this->m_pwm_channel - 1].SET = (1 << this->m_pwm_channel);
-
-		SCT->OUTPUT |= (1 << (this->m_pwm_channel - 1));
-		SCT->RES &= ~(0b11 << ((this->m_pwm_channel - 1) * 2)); // Clean the buffer if necessary
-		SCT->RES |= (0b01 << ((this->m_pwm_channel - 1) * 2)); 	// Conflict: Active state takes precedence
-	}
+void PWM::unbindOutput(const Gpio::port_t port, const uint8_t bit) const {
+    uint8_t offset;
+    if (m_pwmOutput > 0 && m_pwmOutput < 7) {
+        offset = (8 * (m_pwmOutput - 1));
+        SWM0->PINASSIGN.PINASSIGN8 &= (~(255 << offset)); //Have to set since bit 24
+    }
+    else {
+        //Ignoring >7....
+        offset = 24;
+        SWM0->PINASSIGN.PINASSIGN7 &= (~(255 << offset)); //Have to set since bit 24
+    }
 }
 
-void PWM::turnON(void) {
-	this->StartTimer();
+float PWM::getDuty() const {
+    return m_duty;
 }
 
-void PWM::turnOFF(void) {
-	this->StopTimer();
+void PWM::setDuty(float duty) {
+    if (duty > 100) {
+        duty = 100;
+    }
+    else if (duty < 0) {
+        duty = 0;
+    }
+    m_duty = duty;
+
+
+    if (m_pwmActivity == Gpio::HIGH) {
+        duty /= duty;
+    }
+    else {
+        duty = (100 - duty) / 100;
+    }
+
+    SCT->MATCHREL[m_pwmOutput + 1] = FREQ_CLOCK_MCU / (m_frequency) * duty;
+
 }
 
-PWM::~PWM() { }
+void PWM::enable() {
+
+    uint8_t eventNumber = m_pwmOutput + 1;
+
+    SCT->EV[eventNumber].STATE = 1;// different thaan 0
+    SCT->EV[eventNumber].CTRL = eventNumber | (1 << 12);  //Only uses specified match event
+    SCT->OUT[m_pwmOutput].SET = 1; //Enciende el PWM el eveento 0
+    SCT->OUT[m_pwmOutput].CLR = (1 << 1);//Apagaa el PWM el evento 1
+
+    bindOutput(m_outputPort.m_port, m_outputPort.m_bit); //TODO: HORRIBLE ESTE AVVESO
+}
+
+void PWM::disable() {
+    //EVENTOS, OUT y SWM pero no toco las variables
+    uint8_t eventNumber = m_pwmOutput + 1;
+
+    SCT->EV[eventNumber].STATE = 0;
+    SCT->EV[eventNumber].CTRL = 0;
+    SCT->OUT[m_pwmOutput].SET = 0;
+    SCT->OUT[m_pwmOutput].CLR = 0;
+
+    unbindOutput(m_outputPort.m_port, m_outputPort.m_bit); //TODO: HORRIBLE ESTE AVVESO
+
+}
+
+

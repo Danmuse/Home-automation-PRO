@@ -1,33 +1,44 @@
 /*!
  * @file PWM.h
  * @par Author & Doxygen Editor
- * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
- * @date 23/07/2023 13:38:36
+ * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@frba.utn.edu.ar</a>
+ * @date 12/08/2023 00:11:27
  * @brief Pulse Width Modulation Class API (Application Programming Interface).
  */
 
 #ifndef PWM_H_
 #define PWM_H_
 
-#include "SCTimer.h"
 #include "GPIO.h"
 
-class PWM : protected SCTimer, protected Gpio {
-protected:
-	const uint8_t m_pwm_channel;	//!< PWM object channel
-	uint32_t m_timeON;				//!< PWM turn-on time in micro seconds
-	uint32_t m_timeOFF;				//!< PWM turn-off time in micro seconds
-public:
-	enum pwm_time_unit_t 	{ SEC, MILLI_SEC, MICRO_SEC };
-	enum pwm_channel_t 		{ CHANNEL_1 = 1, CHANNEL_2, CHANNEL_3, CHANNEL_4, CHANNEL_5, CHANNEL_6 };
 
-	PWM(port_t port, uint8_t bit, activity_t activity, pwm_channel_t channel);
-	void InitPeriod(uint32_t timeON, uint32_t timeOFF, pwm_time_unit_t unit = MICRO_SEC);
-	void SetTon(uint32_t time, pwm_time_unit_t unit = MICRO_SEC);
-	void SetPeriod(uint32_t time, pwm_time_unit_t unit = MICRO_SEC);
-	void turnON();
-	void turnOFF();
-	virtual ~PWM();
+//Todo: maybe create interface and change this class name to simplePWM
+class PWM {//PERIOD NEEDS TO BE SET BEFORE, otherwise breaks. PWM should be not centered
+    protected:
+        Gpio m_outputPort; //Output Gpio
+        uint8_t m_pwmOutput; //Port can be btween 0 and 6
+        float m_duty; //duty is a % value of the time on
+        Gpio::activity_t m_pwmActivity; //If activity LOW duty is for off
+        uint32_t m_frequency;
+
+    public:
+        PWM()=delete;
+        PWM(const Gpio &outputPort, const uint8_t pwmOutput, float duty, const Gpio::activity_t pwmActivity,
+            uint32_t frequency);
+
+        void bindOutput(const Gpio::port_t port, const uint8_t bit) const;
+
+        void unbindOutput(const Gpio::port_t port, const uint8_t bit) const;
+
+        float getDuty() const;
+
+        void setDuty(float duty);
+
+        void enable();
+
+        void disable();
+
+
 };
 
 #endif /* PWM_H_ */
