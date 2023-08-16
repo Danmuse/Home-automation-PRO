@@ -21,7 +21,7 @@ PwmManager::PwmManager(uint32_t frequency){
 }
 
 PWM PwmManager::createPwm(const Gpio &outputPort, float duty){
-	return PWM(outputPort, m_pwmNumber++, duty, outputPort.getActivity(),m_frequency);
+	return PWM(outputPort, m_pwmNumber++, duty,m_frequency);
 }
 
 void PwmManager::initPwm() const{
