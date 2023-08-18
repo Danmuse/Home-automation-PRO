@@ -7,10 +7,8 @@
 
 #include "PWM.h"
 
-PWM::PWM(const Gpio &outputPort, const uint8_t pwmOutput, float duty,
-         const Gpio::activity_t pwmActivity, uint32_t frequency) :
-        m_outputPort{outputPort}, m_pwmOutput{pwmOutput},
-        m_pwmActivity{pwmActivity}, m_frequency{frequency} {
+PWM::PWM(const Gpio &outputPort, const uint8_t pwmOutput, float duty, uint32_t frequency) :
+        m_outputPort{outputPort}, m_pwmOutput{pwmOutput},m_frequency{frequency} {
     //Copying object by reference because it is a global object which won't be destroyed
 
     this->enable();
@@ -60,7 +58,7 @@ void PWM::setDuty(float duty) {
     m_duty = duty;
 
 
-    if (m_pwmActivity == Gpio::HIGH) {
+    if (m_outputPort.getActivity() == Gpio::HIGH) {
         duty /= duty;
     }
     else {
