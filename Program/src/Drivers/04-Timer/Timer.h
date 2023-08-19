@@ -15,8 +15,8 @@ typedef void (*Timer_Handler)(void);
 
 class Timer : public Callback {
 public:
-	enum bases_t	{ DEC, SEC, MIN, HOUR, DAY };
-	enum ticks_t	{ DECIMALS = 100, SECONDS = 10, MINUTES = 60, HOURS = 60, DAYS = 24 };
+	enum bases_t	{ MILLI, DEC, SEC, MIN, HOUR, DAY };
+	enum ticks_t	{ MILLIS = 1, DECIMALS = 100, SECONDS = 10, MINUTES = 60, HOURS = 60, DAYS = 24 };
 	enum error_t	{ OK, ERROR };
 	enum standby_t	{ RUN, PAUSE };
 protected:
@@ -41,7 +41,7 @@ public:
 	bool operator==(bool checkEvent);
 	friend bool operator==(bool checkEvent, Timer& timer);
 	explicit operator bool();
-	void CallbackTimer(void);
+	void CallbackMethod(void);
 	virtual ~Timer();
 };
 

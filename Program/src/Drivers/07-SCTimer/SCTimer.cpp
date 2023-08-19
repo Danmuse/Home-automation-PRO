@@ -38,35 +38,35 @@ void SCTimer::SetAutoLimit(bool status) {
 }
 
 void SCTimer::SetSwitchMatrizSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number) {
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << CLK_SWM);
-		uint8_t aux = ~(bit + port * 0x20); // Default: 0xFF
+	SYSCON->SYSAHBCLKCTRL0 |= (1 << CLK_SWM);
+	uint8_t aux = ~(bit + port * 0x20); // Default: 0xFF
 
-		switch (out_number) {
-		case 0:
-			SWM->PINASSIGN_DATA[7] &= ~(aux << 24);
-			break;
-		case 1:
-			SWM->PINASSIGN_DATA[8] &= ~(aux << 0);
-			break;
-		case 2:
-			SWM->PINASSIGN_DATA[8] &= ~(aux << 8);
-			break;
-		case 3:
-			SWM->PINASSIGN_DATA[8] &= ~(aux << 16);
-			break;
-		case 4:
-			SWM->PINASSIGN_DATA[8] &= ~(aux << 24);
-			break;
-		case 5:
-			SWM->PINASSIGN_DATA[9] &= ~(aux << 0);
-			break;
-		case 6:
-			SWM->PINASSIGN_DATA[9] &= ~(aux << 8);
-			break;
-		}
+	switch (out_number) {
+	case 0:
+		SWM->PINASSIGN_DATA[7] &= ~(aux << 24);
+		break;
+	case 1:
+		SWM->PINASSIGN_DATA[8] &= ~(aux << 0);
+		break;
+	case 2:
+		SWM->PINASSIGN_DATA[8] &= ~(aux << 8);
+		break;
+	case 3:
+		SWM->PINASSIGN_DATA[8] &= ~(aux << 16);
+		break;
+	case 4:
+		SWM->PINASSIGN_DATA[8] &= ~(aux << 24);
+		break;
+	case 5:
+		SWM->PINASSIGN_DATA[9] &= ~(aux << 0);
+		break;
+	case 6:
+		SWM->PINASSIGN_DATA[9] &= ~(aux << 8);
+		break;
+	}
 
-		SYSCON->PRESETCTRL0 |= (1 << CLK_SCT);
-		SYSCON->SYSAHBCLKCTRL0 &= ~(1 << CLK_SWM);
+	SYSCON->PRESETCTRL0 |= (1 << CLK_SCT);
+	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << CLK_SWM);
 }
 
 SCTimer::~SCTimer() { }

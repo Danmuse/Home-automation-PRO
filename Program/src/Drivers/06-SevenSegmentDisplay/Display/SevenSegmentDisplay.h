@@ -10,28 +10,28 @@
 #define SEVEN_SEGMENT_DISPLAY_H_
 
 #include "systick.h"
-#include "Sweep.h"
-#include "Segments.h"
 #include "DigitsGroup.h"
+#include "CD4511B.h"
+#include "CD4017.h"
+
+#define UPDATE_TICKS 3	//!< Writing speed of the displays expressed as milliseconds
 
 class SevenSegmentDisplay : public Callback {
 private:
-	#define UPDATE_TICKS 3				//!< Writing speed of the displays expressed as milliseconds
-
-	std::list<DigitsGroup*> m_groups;	//!< Dynamic list of digits to be used
-	Segments *m_segments;				//!< Pointer to Segments class
-	Sweep *m_sweep;						//!< Pointer to segment Sweep class
+	std::vector<DigitsGroup*> m_groups;	//!< Dynamic list of digits to be used
+	CD4511B *m_segments;				//!< Pointer to Segments class
+	CD4017 *m_sweep;						//!< Pointer to segment Sweep class
 	uint8_t	m_maxdigits;				//!< Number of digits
 	uint8_t	m_index;					//!< Position index
 	uint8_t	m_ticks;					//!< Tick counter
 
-	std::list<Digit*> m_bufferDisplay;	//!< Write buffer
+	std::vector<Digit*> m_bufferDisplay;	//!< Write buffer
 	const Digit::code_t m_system;		//!< Usage system to be used
 	const uint8_t *m_relativePos;		//!< Vector with user positions
 public:
 	SevenSegmentDisplay() = delete;
-	SevenSegmentDisplay(std::list<DigitsGroup*> groups, Segments *segments, Sweep *sweep, const uint8_t *relativePos, const Digit::code_t system);
-	void CallbackDisplay(void);
+	SevenSegmentDisplay(std::vector<DigitsGroup*> groups, CD4511B *segments_IC, CD4017 *sweep_IC, const uint8_t *relativePos, const Digit::code_t system);
+	void CallbackMethod(void);
 	void Set(uint32_t value, uint8_t display);
 	virtual ~SevenSegmentDisplay();
 };

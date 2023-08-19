@@ -30,7 +30,7 @@ m_activity{activity} {
 }
 
 void Gpio::SetPin(void) {
-	if (this->m_activity == LOW) GPIO->SET[this->m_port] |= (1 << this->m_bit);
+	if (this->m_activity == HIGH) GPIO->SET[this->m_port] |= (1 << this->m_bit);
 	else GPIO->CLR[this->m_port] |= (1 << this->m_bit);
 }
 
@@ -101,8 +101,8 @@ uint8_t Gpio::ToggleDir(void) {
 	return this->SetDir();
 }
 
-Gpio::activity_t Gpio::getActivity(void)const{
-	return m_activity;
+Gpio::activity_t Gpio::getActivity(void) const {
+	return this->m_activity;
 }
 
 Gpio::~Gpio() { }

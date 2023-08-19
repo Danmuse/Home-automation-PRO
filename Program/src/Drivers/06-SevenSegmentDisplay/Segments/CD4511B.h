@@ -9,20 +9,22 @@
 #ifndef CD4511B_H_
 #define CD4511B_H_
 
-#include <list>
-#include "Segments.h"
+#include <vector>
 #include "GPIO.h"
+#include "Segments.h"
 
-#define MAX_BCD_PINS 4 // pinBCDA - pinBCDB - pinBCDC - pinBCDD
+#define BCDA_INDEX 0
+#define BCDB_INDEX 1
+#define BCDC_INDEX 2
+#define BCDD_INDEX 3
 
 class CD4511B : public Segments {
 private:
-	const std::list<Gpio*> &m_BCD;
+	const std::vector<Gpio*> &m_BCD;
 public:
 	CD4511B() = delete;
-	CD4511B(const std::list<Gpio*> &BCD);
+	CD4511B(const std::vector<Gpio*> &BCD);
 	void SetSegments(uint16_t value) override;
-	void InitSegments(void) override;
 	virtual ~CD4511B();
 };
 

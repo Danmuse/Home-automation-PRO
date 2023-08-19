@@ -14,7 +14,6 @@
 class Segments {
 public:
 	virtual void SetSegments(uint16_t value) = 0;
-	virtual void InitSegments(void) = 0;
 	virtual ~Segments() = default;
 };
 

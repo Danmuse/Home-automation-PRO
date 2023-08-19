@@ -9,8 +9,8 @@
 #ifndef DIGITS_GROUP_H_
 #define DIGITS_GROUP_H_
 
-#include "Digit.h"
 #include "utils.h"
+#include "Digit.h"
 
 struct DigitsGroup {
 	const uint8_t m_begin;

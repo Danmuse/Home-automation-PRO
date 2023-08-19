@@ -9,20 +9,22 @@
 #ifndef CD4017_H_
 #define CD4017_H_
 
-#include <list>
-#include "Sweep.h"
+#include <vector>
 #include "GPIO.h"
+#include "Sweep.h"
+
+#define RST_INDEX 0
+#define CLK_INDEX 1
 
 class CD4017 : public Sweep {
 private:
-	uint8_t m_index; //!< Sweep current value
-	const std::list<Gpio*> &m_pins4017;
+	uint8_t m_index;
+	const std::vector<Gpio*> &m_pins4017;
 	const uint8_t m_maxOutputs;
 public:
 	CD4017() = delete;
-	CD4017(const std::list<Gpio*> &pins4017, uint8_t maxOutputs);
+	CD4017(const std::vector<Gpio*> &pins4017, uint8_t maxOutputs);
 	void SetDigit(void) override;
-	void InitSweep(void) override;
 	void SetReset(void);
 	void SetClock(void);
 	virtual ~CD4017();

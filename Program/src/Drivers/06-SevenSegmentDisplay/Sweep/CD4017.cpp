@@ -7,8 +7,8 @@
 
 #include "CD4017.h"
 
-CD4017::CD4017(const std::list<Gpio*> &pins4017, uint8_t maxOutputs) :
-m_index{0},
+CD4017::CD4017(const std::vector<Gpio*> &pins4017, uint8_t maxOutputs) :
+m_index{maxOutputs},
 m_pins4017{pins4017},
 m_maxOutputs{(uint8_t) (maxOutputs <= 10 ? maxOutputs : 10)} { }
 
@@ -18,22 +18,17 @@ void CD4017::SetDigit(void) {
 	this->m_index++;
 }
 
-void CD4017::InitSweep(void) {
-	for (const auto &pin : this->m_pins4017) pin->SetDir();
-}
-
 void CD4017::SetReset(void) {
-	this->m_pins4017.front()->ClearPin();
-	this->m_pins4017.front()->SetPin();
-	this->m_pins4017.front()->ClearPin();
+	this->m_pins4017[RST_INDEX]->ClearPin();
+	this->m_pins4017[RST_INDEX]->SetPin();
+	this->m_pins4017[RST_INDEX]->ClearPin();
 	this->m_index = 0;
 }
 
 void CD4017::SetClock(void) {
-	this->m_pins4017.front()->ClearPin();
-	this->m_pins4017.back()->ClearPin();
-	this->m_pins4017.back()->SetPin();
-	this->m_pins4017.back()->ClearPin();
+	this->m_pins4017[RST_INDEX]->ClearPin();
+	this->m_pins4017[CLK_INDEX]->SetPin();
+	this->m_pins4017[CLK_INDEX]->ClearPin();
 }
 
 CD4017::~CD4017() { }

@@ -14,7 +14,7 @@ m_callback{function} {
 	if (m_callback != nullptr) g_callback_list.push_back(this);
 }
 
-void Callback::myCallback(void) {
+void Callback::CallbackMethod(void) {
 	if (m_callback) m_callback();
 }
 
