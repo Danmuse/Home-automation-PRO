@@ -24,13 +24,18 @@ int main(void) {
 	while (1) {
 		if (!increaseFlag) {
 			pwm.setDuty(duty--);
-			if (duty < 1) increaseFlag = !increaseFlag;
+			if (duty < 1) {
+				pwm.setDuty(0);
+				increaseFlag = !increaseFlag;
+				delay(1000);
+			}
 		} else {
 			pwm.setDuty(duty++);
 			if (duty > 254) increaseFlag = !increaseFlag;
 		}
 
 		for (uint32_t index = 0; index < 2500; index++);
+		g_timers_list.TimerEvents();
 	}
 }
 

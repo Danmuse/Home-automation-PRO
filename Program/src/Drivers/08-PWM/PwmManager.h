@@ -24,10 +24,8 @@ protected:
 public:
 	PwmManager();
 	PwmManager(uint32_t frequency);
-
 	PWM createPwm(const Gpio &outputPort, float duty);
 	void initPwm(void) const;
-
 	virtual ~PwmManager();
 };
 

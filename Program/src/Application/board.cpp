@@ -16,6 +16,7 @@ void initDevice(void) {
 
 void initDisplay(void) {
 	#ifdef CN12_PINS
+
 	static std::vector<DigitsGroup*> sevenSegments_list;
 	static DigitsGroup tripletDisplayFST(0, 3);
 	static DigitsGroup tripletDisplaySND(3, 3);
@@ -39,5 +40,6 @@ void initDisplay(void) {
 	static SevenSegmentDisplay Display(sevenSegments_list, &segments_IC, &sweep_IC, relativePositions, Digit::BCD);
 
 	g_display = &Display;
-	#endif
+
+    #endif // CN12_PINS
 }

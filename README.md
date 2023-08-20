@@ -31,7 +31,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 - [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13)
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 47` `AO ~ 40` `CY ~ 28` `LC ~ 28`
+`DDM ~ 56` `AO ~ 40` `CY ~ 28` `LC ~ 28`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7)
 - [ ] Micro SD card adaptation for data handling and ".mp3" files.
 

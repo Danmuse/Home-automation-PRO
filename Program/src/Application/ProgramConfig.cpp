@@ -32,8 +32,8 @@ Gpio ANALOG_IN(Gpio::PORT0, 6, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
 #endif // CN8_PINS
 
 #ifdef CN9_PINS
-Gpio SWDIO(Gpio::PORT0, 2, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
-Gpio SWCLK(Gpio::PORT0, 3, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
+Gpio SWDIO(Gpio::PORT0, 2, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
+Gpio SWCLK(Gpio::PORT0, 3, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
 Gpio DIG_IN(INT0_IN);
 Gpio KEY_RESET(Gpio::PORT0, 5, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
 #endif // CN9_PINS

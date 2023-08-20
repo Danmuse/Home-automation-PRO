@@ -13,16 +13,16 @@
 
 class AsyncComm {
 protected:
-	virtual void pushRX(uint8_t data) = 0;				/**< Envia recepcion */
-	virtual uint8_t popRX(uint8_t *data) = 0;			/**< Devuelve recepcion */
-	virtual void pushTX(uint8_t data) = 0;				/**< Envia transmision*/
-	virtual uint8_t popTX(uint8_t *data) = 0;			/**< Devuelve transmision */
+	virtual void pushRX(uint8_t data) = 0;
+	virtual uint8_t popRX(uint8_t *data) = 0;
+	virtual void pushTX(uint8_t data) = 0;
+	virtual uint8_t popTX(uint8_t *data) = 0;
 public:
 	AsyncComm();
-	virtual void Transmit(const char *msg) = 0;					/**< Funcion de transmitir */
-	virtual void Transmit(const void *msg, uint32_t n) = 0;		/**< Funcion de transmitir */
-	virtual void *Message(void *msg, uint32_t n) = 0;			/**< Funcion de lectura */
-	virtual void UART_IRQHandler(void) = 0;						/**< Funcion de interrupcion */
+	virtual void Transmit(const char *msg) = 0;
+	virtual void Transmit(const void *msg, uint32_t n) = 0;
+	virtual void *Message(void *msg, uint32_t n) = 0;
+	virtual void UART_IRQHandler(void) = 0;
 	virtual ~AsyncComm();
 };
 

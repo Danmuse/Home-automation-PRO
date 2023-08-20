@@ -9,22 +9,22 @@
 
 AsyncComm *g_usart[5];
 
-UART::UART(Gpio::port_t portTX, uint8_t pinTX, Gpio::port_t portRX,	uint8_t pinRX, USART_Type *usart, uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX) :
-m_TX{Gpio(portTX, pinTX, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW)},
-m_RX{Gpio(portRX, pinRX, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW)},
-m_usart{usart} {
-	m_bufferRX = new uint8_t[maxRX];	// buffer de Rx
-	m_indexRXIn = m_indexRXOut = 0;		// indices del bufer e Rx
-	m_maxRX = maxRX;					// tamaño del buffer de Rx
+UART::UART(uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX) :
+m_RX{Gpio(PORT_RX_USB, PIN_RX_USB, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW)},
+m_TX{Gpio(PORT_TX_USB, PIN_TX_USB, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH)},
+m_usart{USART0} {
+	m_bufferRX = new uint8_t[maxRX];
+	m_indexRXIn = m_indexRXOut = 0;
+	m_maxRX = maxRX;
 
-	m_bufferTX = new uint8_t[maxTX];	// buffer de Tx
-	m_indexTXIn = m_indexTXOut = 0;		// indices del bufer e Tx
-	m_maxTX = maxTX;					// tamaño del buffer de Tx
+	m_bufferTX = new uint8_t[maxTX];
+	m_indexTXIn = m_indexTXOut = 0;
+	m_maxTX = maxTX;
 
-	m_flagTX = false;					// flag de fin de Tx
+	m_flagTX = false;
 
 	this->EnableClock();
-	this->EnableSW();
+	this->EnableSWM();
 	this->Config(baudrate, data_bits, parity);
 }
 
@@ -73,8 +73,8 @@ void UART::Transmit(const char *message) {
 }
 
 void UART::Transmit(const void *message, uint32_t n) {
-	for (uint32_t i = 0; i < n; i++) {
-		this->pushTX(((uint8_t*) message)[i]);
+	for (uint32_t index = 0; index < n; index++) {
+		this->pushTX(((uint8_t*) message)[index]);
 
 		if (this->m_flagTX == 0) {
 			this->m_flagTX = 1;
@@ -84,17 +84,17 @@ void UART::Transmit(const void *message, uint32_t n) {
 }
 
 void *UART::Message(void *message, uint32_t n) {
-	uint8_t dato;
+	uint8_t data;
 	static uint32_t cont = 0;
-	char *p = (char*) message;
+	char *ptr = (char*) message;
 
-	if (this->popRX(&dato)) {
-		p[cont] = dato ;
+	if (this->popRX(&data)) {
+		ptr[cont] = data ;
 		cont ++;
 
-		if (cont >= n || p[cont] == '\n') {
+		if (cont >= n || ptr[cont] == '\n') {
 			cont = 0;
-			return (void*) p;
+			return (void*) ptr;
 		}
 	}
 	return nullptr;
@@ -108,7 +108,7 @@ void UART::DisableInterupt(void) {
 	this->m_usart->INTENCLR = (1 << 2); // Disable TX interruption.
 }
 
-void UART::EnableSW(void) {
+void UART::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 0) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 8);
 	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 8) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 16);
@@ -122,7 +122,7 @@ void UART::EnableSW(void) {
 }
 
 void UART::Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
-	uint8_t iser = 0;
+	uint8_t ISER = 0; // Interrupt Set Enable Register
 	this->m_usart->CFG = (0 << 0) // 0 = DISABLE 		1 = ENABLE
 	| (data_bits << 2) 		  	  // 0 = 7 BITS 		1 = 8 BITS 		2 = 9 BITS
 	| (parity << 4)		 		  // 0 = NOPARITY 		2 = PAR 		3 = IMPAR
@@ -131,19 +131,19 @@ void UART::Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 	| (0 << 11);		 		  // 0 = ASINCRONICA 	1 = SINCRONICA
 	// | ( 1 << 15 );	 		  // LOOP
 
-	// OSR vale por default 16
+	// THe default value of the OSR register is 16
 	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1;
 	this->m_usart->CTL = 0;
 
 	this->m_usart->INTENSET = (1 << 0);	// RX interruption
 
-	if (this->m_usart == USART0) iser = 3;
-	if (this->m_usart == USART1) iser = 4;
-	if (this->m_usart == USART2) iser = 5;
-	if (this->m_usart == USART3) iser = 30;
-	if (this->m_usart == USART4) iser = 31;
+	if (this->m_usart == USART0) ISER = 3;
+	if (this->m_usart == USART1) ISER = 4;
+	if (this->m_usart == USART2) ISER = 5;
+	if (this->m_usart == USART3) ISER = 30;
+	if (this->m_usart == USART4) ISER = 31;
 
-	NVIC->ISER[0] = (1 << iser); 		// Enable UART_IRQ
+	NVIC->ISER[0] = (1 << ISER); 		// Enable UART_IRQ
 
 	this->m_usart->CFG |= (1 << 0);		// Enable USART
 }

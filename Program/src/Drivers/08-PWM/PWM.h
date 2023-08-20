@@ -20,18 +20,15 @@ protected:
 	uint8_t m_pwmOutput; // Channel can be between 0 and 6
 	float m_duty; // Duty is a % value of the time on
 	uint32_t m_frequency;
-
 public:
 	PWM() = delete;
 	PWM(const Gpio &outputPort, const uint8_t pwmOutput, float duty, uint32_t frequency);
-
 	void bindOutput(const Gpio::port_t port, const uint8_t bit) const;
 	void unbindOutput(const Gpio::port_t port, const uint8_t bit) const;
 	float getDuty(void) const;
 	void setDuty(float duty);
 	void enable(void);
 	void disable(void);
-
 	virtual ~PWM();
 };
 

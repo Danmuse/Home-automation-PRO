@@ -30,10 +30,16 @@ extern "C" {
 }
 #endif
 
+#define USART_USB	USART0
+#define PORT_RX_USB	Gpio::PORT0
+#define PORT_TX_USB	Gpio::PORT0
+#define PIN_RX_USB	24
+#define PIN_TX_USB	25
+
 class UART : public AsyncComm {
 private:
-	const Gpio 	m_TX;
 	const Gpio 	m_RX;
+	const Gpio 	m_TX;
 	USART_Type*	m_usart;							//!< Register to be used
 	uint8_t*	m_bufferRX;							//!< Reception buffer
 	uint32_t	m_indexRXIn, m_indexRXOut, m_maxRX;	//!< RX buffer input position - RX buffer output position - RX buffer size
@@ -41,23 +47,17 @@ private:
 	uint32_t	m_indexTXIn, m_indexTXOut, m_maxTX;	//!< TX buffer input position - TX buffer output position - TX buffer size
 	bool 		m_flagTX;							//!< Error in sending data (Buffer overload)
 public:
-	enum parity_t 			{ none_parity, even = 2, odd };
-	enum data_bits_t		{ seven_bits, eight_bits };
+	enum parity_t 		{ none_parity, even = 2, odd };
+	enum data_bits_t	{ seven_bits, eight_bits };
 
-	#define PORT_TX_USB		Gpio::PORT0
-	#define PORT_RX_USB		Gpio::PORT0
-	#define PIN_TX_USB		25
-	#define PIN_RX_USB		24
-	#define USART_USB		USART0
-
-	UART(Gpio::port_t portTX, uint8_t pinTX, Gpio::port_t portRX, uint8_t pinRX, USART_Type *usart, uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX);
+	UART(uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX);
 	void Transmit(const char *message) override;
 	void Transmit(const void *message, uint32_t n) override;
 	void *Message(void *message, uint32_t n) override;
 	void SetBaudRate(uint32_t baudrate);
 	virtual ~UART();
 private:
-	void EnableSW(void);
+	void EnableSWM(void);
 	void EnableClock(void);
 	void Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity);
 	void UART_IRQHandler(void) override;

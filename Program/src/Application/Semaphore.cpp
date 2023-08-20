@@ -9,13 +9,9 @@
 
 Timers g_timers_list;
 
-static void delayFUNC(void);
-
-static void delayFUNC(void) { }
-
 void delay(uint32_t milliseconds) {
 	static Timer delayTIMER, debounce;
 	g_timers_list << delayTIMER;
-	delayTIMER.TimerStart(milliseconds, delayFUNC, Timer::MILLI);
+	delayTIMER.TimerStart(milliseconds, nullptr, Timer::MILLI);
 	while (delayTIMER.GetTimer());
 }
