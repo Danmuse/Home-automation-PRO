@@ -12,5 +12,7 @@
 #include "LPC845.h"
 
 void initPhaseLockedLoop(void);
+void initOscilator(void);
 
 #endif /* PLL_H_ */
+

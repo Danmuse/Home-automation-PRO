@@ -8,6 +8,7 @@
 #include "board.h"
 
 SevenSegmentDisplay *g_display = nullptr;
+Keyboard *g_keyboard = nullptr;
 
 void initDevice(void) {
 	// initPhaseLockedLoop();
@@ -35,11 +36,30 @@ void initDisplay(void) {
 	sweep_GPIOs_list.push_back(&BCD_CLK);
 	static CD4017 sweep_IC(sweep_GPIOs_list, 6);
 
-	static uint8_t relativePositions[] = {2, 1, 0, 5, 4, 3};
+	static uint8_t relativePositions[] = { 2, 1, 0, 5, 4, 3 };
 
 	static SevenSegmentDisplay Display(sevenSegments_list, &segments_IC, &sweep_IC, relativePositions, Digit::BCD);
 
 	g_display = &Display;
 
-    #endif // CN12_PINS
+	#endif // CN12_PINS
+}
+
+void initKeyboard(void) {
+	#ifdef CN16_PINS
+
+	static std::vector<Gpio*> columns_GPIOs_list;
+	columns_GPIOs_list.push_back(&COL0_IN);
+	columns_GPIOs_list.push_back(&COL1_IN);
+	columns_GPIOs_list.push_back(&COL2_IN);
+
+	static std::vector<Gpio*> rows_GPIOs_list;
+	rows_GPIOs_list.push_back(&ROW0_OUT);
+	rows_GPIOs_list.push_back(&ROW1_OUT);
+
+	static Keyboard keyboard(columns_GPIOs_list, rows_GPIOs_list);
+
+	g_keyboard = &keyboard;
+
+	#endif // CN16_PINS
 }

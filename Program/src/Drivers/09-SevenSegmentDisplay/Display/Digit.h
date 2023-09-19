@@ -28,17 +28,21 @@ const uint8_t tableBCD[10] = { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EI
 class Digit {
 public:
 	enum code_t		{ BCD, SEGMENTS, ASCII };
-	enum mode_t		{ TURNOFF = 0xFF, BLINK = 1 };
+	enum mode_t		{ NONE, BLINK, TURNOFF = 0xFF };
 	enum symbol_t	{ MINUSSYM = 10, A, B, C, D, E, F, G, H, N, O, P, R, T, U };
 private:
-	const code_t m_system;	//!< Writing system
-	uint16_t m_value;		//!< Digit value
+	const code_t m_system;
+	uint16_t m_value;
+	mode_t m_action = NONE;
 public:
 	Digit() = delete;
 	Digit(code_t system = BCD, uint8_t value = TURNOFF);
 	bool Set(uint16_t value);
-	uint8_t Get(void) const;
+	uint16_t Get(void) const;
 	void Clear(void);
+	void BlinkBind(void);
+	void BlinkUnbind(void);
+	mode_t GetMode(void) const;
 	virtual ~Digit();
 };
 

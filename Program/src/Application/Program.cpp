@@ -1,6 +1,6 @@
 /*!
  * @file Program.cpp
- * @par Authors
+ * @authors
  * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@@frba.utn.edu.ar</a>
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @par Doxygen Editor
@@ -17,9 +17,8 @@ int main(void) {
 	initDevice();
 
 	bool increaseFlag = false;
-	uint8_t duty = 255;
-	PwmManager pwmManager;
-	PWM pwm = pwmManager.createPwm(LED_BLUE, duty);
+	uint8_t duty = 100;
+	PWM pwm(LED_BLUE, duty);
 
 	while (1) {
 		if (!increaseFlag) {
@@ -31,7 +30,7 @@ int main(void) {
 			}
 		} else {
 			pwm.setDuty(duty++);
-			if (duty > 254) increaseFlag = !increaseFlag;
+			if (duty > 100 - 1) increaseFlag = !increaseFlag;
 		}
 
 		for (uint32_t index = 0; index < 2500; index++);

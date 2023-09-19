@@ -11,7 +11,7 @@
 
 #include "Callback.h"
 
-typedef void (*Timer_Handler)(void);
+typedef void (*TimerHandler)(void);
 
 class Timer : public Callback {
 public:
@@ -22,13 +22,13 @@ public:
 protected:
 	volatile uint32_t	m_TmrRun;		// Counts
 	volatile bool		m_TmrEvent;		// Terminated timer (Shot a flag)
-	Timer_Handler		m_TmrHandler;	// Function to be executed when it's terminated
+	TimerHandler		m_TmrHandler;	// Function to be executed when it's terminated
 	volatile standby_t	m_TmrStandBy; 	// Pause the timer
 	volatile uint8_t	m_TmrBase;		// Timer unit (DEC - SEG - MIN)
 public:
 	Timer();
-	Timer(const Timer_Handler handler, const bases_t base);
-	void TimerStart(uint32_t counter, const Timer_Handler handler, const bases_t base);
+	Timer(const TimerHandler handler, const bases_t base);
+	void TimerStart(uint32_t counter, const TimerHandler handler, const bases_t base);
 	void TimerStart(uint32_t counter);
 	void SetTimer(uint32_t time);
 	void GetTimer(uint32_t &time) const;
@@ -37,10 +37,10 @@ public:
 	void TimerStop(void);
 	error_t TimerEvent(void);
 	Timer& operator=(uint32_t counter);
-	bool operator!();
+	bool operator!(void);
 	bool operator==(bool checkEvent);
 	friend bool operator==(bool checkEvent, Timer& timer);
-	explicit operator bool();
+	explicit operator bool(void);
 	void CallbackMethod(void);
 	virtual ~Timer();
 };

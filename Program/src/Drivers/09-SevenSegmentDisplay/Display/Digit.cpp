@@ -9,7 +9,8 @@
 
 Digit::Digit(code_t system, uint8_t value) :
 m_system{system},
-m_value{value} { }
+m_value{value},
+m_action{NONE} { }
 
 bool Digit::Set(uint16_t value) {
 	switch (this->m_system) {
@@ -37,12 +38,25 @@ bool Digit::Set(uint16_t value) {
 	return false;
 }
 
-uint8_t Digit::Get(void) const {
+uint16_t Digit::Get(void) const {
 	return this->m_value;
 }
 
 void Digit::Clear(void) {
 	this->m_value = TURNOFF;
+	this->m_action = NONE;
+}
+
+void Digit::BlinkBind(void) {
+	this->m_action = BLINK;
+}
+
+void Digit::BlinkUnbind(void) {
+	this->m_action = NONE;
+}
+
+Digit::mode_t Digit::GetMode(void) const {
+	return this->m_action;
 }
 
 Digit::~Digit() { }

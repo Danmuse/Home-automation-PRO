@@ -16,7 +16,7 @@ m_TmrBase{DEC} {
 	g_callback_list.push_back(this);
 }
 
-Timer::Timer(const Timer_Handler handler, const bases_t base) : Callback(),
+Timer::Timer(const TimerHandler handler, const bases_t base) : Callback(),
 m_TmrRun{0},
 m_TmrEvent{false},
 m_TmrHandler{handler},
@@ -25,28 +25,28 @@ m_TmrBase{base} {
 	g_callback_list.push_back(this);
 }
 
-void Timer::TimerStart(uint32_t counter, const Timer_Handler handler, const bases_t base) {
+void Timer::TimerStart(uint32_t counter, const TimerHandler handler, const bases_t base) {
 	switch(base) {
 	case MILLI:
-		counter *= MILLIS;
-	break;
+			counter *= MILLIS;
+		break;
 	case DEC:
-		counter *= (MILLIS * DECIMALS);
-	break;
+			counter *= (MILLIS * DECIMALS);
+		break;
 	case SEC:
-		counter *= (MILLIS * DECIMALS * SECONDS);
-	break;
+			counter *= (MILLIS * DECIMALS * SECONDS);
+		break;
 	case MIN:
-		counter *= (MILLIS * DECIMALS * SECONDS * MINUTES);
-	break;
+			counter *= (MILLIS * DECIMALS * SECONDS * MINUTES);
+		break;
 	case HOUR:
-		counter *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS);
-	break;
+			counter *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS);
+		break;
 	case DAY:
-		counter *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
-	break;
+			counter *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
+		break;
 	default:
-	break;
+		break;
 	}
 
 	if (counter) {
@@ -64,25 +64,25 @@ void Timer::TimerStart(uint32_t counter, const Timer_Handler handler, const base
 void Timer::TimerStart(uint32_t counter) {
 	switch(this->m_TmrBase) {
 	case MILLI:
-		counter *= MILLIS;
-	break;
+			counter *= MILLIS;
+		break;
 	case DEC:
-		counter *= (MILLIS * DECIMALS);
-	break;
+			counter *= (MILLIS * DECIMALS);
+		break;
 	case SEC:
-		counter *= (MILLIS * DECIMALS * SECONDS);
-	break;
+			counter *= (MILLIS * DECIMALS * SECONDS);
+		break;
 	case MIN:
-		counter *= (MILLIS * DECIMALS * SECONDS * MINUTES);
-	break;
+			counter *= (MILLIS * DECIMALS * SECONDS * MINUTES);
+		break;
 	case HOUR:
-		counter *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS);
-	break;
+			counter *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS);
+		break;
 	case DAY:
-		counter *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
-	break;
+			counter *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
+		break;
 	default:
-	break;
+		break;
 	}
 
 	if (counter) {
@@ -97,25 +97,25 @@ void Timer::TimerStart(uint32_t counter) {
 void Timer::SetTimer(uint32_t time) {
 	switch(this->m_TmrBase) {
 	case MILLI:
-		time *= MILLIS;
-	break;
+			time *= MILLIS;
+		break;
 	case DEC:
-		time *= (MILLIS * DECIMALS);
-	break;
+			time *= (MILLIS * DECIMALS);
+		break;
 	case SEC:
-		time *= (MILLIS * DECIMALS * SECONDS);
-	break;
+			time *= (MILLIS * DECIMALS * SECONDS);
+		break;
 	case MIN:
-		time *= (MILLIS * DECIMALS * SECONDS * MINUTES);
-	break;
+			time *= (MILLIS * DECIMALS * SECONDS * MINUTES);
+		break;
 	case HOUR:
-		time *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS);
-	break;
+			time *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS);
+		break;
 	case DAY:
-		time *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
-	break;
+			time *= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
+		break;
 	default:
-	break;
+		break;
 	}
 
 	if (!time) this->m_TmrEvent = true;
@@ -127,25 +127,25 @@ void Timer::GetTimer(uint32_t &time) const {
 
 	switch(this->m_TmrBase) {
 	case MILLI:
-		time /= MILLIS;
-	break;
+			time /= MILLIS;
+		break;
 	case DEC:
-		time /= (MILLIS * DECIMALS);
-	break;
+			time /= (MILLIS * DECIMALS);
+		break;
 	case SEC:
-		time /= (MILLIS * DECIMALS * SECONDS);
-	break;
+			time /= (MILLIS * DECIMALS * SECONDS);
+		break;
 	case MIN:
-		time /= (MILLIS * DECIMALS * SECONDS * MINUTES);
-	break;
+			time /= (MILLIS * DECIMALS * SECONDS * MINUTES);
+		break;
 	case HOUR:
-		time /= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS);
-	break;
+			time /= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS);
+		break;
 	case DAY:
-		time /= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
-	break;
+			time /= (MILLIS * DECIMALS * SECONDS * MINUTES * HOURS * DAYS);
+		break;
 	default:
-	break;
+		break;
 	}
 }
 
@@ -180,7 +180,7 @@ Timer& Timer::operator=(uint32_t counter) {
 	return *this;
 }
 
-bool Timer::operator!() {
+bool Timer::operator!(void) {
 	return !this->m_TmrEvent;
 }
 
@@ -200,7 +200,7 @@ bool operator==(bool checkEvent, Timer& timer) {
 	return false;
 }
 
-Timer::operator bool() {
+Timer::operator bool(void) {
 	return this->m_TmrEvent;
 }
 

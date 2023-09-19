@@ -10,7 +10,7 @@
 CD4017::CD4017(const std::vector<Gpio*> &pins4017, uint8_t maxOutputs) :
 m_index{maxOutputs},
 m_pins4017{pins4017},
-m_maxOutputs{(uint8_t) (maxOutputs <= 10 ? maxOutputs : 10)} { }
+m_maxOutputs{(uint8_t)(maxOutputs <= 10 ? maxOutputs : 10)} { }
 
 void CD4017::SetDigit(void) {
 	if (this->m_index < this->m_maxOutputs) SetClock();

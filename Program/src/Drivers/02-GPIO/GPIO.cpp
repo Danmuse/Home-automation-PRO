@@ -7,24 +7,23 @@
 
 #include "GPIO.h"
 
-Gpio::Gpio(const Gpio &original) :
+Gpio::Gpio(const Gpio& original) :
 m_port{original.m_port},
 m_bit{original.m_bit},
-m_mode{original.m_mode},
-m_direction{original.m_direction},
 m_activity{original.m_activity},
+m_direction{original.m_direction},
+m_mode{original.m_mode},
 m_error{original.m_error} { }
 
 Gpio::Gpio(port_t port, uint8_t bit, uint8_t mode, direction_t direction, activity_t activity) :
 m_port{port},
 m_bit{bit},
-m_mode{mode},
+m_activity{activity},
 m_direction{direction},
-m_activity{activity} {
-	this->m_error = OK;
-	if ((m_port != PORT0) && (m_port != PORT1))	this->m_error = ERROR;
-    else if (m_port == PORT0 && m_bit >= B_PORT0) this->m_error = ERROR;
-    else if (m_port == PORT1 && m_bit >= B_PORT1) this->m_error = ERROR;
+m_mode{mode} {
+	if ((this->m_port != PORT0) && (this->m_port != PORT1))	this->m_error = ERROR;
+    else if (this->m_port == PORT0 && this->m_bit >= B_PORT0) this->m_error = ERROR;
+    else if (this->m_port == PORT1 && this->m_bit >= B_PORT1) this->m_error = ERROR;
 	SYSCON->SYSAHBCLKCTRL0 |= ((1 << CLK_GPIO0) | (1 << CLK_GPIO1) | (1 << CLK_IOCON));
 	this->SetDir();
 }
@@ -51,7 +50,7 @@ void Gpio::TogglePin(void) {
 	GPIO->NOT[this->m_port] |= (1 << this->m_bit);
 }
 
-uint8_t Gpio::GetPin(void) const {
+bool Gpio::GetPin(void) const {
 	return	this->m_activity == HIGH ?
 			((GPIO->PIN[this->m_port] >> this->m_bit) & 0x01) :
 			!((GPIO->PIN[this->m_port] >> this->m_bit) & 0x01);
@@ -59,33 +58,31 @@ uint8_t Gpio::GetPin(void) const {
 
 void Gpio::SetPinMode(void) {
 	uint8_t index = 0;
-	if (this->m_direction == OUTPUT) {
-		if (this->m_port == PORT0) index = IOCON_INDEX_PIO0[this->m_bit];
-		else if (this->m_port == PORT1) index = IOCON_INDEX_PIO1[this->m_bit];
-
-		IOCON->PIO[index] &= ~(1 << 10);
-		IOCON->PIO[index] |= (this->m_mode << 10);
-	}
+	if (this->m_port == PORT0) index = IOCON_INDEX_PIO0[this->m_bit];
+	else if (this->m_port == PORT1) index = IOCON_INDEX_PIO1[this->m_bit];
+	IOCON->PIO[index] &= ~(1 << 10);
+	IOCON->PIO[index] |= (this->m_mode << 10);
 }
 
 void Gpio::SetPinResistor(void) {
 	uint8_t index = 0;
-	if (this->m_direction == INPUT) {
-		if (this->m_port == PORT0) index = IOCON_INDEX_PIO0[this->m_bit];
-		else if (this->m_port == PORT1) index = IOCON_INDEX_PIO1[this->m_bit];
-
-		IOCON->PIO[index] &= ~0x180;
-		IOCON->PIO[index] |= (this->m_mode << 3);
-		// IOCON_PIO_OD(this->m_mode);
-	}
+	if (this->m_port == PORT0) index = IOCON_INDEX_PIO0[this->m_bit];
+	else if (this->m_port == PORT1) index = IOCON_INDEX_PIO1[this->m_bit];
+	IOCON->PIO[index] &= ~0x180;
+	IOCON->PIO[index] |= (this->m_mode << 3);
+	// IOCON_PIO_OD(this->m_mode);
 }
 
-uint8_t Gpio::SetDir(void) {
+Gpio::error_t Gpio::SetDir(void) {
 	if (this->m_error == OK) {
 		if (this->m_direction == INPUT) {
+			// Sets a default pin mode in case it does not match the elements of the mode_input_t enumeration
+			if (this->m_mode != INACTIVE && this->m_mode != PULLDOWN && this->m_mode != PULLUP && this->m_mode != REPEATER) this->m_mode = REPEATER;
 			this->SetDirInputs();
 			this->SetPinResistor();
 		} else if (this->m_direction == OUTPUT) {
+			// Sets a default pin mode in case it does not match the elements of the mode_output_t enumeration
+			if (this->m_mode != PUSHPULL && this->m_mode != OPENCOLECTOR) this->m_mode = PUSHPULL;
 			this->SetDirOutputs();
 			this->SetPinMode();
 			this->m_activity == LOW ? this->ClearPin() : this->SetPin();
@@ -94,15 +91,11 @@ uint8_t Gpio::SetDir(void) {
 	return this->m_error;
 }
 
-uint8_t Gpio::ToggleDir(void) {
+Gpio::error_t Gpio::ToggleDir(void) {
 	GPIO->DIRNOT[this->m_port] |= (1 << this->m_bit);
 	if (this->m_direction == OUTPUT) this->m_direction = INPUT;
 	else if (this->m_direction == INPUT) this->m_direction = OUTPUT;
 	return this->SetDir();
-}
-
-Gpio::activity_t Gpio::getActivity(void) const {
-	return this->m_activity;
 }
 
 Gpio::~Gpio() { }

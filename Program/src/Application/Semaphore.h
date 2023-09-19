@@ -9,12 +9,11 @@
 #ifndef SEMAPHORE_H_
 #define SEMAPHORE_H_
 
+#include "ProgramConfig.h"
 #include "Timers.h"
 
 extern Timers g_timers_list;
 
 void delay(uint32_t milliseconds);
-
-void SwitchStandBy(void);
 
 #endif /* SEMAPHORE_H_ */

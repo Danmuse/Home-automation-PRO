@@ -10,8 +10,8 @@
 #define CD4017_H_
 
 #include <vector>
-#include "GPIO.h"
 #include "Sweep.h"
+#include "GPIO.h"
 
 #define RST_INDEX 0
 #define CLK_INDEX 1

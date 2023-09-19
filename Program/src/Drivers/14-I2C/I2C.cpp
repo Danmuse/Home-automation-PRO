@@ -63,9 +63,9 @@ void I2C::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	// I2C0_SCL enabled on pin PIO0_10 and I2C0_SDA enabled on pin PIO0_11
 	if (this->m_TWI == I2C0) SWM->PINENABLE0 |= ((1 << 13) | (1 << 12));
-	if (this->m_TWI == I2C1) SWM->PINASSIGN.PINASSIGN9 = ((this->m_SDA.m_bit + this->m_SDA.m_port * 0x20) << 16) | ((this->m_SCL.m_bit + this->m_SCL.m_port * 0x20) << 24);
-	if (this->m_TWI == I2C2) SWM->PINASSIGN.PINASSIGN10 = ((this->m_SDA.m_bit + this->m_SDA.m_port * 0x20) << 0) | ((this->m_SCL.m_bit + this->m_SCL.m_port * 0x20) << 8);
-	if (this->m_TWI == I2C3) SWM->PINASSIGN.PINASSIGN10 = ((this->m_SDA.m_bit + this->m_SDA.m_port * 0x20) << 16) | ((this->m_SCL.m_bit + this->m_SCL.m_port * 0x20) << 24);
+	if (this->m_TWI == I2C1) SWM->PINASSIGN.PINASSIGN9 = ((this->m_SDA.GetBit() + this->m_SDA.GetPort() * 0x20) << 16) | ((this->m_SCL.GetBit() + this->m_SCL.GetPort() * 0x20) << 24);
+	if (this->m_TWI == I2C2) SWM->PINASSIGN.PINASSIGN10 = ((this->m_SDA.GetBit() + this->m_SDA.GetPort() * 0x20) << 0) | ((this->m_SCL.GetBit() + this->m_SCL.GetPort() * 0x20) << 8);
+	if (this->m_TWI == I2C3) SWM->PINASSIGN.PINASSIGN10 = ((this->m_SDA.GetBit() + this->m_SDA.GetPort() * 0x20) << 16) | ((this->m_SCL.GetBit() + this->m_SCL.GetPort() * 0x20) << 24);
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 

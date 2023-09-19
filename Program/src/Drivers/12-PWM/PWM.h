@@ -1,7 +1,8 @@
 /*!
  * @file PWM.h
- * @par Author
+ * @authors
  * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@@frba.utn.edu.ar</a>
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @par Doxygen Editor
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @date 12/08/2023 00:11:27
@@ -11,20 +12,25 @@
 #ifndef PWM_H_
 #define PWM_H_
 
+#include "systick.h"
 #include "GPIO.h"
 
-// TODO: Maybe create interface and change this class name to simplePWM
-class PWM { // PERIOD NEEDS TO BE SET BEFORE, otherwise breaks. PWM should be not centered
+#define MAX_PWM_CHANNELS 7
+
+// PERIOD NEEDS TO BE SET BEFORE, otherwise breaks. PWM should be not centered
+class PWM : protected Gpio {
 protected:
-	Gpio m_outputPort; // Output GPIO
-	uint8_t m_pwmOutput; // Channel can be between 0 and 6
-	float m_duty; // Duty is a % value of the time on
-	uint32_t m_frequency;
+	const uint8_t m_channel; // Channel can be between 0 and 6
+	static uint8_t m_quantity;
+	static uint32_t m_period;
+	float m_duty;
+private:
+	void bind(void) const;
+	void unbind(void) const;
+	void initPWM(void) const;
 public:
 	PWM() = delete;
-	PWM(const Gpio &outputPort, const uint8_t pwmOutput, float duty, uint32_t frequency);
-	void bindOutput(const Gpio::port_t port, const uint8_t bit) const;
-	void unbindOutput(const Gpio::port_t port, const uint8_t bit) const;
+	PWM(const Gpio &output, float duty, uint32_t period = 1000);
 	float getDuty(void) const;
 	void setDuty(float duty);
 	void enable(void);

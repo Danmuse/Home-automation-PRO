@@ -22,34 +22,35 @@ public:
 	enum port_t				{ PORT0, PORT1 };
 	enum max_bits_port_t	{ B_PORT0 = 31, B_PORT1 = 9 };
 	enum direction_t		{ INPUT, OUTPUT };
-	enum power_t			{ OFF, ON };
 	enum mode_output_t		{ PUSHPULL, OPENCOLECTOR };
 	enum mode_input_t		{ INACTIVE, PULLDOWN, PULLUP, REPEATER };
+	enum interrupt_mode_t 	{ RISING, FALLING, CHANGE, LOW_LEVEL, HIGH_LEVEL };
 	enum activity_t			{ LOW, HIGH };
 	enum error_t			{ OK, ERROR };
-
+protected:
 	const port_t m_port;
 	const uint8_t m_bit;
-protected:
-	const uint8_t m_mode;
-	direction_t m_direction;
 	const activity_t m_activity;
-	error_t m_error;
+	direction_t m_direction;
+
+	error_t SetDir(void);
+	error_t ToggleDir(void);
+private:
+	uint8_t m_mode;
+	error_t m_error = OK;
+
+	void SetDirOutputs(void) override;
+	void SetDirInputs(void) override;
+	void SetPinMode(void) override;
+	void SetPinResistor(void) override;
 public:
 	Gpio() = delete;
-	Gpio(const Gpio &original);
+	Gpio(const Gpio& original);
 	Gpio(port_t port, uint8_t bit, uint8_t mode, direction_t direction, activity_t activity);
 	void SetPin(void) override;
 	void ClearPin(void) override;
-	void SetDirOutputs(void) override;
-	void SetDirInputs(void) override;
 	void TogglePin(void) override;
-	uint8_t GetPin(void) const override;
-	void SetPinMode(void) override;
-	void SetPinResistor(void) override;
-	uint8_t SetDir(void);
-	uint8_t ToggleDir(void);
-	activity_t getActivity(void) const;
+	bool GetPin(void) const override;
 	virtual ~Gpio();
 };
 

@@ -8,7 +8,7 @@
 #include "ProgramConfig.h"
 
 #ifdef CN5_PINS
-Gpio SENSOR_IN(INT1_IN);
+Gpio SENSOR_IN(Gpio::PORT0, 3, Gpio::PULLDOWN, Gpio::INPUT, Gpio::LOW);
 #endif // CN5_PINS
 
 #ifdef CN6_PINS
@@ -40,7 +40,7 @@ Gpio KEY_RESET(Gpio::PORT0, 5, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
 
 #ifdef CN10_PINS
 Gpio INT0_IN(Gpio::PORT0, 4, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
-Gpio INT1_IN(Gpio::PORT0, 3, Gpio::PULLDOWN, Gpio::INPUT, Gpio::LOW);
+Gpio INT1_IN(Gpio::PORT0, 3, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
 
 Gpio UserSwitch(INT0_IN);
 #endif // CN10_PINS
@@ -62,19 +62,19 @@ Gpio EN_OUT(Gpio::PORT0, 0, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 
 #ifdef CN15_PINS
 Gpio LCD_RS(Gpio::PORT0, 9, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
-Gpio LCD_E(Gpio::PORT0, 10, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio LCD_E(Gpio::PORT0, 10, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::HIGH);
 Gpio LCD_D4(Gpio::PORT0, 1, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio LCD_D5(Gpio::PORT0, 14, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio LCD_D6(Gpio::PORT0, 13, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
-Gpio LCD_D7(Gpio::PORT0, 11, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio LCD_D7(Gpio::PORT0, 11, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN15_PINS
 
 #ifdef CN16_PINS
-Gpio ROW0_IN(Gpio::PORT0, 28, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
-Gpio ROW1_IN(Gpio::PORT0, 27, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
-Gpio COL0_IN(Gpio::PORT0, 26, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
-Gpio COL1_IN(Gpio::PORT0, 15, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
-Gpio COL2_IN(Gpio::PORT0, 8, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
+Gpio ROW0_OUT(Gpio::PORT0, 28, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio ROW1_OUT(Gpio::PORT0, 27, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio COL0_IN(Gpio::PORT0, 8, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
+Gpio COL1_IN(Gpio::PORT0, 15, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
+Gpio COL2_IN(Gpio::PORT0, 26, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
 #endif // CN16_PINS
 
 #ifdef CN19_PINS
@@ -84,3 +84,4 @@ Gpio DIG_OUT2(Gpio::PORT1, 2, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN19_PINS
 
 Gpio ANALOG_POT(Gpio::PORT0, 7, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
+

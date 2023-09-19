@@ -14,7 +14,7 @@
 class Inputs {
 public:
 	virtual void SetDirInputs(void) = 0;
-	virtual uint8_t GetPin(void) const = 0;
+	virtual bool GetPin(void) const = 0;
 	virtual void SetPinMode(void) = 0;
 	virtual ~Inputs() = default;
 };

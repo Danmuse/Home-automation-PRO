@@ -30,9 +30,6 @@
 #endif
 
 #ifdef CN5_PINS
-#ifndef CN10_PINS
-#define CN10_PINS
-#endif // CN10_PINS
 extern Gpio SENSOR_IN;
 #endif // CN5_PINS
 
@@ -98,8 +95,8 @@ extern Gpio LCD_D7;
 #endif // CN15_PINS
 
 #ifdef CN16_PINS
-extern Gpio ROW0_IN;
-extern Gpio ROW1_IN;
+extern Gpio ROW0_OUT;
+extern Gpio ROW1_OUT;
 extern Gpio COL0_IN;
 extern Gpio COL1_IN;
 extern Gpio COL2_IN;
@@ -114,3 +111,4 @@ extern Gpio DIG_OUT2;
 extern Gpio ANALOG_POT;
 
 #endif /* PROGRAM_CONFIG_H_ */
+

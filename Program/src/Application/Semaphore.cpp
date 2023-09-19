@@ -10,7 +10,7 @@
 Timers g_timers_list;
 
 void delay(uint32_t milliseconds) {
-	static Timer delayTIMER, debounce;
+	static Timer delayTIMER;
 	g_timers_list << delayTIMER;
 	delayTIMER.TimerStart(milliseconds, nullptr, Timer::MILLI);
 	while (delayTIMER.GetTimer());

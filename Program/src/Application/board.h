@@ -10,16 +10,19 @@
 #define BOARD_H_
 
 #include "PLL.h"
+#include "PWM.h"
 #include "UART.h"
-#include "PwmManager.h"
+#include "Keyboard.h"
 #include "Semaphore.h"
-#include "ProgramConfig.h"
 #include "SevenSegmentDisplay.h"
 
 extern SevenSegmentDisplay *g_display;
+extern Keyboard *g_keyboard;
 
 void initDevice(void);
 
 void initDisplay(void);
+
+void initKeyboard(void);
 
 #endif /* BOARD_H_ */

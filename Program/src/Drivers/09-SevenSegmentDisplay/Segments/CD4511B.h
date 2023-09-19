@@ -10,8 +10,8 @@
 #define CD4511B_H_
 
 #include <vector>
-#include "GPIO.h"
 #include "Segments.h"
+#include "GPIO.h"
 
 #define BCDA_INDEX 0
 #define BCDB_INDEX 1

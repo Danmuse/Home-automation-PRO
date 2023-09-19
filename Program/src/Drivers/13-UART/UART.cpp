@@ -110,14 +110,14 @@ void UART::DisableInterupt(void) {
 
 void UART::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 0) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 8);
-	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 8) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 16);
-	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 16) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 24);
+	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 0) | ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 8);
+	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 8) | ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 16);
+	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 16) | ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 24);
 	if (this->m_usart == USART3) {
-		SWM->PINASSIGN.PINASSIGN11 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 24);
-		SWM->PINASSIGN.PINASSIGN12 = ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 0);
+		SWM->PINASSIGN.PINASSIGN11 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 24);
+		SWM->PINASSIGN.PINASSIGN12 = ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 0);
 	}
-	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 = ((this->m_TX.m_bit + this->m_TX.m_port * 0x20) << 16) | ((this->m_RX.m_bit + this->m_RX.m_port * 0x20) << 24);
+	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 16) | ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 24);
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
