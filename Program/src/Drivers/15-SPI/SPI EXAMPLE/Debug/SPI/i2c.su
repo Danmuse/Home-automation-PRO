@@ -1,0 +1,13 @@
+../SPI/i2c.c:11:6:IIC_init	8	static
+../SPI/i2c.c:20:6:IIC_start	8	static
+../SPI/i2c.c:31:6:IIC_stop	8	static
+../SPI/i2c.c:42:6:IIC_writex	24	static
+../SPI/i2c.c:62:9:IIC_readx	16	static
+../SPI/i2c.c:85:6:IIC_ack	16	static
+../SPI/i2c.c:99:9:IIC_readword	32	static
+../SPI/i2c.c:125:9:IIC_read	32	static
+../SPI/i2c.c:141:9:IIC_readDataHMC5838L	32	static
+../SPI/i2c.c:151:6:IIC_write	24	static
+../SPI/i2c.c:167:9:GetDemora_IIC	8	static
+../SPI/i2c.c:171:6:SetDemora_IIC	16	static
+../SPI/i2c.c:179:6:IIC_Demora	24	static

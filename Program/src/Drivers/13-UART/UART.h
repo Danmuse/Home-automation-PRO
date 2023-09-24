@@ -9,6 +9,7 @@
 #ifndef UART_H_
 #define UART_H_
 
+#include <vector>
 #include "AsyncComm.h"
 #include "GPIO.h"
 
@@ -30,16 +31,17 @@ extern "C" {
 }
 #endif
 
-#define USART_USB	USART0
-#define PORT_RX_USB	Gpio::PORT0
-#define PORT_TX_USB	Gpio::PORT0
-#define PIN_RX_USB	24
-#define PIN_TX_USB	25
+#define RX_IDX 0
+#define TX_IDX 1
 
-class UART : public AsyncComm {
+#define USART_USB USART0
+//	#define PORT_RX_USB	Gpio::PORT0
+//	#define PORT_TX_USB	Gpio::PORT0
+//	#define PIN_RX_USB	24
+//	#define PIN_TX_USB	25
+
+class UART : protected std::vector<Gpio>, public AsyncComm {
 private:
-	const Gpio 	m_RX;
-	const Gpio 	m_TX;
 	USART_Type*	m_usart;							//!< Register to be used
 	uint8_t*	m_bufferRX;							//!< Reception buffer
 	uint32_t	m_indexRXIn, m_indexRXOut, m_maxRX;	//!< RX buffer input position - RX buffer output position - RX buffer size
@@ -50,7 +52,8 @@ public:
 	enum parity_t 		{ none_parity, even = 2, odd };
 	enum data_bits_t	{ seven_bits, eight_bits };
 
-	UART(uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX);
+	UART() = delete;
+	UART(const Gpio& RX, const Gpio& TX, uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX);
 	void Transmit(const char *message) override;
 	void Transmit(const void *message, uint32_t n) override;
 	void *Message(void *message, uint32_t n) override;

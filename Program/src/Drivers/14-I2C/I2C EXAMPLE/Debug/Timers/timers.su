@@ -1,0 +1,13 @@
+../Timers/timers.c:31:6:AnalizarTimers	16	static
+../Timers/timers.c:54:6:TimerEvent	16	static
+../Timers/timers.c:76:6:TimerStart	24	static
+../Timers/timers.c:114:6:SetTimer	16	static
+../Timers/timers.c:138:10:GetTimer	24	static
+../Timers/timers.c:165:6:StandByTimer	16	static
+../Timers/timers.c:177:6:TimerStop	16	static
+../Timers/timers.c:192:6:TimerClose	16	static
+../Timers/timers.c:209:6:eeprom_action	8	static
+../Timers/timers.c:216:9:GetFlagEeprom	8	static
+../Timers/timers.c:221:6:SetFlagEeprom	16	static
+../Timers/timers.c:226:6:EV_DAC	8	static
+../Timers/timers.c:232:10:GetTiempoDAC	8	static

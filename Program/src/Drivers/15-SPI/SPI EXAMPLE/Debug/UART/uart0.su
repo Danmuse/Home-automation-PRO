@@ -1,0 +1,12 @@
+../UART/uart0.c:31:6:UART0_IRQHandler	16	static
+../UART/uart0.c:64:6:Inicializar_UART0	24	static
+../UART/uart0.c:93:6:UART0_Send	24	static
+../UART/uart0.c:107:6:UART0_PushTx	16	static
+../UART/uart0.c:124:9:UART0_PopTx	16	static
+../UART/uart0.c:137:6:UART0_PushRx	16	static
+../UART/uart0.c:145:9:UART0_PopRx	16	static
+../UART/uart0.c:160:8:AnalizarTramaUart0	16	static
+../UART/uart0.c:165:9:EsNumero	16	static
+../UART/uart0.c:174:9:LeerBufferRXUART0	16	static
+../UART/uart0.c:183:6:RestartIndexesTxUART0	8	static
+../UART/uart0.c:188:6:RestartIndexesRxUART0	8	static

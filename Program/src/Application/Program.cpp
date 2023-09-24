@@ -1,6 +1,6 @@
 /*!
  * @file Program.cpp
- * @authors
+ * @par Authors
  * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@@frba.utn.edu.ar</a>
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @par Doxygen Editor
@@ -13,29 +13,109 @@
 
 #if !DEBUG_MODE
 
+static void red_green(PWM &red, PWM &green);
+static void green_blue(PWM &green, PWM &blue);
+static void blue_red(PWM &blue, PWM &red);
+
 int main(void) {
 	initDevice();
+	initLCD1602();
 
-	bool increaseFlag = false;
-	uint8_t duty = 100;
-	PWM pwm(LED_BLUE, duty);
+	bool statusFlag = false;
+	uint8_t dutyCycle = 100, counterCycles = 0;
+	PWM externPWM_FST(LED_RED, dutyCycle), externPWM_SND(LED_GREEN, dutyCycle), externPWM_TRD(LED_BLUE, dutyCycle);
 
 	while (1) {
-		if (!increaseFlag) {
-			pwm.setDuty(duty--);
-			if (duty < 1) {
-				pwm.setDuty(0);
-				increaseFlag = !increaseFlag;
-				delay(1000);
+		while (counterCycles < 4) {
+			g_lcd1602->write("Cycle counter: ");
+			g_lcd1602->write(counterCycles, 0, 15);
+			if (!statusFlag) {
+				if (counterCycles % 2) {
+					externPWM_TRD.setDuty(0);
+					externPWM_FST.setDuty(dutyCycle--);
+					externPWM_SND.setDuty(100 - dutyCycle);
+				} else {
+					externPWM_SND.setDuty(0);
+					externPWM_FST.setDuty(dutyCycle--);
+					externPWM_TRD.setDuty(100 - dutyCycle);
+				}
+				if (dutyCycle < 1) statusFlag = !statusFlag;
+				delay(10);
+			} else {
+				if (counterCycles % 2) {
+					externPWM_TRD.setDuty(0);
+					externPWM_FST.setDuty(dutyCycle++);
+					externPWM_SND.setDuty(100 - dutyCycle);
+				} else {
+					externPWM_SND.setDuty(0);
+					externPWM_FST.setDuty(dutyCycle++);
+					externPWM_TRD.setDuty(100 - dutyCycle);
+				}
+				if (dutyCycle > 100 - 1) {
+					statusFlag = !statusFlag;
+					counterCycles++;
+				}
+				delay(10);
 			}
-		} else {
-			pwm.setDuty(duty++);
-			if (duty > 100 - 1) increaseFlag = !increaseFlag;
 		}
-
-		for (uint32_t index = 0; index < 2500; index++);
+		externPWM_FST.setDuty(0);
+		externPWM_SND.setDuty(0);
+		externPWM_TRD.setDuty(0);
+		red_green(externPWM_FST, externPWM_SND);
+		externPWM_FST.setDuty(0);
+		externPWM_SND.setDuty(0);
+		green_blue(externPWM_SND, externPWM_TRD);
+		externPWM_SND.setDuty(0);
+		externPWM_TRD.setDuty(0);
+		blue_red(externPWM_TRD, externPWM_FST);
+		externPWM_TRD.setDuty(0);
+		externPWM_FST.setDuty(0);
+		g_lcd1602->clear();
+		counterCycles = 0;
 		g_timers_list.TimerEvents();
 	}
+}
+
+static void red_green(PWM &red, PWM &green) {
+	g_lcd1602->clear();
+	g_lcd1602->write("Color: ");
+	g_lcd1602->write("RED", 0, 7);
+	red.setDuty(100);
+	delay(2500);
+	g_lcd1602->clear();
+	g_lcd1602->write("Color: ");
+	g_lcd1602->write("YELLOW", 0, 7);
+	red.setDuty(46);
+	green.setDuty(50);
+	delay(2500);
+}
+
+static void green_blue(PWM &green, PWM &blue) {
+	g_lcd1602->clear();
+	g_lcd1602->write("Color: ");
+	g_lcd1602->write("GREEN", 0, 7);
+	green.setDuty(100);
+	delay(2500);
+	g_lcd1602->clear();
+	g_lcd1602->write("Color: ");
+	g_lcd1602->write("SKY BLUE", 0, 7);
+	green.setDuty(36);
+	blue.setDuty(50);
+	delay(2500);
+}
+
+static void blue_red(PWM &blue, PWM &red) {
+	g_lcd1602->clear();
+	g_lcd1602->write("Color: ");
+	g_lcd1602->write("BLUE", 0, 7);
+	blue.setDuty(100);
+	delay(2500);
+	g_lcd1602->clear();
+	g_lcd1602->write("Color: ");
+	g_lcd1602->write("VIOLET", 0, 7);
+	blue.setDuty(50);
+	red.setDuty(45);
+	delay(2500);
 }
 
 #else

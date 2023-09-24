@@ -9,6 +9,7 @@
 
 SevenSegmentDisplay *g_display = nullptr;
 Keyboard *g_keyboard = nullptr;
+LCD1602 *g_lcd1602 = nullptr;
 
 void initDevice(void) {
 	// initPhaseLockedLoop();
@@ -62,4 +63,22 @@ void initKeyboard(void) {
 	g_keyboard = &keyboard;
 
 	#endif // CN16_PINS
+}
+
+void initLCD1602(void) {
+	#ifdef CN15_PINS
+
+	static std::vector<Gpio*> LCD1602_GPIOs_list;
+	LCD1602_GPIOs_list.push_back(&LCD_D7);
+	LCD1602_GPIOs_list.push_back(&LCD_D6);
+	LCD1602_GPIOs_list.push_back(&LCD_D5);
+	LCD1602_GPIOs_list.push_back(&LCD_D4);
+	LCD1602_GPIOs_list.push_back(&LCD_RS);
+	LCD1602_GPIOs_list.push_back(&LCD_EN);
+
+	static LCD1602 lcd1602(LCD1602_GPIOs_list, 2, 16);
+
+	g_lcd1602 = &lcd1602;
+
+	#endif // CN15_PINS
 }

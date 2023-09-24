@@ -11,7 +11,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
   <span>&#10038;</span> LPC845-BRK.<br>
   <span>&#10038;</span> ESP8266 WiFi Serial ESP-01 module.<br>
   <span>&#10038;</span> Voice recognition module.<br>
-  <span>&#10038;</span> Display OLED SSD1306.<br>
+  <span>&#10038;</span> Display OLED SSH1106.<br>
   <span>&#10038;</span> RGB LEDs with PWM control.<br>
   <span>&#10038;</span> Flame sensor KY-026.<br>
   <span>&#10038;</span> Infrared sensor KY-032 or HW-201.<br>
@@ -31,7 +31,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 - [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13)
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 67.5` `AO ~ 44` `LC ~ 34` `CY ~ 32`
+`DDM ~ 74` `AO ~ 49` `LC ~ 39` `CY ~ 36`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7)
 - [ ] Micro SD card adaptation for data handling and ".mp3" files.
 

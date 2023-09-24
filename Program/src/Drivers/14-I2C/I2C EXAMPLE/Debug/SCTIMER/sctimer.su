@@ -1,0 +1,7 @@
+../SCTIMER/sctimer.c:14:6:Inicializar_SCTimer	8	static
+../SCTIMER/sctimer.c:35:6:SCT_IRQHandler	16	static
+../SCTIMER/sctimer.c:54:9:DAC_GetFlagSampleReady	8	static
+../SCTIMER/sctimer.c:59:6:DAC_SetFlagSample	16	static
+../SCTIMER/sctimer.c:64:9:DAC_GetMatch0Value	8	static
+../SCTIMER/sctimer.c:69:6:DAC_SetMatch0Value	16	static
+../SCTIMER/sctimer.c:75:6:ReloadSctimer	8	static

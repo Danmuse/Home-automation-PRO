@@ -1,0 +1,9 @@
+../src/cr_startup_lpc84x.c:213:6:data_init	40	static
+../src/cr_startup_lpc84x.c:222:6:bss_init	24	static
+../src/cr_startup_lpc84x.c:249:1:ResetISR	32	static
+../src/cr_startup_lpc84x.c:316:6:NMI_Handler	8	static
+../src/cr_startup_lpc84x.c:321:6:HardFault_Handler	8	static
+../src/cr_startup_lpc84x.c:326:6:SVC_Handler	8	static
+../src/cr_startup_lpc84x.c:331:6:PendSV_Handler	8	static
+../src/cr_startup_lpc84x.c:336:6:SysTick_Handler	8	static
+../src/cr_startup_lpc84x.c:347:6:IntDefaultHandler	8	static

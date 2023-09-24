@@ -1,0 +1,2 @@
+../Drivers/dr_systick.c:21:6:SysTick_Handler	8	static
+../Drivers/dr_systick.c:51:10:Inicializar_SysTick	16	static

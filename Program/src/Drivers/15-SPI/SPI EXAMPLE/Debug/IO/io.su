@@ -1,0 +1,3 @@
+../IO/io.c:17:9:Entradas	8	static
+../IO/io.c:21:6:Inicializar_IO	16	static
+../IO/io.c:77:6:Debounce	16	static

@@ -9,6 +9,7 @@
 #ifndef I2C_H_
 #define I2C_H_
 
+#include <vector>
 #include "SyncComm.h"
 #include "GPIO.h"
 
@@ -27,22 +28,20 @@ extern "C" {
 }
 #endif
 
-#define TWI_I2C		I2C0
-#define PORT_SCL	Gpio::PORT0
-#define PORT_SDA	Gpio::PORT0
-#define PIN_SCL		10
-#define PIN_SDA		11
+#define SCL_IDX 0
+#define SDA_IDX 1
 
-class I2C : public SyncComm {
+#define TWI_I2C I2C0
+
+class I2C : protected std::vector<Gpio>, public SyncComm {
 public:
 	enum statusComm_t { SUCCESS, ACK_FAULT, NACK_FAULT };
 private:
-	const Gpio m_SCL;
-	const Gpio m_SDA;
 	I2C_Type* m_TWI;
 	statusComm_t m_statusComm;
 public:
-	I2C();
+	I2C() = delete;
+	I2C(const Gpio& SCL, const Gpio& SDA);
 	void SendData(uint32_t address, const uint8_t value) override;
 	void ReadData(uint32_t address, const uint8_t *value) override;
 	virtual ~I2C();

@@ -1,0 +1,4 @@
+../LCD/lcd.c:11:6:LCD_Escribir	24	static
+../LCD/lcd.c:38:6:Display_LCD	32	static
+../LCD/lcd.c:53:6:Inicializar_LCD	24	static
+../LCD/lcd.c:126:6:LCD_Delay	16	static

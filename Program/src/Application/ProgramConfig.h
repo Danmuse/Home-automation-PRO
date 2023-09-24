@@ -21,7 +21,7 @@
 //#define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 //#define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
 //#define CN13_PINS	// RX1_IN {RX} - TX1_OUT {TX} - EN_OUT {EN}
-//#define CN15_PINS	// LCD_RS {RS} - LCD_E {E} - LCD_D4 {D4} - LCD_D5 {D5} - LCD_D6 {D6} - LCD_D7 {D7}
+#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 //#define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
@@ -86,12 +86,12 @@ extern Gpio EN_OUT;
 #endif // CN13_PINS
 
 #ifdef CN15_PINS
-extern Gpio LCD_RS;
-extern Gpio LCD_E;
-extern Gpio LCD_D4;
-extern Gpio LCD_D5;
-extern Gpio LCD_D6;
 extern Gpio LCD_D7;
+extern Gpio LCD_D6;
+extern Gpio LCD_D5;
+extern Gpio LCD_RS;
+extern Gpio LCD_D4;
+extern Gpio LCD_EN;
 #endif // CN15_PINS
 
 #ifdef CN16_PINS

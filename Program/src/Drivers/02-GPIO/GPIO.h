@@ -51,6 +51,9 @@ public:
 	void ClearPin(void) override;
 	void TogglePin(void) override;
 	bool GetPin(void) const override;
+	// The following methods are used in synchronous or asynchronous communications
+	port_t GetPort(void) const { return this->m_port; }
+	uint8_t GetBit(void) const { return this->m_bit; }
 	virtual ~Gpio();
 };
 

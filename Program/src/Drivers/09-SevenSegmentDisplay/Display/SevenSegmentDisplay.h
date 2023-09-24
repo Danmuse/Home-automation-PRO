@@ -27,8 +27,8 @@ private:
 	uint8_t	m_index;					 //!< Position index
 	uint8_t	m_ticks;					 //!< Tick counter
 
-	uint8_t	m_blink_ticks_on;			 //!< Blink ticks counter
-	uint8_t	m_blink_ticks_off;			 //!< Blink ticks counter
+	uint16_t m_blink_ticks_on;			 //!< Blink ticks counter
+	uint16_t m_blink_ticks_off;			 //!< Blink ticks counter
 	bool m_blink_status;				 //!< Blink sequence status
 
 	std::vector<Digit*> m_bufferDisplay; //!< Write buffer
@@ -45,3 +45,4 @@ public:
 };
 
 #endif /* SEVEN_SEGMENT_DISPLAY_H_ */
+

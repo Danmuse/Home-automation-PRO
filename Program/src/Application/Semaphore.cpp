@@ -11,7 +11,11 @@ Timers g_timers_list;
 
 void delay(uint32_t milliseconds) {
 	static Timer delayTIMER;
-	g_timers_list << delayTIMER;
+	static bool flagPush = false;
+	if (!flagPush) {
+		flagPush = !flagPush;
+		g_timers_list << delayTIMER;
+	}
 	delayTIMER.TimerStart(milliseconds, nullptr, Timer::MILLI);
 	while (delayTIMER.GetTimer());
 }

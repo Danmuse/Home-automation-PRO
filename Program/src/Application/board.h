@@ -11,18 +11,23 @@
 
 #include "PLL.h"
 #include "PWM.h"
-#include "UART.h"
+#include "DigitalOutputs.h"
+#include "DigitalInputs.h"
 #include "Keyboard.h"
-#include "Semaphore.h"
 #include "SevenSegmentDisplay.h"
+#include "LCD1602.h"
+#include "Semaphore.h"
 
 extern SevenSegmentDisplay *g_display;
 extern Keyboard *g_keyboard;
+extern LCD1602 *g_lcd1602;
 
 void initDevice(void);
 
 void initDisplay(void);
 
 void initKeyboard(void);
+
+void initLCD1602(void);
 
 #endif /* BOARD_H_ */

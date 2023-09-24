@@ -9,9 +9,9 @@
 
 AsyncComm *g_usart[5];
 
-UART::UART(uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX) :
-m_RX{Gpio(PORT_RX_USB, PIN_RX_USB, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW)},
-m_TX{Gpio(PORT_TX_USB, PIN_TX_USB, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH)},
+UART::UART(const Gpio& RX, const Gpio& TX, uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX) : std::vector<Gpio>({RX, TX}),
+// m_RX{Gpio(PORT_RX_USB, PIN_RX_USB, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW)},
+// m_TX{Gpio(PORT_TX_USB, PIN_TX_USB, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH)},
 m_usart{USART0} {
 	m_bufferRX = new uint8_t[maxRX];
 	m_indexRXIn = m_indexRXOut = 0;
@@ -110,14 +110,14 @@ void UART::DisableInterupt(void) {
 
 void UART::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 0) | ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 8);
-	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 8) | ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 16);
-	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 16) | ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 24);
+	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 0) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 8);
+	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 8) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 16);
+	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24);
 	if (this->m_usart == USART3) {
-		SWM->PINASSIGN.PINASSIGN11 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 24);
-		SWM->PINASSIGN.PINASSIGN12 = ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 0);
+		SWM->PINASSIGN.PINASSIGN11 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 24);
+		SWM->PINASSIGN.PINASSIGN12 = ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 0);
 	}
-	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 = ((this->m_TX.GetBit() + this->m_TX.GetPort() * 0x20) << 16) | ((this->m_RX.GetBit() + this->m_RX.GetPort() * 0x20) << 24);
+	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24);
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
