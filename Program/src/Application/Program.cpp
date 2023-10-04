@@ -120,4 +120,15 @@ static void blue_red(PWM &blue, PWM &red) {
 
 #else
 
+int main(void) {
+	initDevice();
+	initIIC();
+
+	while (1) {
+		delay(1000);
+		g_IIC->SendData(0x64, 123);
+		g_timers_list.TimerEvents();
+	}
+}
+
 #endif

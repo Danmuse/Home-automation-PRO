@@ -43,7 +43,7 @@ void PinInterrupt::InitInterrupt(void) {
 		PIN_INTERRUPT->ISEL &= ~(1 << this->m_interrupt_number);
 	else PIN_INTERRUPT->ISEL |= (1 << this->m_interrupt_number);
 
-	if (this->m_interrupt_mode != Gpio::RISING)
+	if (this->m_interrupt_mode != Gpio::FALLING)
 		PIN_INTERRUPT->SIENR |= (1 << this->m_interrupt_number);
 	if (this->m_interrupt_mode == Gpio::FALLING || this->m_interrupt_mode == Gpio::CHANGE || this->m_interrupt_mode == Gpio::HIGH_LEVEL)
 		PIN_INTERRUPT->SIENF |= (1 << this->m_interrupt_number);

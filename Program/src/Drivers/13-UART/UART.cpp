@@ -110,40 +110,37 @@ void UART::DisableInterupt(void) {
 
 void UART::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 0) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 8);
-	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 8) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 16);
-	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24);
+	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 |= ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 0) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 8);
+	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 |= ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 8) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 16);
+	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 |= ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24);
 	if (this->m_usart == USART3) {
-		SWM->PINASSIGN.PINASSIGN11 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 24);
-		SWM->PINASSIGN.PINASSIGN12 = ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 0);
+		SWM->PINASSIGN.PINASSIGN11 |= ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 24);
+		SWM->PINASSIGN.PINASSIGN12 |= ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 0);
 	}
-	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24);
+	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 |= ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24);
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
 void UART::Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
-	uint8_t ISER = 0; // Interrupt Set Enable Register
-	this->m_usart->CFG = (0 << 0) // 0 = DISABLE 		1 = ENABLE
-	| (data_bits << 2) 		  	  // 0 = 7 BITS 		1 = 8 BITS 		2 = 9 BITS
-	| (parity << 4)		 		  // 0 = NOPARITY 		2 = PAR 		3 = IMPAR
-	| (0 << 6)			 		  // 0 = 1 BIT STOP  	1 = 2 BIT STOP
-	| (0 << 9)			 		  // 0 = NOFLOWCONTROL 	1 = FLOWCONTROL
-	| (0 << 11);		 		  // 0 = ASINCRONICA 	1 = SINCRONICA
-	// | ( 1 << 15 );	 		  // LOOP
+	this->m_usart->CFG = ((0 << 0) // 0 = DISABLE 		1 = ENABLE
+	| (data_bits << 2) 		  	   // 0 = 7 BITS 		1 = 8 BITS 		2 = 9 BITS
+	| (parity << 4)		 		   // 0 = NOPARITY 		2 = PAR 		3 = IMPAR
+	| (0 << 6)			 		   // 0 = 1 BIT STOP  	1 = 2 BIT STOP
+	| (0 << 9)			 		   // 0 = NOFLOWCONTROL 1 = FLOWCONTROL
+	| (0 << 11));		 		   // 0 = ASINCRONICA 	1 = SINCRONICA
+	// | ( 1 << 15 );	 		   // LOOP
 
-	// THe default value of the OSR register is 16
+	// The default value of the OSR register is 16
 	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1;
 	this->m_usart->CTL = 0;
 
 	this->m_usart->INTENSET = (1 << 0);	// RX interruption
 
-	if (this->m_usart == USART0) ISER = 3;
-	if (this->m_usart == USART1) ISER = 4;
-	if (this->m_usart == USART2) ISER = 5;
-	if (this->m_usart == USART3) ISER = 30;
-	if (this->m_usart == USART4) ISER = 31;
-
-	NVIC->ISER[0] = (1 << ISER); 		// Enable UART_IRQ
+	if (this->m_usart == USART0) NVIC->ISER[0] = (1 << 3);  // Enable UART0_IRQ
+	if (this->m_usart == USART1) NVIC->ISER[0] = (1 << 4);  // Enable UART1_IRQ
+	if (this->m_usart == USART2) NVIC->ISER[0] = (1 << 5);  // Enable UART2_IRQ
+	if (this->m_usart == USART3) NVIC->ISER[0] = (1 << 30); // Enable UART3_IRQ
+	if (this->m_usart == USART4) NVIC->ISER[0] = (1 << 31); // Enable UART4_IRQ
 
 	this->m_usart->CFG |= (1 << 0);		// Enable USART
 }

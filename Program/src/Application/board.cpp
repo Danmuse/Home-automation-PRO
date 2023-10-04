@@ -10,6 +10,7 @@
 SevenSegmentDisplay *g_display = nullptr;
 Keyboard *g_keyboard = nullptr;
 LCD1602 *g_lcd1602 = nullptr;
+I2C *g_IIC = nullptr;
 
 void initDevice(void) {
 	// initPhaseLockedLoop();
@@ -81,4 +82,14 @@ void initLCD1602(void) {
 	g_lcd1602 = &lcd1602;
 
 	#endif // CN15_PINS
+}
+
+void initIIC(void) {
+	#ifdef I2C_PINS
+
+	static I2C IIC(IIC_SCL, IIC_SDA, STD_BAUDRATE);
+
+	g_IIC = &IIC;
+
+	#endif // I2C_PINS
 }

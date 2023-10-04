@@ -58,6 +58,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/Drivers/13-UART}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/Drivers/14-I2C}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/Drivers/15-SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/Drivers/Communication}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/Application}&quot;"/>
 								</option>
 								<option id="com.crt.advproject.cpp.misc.dialect.1297216461" name="Language standard" superClass="com.crt.advproject.cpp.misc.dialect" useByScannerDiscovery="true"/>

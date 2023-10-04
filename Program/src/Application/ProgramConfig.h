@@ -11,7 +11,7 @@
 
 #include "GPIO.h"
 
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 //#define CN5_PINS	// SENSOR_IN {Sensor}
 #define CN6_PINS	// DIG_OUT0 {O0} - DIG_OUT1 {O1} - DIG_OUT2 {O2} - DIG_OUT3 {A0} - DIG_OUT4 {A1}
@@ -21,12 +21,18 @@
 //#define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 //#define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
 //#define CN13_PINS	// RX1_IN {RX} - TX1_OUT {TX} - EN_OUT {EN}
-#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
+//#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 //#define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
+#define I2C_PINS	// IIC_SCL {D5} - IIC_SDA {D6}
+
 #if defined(CN6_PINS) && defined(CN19_PINS)
 #error "Macros CN6_PINS and CN19_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN15_PINS) && defined(I2C_PINS)
+#error "Macros CN15_PINS and I2C_PINS cannot be defined simultaneously"
 #endif
 
 #ifdef CN5_PINS
@@ -109,6 +115,11 @@ extern Gpio DIG_OUT2;
 #endif // CN19_PINS
 
 extern Gpio ANALOG_POT;
+
+#ifdef I2C_PINS
+extern Gpio IIC_SCL;
+extern Gpio IIC_SDA;
+#endif // I2C_PINS
 
 #endif /* PROGRAM_CONFIG_H_ */
 
