@@ -142,17 +142,17 @@ void SPI::DisableInterrupt(void) {
 void SPI::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	if (this->m_SPI == SPI0) {
-		SWM->PINASSIGN.PINASSIGN3 |= ((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 24);
-		SWM->PINASSIGN.PINASSIGN4 |= (((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 0) | ((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 8) | ((at(SS_IDX).GetBit() + at(SS_IDX).GetPort() * 0x20) << 16));
+		SWM->PINASSIGN.PINASSIGN3 = ((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 24);
+		SWM->PINASSIGN.PINASSIGN4 = (((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 0) | ((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 8) | ((at(SS_IDX).GetBit() + at(SS_IDX).GetPort() * 0x20) << 16));
 //		THE FOLLOWING FRAGMENT OF CODE IS NOT IMPLEMENT YET
-//		SWM->PINASSIGN.PINASSIGN4 |= ((at(SS1_IDX).GetBit() + at(SS1_IDX).GetPort() * 0x20) << 24);
-//		SWM->PINASSIGN.PINASSIGN5 |= (((at(SS2_IDX).GetBit() + at(SS2_IDX).GetPort() * 0x20) << 0) | ((at(SS3_IDX).GetBit() + at(SS3_IDX).GetPort() * 0x20) << 8));
+//		SWM->PINASSIGN.PINASSIGN4 = ((at(SS1_IDX).GetBit() + at(SS1_IDX).GetPort() * 0x20) << 24);
+//		SWM->PINASSIGN.PINASSIGN5 = (((at(SS2_IDX).GetBit() + at(SS2_IDX).GetPort() * 0x20) << 0) | ((at(SS3_IDX).GetBit() + at(SS3_IDX).GetPort() * 0x20) << 8));
 	}
 	if (this->m_SPI == SPI1) {
-		SWM->PINASSIGN.PINASSIGN5 |= (((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 16) | ((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 24));
-		SWM->PINASSIGN.PINASSIGN6 |= (((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 0) | ((at(SS_IDX).GetBit() + at(SS_IDX).GetPort() * 0x20) << 8));
+		SWM->PINASSIGN.PINASSIGN5 = (((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 16) | ((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 24));
+		SWM->PINASSIGN.PINASSIGN6 = (((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 0) | ((at(SS_IDX).GetBit() + at(SS_IDX).GetPort() * 0x20) << 8));
 //		THE FOLLOWING FRAGMENT OF CODE IS NOT IMPLEMENT YET
-//		SWM->PINASSIGN.PINASSIGN6 |= ((at(SS1_IDX).GetBit() + at(SS1_IDX).GetPort() * 0x20) << 16);
+//		SWM->PINASSIGN.PINASSIGN6 = ((at(SS1_IDX).GetBit() + at(SS1_IDX).GetPort() * 0x20) << 16);
 	}
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }

@@ -64,9 +64,9 @@ void I2C::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	// I2C0_SCL enabled on pin PIO0_10 and I2C0_SDA enabled on pin PIO0_11
 	if (this->m_TWI == I2C0) SWM->PINENABLE0 |= ((1 << 13) | (1 << 12));
-	if (this->m_TWI == I2C1) SWM->PINASSIGN.PINASSIGN9 |= (((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 16) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 24));
-	if (this->m_TWI == I2C2) SWM->PINASSIGN.PINASSIGN10 |= (((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 0) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 8));
-	if (this->m_TWI == I2C3) SWM->PINASSIGN.PINASSIGN10 |= (((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 16) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 24));
+	if (this->m_TWI == I2C1) SWM->PINASSIGN.PINASSIGN9 = (((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 16) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 24));
+	if (this->m_TWI == I2C2) SWM->PINASSIGN.PINASSIGN10 = (((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 0) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 8));
+	if (this->m_TWI == I2C3) SWM->PINASSIGN.PINASSIGN10 = (((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 16) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 24));
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 

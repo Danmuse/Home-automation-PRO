@@ -26,7 +26,7 @@ m_channel{m_quantity++} {
 }
 
 void PWM::initPWM(void) const {
-	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7) | (1 << 8);
+	SYSCON->SYSAHBCLKCTRL0 |= (1 << 8);
 	SCT->CONFIG |= (1 << 0) | (1 << 17);
 	SCT->MATCH[0] = FREQ_CLOCK_MCU / this->m_period;
 	SCT->MATCHREL[0] = FREQ_CLOCK_MCU / this->m_period;
@@ -41,25 +41,17 @@ void PWM::initPWM(void) const {
 }
 
 void PWM::bind(void) const {
-    uint8_t offset;
-    if (this->m_channel > 0 && this->m_channel < MAX_PWM_CHANNELS) {
-        offset = (8 * (this->m_channel - 1));
-        SWM0->PINASSIGN.PINASSIGN8 &= (((32 * this->m_port + this->m_bit) << offset) | ~(255 << offset)); // Have to set since bit 24
-    } else {
-        offset = 24;
-        SWM0->PINASSIGN.PINASSIGN7 &= (((32 * this->m_port + this->m_bit) << offset) | ~(255 << offset)); // Have to set since bit 24
-    }
+	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
+    if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 &= (((32 * this->m_port + this->m_bit) << 24) | ~(255 << 24));
+    else if (this->m_channel < MAX_PWM_CHANNELS) SWM->PINASSIGN.PINASSIGN8 &= (((32 * this->m_port + this->m_bit) << (8 * (this->m_channel - 1))) | ~(255 << (8 * (this->m_channel - 1))));
+    SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
 void PWM::unbind(void) const {
-    uint8_t offset;
-    if (this->m_channel > 0 && this->m_channel < MAX_PWM_CHANNELS) {
-        offset = (8 * (this->m_channel - 1));
-        SWM0->PINASSIGN.PINASSIGN8 &= (~(255 << offset)); // Have to set since bit 24
-    } else {
-        offset = 24;
-        SWM0->PINASSIGN.PINASSIGN7 &= (~(255 << offset)); // Have to set since bit 24
-    }
+	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
+    if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 &= ~(255 << 24);
+    else if (this->m_channel < MAX_PWM_CHANNELS) SWM->PINASSIGN.PINASSIGN8 &= ~(255 << (8 * (this->m_channel - 1)));
+    SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
 float PWM::getDuty(void) const {
@@ -99,5 +91,7 @@ void PWM::disable(void) {
     this->unbind();
 }
 
-PWM::~PWM() { }
-
+PWM::~PWM() {
+	this->m_quantity--;
+	this->disable();
+}
