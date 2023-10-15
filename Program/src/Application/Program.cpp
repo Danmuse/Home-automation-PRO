@@ -122,11 +122,16 @@ static void blue_red(PWM &blue, PWM &red) {
 
 int main(void) {
 	initDevice();
+	initDisplay();
 	initIIC();
 
+	uint8_t fooVariable = 0;
+
 	while (1) {
-		delay(1000);
-		g_IIC->SendData(0x64, 123);
+		delay(10);
+		g_IIC->transmitByte(0x68, 6, SyncCommTWI::WRITE);
+		g_IIC->transmitByte(0x68, fooVariable, SyncCommTWI::READ);
+		g_display->set(fooVariable);
 		g_timers_list.TimerEvents();
 	}
 }

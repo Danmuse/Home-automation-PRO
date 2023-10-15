@@ -11,7 +11,7 @@ uint8_t Manufacturer_Id;
 uint8_t Device_Type;
 uint8_t Device_Id;
 
-SyncComm *g_SPI[2];
+SyncCommSPI *g_SPI[2];
 
 SPI::SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SS) : std::vector<Gpio>({SCK, MOSI, MISO, SS}), Callback(),
 m_SPI{SPI_CHANNEL},
@@ -142,24 +142,24 @@ void SPI::DisableInterrupt(void) {
 void SPI::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	if (this->m_SPI == SPI0) {
-		SWM->PINASSIGN.PINASSIGN3 = ((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 24);
-		SWM->PINASSIGN.PINASSIGN4 = (((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 0) | ((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 8) | ((at(SS_IDX).GetBit() + at(SS_IDX).GetPort() * 0x20) << 16));
+		SWM->PINASSIGN.PINASSIGN3 &= (((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 24) | ~(0xFF << 24));
+		SWM->PINASSIGN.PINASSIGN4 &= ((((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 0) | ((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 8) | ((at(SS_IDX).GetBit() + at(SS_IDX).GetPort() * 0x20) << 16)) | ~(0xFFFFFF << 0));
 //		THE FOLLOWING FRAGMENT OF CODE IS NOT IMPLEMENT YET
-//		SWM->PINASSIGN.PINASSIGN4 = ((at(SS1_IDX).GetBit() + at(SS1_IDX).GetPort() * 0x20) << 24);
-//		SWM->PINASSIGN.PINASSIGN5 = (((at(SS2_IDX).GetBit() + at(SS2_IDX).GetPort() * 0x20) << 0) | ((at(SS3_IDX).GetBit() + at(SS3_IDX).GetPort() * 0x20) << 8));
+//		SWM->PINASSIGN.PINASSIGN4 &= (((at(SS1_IDX).GetBit() + at(SS1_IDX).GetPort() * 0x20) << 24) | ~(0xFF << 24));
+//		SWM->PINASSIGN.PINASSIGN5 &= ((((at(SS2_IDX).GetBit() + at(SS2_IDX).GetPort() * 0x20) << 0) | ((at(SS3_IDX).GetBit() + at(SS3_IDX).GetPort() * 0x20) << 8)) | ~(0xFFFF << 0));
 	}
 	if (this->m_SPI == SPI1) {
-		SWM->PINASSIGN.PINASSIGN5 = (((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 16) | ((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 24));
-		SWM->PINASSIGN.PINASSIGN6 = (((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 0) | ((at(SS_IDX).GetBit() + at(SS_IDX).GetPort() * 0x20) << 8));
+		SWM->PINASSIGN.PINASSIGN5 &= ((((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 16) | ((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+		SWM->PINASSIGN.PINASSIGN6 &= ((((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 0) | ((at(SS_IDX).GetBit() + at(SS_IDX).GetPort() * 0x20) << 8)) | ~(0xFFFF << 0));
 //		THE FOLLOWING FRAGMENT OF CODE IS NOT IMPLEMENT YET
-//		SWM->PINASSIGN.PINASSIGN6 = ((at(SS1_IDX).GetBit() + at(SS1_IDX).GetPort() * 0x20) << 16);
+//		SWM->PINASSIGN.PINASSIGN6 &= (((at(SS1_IDX).GetBit() + at(SS1_IDX).GetPort() * 0x20) << 16) | ~(0xFF << 16));
 	}
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
 void SPI::Config(void) {
-	if (this->m_SPI == SPI0) NVIC->ISER[0] = (1 << 0); // Enable SPI0_IRQ
-	if (this->m_SPI == SPI1) NVIC->ISER[0] = (1 << 1); // Enable SPI1_IRQ
+	if (this->m_SPI == SPI0) NVIC->ISER[0] |= (1 << 0); // Enable SPI0_IRQ
+	if (this->m_SPI == SPI1) NVIC->ISER[0] |= (1 << 1); // Enable SPI1_IRQ
 	this->m_SPI->CFG |= (1 << 0); // The SPI is enabled for operation.
 	this->m_SPI->CFG |= (1 << 2); // The SPI will operate in master mode.
 }

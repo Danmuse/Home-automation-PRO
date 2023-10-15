@@ -101,23 +101,25 @@ void *UART::Message(void *message, uint32_t n) {
 }
 
 void UART::EnableInterupt(void) {
-	this->m_usart->INTENSET = (1 << 2); // Enable TX interruption.
+//	this->m_usart->INTENSET = (1 << 2); // Enable TX interruption.
+	this->m_usart->INTENSET = (1 << 0);	// Enable RX interruption.
 }
 
 void UART::DisableInterupt(void) {
-	this->m_usart->INTENCLR = (1 << 2); // Disable TX interruption.
+//	this->m_usart->INTENCLR = (1 << 2); // Disable TX interruption.
+	this->m_usart->INTENCLR = (1 << 0);	// Disable RX interruption.
 }
 
 void UART::EnableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 = (((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 0) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 8));
-	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 = (((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 8) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 16));
-	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 = (((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24));
+	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 &= ((((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 0) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 8)) | ~(0xFFFF << 0));
+	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 &= ((((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 8) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 16)) | ~(0xFFFF << 8));
+	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 &= ((((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 	if (this->m_usart == USART3) {
-		SWM->PINASSIGN.PINASSIGN11 = ((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 24);
-		SWM->PINASSIGN.PINASSIGN12 = ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 0);
+		SWM->PINASSIGN.PINASSIGN11 &= (((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 24) | ~(0xFF << 24));
+		SWM->PINASSIGN.PINASSIGN12 &= (((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 0) | ~(0xFF << 0));
 	}
-	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 = (((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24));
+	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 &= ((((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
@@ -127,22 +129,20 @@ void UART::Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 	| (parity << 4)		 		   // 0 = NOPARITY 		2 = PAR 		3 = IMPAR
 	| (0 << 6)			 		   // 0 = 1 BIT STOP  	1 = 2 BIT STOP
 	| (0 << 9)			 		   // 0 = NOFLOWCONTROL 1 = FLOWCONTROL
-	| (0 << 11));		 		   // 0 = ASINCRONICA 	1 = SINCRONICA
-	// | ( 1 << 15 );	 		   // LOOP
+	| (0 << 11)			 		   // 0 = ASINCRONICA 	1 = SINCRONICA
+	| (0 << 14));				   // 0 = SLAVE 		1 = MASTER
 
 	// The default value of the OSR register is 16
 	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1;
 	this->m_usart->CTL = 0;
 
-	this->m_usart->INTENSET = (1 << 0);	// RX interruption
+	if (this->m_usart == USART0) NVIC->ISER[0] |= (1 << 3);  // Enable UART0_IRQ
+	if (this->m_usart == USART1) NVIC->ISER[0] |= (1 << 4);  // Enable UART1_IRQ
+	if (this->m_usart == USART2) NVIC->ISER[0] |= (1 << 5);  // Enable UART2_IRQ
+	if (this->m_usart == USART3) NVIC->ISER[0] |= (1 << 30); // Enable UART3_IRQ
+	if (this->m_usart == USART4) NVIC->ISER[0] |= (1 << 31); // Enable UART4_IRQ
 
-	if (this->m_usart == USART0) NVIC->ISER[0] = (1 << 3);  // Enable UART0_IRQ
-	if (this->m_usart == USART1) NVIC->ISER[0] = (1 << 4);  // Enable UART1_IRQ
-	if (this->m_usart == USART2) NVIC->ISER[0] = (1 << 5);  // Enable UART2_IRQ
-	if (this->m_usart == USART3) NVIC->ISER[0] = (1 << 30); // Enable UART3_IRQ
-	if (this->m_usart == USART4) NVIC->ISER[0] = (1 << 31); // Enable UART4_IRQ
-
-	this->m_usart->CFG |= (1 << 0);		// Enable USART
+	this->m_usart->CFG |= (1 << 0); // Enable USART
 }
 
 void UART::SetBaudRate(uint32_t baudrate) {

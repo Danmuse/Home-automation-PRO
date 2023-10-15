@@ -11,8 +11,8 @@
 
 #include <vector>
 #include "systick.h"
-#include "SyncComm.h"
 #include "GPIO.h"
+#include "SyncCommSPI.h"
 
 #if defined (__cplusplus)
 extern "C" {
@@ -45,7 +45,7 @@ extern "C" {
 #define	COMMAND_WRITE_UNLOCK_PROTECTION	0x98
 #define	COMMAND_READ_CONF				0x35
 
-class SPI : protected std::vector<Gpio>, public SyncComm, Callback {
+class SPI : protected std::vector<Gpio>, public SyncCommSPI, Callback {
 private:
 	SPI_Type* m_SPI;
 	uint8_t m_ticks;
@@ -72,7 +72,6 @@ private:
 	void EnableClock(void);
 	void Config(void);
 	void SPI_IRQHandler(void) override;
-	void I2C_IRQHandler(void) override { }
 
 	void EnableInterrupt(void);
 	void DisableInterrupt(void);

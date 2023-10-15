@@ -42,15 +42,17 @@ void PWM::initPWM(void) const {
 
 void PWM::bind(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-    if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 &= (((32 * this->m_port + this->m_bit) << 24) | ~(255 << 24));
-    else if (this->m_channel < MAX_PWM_CHANNELS) SWM->PINASSIGN.PINASSIGN8 &= (((32 * this->m_port + this->m_bit) << (8 * (this->m_channel - 1))) | ~(255 << (8 * (this->m_channel - 1))));
+    if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 &= (((0x20 * this->m_port + this->m_bit) << 24) | ~(0xFF << 24));
+    else if (this->m_channel < MAX_PWM_CHANNELS - 2) SWM->PINASSIGN.PINASSIGN8 &= (((0x20 * this->m_port + this->m_bit) << (8 * (this->m_channel - 1))) | ~(0xFF << (8 * (this->m_channel - 1))));
+    else if ((this->m_channel == MAX_PWM_CHANNELS - 2) || (this->m_channel == MAX_PWM_CHANNELS - 1)) SWM->PINASSIGN.PINASSIGN9 &= (((0x20 * this->m_port + this->m_bit) << (8 * (this->m_channel - 5))) | ~(0xFF << (8 * (this->m_channel - 5))));
     SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
 void PWM::unbind(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-    if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 &= ~(255 << 24);
-    else if (this->m_channel < MAX_PWM_CHANNELS) SWM->PINASSIGN.PINASSIGN8 &= ~(255 << (8 * (this->m_channel - 1)));
+    if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 |= ((~(0x20 * this->m_port + this->m_bit)) << 24);
+    else if (this->m_channel < MAX_PWM_CHANNELS - 2) SWM->PINASSIGN.PINASSIGN8 |= ((~(0x20 * this->m_port + this->m_bit)) << (8 * (this->m_channel - 1)));
+    else if ((this->m_channel == MAX_PWM_CHANNELS - 2) || (this->m_channel == MAX_PWM_CHANNELS - 1)) SWM->PINASSIGN.PINASSIGN9 |= ((~(0x20 * this->m_port + this->m_bit)) << (8 * (this->m_channel - 5)));
     SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 

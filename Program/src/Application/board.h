@@ -18,9 +18,9 @@
 #include "LCD1602.h"
 #include "Semaphore.h"
 
-#include "UART.h" // Review the ProgramConfig
+//#include "UART.h" // Review the ProgramConfig
 #include "I2C.h" // Review the ProgramConfig
-#include "SPI.h" // Review the ProgramConfig
+//#include "SPI.h" // Review the ProgramConfig
 
 extern SevenSegmentDisplay *g_display;
 extern Keyboard *g_keyboard;
