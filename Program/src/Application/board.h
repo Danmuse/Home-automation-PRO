@@ -9,6 +9,7 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
+#include <Hardware/05-M24C16/M24C16.h>
 #include "PLL.h"
 #include "PWM.h"
 #include "DigitalOutputs.h"
@@ -18,6 +19,7 @@
 #include "Keyboard.h"
 #include "LCD1602.h"
 #include "DS3231.h"
+#include "M24C16.h"
 #include "Semaphore.h"
 
 /////////////////////////////////
@@ -29,6 +31,7 @@
 /// --- "Keyboard *g_keyboard" located in "Hardware/02-MatrixKeyboard/Keyboard.h"
 /// --- "LCD1602 *g_lcd1602" located in "Hardware/03-LCD1602/LCD1602.h"
 /// --- "DS3231 *g_ds3231" located in "Hardware/04-DS3231/DS3231.h"
+/// --- "FM24C16U *g_eeprom" located in "Hardware/05-M24C16/M24C16.h"
 
 /////////////////////////////////
 /// SOFTWARE GLOBAL VARIABLES ///

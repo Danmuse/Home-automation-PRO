@@ -15,6 +15,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
   <span>&#10038;</span> RGB LEDs with PWM control.<br>
   <span>&#10038;</span> Flame sensor KY-026.<br>
   <span>&#10038;</span> Infrared sensor KY-032 or HW-201.<br>
+  <span>&#10038;</span> EEPROM Memory FM24C16U 16KB.<br>
   <span>&#10038;</span> RTC module DS3231SN.<br>
   <span>&#10038;</span> RFID RC-522 reader (Optional).<br>
   <span>&#10038;</span> Micro SD module (Optional).<br>

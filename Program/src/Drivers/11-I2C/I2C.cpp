@@ -128,11 +128,17 @@ SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t 
 }
 
 SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t value[], SyncCommTWI::actionComm_t action) {
+	////////////////////////////////////////////
+	// Add the corresponding fragment of code //
+	////////////////////////////////////////////
 
 	return TWI_SUCCESS;
 }
 
 SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t *value[], SyncCommTWI::actionComm_t action) {
+	////////////////////////////////////////////
+	// Add the corresponding fragment of code //
+	////////////////////////////////////////////
 
 	return TWI_SUCCESS;
 }
@@ -224,6 +230,11 @@ void I2C::EnableClock(void) {
 	// MSTSCLLOW: 5 clocks. Minimum SCL low time is 5 clocks of the I2C clock pre-divider.
 	// MSTSCLHIGH: 5 clocks. Minimum SCL high time is 5 clock of the I2C clock pre-divider.
 	this->m_TWI->MSTTIME = (I2C_MSTTIME_MSTSCLLOW(MSTSCL - 2) | I2C_MSTTIME_MSTSCLHIGH(MSTSCL - 2));
+
+	//////////////////////////////////////////
+	// Check the following fragment of code //
+	//////////////////////////////////////////
+	// There's an abnormally performance caused by communication channels other than I2C0
 	// Select Clock PPAL.: FCLKSEL
 	if (this->m_TWI == I2C0) SYSCON->FCLKSEL[5] = 1;
 	if (this->m_TWI == I2C1) SYSCON->FCLKSEL[6] = 1;

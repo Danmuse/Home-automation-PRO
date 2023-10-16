@@ -162,6 +162,7 @@ void SPI::Config(void) {
 	if (this->m_SPI == SPI1) NVIC->ISER[0] |= (1 << 1); // Enable SPI1_IRQ
 	this->m_SPI->CFG |= (1 << 0); // The SPI is enabled for operation.
 	this->m_SPI->CFG |= (1 << 2); // The SPI will operate in master mode.
+//	this->EnableClock();
 }
 
 void SPI::EnableClock(void) {

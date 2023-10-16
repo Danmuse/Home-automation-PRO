@@ -8,29 +8,28 @@
 #include "DS3231.h"
 
 /****************** RTC Testing START ******************
-RTC_t rtc_t;
-RTC_result_t set_status, read_status;
+int main(void) {
+	initDevice();
+	initDisplay();
+	initDS3231();
 
-g_ds3231->set(0, 0, 0, 31, 6, 12, 2022);
-set_status = g_ds3231->getStatus();
+	RTC_t rtc_t;
+	if (g_ds3231->set(0, 0, 0, 1, 1, 2000)) return EXIT_FAILURE;
 
-uint8_t secondCount = 0;
-char RTCstr[RTC_STR_SIZE];
-
-while (secondCount < 5) {
-	g_ds3231->read(&rtc_t);
-	read_status = g_ds3231->getStatus();
-	printStringUSB(g_ds3231->print());
-	set_status ? printStringUSB("FAILURE - RTC_set result\n") : printStringUSB("SUCCESS - RTC_set result\n");
-	read_status ? printStringUSB("FAILURE - RTC_read result\n") : printStringUSB("SUCCESS - RTC_read result\n");
-
-	delay(1000); // Waiting for a second
+	while (1) {
+		rtc_t = g_ds3231->get();
+		if (g_ds3231->getStatus()) return EXIT_FAILURE;
+		g_display->set(rtc_t.TIME.MIN, 0);
+		g_display->set(rtc_t.TIME.SEC, 1);
+		g_timers_list.TimerEvents();
+		delay(1000);
+	}
 }
 ******************** RTC Testing END *******************/
 
 DS3231 *g_ds3231 = nullptr;
 
-DS3231::DS3231() : I2C(TWI_CHANNEL, I2C0_SCL, I2C0_SDA),
+DS3231::DS3231() : I2C(TWI_CHANNEL, I2C_SCL, I2C_SDA),
 m_statusRTC{RTC_OK} { }
 
 SyncCommTWI::statusComm_t DS3231::acquireSec(void) {
@@ -242,12 +241,12 @@ DS3231::~DS3231() { }
 /////////////////////////////
 
 void initDS3231(void) {
-	#ifdef I2C0_PINS
+	#if defined(I2C0_PINS) || defined(I2C1_PINS)
 
 	static DS3231 ds3231;
 	ds3231.set(0, 0, 0, 1, 1, 2000);
 
 	g_ds3231 = &ds3231;
 
-	#endif // I2C0_PINS
+	#endif // defined(I2C0_PINS) || defined(I2C1_PINS)
 }

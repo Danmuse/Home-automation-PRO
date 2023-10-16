@@ -32,6 +32,7 @@ typedef	int 				int32_t;
 #define	INT8_MIN			(-128)			//!< Minimum value of the INT8 variable type.
 #define	UINT8_MAX			(255)			//!< Maximum value of the UINT8 variable type.
 
-#define REGISTER_BYTE_SIZE	32
+#define BYTE_SIZE			8
+#define REG_BYTES_SIZE		32 // BYTE_SIZE * 4
 
 #endif /* UTILS_H_ */

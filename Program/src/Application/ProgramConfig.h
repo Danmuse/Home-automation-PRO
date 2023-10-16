@@ -25,7 +25,8 @@
 #define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
-#define I2C0_PINS	// I2C0_SCL {D5} - I2C0_SDA {D6}
+#define I2C0_PINS	// I2C0_SCL - I2C0_SDA
+//#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
 
 #if defined(CN6_PINS) && defined(CN19_PINS)
 #error "Macros CN6_PINS and CN19_PINS cannot be defined simultaneously"
@@ -33,6 +34,14 @@
 
 #if defined(CN15_PINS) && defined(I2C0_PINS)
 #error "Macros CN15_PINS and I2C0_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN13_PINS) && defined(I2C1_PINS)
+#error "Macros CN13_PINS and I2C1_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(I2C0_PINS) && defined(I2C1_PINS)
+#error "Macros I2C0_PINS and I2C1_PINS cannot be defined simultaneously"
 #endif
 
 #if !defined(CN12_PINS)
@@ -136,9 +145,17 @@ extern Gpio ANALOG_POT;
 
 #define TWI_CHANNEL I2C0
 
-extern Gpio I2C0_SCL;
-extern Gpio I2C0_SDA;
+extern Gpio I2C_SCL;
+extern Gpio I2C_SDA;
 #endif // I2C0_PINS
+
+#ifdef I2C1_PINS
+
+#define TWI_CHANNEL I2C1
+
+extern Gpio I2C_SCL;
+extern Gpio I2C_SDA;
+#endif // I2C1_PINS
 
 #endif /* PROGRAM_CONFIG_H_ */
 
