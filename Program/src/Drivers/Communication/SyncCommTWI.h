@@ -12,25 +12,33 @@
 #include "utils.h"
 
 #define MAX_ATTEMPTS_TWI 10
-#define I2C_STAT_MSTSTATE_NACK_ADDR_MASK (0x3U << I2C_STAT_MSTSTATE_SHIFT)
-#define I2C_STAT_MSTSTATE_NACK_DATA_MASK (0x4U << I2C_STAT_MSTSTATE_SHIFT)
+#define TWI_OFFSET_NONE 0
 
 class SyncCommTWI {
 public:
-	// ACK_FAULT: Exceeds the attempts to connect with the slave device.
+	// TIME_OUT_FAULT: Exceeds the attempts to connect with the slave device.
 	// NACK_ADDR_FAULT: Negative acknowledgement Address. Slave NACKed address.
 	// NACK_DATA_FAULT: Negative acknowledgement Data. Slave NACKed transmitted data.
 	// STRETCH_FAULT: The slave function is not currently stretching the I2C bus clock.
-	enum statusComm_t { TWI_SUCCESS, TWI_FAILURE, ACK_FAULT, NACK_ADDR_FAULT, NACK_DATA_FAULT, STRETCH_FAULT };
-	enum actionComm_t { READ, WRITE };
-
+	enum statusComm_t { TWI_SUCCESS, TWI_FAILURE, TIME_OUT_FAULT, NACK_ADDR_FAULT, NACK_DATA_FAULT, STRETCH_FAULT };
+	// READ_OFFSET_NONE: Avoid sending the positioning register data address when it's reading.
+	// WRITE_OFFSET_NONE: Avoid sending the positioning register data address when it's writing.
+	enum actionComm_t { READ, WRITE, READ_OFFSET_NONE, WRITE_OFFSET_NONE };
+	// SLOW_FREQUENCY: Clock period at 100 Kb/s.
+	// STD_FREQUENCY: Clock period at 400 Kb/s.
+	// FAST_FREQUENCY: Clock period at 1 Kb/s.
+	enum frequencyComm_t { SLOW_FREQUENCY = 100000, STD_FREQUENCY = 400000, FAST_FREQUENCY = 1000000 };
+private:
+	virtual statusComm_t prepareConditions(const uint8_t address, const uint8_t regOffset, actionComm_t action) = 0;
+	virtual statusComm_t transmitStopBit(void) = 0;
+protected:
+	virtual statusComm_t transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, actionComm_t action = WRITE) = 0;
+	virtual statusComm_t receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t *value, actionComm_t action = READ) = 0;
+	virtual statusComm_t transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t value[], actionComm_t action = WRITE) = 0;
+	virtual statusComm_t receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t *value[], actionComm_t action = READ) = 0;
+public:
 	virtual void I2C_IRQHandler(void) = 0;
 	virtual ~SyncCommTWI() = default;
-protected:
-	virtual statusComm_t SendByte(uint32_t address, const uint8_t value) = 0;
-	virtual statusComm_t ReadByte(uint32_t address, uint8_t *value) = 0;
-	virtual statusComm_t SendBytes(uint32_t address, const uint8_t *value) = 0;
-	virtual statusComm_t ReadBytes(uint32_t address, uint8_t *value) = 0;
 };
 
 #endif /* SYNC_COMM_TWI_H_ */

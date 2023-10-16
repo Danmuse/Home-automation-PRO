@@ -1,5 +1,0 @@
-../GPIO/gpio.c:14:6:Inicializar_GPIO	8	static
-../GPIO/gpio.c:38:6:GPIO_Set	24	static
-../GPIO/gpio.c:48:6:GPIO_Dir	24	static
-../GPIO/gpio.c:57:10:GPIO_Read	24	static
-../GPIO/gpio.c:68:9:IOCON_config_io	32	static

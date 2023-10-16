@@ -118,22 +118,35 @@ static void blue_red(PWM &blue, PWM &red) {
 	delay(2500);
 }
 
-#else
+#else // DEBUG_MODE
 
 int main(void) {
 	initDevice();
 	initDisplay();
-	initIIC();
+	initDS3231();
 
-	uint8_t fooVariable = 0;
+	LED_RED.ClearPin();
+	LED_GREEN.ClearPin();
+	LED_BLUE.ClearPin();
+
+	if (g_ds3231->set(0, 0, 0, 1, 1, 2000)) {
+		LED_GREEN.SetPin();
+		LED_RED.SetPin();
+	} else LED_RED.ClearPin();
+
+	RTC_t rtc_t;
 
 	while (1) {
-		delay(10);
-		g_IIC->transmitByte(0x68, 6, SyncCommTWI::WRITE);
-		g_IIC->transmitByte(0x68, fooVariable, SyncCommTWI::READ);
-		g_display->set(fooVariable);
+		rtc_t = g_ds3231->get();
+		if (g_ds3231->getStatus()) {
+			LED_GREEN.SetPin();
+			LED_BLUE.SetPin();
+		} else LED_BLUE.ClearPin();
+		g_display->set(rtc_t.TIME.MIN, 0);
+		g_display->set(rtc_t.TIME.SEC, 1);
 		g_timers_list.TimerEvents();
+		delay(1000);
 	}
 }
 
-#endif
+#endif // DEBUG_MODE macro definition in precompile stage

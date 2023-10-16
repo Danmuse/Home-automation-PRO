@@ -15,6 +15,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
   <span>&#10038;</span> RGB LEDs with PWM control.<br>
   <span>&#10038;</span> Flame sensor KY-026.<br>
   <span>&#10038;</span> Infrared sensor KY-032 or HW-201.<br>
+  <span>&#10038;</span> RTC module DS3231SN.<br>
   <span>&#10038;</span> RFID RC-522 reader (Optional).<br>
   <span>&#10038;</span> Micro SD module (Optional).<br>
   </ul>
@@ -31,13 +32,13 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 - [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 3`
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 94` `AO ~ 49` `LC ~ 42` `CY ~ 39`
+`DDM ~ 108` `AO ~ 49` `LC ~ 42` `CY ~ 39`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7)
 - [ ] Micro SD card adaptation for data handling and ".mp3" files.
 
 ### 📚️ __Documentation & Doxygen__
 
-- [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2)
+- [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2) `DDM ~ 10`
 - [x] [Presentation of the project idea.](https://github.com/Danmuse/Home-automation/issues/4) `DDM ~ 8`
 - [ ] [Comprehensive and extensive project report.](https://github.com/Danmuse/Home-automation/issues/8)
 - [ ] Illustrations of the experience and trials.

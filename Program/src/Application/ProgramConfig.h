@@ -18,21 +18,37 @@
 //#define CN7_PINS	// ANALOG_OUT {AOUT}
 //#define CN8_PINS	// ANALOG_IN {AIN}
 //#define CN9_PINS	// SWDIO [PIN 2] - SWCLK [PIN 3] - DIG_IN [PIN 4] - KEY_RESET [PIN 5]
-//#define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
+#define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 #define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
 //#define CN13_PINS	// RX1_IN {RX} - TX1_OUT {TX} - EN_OUT {EN}
 //#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
-//#define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
+#define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
-#define I2C_PINS	// IIC_SCL {D5} - IIC_SDA {D6}
+#define I2C0_PINS	// I2C0_SCL {D5} - I2C0_SDA {D6}
 
 #if defined(CN6_PINS) && defined(CN19_PINS)
 #error "Macros CN6_PINS and CN19_PINS cannot be defined simultaneously"
 #endif
 
-#if defined(CN15_PINS) && defined(I2C_PINS)
-#error "Macros CN15_PINS and I2C_PINS cannot be defined simultaneously"
+#if defined(CN15_PINS) && defined(I2C0_PINS)
+#error "Macros CN15_PINS and I2C0_PINS cannot be defined simultaneously"
+#endif
+
+#if !defined(CN12_PINS)
+#warning "Macro CN12_PINS is not defined and Seven Segment Display module initialization will have no effect"
+#endif
+
+#if !defined(CN16_PINS)
+#warning "Macro CN16_PINS is not defined and Matrix Keyboard module initialization will have no effect"
+#endif
+
+#if !defined(CN15_PINS) && !defined(I2C0_PINS)
+#warning "Macro CN15_PINS is not defined and LCD1602 module initialization will have no effect"
+#endif
+
+#if !defined(I2C0_PINS) && !defined(CN15_PINS)
+#warning "Macro I2C0_PINS is not defined and the initialization of the TWI modules will have no effect"
 #endif
 
 #ifdef CN5_PINS
@@ -116,10 +132,13 @@ extern Gpio DIG_OUT2;
 
 extern Gpio ANALOG_POT;
 
-#ifdef I2C_PINS
-extern Gpio IIC_SCL;
-extern Gpio IIC_SDA;
-#endif // I2C_PINS
+#ifdef I2C0_PINS
+
+#define TWI_CHANNEL I2C0
+
+extern Gpio I2C0_SCL;
+extern Gpio I2C0_SDA;
+#endif // I2C0_PINS
 
 #endif /* PROGRAM_CONFIG_H_ */
 

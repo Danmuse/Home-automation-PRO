@@ -85,8 +85,8 @@ Gpio DIG_OUT2(Gpio::PORT1, 2, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 
 Gpio ANALOG_POT(Gpio::PORT0, 7, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
 
-#ifdef I2C_PINS
-Gpio IIC_SDA(Gpio::PORT0, 11, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
-Gpio IIC_SCL(Gpio::PORT0, 10, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
-#endif // I2C_PINS
+#ifdef I2C0_PINS
+Gpio I2C0_SDA(Gpio::PORT0, 11, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C0_SCL(Gpio::PORT0, 10, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+#endif // I2C0_PINS
 
