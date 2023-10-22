@@ -9,7 +9,6 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
-#include <Hardware/05-M24C16/M24C16.h>
 #include "PLL.h"
 #include "PWM.h"
 #include "DigitalOutputs.h"

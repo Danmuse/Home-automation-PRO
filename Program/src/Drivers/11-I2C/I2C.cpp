@@ -112,7 +112,7 @@ SyncCommTWI::statusComm_t I2C::transmitByte(const uint8_t address, const uint8_t
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t *value, SyncCommTWI::actionComm_t action) {
+SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, SyncCommTWI::actionComm_t action) {
 	prepareConditions(address, regOffset, action);
 
 	if (!(this->awaitACK())) {
@@ -127,7 +127,7 @@ SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t 
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t value[], SyncCommTWI::actionComm_t action) {
+SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], SyncCommTWI::actionComm_t action) {
 	////////////////////////////////////////////
 	// Add the corresponding fragment of code //
 	////////////////////////////////////////////
@@ -135,7 +135,7 @@ SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t *value[], SyncCommTWI::actionComm_t action) {
+SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t* values[], SyncCommTWI::actionComm_t action) {
 	////////////////////////////////////////////
 	// Add the corresponding fragment of code //
 	////////////////////////////////////////////

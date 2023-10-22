@@ -20,9 +20,9 @@ public:
 	virtual ~AsyncComm() = default;
 protected:
 	virtual void pushRX(uint8_t data) = 0;
-	virtual uint8_t popRX(uint8_t *data) = 0;
+	virtual bool popRX(uint8_t *data) = 0;
 	virtual void pushTX(uint8_t data) = 0;
-	virtual uint8_t popTX(uint8_t *data) = 0;
+	virtual bool popTX(uint8_t *data) = 0;
 };
 
 #endif /* ASYNC_COMM_H_ */

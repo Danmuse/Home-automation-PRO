@@ -9,10 +9,9 @@
 #ifndef M24C16_H_
 #define M24C16_H_
 
+// #include <type_traits>
 #include "I2C.h"
 #include "ProgramConfig.h"
-
-
 
 #define M24C16_ADDR_REG (0x50U)
 
@@ -30,16 +29,48 @@ typedef enum {
 	EIGHTH_PAGE_BLOCK
 } pageBlock_t;
 
-//! @brief <b>EEPROM_result_t</b> enum reports all possible errors, conditions, warnings, and states in which the EEPROM memory operations can be found.
+//! @brief <b>EEPROM_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the EEPROM memory operations can be found.
 typedef enum {
 	EEPROM_OK,					//!< Successful operation.
 	EEPROM_UPDATE_ERR,			//!< No valid data has been acquired or transmitted via i2C communication
 	EEPROM_PAGE_BLOCK_INVALID,	//!< Exceeds the limit of allowed pages block.
-	EEPROM_OVERFLOW_INVALID,	//!< Exceeds the limit of allowed bytes into the desired page block..
+	EEPROM_OVERFLOW_INVALID,	//!< Exceeds the limit of allowed bytes into the desired page block.
+	EEPROM_INCORRECT_MODIFIER	//!< The method parameter does not match the supported modifiers.
 } EEPROM_result_t;
 
-// TODO: Use templates to avoid the multiplicity of methods and improve the performance of the program.
+typedef union {
+    float Float;
+    uint32_t UInt32;
+    uint16_t UInt16[2];
+    uint8_t UInt8[4];
+} byteReg_ut;
 
+class M24C16 : protected I2C {
+public:
+	// FST_QUARTER_BYTE: Indicates a zero bit shift to the left of the 16-bit register. Useful for storing 8-bit values ​​in EEPROM memory.
+	// SND_QUARTER_BYTE: Indicates an 8-bit shift to the left of the 16-bit register. Useful for storing 8-bit values ​​in EEPROM memory.
+	enum middleByte_t { FST_QUARTER_BYTE, SND_QUARTER_BYTE };
+private:
+	static pageBlock_t m_pageBock;
+	EEPROM_result_t m_statusEEPROM;
+
+	template <typename T> statusComm_t acquire(T* values, const uint16_t position);
+	template <typename T> statusComm_t transmit(T values, const uint16_t position);
+public:
+	M24C16();
+	template <typename T> EEPROM_result_t read(T* data, const uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
+	template <typename T> EEPROM_result_t write(T data, const uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
+
+	EEPROM_result_t getStatus(void) const;
+	virtual ~M24C16();
+};
+
+//if (std::is_same<T, float>::value) {
+//	std::cout << "Tipo: float" << std::endl;
+//}
+
+
+/*
 class M24C16 : protected I2C {
 private:
 	static pageBlock_t m_pageBock;
@@ -68,6 +99,7 @@ public:
 	EEPROM_result_t getStatus(void) const;
 	virtual ~M24C16();
 };
+*/
 
 extern M24C16 *g_eeprom;
 

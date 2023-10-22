@@ -29,35 +29,31 @@ m_usart{USART0} {
 }
 
 void UART::pushRX(uint8_t data) {
-	this->m_bufferRX[this->m_indexRXIn] = data;
-	this->m_indexRXIn++;
+	this->m_bufferRX[this->m_indexRXIn++] = data;
 	this->m_indexRXIn %= this->m_maxRX;
 }
 
-uint8_t UART::popRX(uint8_t *data) {
+bool UART::popRX(uint8_t *data) {
 	if (this->m_indexRXIn != this->m_indexRXOut) {
-		*data = this->m_bufferRX[this->m_indexRXOut];
-		this->m_indexRXOut++;
+		*data = this->m_bufferRX[this->m_indexRXOut++];
 		this->m_indexRXOut %= this->m_maxRX;
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 void UART::pushTX(uint8_t data) {
-	this->m_bufferTX[this->m_indexTXIn] = data;
-	this->m_indexTXIn++;
+	this->m_bufferTX[this->m_indexTXIn++] = data;
 	this->m_indexTXIn %= this->m_maxTX;
 }
 
-uint8_t UART::popTX(uint8_t *data) {
+bool UART::popTX(uint8_t *data) {
 	if (this->m_indexTXIn != this->m_indexTXOut) {
-		*data = this->m_bufferTX[this->m_indexTXOut];
-		this->m_indexTXOut++;
+		*data = this->m_bufferTX[this->m_indexTXOut++];
 		this->m_indexTXOut %= this->m_maxTX;
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 void UART::Transmit(const char *message) {
@@ -192,7 +188,6 @@ void UART::UART_IRQHandler(void) {
 
 	if (stat & (1 << 2)) {
 		endTransmission = this->popTX(&data);
-
 		if (endTransmission) this->m_usart->TXDAT = (uint8_t) data;
 		else {
 			this->DisableInterupt();

@@ -35,9 +35,6 @@
 #define DS3231_12HOURS_MODE_SHIFT	(6U)
 #define DS3231_12HOURS_AMPM_SHIFT	(5U)
 
-//! @hideinitializer Set it high to 12-hours mode
-#define HOURS_MODE 0 //!< <pre><strong>Value:</strong> 0
-
 //! @hideinitializer Binary Coded Decimal (<tt>BCD</tt>) code shift value.
 #define BCD_SHIFT 4 //!< <pre><strong>Value:</strong> 4
 //! @hideinitializer Binary Coded Decimal (<tt>BCD</tt>) code mask value.
@@ -61,7 +58,7 @@
 //! @hideinitializer Number of characters to store the time captured by the Real Time Clock (<tt>RTC</tt>).
 #define RTC_STR_SIZE 21 //!< <pre><strong>Value:</strong> 21
 
-//! @brief <b>RTC_result_t</b> enum reports all possible errors, conditions, warnings, and states in which the Real Time Clock (<tt>RTC</tt>) operations can be found.
+//! @brief <b>RTC_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the Real Time Clock (<tt>RTC</tt>) operations can be found.
 typedef enum {
 	RTC_OK,				//!< Successful operation.
 	RTC_UPDATE_ERR,		//!< No valid data has been acquired or transmitted via i2C communication
@@ -75,65 +72,62 @@ typedef enum {
 	RTC_YEAR_INVALID	//!< No valid data has been detected in Current Year Register.
 } RTC_result_t;
 
-//! @brief <b>RTC_time_t</b> structure has the units of time that make up the current date.
+//! @brief <b>RTC_time_st</b> structure has the units of time that make up the current date.
 typedef struct {
 	uint8_t SEC : 6; //!< Stores <tt>6</tt> bit fields of the current measurement expressed in seconds.
 	uint8_t MIN : 6; //!< Stores <tt>6</tt> bit fields of the current measurement expressed in minutes.
 	uint8_t HOUR : 7; //!< Stores <tt>7</tt> bit fields of the current measurement expressed in hours.
-} RTC_time_t;
+} RTC_time_st;
 
-//! @brief <b>RTC_calendar_t</b> structure has the units of time that make up the current calendar without the precision of the hours.
+//! @brief <b>RTC_calendar_st</b> structure has the units of time that make up the current calendar without the precision of the hours.
 typedef struct {
 	uint8_t DATE : 6; //!< Stores <tt>6</tt> bit fields of the current measurement expressed in days of the month.
 	uint8_t MONTH : 5; //!< Stores <tt>5</tt> bit fields of the current measurement expressed in months.
 	uint16_t YEAR : 13;	//!< Stores <tt>13</tt> bit fields of the current measurement expressed in years.
-} RTC_calendar_t;
+} RTC_calendar_st;
 
-//! @brief <b>RTC_t</b> structure has all the attributes that make up the current date with precision.
+//! @brief <b>RTC_st</b> structure has all the attributes that make up the current date with precision.
 typedef struct {
-	RTC_time_t TIME; //!< Current date stored in the Time Register.
-	RTC_calendar_t CALENDAR; //!< Current calendar stored in the Calendar Register.
-} RTC_t;
+	RTC_time_st TIME; //!< Current date stored in the Time Register.
+	RTC_calendar_st CALENDAR; //!< Current calendar stored in the Calendar Register.
+} RTC_st;
 
-// TODO: Inherit from CALLBACK and update a global variable every one second.
+// TODO (Mayor priority): Analyze the use of the "print" method along with its implementation including the <stdio.h> header.
+// It may be wise to create a private method with the same functionality as "sprintf" standard function.
+// Print a different message depending on the hours mode used.
+// TODO (Minor priority): Inherit from CALLBACK and update a global variable every one second.
 // If communication with I2C is not achieved, its variables must be reinitialized.
-// TODO: Analyze the use of the "print" method along with its implementation including the <stdio.h> header.
-// TODO: Add a member to disassociate the time range between AM and PM.
 
 class DS3231 : protected I2C {
+public:
+	// TWENTY_FOUR_HOURS_MODE: Indicates that the clock time is set to 24-hour mode.
+	// TWELVE_HOURS_MODE: Indicates that the clock time is set to 12-hour mode.
+	enum hoursMode_t { TWENTY_FOUR_HOURS_MODE, TWELVE_HOURS_MODE };
 private:
-	RTC_t m_RTC;
+	RTC_st m_RTC;
 	RTC_result_t m_statusRTC;
+	hoursMode_t m_hoursMode;
+	bool m_flagPM;
 
 	// Acquire or transmit current time values.
-	statusComm_t acquireSec(void);
-	statusComm_t acquireMin(void);
-	statusComm_t acquireHour(void);
-
-	statusComm_t transmitSec(uint8_t second);
-	statusComm_t transmitMin(uint8_t minute);
-	statusComm_t transmitHour(uint8_t hour);
-
+	statusComm_t acquireTime(void);
+	statusComm_t transmitTime(uint8_t second, uint8_t minute, uint8_t hour);
 	// Acquire or transmit current calendar values.
-	statusComm_t acquireDate(void);
-	statusComm_t acquireMonth(void);
-	statusComm_t acquireYear(void);
-
-	statusComm_t transmitDate(uint8_t date);
-	statusComm_t transmitMonth(uint8_t month);
-	statusComm_t transmitYear(uint8_t year);
+	statusComm_t acquireCalendar(void);
+	statusComm_t transmitCalendar(uint8_t date, uint8_t month, uint8_t year);
 public:
 	DS3231();
 
-	RTC_t get(void);
-	RTC_time_t getTime(void);
-	RTC_calendar_t getCalendar(void);
+	RTC_st get(void);
+	RTC_time_st getTime(void);
+	RTC_calendar_st getCalendar(void);
 	RTC_result_t getStatus(void) const;
 
 	RTC_result_t set(uint8_t second, uint8_t minute, uint8_t hour, uint8_t date, uint8_t month, uint16_t year);
 	RTC_result_t setTime(uint8_t second, uint8_t minute, uint8_t hour);
 	RTC_result_t setCalendar(uint8_t date, uint8_t month, uint16_t year);
 
+	void changeHoursMode(hoursMode_t hoursMode);
 //	char *print(char RTCstr[RTC_STR_SIZE]);
 	virtual ~DS3231();
 };

@@ -68,9 +68,9 @@ private:
 	void UART_IRQHandler(void) override;
 
 	void pushRX(uint8_t data) override;
-	uint8_t popRX(uint8_t *data) override;
+	bool popRX(uint8_t *data) override;
 	void pushTX(uint8_t data) override;
-	uint8_t popTX(uint8_t *data) override;
+	bool popTX(uint8_t *data) override;
 	void EnableInterupt(void);
 	void DisableInterupt(void);
 };

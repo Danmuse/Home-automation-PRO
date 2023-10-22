@@ -28,6 +28,16 @@
 #define I2C0_PINS	// I2C0_SCL - I2C0_SDA
 //#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
 
+//	ConfigSWM(SPI0_SCK,   P0_20);
+//	ConfigSWM(SPI0_MISO,  P0_21);
+//	ConfigSWM(SPI0_MOSI,  P0_25);
+//	ConfigSWM(SPI0_SSEL0, P0_24);
+//
+//	ConfigSWM(SPI1_SCK,   P0_6);
+//	ConfigSWM(SPI1_MISO,  P0_7);
+//	ConfigSWM(SPI1_MOSI,  P1_19);
+//	ConfigSWM(SPI1_SSEL0, P1_18);
+
 #if defined(CN6_PINS) && defined(CN19_PINS)
 #error "Macros CN6_PINS and CN19_PINS cannot be defined simultaneously"
 #endif

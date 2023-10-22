@@ -3,3 +3,5 @@
 .metadata/
 .mcuxpressoide_packages_support/
 Program.zip
+./Program/Debug
+./Program/.settings

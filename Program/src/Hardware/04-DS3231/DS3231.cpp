@@ -13,14 +13,14 @@ int main(void) {
 	initDisplay();
 	initDS3231();
 
-	RTC_t rtc_t;
+	RTC_st rtc;
 	if (g_ds3231->set(0, 0, 0, 1, 1, 2000)) return EXIT_FAILURE;
 
 	while (1) {
-		rtc_t = g_ds3231->get();
+		rtc = g_ds3231->get();
 		if (g_ds3231->getStatus()) return EXIT_FAILURE;
-		g_display->set(rtc_t.TIME.MIN, 0);
-		g_display->set(rtc_t.TIME.SEC, 1);
+		g_display->set(rtc.TIME.MIN, 0);
+		g_display->set(rtc.TIME.SEC, 1);
 		g_timers_list.TimerEvents();
 		delay(1000);
 	}
@@ -30,103 +30,71 @@ int main(void) {
 DS3231 *g_ds3231 = nullptr;
 
 DS3231::DS3231() : I2C(TWI_CHANNEL, I2C_SCL, I2C_SDA),
-m_statusRTC{RTC_OK} { }
+m_statusRTC{RTC_OK},
+m_hoursMode{TWENTY_FOUR_HOURS_MODE},
+m_flagPM{false} { }
 
-SyncCommTWI::statusComm_t DS3231::acquireSec(void) {
-	uint8_t auxiliar = 0;
-	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_SEC_REG, &auxiliar))) {
-		this->m_RTC.TIME.SEC = (auxiliar >> BCD_SHIFT) * BCD_FACTOR + (auxiliar & BCD_MASK);
+SyncCommTWI::statusComm_t DS3231::acquireTime(void) {
+	uint8_t auxiliarSecond = 0, auxiliarMinute = 0, auxiliarHour = 0;
+	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_SEC_REG, &auxiliarSecond)) && !(this->getStatus())) {
+		this->m_RTC.TIME.SEC = (auxiliarSecond >> BCD_SHIFT) * BCD_FACTOR + (auxiliarSecond & BCD_MASK);
+		this->m_statusRTC = RTC_OK;
+	} else this->m_statusRTC = RTC_UPDATE_ERR;
+	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_MIN_REG, &auxiliarMinute)) && !(this->getStatus())) {
+		this->m_RTC.TIME.MIN = (auxiliarMinute >> BCD_SHIFT) * BCD_FACTOR + (auxiliarMinute & BCD_MASK);
+		this->m_statusRTC = RTC_OK;
+	} else this->m_statusRTC = RTC_UPDATE_ERR;
+	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_HOUR_REG, &auxiliarHour)) && !(this->getStatus()) && this->m_hoursMode == TWENTY_FOUR_HOURS_MODE) {
+		this->m_RTC.TIME.HOUR = (auxiliarHour >> BCD_SHIFT) * BCD_FACTOR + (auxiliarHour & BCD_MASK);
+		this->m_statusRTC = RTC_OK;
+	} else if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_HOUR_REG, &auxiliarHour)) && !(this->getStatus()) && this->m_hoursMode != TWENTY_FOUR_HOURS_MODE) {
+		if ((auxiliarHour & (1 << DS3231_12HOURS_AMPM_SHIFT)) >> DS3231_12HOURS_AMPM_SHIFT) this->m_flagPM = true;
+		else this->m_flagPM = false;
+		auxiliarHour &= ~((1 << DS3231_12HOURS_MODE_SHIFT) | (1 << DS3231_12HOURS_AMPM_SHIFT));
+		this->m_RTC.TIME.HOUR = (auxiliarHour >> BCD_SHIFT) * BCD_FACTOR + (auxiliarHour & BCD_MASK);
 		this->m_statusRTC = RTC_OK;
 	} else this->m_statusRTC = RTC_UPDATE_ERR;
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t DS3231::acquireMin(void) {
-	uint8_t auxiliar = 0;
-	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_MIN_REG, &auxiliar))) {
-		this->m_RTC.TIME.MIN = (auxiliar >> BCD_SHIFT) * BCD_FACTOR + (auxiliar & BCD_MASK);
+SyncCommTWI::statusComm_t DS3231::transmitTime(uint8_t second, uint8_t minute, uint8_t hour) {
+	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_SEC_REG, second)) && !(this->getStatus())) this->m_statusRTC = RTC_OK;
+	else this->m_statusRTC = RTC_UPDATE_ERR;
+	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_MIN_REG, minute)) && !(this->getStatus())) this->m_statusRTC = RTC_OK;
+	else this->m_statusRTC = RTC_UPDATE_ERR;
+	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_HOUR_REG, hour)) && !(this->getStatus())) this->m_statusRTC = RTC_OK;
+	else this->m_statusRTC = RTC_UPDATE_ERR;
+	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
+}
+
+SyncCommTWI::statusComm_t DS3231::acquireCalendar(void) {
+	uint8_t auxiliarDate = 0, auxiliarMonth = 0, auxiliarYear = 0;
+	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_DATE_REG, &auxiliarDate)) && !(this->getStatus())) {
+		this->m_RTC.CALENDAR.DATE = (auxiliarDate >> BCD_SHIFT) * BCD_FACTOR + (auxiliarDate & BCD_MASK);
+		this->m_statusRTC = RTC_OK;
+	} else this->m_statusRTC = RTC_UPDATE_ERR;
+	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_MTH_CENT_REG, &auxiliarMonth)) && !(this->getStatus())) {
+		this->m_RTC.CALENDAR.MONTH = (auxiliarMonth >> BCD_SHIFT) * BCD_FACTOR + (auxiliarMonth & BCD_MASK);
+		this->m_statusRTC = RTC_OK;
+	} else this->m_statusRTC = RTC_UPDATE_ERR;
+	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_YEAR_REG, &auxiliarYear)) && !(this->getStatus())) {
+		this->m_RTC.CALENDAR.YEAR = (auxiliarYear >> BCD_SHIFT) * BCD_FACTOR + (auxiliarYear & BCD_MASK) + 2000;
 		this->m_statusRTC = RTC_OK;
 	} else this->m_statusRTC = RTC_UPDATE_ERR;
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t DS3231::acquireHour(void) {
-	//////////////////////////////////////////
-	// Check the following fragment of code //
-	//////////////////////////////////////////
-
-	uint8_t auxiliar = 0;
-	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_HOUR_REG, &auxiliar))) {
-		this->m_RTC.TIME.HOUR = (auxiliar >> BCD_SHIFT) * BCD_FACTOR + (auxiliar & BCD_MASK);
-		this->m_statusRTC = RTC_OK;
-	} else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-SyncCommTWI::statusComm_t DS3231::transmitSec(uint8_t second) {
-	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_SEC_REG, second))) this->m_statusRTC = RTC_OK;
+SyncCommTWI::statusComm_t DS3231::transmitCalendar(uint8_t date, uint8_t month, uint8_t year) {
+	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_DATE_REG, date)) && !(this->getStatus())) this->m_statusRTC = RTC_OK;
+	else this->m_statusRTC = RTC_UPDATE_ERR;
+	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_MTH_CENT_REG, month)) && !(this->getStatus())) this->m_statusRTC = RTC_OK;
+	else this->m_statusRTC = RTC_UPDATE_ERR;
+	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_YEAR_REG, year)) && !(this->getStatus())) this->m_statusRTC = RTC_OK;
 	else this->m_statusRTC = RTC_UPDATE_ERR;
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t DS3231::transmitMin(uint8_t minute) {
-	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_MIN_REG, minute))) this->m_statusRTC = RTC_OK;
-	else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-SyncCommTWI::statusComm_t DS3231::transmitHour(uint8_t hour) {
-	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_HOUR_REG, hour))) this->m_statusRTC = RTC_OK;
-	else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-SyncCommTWI::statusComm_t DS3231::acquireDate(void) {
-	uint8_t auxiliar = 0;
-	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_DATE_REG, &auxiliar))) {
-		this->m_RTC.CALENDAR.DATE = (auxiliar >> BCD_SHIFT) * BCD_FACTOR + (auxiliar & BCD_MASK);
-		this->m_statusRTC = RTC_OK;
-	} else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-SyncCommTWI::statusComm_t DS3231::acquireMonth(void) {
-	uint8_t auxiliar = 0;
-	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_MTH_CENT_REG, &auxiliar))) {
-		this->m_RTC.CALENDAR.MONTH = (auxiliar >> BCD_SHIFT) * BCD_FACTOR + (auxiliar & BCD_MASK);
-		this->m_statusRTC = RTC_OK;
-	} else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-SyncCommTWI::statusComm_t DS3231::acquireYear(void) {
-	uint8_t auxiliar = 0;
-	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_YEAR_REG, &auxiliar))) {
-		this->m_RTC.CALENDAR.YEAR = (auxiliar >> BCD_SHIFT) * BCD_FACTOR + (auxiliar & BCD_MASK) + 2000;
-		this->m_statusRTC = RTC_OK;
-	} else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-SyncCommTWI::statusComm_t DS3231::transmitDate(uint8_t date) {
-	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_DATE_REG, date))) this->m_statusRTC = RTC_OK;
-	else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-SyncCommTWI::statusComm_t DS3231::transmitMonth(uint8_t month) {
-	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_MTH_CENT_REG, month))) this->m_statusRTC = RTC_OK;
-	else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-SyncCommTWI::statusComm_t DS3231::transmitYear(uint8_t year) {
-	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_YEAR_REG, year))) this->m_statusRTC = RTC_OK;
-	else this->m_statusRTC = RTC_UPDATE_ERR;
-	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
-}
-
-RTC_t DS3231::get(void) {
+RTC_st DS3231::get(void) {
 	this->getTime();
 	if (this->getStatus()) return this->m_RTC; // Returns the RTC structure with some errors.
 	this->getCalendar();
@@ -134,21 +102,17 @@ RTC_t DS3231::get(void) {
 	return this->m_RTC;
 }
 
-RTC_time_t DS3231::getTime(void) {
+RTC_time_st DS3231::getTime(void) {
 	this->m_statusRTC = RTC_OK;
 	this->m_RTC.TIME.SEC = 0; this->m_RTC.TIME.MIN = 0; this->m_RTC.TIME.HOUR = 0;
-	if (this->acquireSec()) return this->m_RTC.TIME; // Returns the Time RTC structure with some errors.
-	if (this->acquireMin()) return this->m_RTC.TIME; // Returns the Time RTC structure with some errors.
-	if (this->acquireHour()) return this->m_RTC.TIME; // Returns the Time RTC structure with some errors.
+	if (this->acquireTime()) return this->m_RTC.TIME; // Returns the Time RTC structure with some errors.
 	return this->m_RTC.TIME;
 }
 
-RTC_calendar_t DS3231::getCalendar(void) {
+RTC_calendar_st DS3231::getCalendar(void) {
 	this->m_statusRTC = RTC_OK;
 	this->m_RTC.CALENDAR.DATE = 0; this->m_RTC.CALENDAR.MONTH = 0; this->m_RTC.CALENDAR.YEAR = 0;
-	if (this->acquireDate()) return this->m_RTC.CALENDAR; // Returns the Calendar RTC structure with some errors.
-	if (this->acquireMonth()) return this->m_RTC.CALENDAR; // Returns the Calendar RTC structure with some errors.
-	if (this->acquireYear()) return this->m_RTC.CALENDAR; // Returns the Calendar RTC structure with some errors.
+	if (this->acquireCalendar()) return this->m_RTC.CALENDAR; // Returns the Calendar RTC structure with some errors.
 	return this->m_RTC.CALENDAR;
 }
 
@@ -163,69 +127,71 @@ RTC_result_t DS3231::set(uint8_t second, uint8_t minute, uint8_t hour, uint8_t d
 }
 
 RTC_result_t DS3231::setTime(uint8_t second, uint8_t minute, uint8_t hour) {
-	uint8_t auxiliar = 0;
+	uint8_t auxiliarSecond = 0, auxiliarMinute = 0, auxiliarHour = 0;
 	this->m_statusRTC = RTC_OK;
 
 	if (second > MAX_SEC) {
 		this->m_statusRTC = RTC_SEC_INVALID;
 		return this->getStatus(); // Returns with some errors during the configuration.
-	} else auxiliar |= (((second / BCD_FACTOR) << BCD_SHIFT) | (second % BCD_FACTOR));
-
-	if (this->transmitSec(auxiliar)) return this->getStatus(); // Returns with some errors during the configuration.
+	} else auxiliarSecond |= (((second / BCD_FACTOR) << BCD_SHIFT) | (second % BCD_FACTOR));
 
 	if (minute > MAX_MIN) {
 		this->m_statusRTC = RTC_MIN_INVALID;
 		return this->getStatus(); // Returns with some errors during the configuration.
-	} else auxiliar |= (((minute / BCD_FACTOR) << BCD_SHIFT) | (minute % BCD_FACTOR));
-
-	if (this->transmitMin(auxiliar)) return this->getStatus(); // Returns with some errors during the configuration.
+	} else auxiliarMinute |= (((minute / BCD_FACTOR) << BCD_SHIFT) | (minute % BCD_FACTOR));
 
 	if (hour < MAX_HOUR + 1) {
-		auxiliar = hour;
-		if (HOURS_MODE) {
+		if (this->m_hoursMode == TWELVE_HOURS_MODE) {
 			if (hour > 12) {
-				auxiliar -= 12;
-				auxiliar |= (((auxiliar / BCD_FACTOR) << BCD_SHIFT) | (auxiliar % BCD_FACTOR));
-				auxiliar |= ((1 << DS3231_12HOURS_AMPM_SHIFT) | (1 << DS3231_12HOURS_MODE_SHIFT));
+				hour -= 12;
+				auxiliarHour |= (((hour / BCD_FACTOR) << BCD_SHIFT) | (hour % BCD_FACTOR));
+				auxiliarHour |= ((1 << DS3231_12HOURS_AMPM_SHIFT) | (1 << DS3231_12HOURS_MODE_SHIFT));
+				this->m_flagPM = true;
 			} else {
-				auxiliar |= (((auxiliar / BCD_FACTOR) << BCD_SHIFT) | (auxiliar % BCD_FACTOR));
-				auxiliar |= (1 << DS3231_12HOURS_MODE_SHIFT);
+				auxiliarHour |= (((hour / BCD_FACTOR) << BCD_SHIFT) | (hour % BCD_FACTOR));
+				auxiliarHour |= (1 << DS3231_12HOURS_MODE_SHIFT);
+				this->m_flagPM = false;
 			}
-		} else auxiliar |= (((auxiliar / BCD_FACTOR) << BCD_SHIFT) | (auxiliar % BCD_FACTOR));
+		} else {
+			this->m_flagPM = false;
+			auxiliarHour |= (((hour / BCD_FACTOR) << BCD_SHIFT) | (hour % BCD_FACTOR));
+			// auxiliarHour &= ~((1 << DS3231_12HOURS_MODE_SHIFT) | (1 << DS3231_12HOURS_AMPM_SHIFT));
+		}
 	} else {
 		this->m_statusRTC = RTC_HOUR_INVALID;
 		return this->getStatus(); // Returns with some errors during the configuration.
 	}
 
-	if (this->transmitHour(auxiliar)) return this->getStatus(); // Returns with some errors during the configuration.
+	this->transmitTime(auxiliarSecond, auxiliarMinute, auxiliarHour);
 	return this->getStatus();
 }
 
 RTC_result_t DS3231::setCalendar(uint8_t date, uint8_t month, uint16_t year) {
-	uint8_t auxiliar = 0;
+	uint8_t auxiliarDate = 0, auxiliarMonth = 0, auxiliarYear = 0;
 	this->m_statusRTC = RTC_OK;
 
 	if (date > MAX_DATE) {
 		this->m_statusRTC = RTC_DATE_INVALID;
 		return this->getStatus(); // Returns with some errors during the configuration.
-	} else auxiliar |= (((date / BCD_FACTOR) << BCD_SHIFT) | (date % BCD_FACTOR));
-
-	if (this->transmitDate(auxiliar)) return this->getStatus(); // Returns with some errors during the configuration.
+	} else auxiliarDate |= (((date / BCD_FACTOR) << BCD_SHIFT) | (date % BCD_FACTOR));
 
 	if (month > MAX_MONTH) {
 		this->m_statusRTC = RTC_MONTH_INVALID;
 		return this->getStatus(); // Returns with some errors during the configuration.
-	} else auxiliar |= (((month / BCD_FACTOR) << BCD_SHIFT) | (month % BCD_FACTOR));
-
-	if (this->transmitMonth(auxiliar)) return this->getStatus(); // Returns with some errors during the configuration.
+	} else auxiliarMonth |= (((month / BCD_FACTOR) << BCD_SHIFT) | (month % BCD_FACTOR));
 
 	if (year > MAX_YEAR) {
 		this->m_statusRTC = RTC_YEAR_INVALID;
 		return this->getStatus(); // Returns with some errors during the configuration.
-	} else auxiliar |= (uint8_t)((((year % 100) / BCD_FACTOR) << BCD_SHIFT) | ((year % 100) % BCD_FACTOR));
+	} else auxiliarYear |= (uint8_t)((((year % 100) / BCD_FACTOR) << BCD_SHIFT) | ((year % 100) % BCD_FACTOR));
 
-	if (this->transmitYear(auxiliar)) return this->getStatus(); // Returns with some errors during the configuration.
+	this->transmitCalendar(auxiliarDate, auxiliarMonth, auxiliarYear);
 	return this->getStatus();
+}
+
+void DS3231::changeHoursMode(hoursMode_t hoursMode) {
+	this->m_hoursMode = hoursMode;
+	this->m_flagPM = false;
 }
 
 //char *DS3231::print(char RTCstr[RTC_STR_SIZE]) {

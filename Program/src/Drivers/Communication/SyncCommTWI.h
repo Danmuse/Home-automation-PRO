@@ -33,9 +33,9 @@ private:
 	virtual statusComm_t transmitStopBit(void) = 0;
 protected:
 	virtual statusComm_t transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, actionComm_t action = WRITE) = 0;
-	virtual statusComm_t receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t *value, actionComm_t action = READ) = 0;
-	virtual statusComm_t transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t value[], actionComm_t action = WRITE) = 0;
-	virtual statusComm_t receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t *value[], actionComm_t action = READ) = 0;
+	virtual statusComm_t receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, actionComm_t action = READ) = 0;
+	virtual statusComm_t transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], actionComm_t action = WRITE) = 0;
+	virtual statusComm_t receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t* values[], actionComm_t action = READ) = 0;
 public:
 	virtual void I2C_IRQHandler(void) = 0;
 	virtual ~SyncCommTWI() = default;

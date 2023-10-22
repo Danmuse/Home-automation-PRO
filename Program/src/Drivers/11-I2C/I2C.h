@@ -54,9 +54,9 @@ private:
 	statusComm_t transmitStopBit(void) override;
 protected:
 	statusComm_t transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, actionComm_t action = WRITE) override;
-	statusComm_t receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t *value, actionComm_t action = READ) override;
-	statusComm_t transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t value[], actionComm_t action = WRITE) override;
-	statusComm_t receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t *value[], actionComm_t action = READ) override;
+	statusComm_t receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, actionComm_t action = READ) override;
+	statusComm_t transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], actionComm_t action = WRITE) override;
+	statusComm_t receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t* values[], actionComm_t action = READ) override;
 
 	void I2C_IRQHandler(void) override;
 public:

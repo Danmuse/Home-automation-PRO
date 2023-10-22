@@ -129,21 +129,21 @@ int main(void) {
 	LED_GREEN.ClearPin();
 	LED_BLUE.ClearPin();
 
-	if (g_ds3231->set(0, 0, 0, 1, 1, 2000)) {
+	if (g_ds3231->set(30, 59, 23, 1, 1, 2000)) {
 		LED_GREEN.SetPin();
 		LED_RED.SetPin();
 	} else LED_RED.ClearPin();
 
-	RTC_t rtc_t;
+	RTC_st rtc;
 
 	while (1) {
-		rtc_t = g_ds3231->get();
+		rtc = g_ds3231->get();
 		if (g_ds3231->getStatus()) {
 			LED_GREEN.SetPin();
 			LED_BLUE.SetPin();
 		} else LED_BLUE.ClearPin();
-		g_display->set(rtc_t.TIME.MIN, 0);
-		g_display->set(rtc_t.TIME.SEC, 1);
+		g_display->set(rtc.TIME.HOUR, 0);
+		g_display->set(rtc.TIME.MIN, 1);
 		g_timers_list.TimerEvents();
 		delay(1000);
 	}
