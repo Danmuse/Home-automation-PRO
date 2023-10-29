@@ -64,7 +64,7 @@ float getFloat(byteReg_ut reg) {
 }
  */
 
-M24C16::M24C16() : I2C(TWI_CHANNEL, I2C_SCL, I2C_SDA),
+M24C16::M24C16() : I2C(I2C0_SCL, I2C0_SDA),
 m_statusEEPROM{EEPROM_OK} { }
 
 /*** EXAMPLE OF CODE ***
@@ -289,7 +289,7 @@ M24C16::~M24C16() { }
 ///////////////////////////////
 
 void initM24C16(void) {
-	#if defined(I2C0_PINS) || defined(I2C1_PINS)
+	#if defined(I2C0_PINS) || defined(I2C1_PINS) || defined(I2C2_PINS) || defined(I2C3_PINS)
 
 	static M24C16 eeprom;
 

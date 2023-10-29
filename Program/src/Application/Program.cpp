@@ -124,7 +124,27 @@ int main(void) {
 	initDevice();
 	initDisplay();
 	initDS3231();
+	initPreset();
+	initUSB0();
 
+	int32_t valueADC = 0;
+
+	while (1) {
+		valueADC = g_preset->get();
+		g_display->set(valueADC);
+		g_timers_list.TimerEvents();
+		delay(1000);
+	}
+
+	/*
+	while (1) {
+		g_usb->Transmit("INFO 2\n", 7);
+		g_timers_list.TimerEvents();
+		delay(1000);
+	}
+	*/
+
+	/*
 	LED_RED.ClearPin();
 	LED_GREEN.ClearPin();
 	LED_BLUE.ClearPin();
@@ -147,6 +167,7 @@ int main(void) {
 		g_timers_list.TimerEvents();
 		delay(1000);
 	}
+	*/
 }
 
 #endif // DEBUG_MODE macro definition in precompile stage

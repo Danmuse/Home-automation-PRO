@@ -11,36 +11,24 @@
 
 #include <vector>
 #include "AsyncComm.h"
-#include "GPIO.h"
+#include "ProgramConfig.h"
 
 #if defined (__cplusplus)
 extern "C" {
 	void UART0_IRQHandler(void);
-}
-extern "C" {
 	void UART1_IRQHandler(void);
-}
-extern "C" {
 	void UART2_IRQHandler(void);
-}
-extern "C" {
 	void UART3_IRQHandler(void);
-}
-extern "C" {
 	void UART4_IRQHandler(void);
 }
 #endif
 
-#define MAX_USART_CHANNELS 5
-
 #define RX_IDX 0
 #define TX_IDX 1
 
-#define USART_USB USART0
-//	#define PORT_RX_USB	Gpio::PORT0
-//	#define PORT_TX_USB	Gpio::PORT0
-//	#define PIN_RX_USB	24
-//	#define PIN_TX_USB	25
+#define MAX_USART_CHANNELS 5
+
+#define USART_OFFSET_BASE (0x4000U)
 
 class UART : protected std::vector<Gpio>, public AsyncComm {
 private:
@@ -51,14 +39,15 @@ private:
 	uint32_t	m_indexTXIn, m_indexTXOut, m_maxTX;	//!< TX buffer input position - TX buffer output position - TX buffer size
 	bool 		m_flagTX;							//!< Error in sending data (Buffer overload)
 public:
-	enum parity_t 		{ none_parity, even = 2, odd };
-	enum data_bits_t	{ seven_bits, eight_bits };
+	enum parity_t 		{ NONE, EVEN = 2, ODD };
+	enum data_bits_t	{ SEVEN_BITS, EIGHT_BITS };
+	enum channel_t		{ UART0, UART1, UART2, UART3, UART4 };
 
 	UART() = delete;
-	UART(const Gpio& RX, const Gpio& TX, uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX);
+	UART(const Gpio& RX, const Gpio& TX, channel_t channel = UART0, uint32_t baudrate = 9600, data_bits_t data_bits = EIGHT_BITS, parity_t parity = NONE, uint32_t maxRX = 64, uint32_t maxTX = 64);
 	void Transmit(const char *message) override;
-	void Transmit(const void *message, uint32_t n) override;
-	void *Message(void *message, uint32_t n) override;
+	void Transmit(const char *message, uint32_t n) override;
+	char *Reception(char *message, uint32_t n) override;
 	void SetBaudRate(uint32_t baudrate);
 	virtual ~UART();
 private:
@@ -71,8 +60,12 @@ private:
 	bool popRX(uint8_t *data) override;
 	void pushTX(uint8_t data) override;
 	bool popTX(uint8_t *data) override;
-	void EnableInterupt(void);
-	void DisableInterupt(void);
+	void EnableInterrupt(void);
+	void DisableInterrupt(void);
 };
+
+extern UART *g_usb;
+
+void initUSB0(void);
 
 #endif /* UART_H_ */

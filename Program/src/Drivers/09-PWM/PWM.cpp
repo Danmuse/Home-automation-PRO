@@ -73,23 +73,19 @@ void PWM::setDuty(float duty) {
 
 void PWM::enable(void) {
     uint8_t eventNumber = this->m_channel + 1;
-
     SCT->EV[eventNumber].STATE = 1; // Other than '0'
     SCT->EV[eventNumber].CTRL = eventNumber | (1 << 12); // Only uses specified match event
     SCT->OUT[this->m_channel].SET = 1; // Turn on the first channel
     SCT->OUT[this->m_channel].CLR = (1 << eventNumber); // Turn off the following channel
-
     this->bind();
 }
 
 void PWM::disable(void) {
     uint8_t eventNumber = this->m_channel + 1;
-
     SCT->EV[eventNumber].STATE = 0;
     SCT->EV[eventNumber].CTRL = 0;
     SCT->OUT[this->m_channel].SET = 0;
     SCT->OUT[this->m_channel].CLR = 0;
-
     this->unbind();
 }
 

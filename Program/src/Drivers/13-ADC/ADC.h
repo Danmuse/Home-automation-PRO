@@ -10,19 +10,23 @@
 #define ADC_H_
 
 #include "ADCGroup.h"
-#include "GPIO.h"
+#include "ProgramConfig.h"
 
 class ADC : protected Gpio {
 private:
-	static ADC_Group* m_global_adc;		/**< Grupo de ADCs. Realiza la conversión y configuración del periférico ADC por completo. */
-	uint8_t m_channel;					/**< Canal del ADC actual*/
+	static ADC_Group* m_global_adc;		//!< Covers the conversion and configuration of the Analog-Digital Converter (<tt>ADC</tt>) peripheral completely.
+	uint8_t m_channel;					//!< Current Analog-Digital Converter (<tt>ADC</tt>) channel.
 public:
-	ADC(uint8_t channel, uint32_t clk_freq = 0, uint32_t sample_rate = 0);
-	int32_t Get(void);
-	bool IsResultReady(void);
-	void Trigger(void);
-	void Inicializar(void);
+	ADC(const Gpio& ADC, uint32_t clk_freq = 0, uint32_t sample_rate = 0);
+	void initialize(void);
+	int32_t get(void);
+	void trigger(void);
+	bool getStatus(void);
 	virtual ~ADC();
 };
+
+extern ADC *g_preset;
+
+void initPreset(void);
 
 #endif /* ADC_H_ */

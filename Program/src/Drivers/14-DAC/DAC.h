@@ -17,36 +17,35 @@
 
 class DAC : protected Gpio {
 public:
-	/** Canales del DAC */
-	enum channel_t { DAC_CHANNEL_0, DAC_CHANNEL_1 };
-	/** Error en la clase DAC  */
+	//!< Digital-Analog Converter (<tt>DAC</tt>) channels.
+	enum channel_t { FST_CHANNEL, SND_CHANNEL };
+	//!< <tt>error_t</tt> enumeration reports any error. All thresholds will not be taken into account.
 	enum error_t { OK, ERROR };
 private:
-	/** Offset of the registers */
-	enum offset_t { SWM_DACOUT_0 = 26, SWM_DACOUT_1 = 27, SYS_DACOUT_0 = 27, SYS_DACOUT_1 = 1, IOCON_DAC = 16 };
+	enum offset_t { FST_SWM_OUT = 26, SND_SWM_OUT = 27, FST_SYS_OUT = 27, SND_SYS_OUT = 1, IOCON_DAC = 16 };
 
-	const channel_t m_channel;	/**< Canal del objeto DAC  */
-	uint16_t m_buffer;			/**< Buffer del valor del DAC  */
-	uint16_t m_max_range;		/**< Rango máximo de valores dado por el usuario  */
-	error_t m_error;			/**< Error en la clase DAC  */
+	const channel_t m_channel;	//!< Digital-Analog Converter (<tt>DAC</tt>) channel.
+	uint16_t m_buffer;			//!< Digital-Analog Converter (<tt>DAC</tt>) buffer values.
+	uint16_t m_max_range;		//!< Maximum range of values provided by the user.
+	error_t m_error;			//!< Member that indicates an error happened.
 
-	void PowerDAC(void);
+	void EnablePower(void);
 	void EnableClock(void);
 	void EnableSWM(void);
-	void EnableIOCONDAC(void);
+	void EnableIOCON(void);
 
-	void UnPowerDAC(void);
+	void DisablePower(void);
 	void DisableClock(void);
 	void DisableSWM(void);
-	void DisableIOCONDAC(void);
+	void DisableIOCON(void);
 public:
 	DAC(channel_t channel, uint16_t max_range = MAX_DAC_DEFAULT_VALUE);
-	error_t Inicializar(void);
-	void Set(uint16_t value);
-	uint16_t Get(void) const;
+	error_t initialize(void);
+	void set(uint16_t value);
+	uint16_t get(void) const;
 
-	void SetMaxRange(uint16_t max_range);
-	uint16_t GetMaxRange(void) const;
+	void setMaxRange(uint16_t max_range);
+	uint16_t getMaxRange(void) const;
 
 	DAC& operator=(uint16_t value);
 	bool operator==(uint16_t value) const;

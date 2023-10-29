@@ -20,23 +20,18 @@
 //#define CN9_PINS	// SWDIO [PIN 2] - SWCLK [PIN 3] - DIG_IN [PIN 4] - KEY_RESET [PIN 5]
 #define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 #define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
-//#define CN13_PINS	// RX1_IN {RX} - TX1_OUT {TX} - EN_OUT {EN}
+#define CN13_PINS	// RX1_IN {RX} - TX1_OUT {TX} - EN_OUT {EN}
 //#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 #define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
+#define ANALOG_PIN	// ANALOG_POT {INTERNAL}
+
 #define I2C0_PINS	// I2C0_SCL - I2C0_SDA
 //#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
 
-//	ConfigSWM(SPI0_SCK,   P0_20);
-//	ConfigSWM(SPI0_MISO,  P0_21);
-//	ConfigSWM(SPI0_MOSI,  P0_25);
-//	ConfigSWM(SPI0_SSEL0, P0_24);
-//
-//	ConfigSWM(SPI1_SCK,   P0_6);
-//	ConfigSWM(SPI1_MISO,  P0_7);
-//	ConfigSWM(SPI1_MOSI,  P1_19);
-//	ConfigSWM(SPI1_SSEL0, P1_18);
+//#define SPI0_PINS	// SPI0_SCK - SPI0_MISO - SPI0_MOSI - SPI0_SSEL0
+//#define SPI1_PINS	// SPI1_SCK - SPI1_MISO - SPI1_MOSI - SPI1_SSEL0
 
 #if defined(CN6_PINS) && defined(CN19_PINS)
 #error "Macros CN6_PINS and CN19_PINS cannot be defined simultaneously"
@@ -50,12 +45,24 @@
 #error "Macros CN13_PINS and I2C1_PINS cannot be defined simultaneously"
 #endif
 
-#if defined(I2C0_PINS) && defined(I2C1_PINS)
-#error "Macros I2C0_PINS and I2C1_PINS cannot be defined simultaneously"
+#if defined(CN12_PINS) && defined(SPI0_PINS)
+#error "Macros CN12_PINS and SPI0_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN8_PINS) && defined(SPI1_PINS)
+#error "Macros CN8_PINS and SPI1_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_PIN) && defined(SPI1_PINS)
+#error "Macros ANALOG_PIN and SPI1_PINS cannot be defined simultaneously"
 #endif
 
 #if !defined(CN12_PINS)
 #warning "Macro CN12_PINS is not defined and Seven Segment Display module initialization will have no effect"
+#endif
+
+#if !defined(CN13_PINS)
+#warning "Macro CN13_PINS is not defined and USB initialization will have no effect"
 #endif
 
 #if !defined(CN16_PINS)
@@ -149,23 +156,33 @@ extern Gpio DIG_OUT1;
 extern Gpio DIG_OUT2;
 #endif // CN19_PINS
 
+#ifdef ANALOG_PIN
 extern Gpio ANALOG_POT;
+#endif // ANALOG_PIN
 
 #ifdef I2C0_PINS
-
-#define TWI_CHANNEL I2C0
-
-extern Gpio I2C_SCL;
-extern Gpio I2C_SDA;
+extern Gpio I2C0_SCL;
+extern Gpio I2C0_SDA;
 #endif // I2C0_PINS
 
 #ifdef I2C1_PINS
-
-#define TWI_CHANNEL I2C1
-
-extern Gpio I2C_SCL;
-extern Gpio I2C_SDA;
+extern Gpio I2C1_SCL;
+extern Gpio I2C1_SDA;
 #endif // I2C1_PINS
+
+#ifdef SPI0_PINS
+extern Gpio SPI0_SCK;
+extern Gpio SPI0_MISO;
+extern Gpio SPI0_MOSI;
+extern Gpio SPI0_SSEL0;
+#endif // SPI0_PINS
+
+#ifdef SPI1_PINS
+extern Gpio SPI1_SCK;
+extern Gpio SPI1_MISO;
+extern Gpio SPI1_MOSI;
+extern Gpio SPI1_SSEL0;
+#endif // SPI1_PINS
 
 #endif /* PROGRAM_CONFIG_H_ */
 

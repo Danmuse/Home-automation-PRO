@@ -55,8 +55,10 @@ Gpio BCD_CLK(Gpio::PORT0, 19, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN12_PINS
 
 #ifdef CN13_PINS
-Gpio RX1_IN(Gpio::PORT0, 17, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
-Gpio TX1_OUT(Gpio::PORT0, 16, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio RX1_IN(Gpio::PORT0, 24, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
+Gpio TX1_OUT(Gpio::PORT0, 25, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+//Gpio RX1_IN(Gpio::PORT0, 17, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
+//Gpio TX1_OUT(Gpio::PORT0, 16, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio EN_OUT(Gpio::PORT0, 0, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN13_PINS
 
@@ -83,15 +85,30 @@ Gpio DIG_OUT1(Gpio::PORT1, 1, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio DIG_OUT2(Gpio::PORT1, 2, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN19_PINS
 
-Gpio ANALOG_POT(Gpio::PORT0, 7, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
+#ifdef ANALOG_PIN
+Gpio ANALOG_POT(Gpio::PORT0, 7, Gpio::PULLDOWN, Gpio::INPUT, Gpio::LOW);
+#endif // ANALOG_PIN
 
 #ifdef I2C0_PINS
-Gpio I2C_SDA(Gpio::PORT0, 11, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
-Gpio I2C_SCL(Gpio::PORT0, 10, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C0_SDA(Gpio::PORT0, 11, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C0_SCL(Gpio::PORT0, 10, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
 #endif // I2C0_PINS
 
 #ifdef I2C1_PINS
-Gpio I2C_SDA(Gpio::PORT0, 17, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
-Gpio I2C_SCL(Gpio::PORT0, 16, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C1_SDA(Gpio::PORT0, 17, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C1_SCL(Gpio::PORT0, 16, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
 #endif // I2C1_PINS
 
+#ifdef SPI0_PINS
+Gpio SPI0_SCK(Gpio::PORT0, 20, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+Gpio SPI0_MISO(Gpio::PORT0, 21, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+Gpio SPI0_MOSI(Gpio::PORT0, 25, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+Gpio SPI0_SSEL0(Gpio::PORT0, 24, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+#endif // SPI0_PINS
+
+#ifdef SPI1_PINS
+Gpio SPI1_SCK(Gpio::PORT0, 6, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+Gpio SPI1_MISO(Gpio::PORT0, 7, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+Gpio SPI1_MOSI(Gpio::PORT1, 19, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+Gpio SPI1_SSEL0(Gpio::PORT1, 18, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+#endif // SPI1_PINS

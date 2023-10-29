@@ -21,22 +21,30 @@
 #include "M24C16.h"
 #include "Semaphore.h"
 
+#include "UART.h"
+#include "ADC.h"
+#include "DAC.h"
+
 /////////////////////////////////
 /// HARDWARE GLOBAL VARIABLES ///
 /////////////////////////////////
 
 /// Global variables defined in the program to resolve the initialization of hardware modules.
+/// To use them you must initialize the peripherals by entering the corresponding initialization function within the main scope of the program.
 /// --- "SevenSegmentDisplay *g_display" located in "Hardware/01-SevenSegmentDisplay/Display/SevenSegmentDisplay.h"
 /// --- "Keyboard *g_keyboard" located in "Hardware/02-MatrixKeyboard/Keyboard.h"
 /// --- "LCD1602 *g_lcd1602" located in "Hardware/03-LCD1602/LCD1602.h"
 /// --- "DS3231 *g_ds3231" located in "Hardware/04-DS3231/DS3231.h"
 /// --- "FM24C16U *g_eeprom" located in "Hardware/05-M24C16/M24C16.h"
+/// --- "ADC *g_preset" located in "Drivers/13-ADC/ADC.h"
+/// --- "UART *g_usb" located in "Drivers/10-UART/UART.h"
 
 /////////////////////////////////
 /// SOFTWARE GLOBAL VARIABLES ///
 /////////////////////////////////
 
 /// Global variables defined in the program for macro configurations.
+/// To use them you must initialize the peripherals by entering "initDevice" function within the main scope of the program.
 /// --- "uint32_t g_systick_freq" located in "Firmware/systick.h"
 
 /// Global variables defined in the program to simplify the use of classes.

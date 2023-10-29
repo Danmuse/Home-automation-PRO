@@ -9,8 +9,8 @@
 
 SyncCommTWI *g_TWI[MAX_I2C_CHANNELS] = { nullptr, nullptr, nullptr, nullptr };
 
-I2C::I2C(I2C_Type* TWI, const Gpio& SCL, const Gpio& SDA, frequencyComm_t frequency) : std::vector<Gpio>({SCL, SDA}),
-m_TWI{TWI},
+I2C::I2C(const Gpio& SCL, const Gpio& SDA, channel_t channel, frequencyComm_t frequency) : std::vector<Gpio>({SCL, SDA}),
+m_TWI{channel < TWI2 ? (I2C_Type *)(I2C0_BASE + channel*I2C_OFFSET_BASE) : (I2C_Type *)(I2C2_BASE + (channel % 2)*I2C_OFFSET_BASE)},
 m_frequency{frequency} {
 	if (this->m_TWI == I2C0 && g_TWI[0] != nullptr);
 	else if (this->m_TWI == I2C1 && g_TWI[1] != nullptr);
@@ -127,15 +127,22 @@ SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t 
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], SyncCommTWI::actionComm_t action) {
-	////////////////////////////////////////////
-	// Add the corresponding fragment of code //
-	////////////////////////////////////////////
+SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, SyncCommTWI::actionComm_t action) {
+	prepareConditions(address, regOffset, action);
+
+	/*
+	if (!(this->awaitACK())) {
+		this->m_TWI->MSTDAT = value; // Charge the data into I2C buffer
+		this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
+	} else return TWI_FAILURE;
+	*/
+
+	if (this->transmitStopBit()) return TWI_FAILURE;
 
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t* values[], SyncCommTWI::actionComm_t action) {
+SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t* values[], size_t numBytes, SyncCommTWI::actionComm_t action) {
 	////////////////////////////////////////////
 	// Add the corresponding fragment of code //
 	////////////////////////////////////////////

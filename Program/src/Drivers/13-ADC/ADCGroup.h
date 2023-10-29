@@ -14,84 +14,78 @@
 #if defined (__cplusplus)
 extern "C" {
 	void ADC_SEQA_IRQHandler(void);
-}
-extern "C" {
 	void ADC_SEQB_IRQHandler(void);
-}
-extern "C" {
 	void ADC_THCMP_IRQHandler(void);
-}
-extern "C" {
 	void ADC_OVR_IRQHandler(void);
 }
 #endif
 
 #define MAX_ADC_CHANNELS 12
-#define CLOCKS_PER_SAMPLE 25
-#define CLK_500KHz 500000
+#define ADC_CLOCKS_PER_SAMPLE 25
+#define ADC_STD_FREQUENCY 500000
 
 class ADC_Group {
 public:
-	/** Tipo de interrupciones del ADC */
+	//!< <tt>adc_isr_t</tt> enumeration indicates the Analog-Digital Converter (<tt>ADC</tt>) interrupt types.
 	enum adc_isr_t { SEQA_ISR, SEQB_ISR, THCMP_ISR, OVR_ISR };
-	/** Fuente de la interrupcion del ADC */
+	//!< <tt>irq_source_inten_t</tt> enumeration indicates the Analog-Digital Converter (<tt>ADC</tt>) interrupt source.
 	enum irq_source_inten_t { ADC_SEQA_IRQ_INTEN, ADC_SEQB_IRQ_INTEN, ADC_OVR_IRQ_INTEN, INVALID_IRQ_INTEN = 0xFF };
-	// Todas las de threshold no serán tenidas en cuenta
+	//!< <tt>error_t</tt> enumeration reports any error. All thresholds will not be taken into account.
 	enum error_t { OK, ERROR };
 private:
-	/** Fuente de interrupcion NVIC */
+	//!< Nested Vectored Interrupt Controller (<tt>NVIC</tt>) interrupt source.
 	enum irq_source_nvic_t { ADC_SEQA_IRQ = 16, ADC_SEQB_IRQ = 17, ADC_THCMP_IRQ = 18, ADC_OVR_IRQ = 19, INVALID_IRQ = 0xFF };
-	/** Configuracion de modo de voltaje */
+	//!< Analog-Digital Converter (<tt>ADC</tt>) settings for voltage mode.
 	enum trm_voltage_config_t { HIGH_VOLTAGE, LOW_VOLTAGE };
-	/** Tipo de conversion del ADC */
+	//!< Analog-Digital Converter (<tt>ADC</tt>) conversions types..
 	enum conversion_mode_t { CONVERSION_INTERRUPT, SEQUENCE_INTERRUPT };
 
-	uint32_t m_sample_rate;					/**< Frecuencia de muestreo del ADC  */
-	uint32_t m_clk_freq;					/**< Frecuencia del clock del ADC  */
-	uint16_t m_enabled_channels;			/**< Canales habilitados del ADC  */
-	uint32_t m_result[MAX_ADC_CHANNELS];	/**< Vector con resultados de conversión del ADC */
-	bool m_result_ready[MAX_ADC_CHANNELS];	/**< Vector con flags de resultados listos  */
+	uint32_t m_sample_rate;					//!< Sampling frequency of the Analog-Digital Converter (<tt>ADC</tt>).
+	uint32_t m_clk_freq;					//!< Clock frequency of the Analog-Digital Converter (<tt>ADC</tt>).
+	uint16_t m_enabled_channels;			//!< Channels enabled of the Analog-Digital Converter (<tt>ADC</tt>).
+	uint32_t m_result[MAX_ADC_CHANNELS];	//!< Conversion results vector of the Analog-Digital Converter (<tt>ADC</tt>).
+	bool m_result_ready[MAX_ADC_CHANNELS];	//!< Vector of the states for each prepared result of the Analog-Digital Converter (<tt>ADC</tt>).
 
-	void InitADC();
+	void initADC(void);
 	uint32_t CalculateDivisor(uint32_t sample_rate);
-	void SetADCVoltage(trm_voltage_config_t config);
-	void EnableADCPower(void);
-	void EnableADCClock(void);
-	void ConfigSWM(uint8_t channel, bool enable);
+	void ConfigVoltage(trm_voltage_config_t config);
+	void EnablePower(void);
+	void EnableClock(void);
+	void EnableSWM(uint8_t channel, bool enable);
 	void CalibrateADC(void);
-	void ADCConfig(void);
-	void AddChannel_to_SequenceA(uint8_t channel);
-	void AddChannel_to_SequenceB(uint8_t channel);
-	void RemoveChannelOfSequenceA(uint8_t channel);
-	void RemoveChannelOfSequenceB(uint8_t channel);
-	void SetSeqAMode(conversion_mode_t mode);
-	void SetSeqBMode(conversion_mode_t mode);
-	void EnableSeqA(void);
-	void EnableSeqB(void);
-	void DisableSeqA(void);
-	void DisableSeqB(void);
-	void SetUpSeqA(void);
-	void EnableNvicADCInterrupt(irq_source_nvic_t source);
-	void DisableNvicADCInterrupt(irq_source_nvic_t source);
-	irq_source_nvic_t GetNvicIrq(irq_source_inten_t irq);
-	void handlerSeqA(void);
-	uint16_t GetResult(uint8_t channel);
+	void Config(void);
+	void bindSEQA(uint8_t channel);
+	void bindSEQB(uint8_t channel);
+	void unbindSEQA(uint8_t channel);
+	void unbindSEQB(uint8_t channel);
+	void setModeSEQA(conversion_mode_t mode);
+	void setModeSEQB(conversion_mode_t mode);
+	void EnableSEQA(void);
+	void EnableSEQB(void);
+	void DisableSEQA(void);
+	void DisableSEQB(void);
+	void ConfigSEQA(void);
+	void EnableNVIC_IRQ(irq_source_nvic_t source);
+	void DisableNVIC_IRQ(irq_source_nvic_t source);
+	irq_source_nvic_t getNVIC_IRQ(irq_source_inten_t irq);
+	void HandlerSEQA(void);
+	uint16_t getResult(uint8_t channel);
 public:
 	ADC_Group(uint32_t clk_freq, uint32_t sample_rate, bool init_channel0 = false);
-	void Inicializar(void);
+	void initialize(void);
 
-	void SetLowPowerMode(bool low_power);
-	void SetSampleRate(void);
+	void setLowPowerMode(bool low_power);
+	void setSampleRate(void);
 
-	void EnableIrq(irq_source_inten_t irq);
-	void DisableIrq(irq_source_inten_t irq);
+	void EnableIRQ(irq_source_inten_t irq);
+	void DisableIRQ(irq_source_inten_t irq);
 
-	ADC_Group::error_t InitADCChanel(uint8_t channel);		// Adds a channel to the ADC
-	ADC_Group::error_t RemoveADCChanel(uint8_t channel);	// Removes a channel to the ADC
-	void TriggerStartSeqA(void);
+	error_t bindChannel(uint8_t channel);
+	error_t unbindChannel(uint8_t channel);
+	void triggerSEQA(void);
 
-	int32_t GetValue(uint8_t channel);
-	bool IsResultReady(uint8_t channel) const;
+	int32_t getValue(uint8_t channel);
+	bool checkStatus(uint8_t channel) const;
 	void Handler(adc_isr_t isr);
 	virtual ~ADC_Group();
 };

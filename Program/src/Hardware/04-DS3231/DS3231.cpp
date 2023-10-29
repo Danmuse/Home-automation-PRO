@@ -29,7 +29,7 @@ int main(void) {
 
 DS3231 *g_ds3231 = nullptr;
 
-DS3231::DS3231() : I2C(TWI_CHANNEL, I2C_SCL, I2C_SDA),
+DS3231::DS3231() : I2C(I2C0_SCL, I2C0_SDA),
 m_statusRTC{RTC_OK},
 m_hoursMode{TWENTY_FOUR_HOURS_MODE},
 m_flagPM{false} { }
@@ -154,8 +154,8 @@ RTC_result_t DS3231::setTime(uint8_t second, uint8_t minute, uint8_t hour) {
 			}
 		} else {
 			this->m_flagPM = false;
-			auxiliarHour |= (((hour / BCD_FACTOR) << BCD_SHIFT) | (hour % BCD_FACTOR));
 			// auxiliarHour &= ~((1 << DS3231_12HOURS_MODE_SHIFT) | (1 << DS3231_12HOURS_AMPM_SHIFT));
+			auxiliarHour |= (((hour / BCD_FACTOR) << BCD_SHIFT) | (hour % BCD_FACTOR));
 		}
 	} else {
 		this->m_statusRTC = RTC_HOUR_INVALID;
@@ -207,7 +207,7 @@ DS3231::~DS3231() { }
 /////////////////////////////
 
 void initDS3231(void) {
-	#if defined(I2C0_PINS) || defined(I2C1_PINS)
+	#if defined(I2C0_PINS) || defined(I2C1_PINS) || defined(I2C2_PINS) || defined(I2C3_PINS)
 
 	static DS3231 ds3231;
 	ds3231.set(0, 0, 0, 1, 1, 2000);
