@@ -9,6 +9,7 @@
  */
 
 #include <cr_section_macros.h>
+#include <cstring>
 #include "board.h"
 
 #if !DEBUG_MODE
@@ -123,9 +124,12 @@ static void blue_red(PWM &blue, PWM &red) {
 int main(void) {
 	initDevice();
 	initDisplay();
-	initDS3231();
-	initPreset();
+//	initKeyboard();
+//	initLCD1602();
+//	initDS3231();
+//	initM24C16();
 	initUSB0();
+	initPreset(); // BREAKS!!
 
 	int32_t valueADC = 0;
 
@@ -135,39 +139,6 @@ int main(void) {
 		g_timers_list.TimerEvents();
 		delay(1000);
 	}
-
-	/*
-	while (1) {
-		g_usb->Transmit("INFO 2\n", 7);
-		g_timers_list.TimerEvents();
-		delay(1000);
-	}
-	*/
-
-	/*
-	LED_RED.ClearPin();
-	LED_GREEN.ClearPin();
-	LED_BLUE.ClearPin();
-
-	if (g_ds3231->set(30, 59, 23, 1, 1, 2000)) {
-		LED_GREEN.SetPin();
-		LED_RED.SetPin();
-	} else LED_RED.ClearPin();
-
-	RTC_st rtc;
-
-	while (1) {
-		rtc = g_ds3231->get();
-		if (g_ds3231->getStatus()) {
-			LED_GREEN.SetPin();
-			LED_BLUE.SetPin();
-		} else LED_BLUE.ClearPin();
-		g_display->set(rtc.TIME.HOUR, 0);
-		g_display->set(rtc.TIME.MIN, 1);
-		g_timers_list.TimerEvents();
-		delay(1000);
-	}
-	*/
 }
 
 #endif // DEBUG_MODE macro definition in precompile stage

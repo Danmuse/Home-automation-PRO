@@ -12,8 +12,6 @@ AsyncComm *g_usart[MAX_USART_CHANNELS] = { nullptr, nullptr, nullptr, nullptr, n
 UART *g_usb = nullptr;
 
 UART::UART(const Gpio& RX, const Gpio& TX, channel_t channel, uint32_t baudrate, data_bits_t data_bits, parity_t parity, uint32_t maxRX, uint32_t maxTX) : std::vector<Gpio>({RX, TX}),
-// m_RX{Gpio(PORT_RX_USB, PIN_RX_USB, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW)},
-// m_TX{Gpio(PORT_TX_USB, PIN_TX_USB, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH)},
 m_usart{(USART_Type *)(USART0_BASE + channel*USART_OFFSET_BASE)} {
 	m_bufferRX = new uint8_t[maxRX];
 	m_indexRXIn = m_indexRXOut = 0;
@@ -60,7 +58,7 @@ bool UART::popTX(uint8_t *data) {
 
 void UART::Transmit(const char *message) {
 	while (*message) {
-		this->pushTX(*message);
+		if (*message != 255 && *message != 252 && *message != 185 && *message != 12) this->pushTX(*message);
 		message++;
 
 		if (!this->m_flagTX) {
@@ -73,7 +71,6 @@ void UART::Transmit(const char *message) {
 void UART::Transmit(const char *message, uint32_t n) {
 	for (uint32_t index = 0; index < n; index++) {
 		this->pushTX(message[index]);
-
 		if (!this->m_flagTX) {
 			this->m_flagTX = true;
 			this->EnableInterrupt();
@@ -81,15 +78,13 @@ void UART::Transmit(const char *message, uint32_t n) {
 	}
 }
 
-char *UART::Reception(char *message, uint32_t n) {
+char *UART::Receive(char *message, uint32_t n) {
 	uint8_t data;
 	static uint32_t cont = 0;
 	char *ptr = message;
 
 	if (this->popRX(&data)) {
-		ptr[cont] = data;
-		cont ++;
-
+		if (data != 255 && data != 252 && data != 185 && data != 12) ptr[cont++] = data;
 		if (cont >= n || ptr[cont] == '\n') {
 			cont = 0;
 			return ptr;
@@ -99,12 +94,10 @@ char *UART::Reception(char *message, uint32_t n) {
 }
 
 void UART::EnableInterrupt(void) {
-//	this->m_usart->INTENSET = (1 << 0);	// Enable RX interruption.
 	this->m_usart->INTENSET = (1 << 2); // Enable TX interruption.
 }
 
 void UART::DisableInterrupt(void) {
-//	this->m_usart->INTENCLR = (1 << 0);	// Disable RX interruption.
 	this->m_usart->INTENCLR = (1 << 2); // Disable TX interruption.
 }
 
@@ -133,6 +126,8 @@ void UART::Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 	// The default value of the OSR register is 16
 	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1;
 	this->m_usart->CTL = 0;
+
+	this->m_usart->INTENSET = (1 << 0);	// Enable RX interruption.
 
 	if (this->m_usart == USART0) NVIC->ISER[0] |= (1 << 3);  // Enable UART0_IRQ
 	if (this->m_usart == USART1) NVIC->ISER[0] |= (1 << 4);  // Enable UART1_IRQ
@@ -208,13 +203,13 @@ UART::~UART() {
 ///////////////////////////
 
 void initUSB0(void) {
-	#ifdef CN13_PINS
+	#ifdef USB0_PINS
 
-	static UART usb(RX1_IN, TX1_OUT);
+	static UART usb(RX1_IN, TX1_OUT, UART::UART1);
 
 	g_usb = &usb;
 
-	#endif // CN13_PINS
+	#endif // USB0_PINS
 }
 
 void UART0_IRQHandler(void) {

@@ -20,12 +20,14 @@
 //#define CN9_PINS	// SWDIO [PIN 2] - SWCLK [PIN 3] - DIG_IN [PIN 4] - KEY_RESET [PIN 5]
 #define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 #define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
-#define CN13_PINS	// RX1_IN {RX} - TX1_OUT {TX} - EN_OUT {EN}
+#define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
 //#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 #define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
 #define ANALOG_PIN	// ANALOG_POT {INTERNAL}
+
+#define USB0_PINS	// RX1_IN {RX} - TX1_OUT {TX}
 
 #define I2C0_PINS	// I2C0_SCL - I2C0_SDA
 //#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
@@ -47,6 +49,10 @@
 
 #if defined(CN12_PINS) && defined(SPI0_PINS)
 #error "Macros CN12_PINS and SPI0_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(USB0_PINS) && defined(SPI0_PINS)
+#error "Macros USB0_PINS and SPI0_PINS cannot be defined simultaneously"
 #endif
 
 #if defined(CN8_PINS) && defined(SPI1_PINS)
@@ -128,8 +134,8 @@ extern Gpio BCD_CLK;
 #endif // CN12_PINS
 
 #ifdef CN13_PINS
-extern Gpio RX1_IN;
-extern Gpio TX1_OUT;
+extern Gpio RX0_IN;
+extern Gpio TX0_OUT;
 extern Gpio EN_OUT;
 #endif // CN13_PINS
 
@@ -159,6 +165,11 @@ extern Gpio DIG_OUT2;
 #ifdef ANALOG_PIN
 extern Gpio ANALOG_POT;
 #endif // ANALOG_PIN
+
+#ifdef USB0_PINS
+extern Gpio RX1_IN;
+extern Gpio TX1_OUT;
+#endif // USB0_PINS
 
 #ifdef I2C0_PINS
 extern Gpio I2C0_SCL;

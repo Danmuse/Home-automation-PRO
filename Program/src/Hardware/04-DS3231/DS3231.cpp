@@ -180,7 +180,7 @@ RTC_result_t DS3231::setCalendar(uint8_t date, uint8_t month, uint16_t year) {
 		return this->getStatus(); // Returns with some errors during the configuration.
 	} else auxiliarMonth |= (((month / BCD_FACTOR) << BCD_SHIFT) | (month % BCD_FACTOR));
 
-	if (year > MAX_YEAR) {
+	if (year < MIN_YEAR || year > MAX_YEAR) {
 		this->m_statusRTC = RTC_YEAR_INVALID;
 		return this->getStatus(); // Returns with some errors during the configuration.
 	} else auxiliarYear |= (uint8_t)((((year % 100) / BCD_FACTOR) << BCD_SHIFT) | ((year % 100) % BCD_FACTOR));
@@ -194,11 +194,19 @@ void DS3231::changeHoursMode(hoursMode_t hoursMode) {
 	this->m_flagPM = false;
 }
 
-//char *DS3231::print(char RTCstr[RTC_STR_SIZE]) {
+char* DS3231::print(void) {
+	static char RTCstr[RTC_STR_SIZE];
+    RTCstr[0] = this->m_RTC.TIME.HOUR / 10 + '0'; RTCstr[1] = this->m_RTC.TIME.HOUR % 10 + '0'; RTCstr[2] = ':';
+    RTCstr[3] = this->m_RTC.TIME.MIN / 10 + '0'; RTCstr[4] = this->m_RTC.TIME.MIN % 10 + '0'; RTCstr[5] = ':';
+    RTCstr[6] = this->m_RTC.TIME.SEC / 10 + '0'; RTCstr[7] = this->m_RTC.TIME.SEC % 10 + '0'; RTCstr[8] = ' ';
+    RTCstr[9] = this->m_RTC.CALENDAR.DATE / 10 + '0'; RTCstr[10] = this->m_RTC.CALENDAR.DATE % 10 + '0'; RTCstr[11] = '/';
+    RTCstr[12] = this->m_RTC.CALENDAR.MONTH / 10 + '0'; RTCstr[13] = this->m_RTC.CALENDAR.MONTH % 10 + '0'; RTCstr[14] = '/';
+    RTCstr[15] = this->m_RTC.CALENDAR.YEAR / 1000 + '0'; RTCstr[16] = (this->m_RTC.CALENDAR.YEAR / 100) % 10 + '0';
+    RTCstr[17] = (this->m_RTC.CALENDAR.YEAR / 10) % 10 + '0'; RTCstr[18] = this->m_RTC.CALENDAR.YEAR % 10 + '0'; RTCstr[19] = '\n';
 //	sprintf(RTCstr, "%02u:%02u:%02u %02u/%02u/%04u\n", this->m_RTC.TIME.HOUR, this->m_RTC.TIME.MIN, this->m_RTC.TIME.SEC,
 //			this->m_RTC.CALENDAR.DATE, this->m_RTC.CALENDAR.MONTH, this->m_RTC.CALENDAR.YEAR);
-//	return RTCstr;
-//}
+	return RTCstr;
+}
 
 DS3231::~DS3231() { }
 

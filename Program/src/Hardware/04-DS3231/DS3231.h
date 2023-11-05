@@ -9,7 +9,6 @@
 #ifndef DS3231_H_
 #define DS3231_H_
 
-// #include <stdio.h>
 #include "I2C.h"
 #include "ProgramConfig.h"
 
@@ -54,9 +53,11 @@
 #define MAX_MONTH 12 //!< <pre><strong>Value:</strong> 12
 //! @hideinitializer Maximum number allowed in the Current Year Register.
 #define MAX_YEAR 2099 //!< <pre><strong>Value:</strong> 2099
+//! @hideinitializer Minimum number allowed in the Current Year Register.
+#define MIN_YEAR 2023 //!< <pre><strong>Value:</strong> 2023
 
 //! @hideinitializer Number of characters to store the time captured by the Real Time Clock (<tt>RTC</tt>).
-#define RTC_STR_SIZE 21 //!< <pre><strong>Value:</strong> 21
+#define RTC_STR_SIZE 20 //!< <pre><strong>Value:</strong> 20
 
 //! @brief <b>RTC_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the Real Time Clock (<tt>RTC</tt>) operations can be found.
 typedef enum {
@@ -92,10 +93,7 @@ typedef struct {
 	RTC_calendar_st CALENDAR; //!< Current calendar stored in the Calendar Register.
 } RTC_st;
 
-// TODO (Mayor priority): Analyze the use of the "print" method along with its implementation including the <stdio.h> header.
-// It may be wise to create a private method with the same functionality as "sprintf" standard function.
-// Print a different message depending on the hours mode used.
-// TODO (Minor priority): Inherit from CALLBACK and update a global variable every one second.
+// TODO (Minor priority): Inherit from CALLBACK and update a global variable (RTC_st g_timeClock) every one second.
 // If communication with I2C is not achieved, its variables must be reinitialized.
 
 class DS3231 : protected I2C {
@@ -128,7 +126,7 @@ public:
 	RTC_result_t setCalendar(uint8_t date, uint8_t month, uint16_t year);
 
 	void changeHoursMode(hoursMode_t hoursMode);
-//	char *print(char RTCstr[RTC_STR_SIZE]);
+	char* print(void);
 	virtual ~DS3231();
 };
 

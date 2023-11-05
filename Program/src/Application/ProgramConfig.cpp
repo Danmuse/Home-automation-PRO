@@ -55,10 +55,8 @@ Gpio BCD_CLK(Gpio::PORT0, 19, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN12_PINS
 
 #ifdef CN13_PINS
-Gpio RX1_IN(Gpio::PORT0, 24, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
-Gpio TX1_OUT(Gpio::PORT0, 25, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
-//Gpio RX1_IN(Gpio::PORT0, 17, Gpio::REPEATER, Gpio::INPUT, Gpio::LOW);
-//Gpio TX1_OUT(Gpio::PORT0, 16, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio RX0_IN(Gpio::PORT0, 17, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
+Gpio TX0_OUT(Gpio::PORT0, 16, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
 Gpio EN_OUT(Gpio::PORT0, 0, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN13_PINS
 
@@ -88,6 +86,11 @@ Gpio DIG_OUT2(Gpio::PORT1, 2, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #ifdef ANALOG_PIN
 Gpio ANALOG_POT(Gpio::PORT0, 7, Gpio::PULLDOWN, Gpio::INPUT, Gpio::LOW);
 #endif // ANALOG_PIN
+
+#ifdef USB0_PINS
+Gpio RX1_IN(Gpio::PORT0, 24, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
+Gpio TX1_OUT(Gpio::PORT0, 25, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
+#endif // USB0_PINS
 
 #ifdef I2C0_PINS
 Gpio I2C0_SDA(Gpio::PORT0, 11, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
