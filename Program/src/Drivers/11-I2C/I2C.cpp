@@ -100,7 +100,8 @@ SyncCommTWI::statusComm_t I2C::transmitStopBit(void) {
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, SyncCommTWI::actionComm_t action) {
+SyncCommTWI::statusComm_t I2C::transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, actionComm_t action) {
+	if (action != WRITE && action != WRITE_OFFSET_NONE) return UNREQUITED_ACTION;
 	prepareConditions(address, regOffset, action);
 
 	if (!(this->awaitACK())) {
@@ -112,7 +113,8 @@ SyncCommTWI::statusComm_t I2C::transmitByte(const uint8_t address, const uint8_t
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, SyncCommTWI::actionComm_t action) {
+SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, actionComm_t action) {
+	if (action != READ && action != READ_OFFSET_NONE) return UNREQUITED_ACTION;
 	prepareConditions(address, regOffset, action);
 
 	if (!(this->awaitACK())) {
@@ -127,25 +129,37 @@ SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t 
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, SyncCommTWI::actionComm_t action) {
+SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, actionComm_t action) {
+	if (action != WRITE && action != WRITE_OFFSET_NONE) return UNREQUITED_ACTION;
 	prepareConditions(address, regOffset, action);
 
-	/*
-	if (!(this->awaitACK())) {
-		this->m_TWI->MSTDAT = value; // Charge the data into I2C buffer
-		this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
-	} else return TWI_FAILURE;
-	*/
+	for (size_t index = 0; index < numBytes; index++) {
+		if (!(this->awaitACK())) {
+			this->m_TWI->MSTDAT = values[index]; // Charge the data into I2C buffer
+			this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
+		} else return TWI_FAILURE;
+	}
 
 	if (this->transmitStopBit()) return TWI_FAILURE;
 
 	return TWI_SUCCESS;
 }
 
-SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t* values[], size_t numBytes, SyncCommTWI::actionComm_t action) {
-	////////////////////////////////////////////
-	// Add the corresponding fragment of code //
-	////////////////////////////////////////////
+SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, actionComm_t action) {
+	if (action != READ && action != READ_OFFSET_NONE) return UNREQUITED_ACTION;
+	prepareConditions(address, regOffset, action);
+
+	for (size_t index = 0; index < numBytes; index++) {
+		if (!(this->awaitACK())) {
+			values[index] = this->m_TWI->MSTDAT; // Charge the data into the variable
+			this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
+		} else return TWI_FAILURE;
+	}
+
+	if (!(this->awaitNACK())) {
+		this->m_TWI->MSTCTL = (1 << 2); // Master Stop control. A STOP will be generated on the I2C bus at the next allowed time.
+		this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
+	} else return TWI_FAILURE;
 
 	return TWI_SUCCESS;
 }

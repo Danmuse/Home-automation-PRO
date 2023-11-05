@@ -20,7 +20,7 @@ public:
 	// NACK_ADDR_FAULT: Negative acknowledgement Address. Slave NACKed address.
 	// NACK_DATA_FAULT: Negative acknowledgement Data. Slave NACKed transmitted data.
 	// STRETCH_FAULT: The slave function is not currently stretching the I2C bus clock.
-	enum statusComm_t { TWI_SUCCESS, TWI_FAILURE, TIME_OUT_FAULT, NACK_ADDR_FAULT, NACK_DATA_FAULT, STRETCH_FAULT };
+	enum statusComm_t { TWI_SUCCESS, TWI_FAILURE, TIME_OUT_FAULT, NACK_ADDR_FAULT, NACK_DATA_FAULT, STRETCH_FAULT, UNREQUITED_ACTION };
 	// READ_OFFSET_NONE: Avoid sending the positioning register data address when it's reading.
 	// WRITE_OFFSET_NONE: Avoid sending the positioning register data address when it's writing.
 	enum actionComm_t { READ, WRITE, READ_OFFSET_NONE, WRITE_OFFSET_NONE };
@@ -35,7 +35,7 @@ protected:
 	virtual statusComm_t transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, actionComm_t action = WRITE) = 0;
 	virtual statusComm_t receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, actionComm_t action = READ) = 0;
 	virtual statusComm_t transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, actionComm_t action = WRITE) = 0;
-	virtual statusComm_t receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t* values[], size_t numBytes, actionComm_t action = READ) = 0;
+	virtual statusComm_t receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, actionComm_t action = READ) = 0;
 public:
 	virtual void I2C_IRQHandler(void) = 0;
 	virtual ~SyncCommTWI() = default;

@@ -11,6 +11,20 @@ pageBlock_t M24C16::m_pageBock = FIRST_PAGE_BLOCK;
 
 M24C16 *g_eeprom = nullptr;
 
+/****************** EEPROM Testing START ******************
+int main(void) {
+	initDevice();
+	initM24C16();
+	initUSB0();
+
+	while (1) {
+		// ...
+		g_timers_list.TimerEvents();
+		delay(1000);
+	}
+}
+******************** EEPROM Testing END *******************/
+
 /*
 #include <cstdio>
 #include <cstdint>
@@ -62,64 +76,25 @@ float getFloat(byteReg_ut reg) {
 	result = (float)(((uint32_t)reg.UInt16[1] << 16) | (uint32_t)reg.UInt16[0]); // (((((uint32_t)add) & 0x0000FFFF) << 16) | (((uint32_t)add) & 0xFFFF0000) >> 16);
 	return result;
 }
- */
+*/
 
 M24C16::M24C16() : I2C(I2C0_SCL, I2C0_SDA),
 m_statusEEPROM{EEPROM_OK} { }
 
-/*** EXAMPLE OF CODE ***
-statusI2C_t readM24C02Byte(uint8_t reg, uint8_t * readValue){
-	uint8_t valueAux;
-	statusI2C_t errors;
-
-	i2c0_start(M24C02_address,write);
-	errors = i2c0_writeLastByte(reg);
-	if (errors) return errors;
-
-	i2c0_start(M24C02_address,read);
-	errors = i2c0_readNACK(&valueAux);
-	if (errors) return errors;
-	(*readValue) = valueAux;
-	return NoError;
-}
-
-statusI2C_t readM24C02Float(uint8_t reg, float *value){
-	statusI2C_t status;
-	uint8_t i=0;
-	uint8_t auxRead=0;
-	for(i=0; i<4; i++){
-		status = readM24C02Byte(reg+i, &auxRead);
-		if (status) return status;
-		((uint8_t *)value)[i]=auxRead;
-	}
-	return NoError;
-}
-
-statusI2C_t readM24C02Uint32(uint8_t reg, uint32_t *value){
-	statusI2C_t status;
-	uint8_t i=0;
-	uint8_t auxRead=0;
-	for(i=0; i<4; i++){
-		status = readM24C02Byte(reg+i, &auxRead);
-		if (status) return status;
-		((uint8_t *)value)[i]=auxRead;
-	}
-	return NoError;
-}
-***/
-
-template <typename T> SyncCommTWI::statusComm_t M24C16::acquire(T *values, const uint16_t position) {
-	////////////////////////////////////////////
-	// Add the corresponding fragment of code //
-	////////////////////////////////////////////
+SyncCommTWI::statusComm_t M24C16::acquire(uint8_t values[], size_t numBytes, uint16_t position) {
+	//////////////////////////////////////////////
+	// Check the corresponding fragment of code //
+	//////////////////////////////////////////////
+	if (!(this->receiveBytes(M24C16_ADDR_REG, position, values, numBytes)) && !(this->getStatus())) this->m_statusEEPROM = EEPROM_OK;
+	else this->m_statusEEPROM = EEPROM_UPDATE_ERR;
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
-template <typename T> SyncCommTWI::statusComm_t M24C16::transmit(T values, const uint16_t position) {
-	////////////////////////////////////////////
-	// Add the corresponding fragment of code //
-	////////////////////////////////////////////
-	if (!(this->transmitByte(M24C16_ADDR_REG, position, values)) && !(this->getStatus())) this->m_statusEEPROM = EEPROM_OK;
+SyncCommTWI::statusComm_t M24C16::transmit(uint8_t values[], size_t numBytes, uint16_t position) {
+	//////////////////////////////////////////////
+	// Check the corresponding fragment of code //
+	//////////////////////////////////////////////
+	if (!(this->transmitBytes(M24C16_ADDR_REG, position, values, numBytes)) && !(this->getStatus())) this->m_statusEEPROM = EEPROM_OK;
 	else this->m_statusEEPROM = EEPROM_UPDATE_ERR;
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
@@ -138,108 +113,89 @@ template <typename T> SyncCommTWI::statusComm_t M24C16::transmit(T values, const
 //
 //SyncCommTWI::statusComm_t M24C16::acquireByte(uint8_t *value) { return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS; }
 
-/*** EXAMPLE OF CODE ***
-statusI2C_t writeM24C02Byte(uint8_t reg, uint8_t value){
-	statusI2C_t errors;
-	i2c0_start(M24C02_address,write);
-	//point to the desired register
-	errors = i2c0_write(reg);
-	if (errors) return errors;
-	errors = i2c0_writeLastByte(value);
-	if (errors) return errors;
-	NOp10M();
-	return NoError;
-}
-
-statusI2C_t writeM24C02Float(uint8_t reg, float value){
-	statusI2C_t status;
-	uint8_t i=0;
-	for(i=0; i<4; i++){
-		status = writeM24C02Byte(reg+i,((uint8_t *)&value)[i]);
-		if (status) return status;
-	}
-	return NoError;
-}
-
-statusI2C_t writeM24C02Uint32(uint8_t reg, uint32_t value){
-	statusI2C_t status;
-	uint8_t i=0;
-	for(i=0; i<4; i++){
-		status = writeM24C02Byte(reg+i,((uint8_t *)&value)[i]);
-		if (status) return status;
-	}
-	return NoError;
-}
-***/
-
-template <typename T> EEPROM_result_t M24C16::read(T *data, const uint16_t position, pageBlock_t pageBlock, middleByte_t middleByte) {
+template <typename T> EEPROM_result_t M24C16::read(T *data, modifierType_t modifier, uint16_t position, pageBlock_t pageBlock, middleByte_t middleByte) {
+	byteReg_ut reg;
 	this->m_statusEEPROM = EEPROM_OK;
+
+	if (sizeof(data) != 8) {
+		this->m_statusEEPROM = EEPROM_INCORRECT_MODIFIER;
+		return this->getStatus();
+	}
 
 	if (position > MAX_PAGE_BLOCK_BYTES - 1) {
 		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
 		return this->getStatus();
+	} else if (position > MAX_PAGE_BLOCK_BYTES - 2 && (modifier == FLOAT || modifier == INT32 || modifier == UINT32)) {
+		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
+		return this->getStatus();
 	}
 
-	////////////////////////////////////////////
-	// Add the corresponding fragment of code //
-	////////////////////////////////////////////
-
 	if (this->m_pageBock != pageBlock) this->m_pageBock = pageBlock;
-
+	if (modifier == FLOAT || modifier == INT32 || modifier == UINT32) {
+		uint8_t valuesFST[2], valuesSND[2];
+		if (!(this->acquire(valuesFST, sizeof(valuesFST), position))) return this->getStatus();
+		if (!(this->acquire(valuesSND, sizeof(valuesSND), position + 1))) return this->getStatus();
+		reg.UInt8[0] = valuesFST[0]; reg.UInt8[1] = valuesFST[1];
+		reg.UInt8[0] = valuesSND[2]; reg.UInt8[3] = valuesSND[1];
+		if (modifier == FLOAT) data = reg.Float;
+		else if (modifier == INT32) data = (int32_t)reg.UInt32;
+		else if (modifier == UINT32) data = reg.UInt32;
+	} else if (modifier == INT16 || modifier == UINT16) {
+		uint8_t values[2];
+		if (!(this->acquire(values, sizeof(values), position))) return this->getStatus();
+		reg.UInt8[0] = values[0]; reg.UInt8[1] = values[1];
+		if (modifier == INT16) data = (int16_t)reg.UInt16[0];
+		else if (modifier == UINT16) data = reg.UInt16[0];
+	} else if (modifier == INT8 || modifier == UINT8 || modifier == CHAR) {
+		uint8_t values[2];
+		if (!(this->acquire(values, sizeof(values), position))) return this->getStatus();
+		if (middleByte == FST_QUARTER_BYTE) {
+			if (modifier == INT8) data = (int8_t)values[0];
+			else if (modifier == UINT8) data = values[0];
+			else if (modifier == CHAR) data = (char)values[0];
+		} else if (middleByte == SND_QUARTER_BYTE) {
+			if (modifier == INT8) data = (int8_t)values[1];
+			else if (modifier == UINT8) data = values[1];
+			else if (modifier == CHAR) data = (char)values[1];
+		}
+	} else this->m_statusEEPROM = EEPROM_INCORRECT_MODIFIER;
 	return this->getStatus();
 }
 
-template <typename T> EEPROM_result_t M24C16::write(T data, const uint16_t position, pageBlock_t pageBlock, middleByte_t middleByte) {
+template <typename T> EEPROM_result_t M24C16::write(T data, uint16_t position, pageBlock_t pageBlock, middleByte_t middleByte) {
 	byteReg_ut reg;
 	this->m_statusEEPROM = EEPROM_OK;
 
 	if (position > MAX_PAGE_BLOCK_BYTES - 1) {
 		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
 		return this->getStatus();
-	} else if (position > MAX_PAGE_BLOCK_BYTES - 2 && std::is_same<T, float>::value) {
-		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
-		return this->getStatus();
-	} else if (position > MAX_PAGE_BLOCK_BYTES - 2 && std::is_same<T, uint32_t>::value) {
+	} else if (position > MAX_PAGE_BLOCK_BYTES - 2 && (std::is_same<T, float>::value || std::is_same<T, int32_t>::value || std::is_same<T, uint32_t>::value)) {
 		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
 		return this->getStatus();
 	}
 
 	if (this->m_pageBock != pageBlock) this->m_pageBock = pageBlock;
-	if (std::is_same<T, float>::value) {
-		reg.Float = data;
+	if (std::is_same<T, float>::value || std::is_same<T, int32_t>::value || std::is_same<T, uint32_t>::value) {
+		if (std::is_same<T, float>::value) reg.Float = data;
+		else if (std::is_same<T, int32_t>::value || std::is_same<T, uint32_t>::value) reg.UInt32 = data;
 		uint8_t valuesFST[2] = { reg.UInt8[0], reg.UInt8[1] };
 		uint8_t valuesSND[2] = { reg.UInt8[2], reg.UInt8[3] };
-		if (!(this->transmit(valuesFST, position))) return this->getStatus();
-		if (!(this->transmit(valuesSND, position + 1))) return this->getStatus();
-		// if (!(this->transmit(reg.UInt16[0], position))) return this->getStatus();
-		// if (!(this->transmit(reg.UInt16[1], position + 1))) return this->getStatus();
-	} else if (std::is_same<T, uint32_t>::value) {
-		reg.UInt32 = data;
-		uint8_t valuesFST[2] = { reg.UInt8[0], reg.UInt8[1] };
-		uint8_t valuesSND[2] = { reg.UInt8[2], reg.UInt8[3] };
-		if (!(this->transmit(valuesFST, position))) return this->getStatus();
-		if (!(this->transmit(valuesSND, position + 1))) return this->getStatus();
-		// if (!(this->transmit(reg.UInt16[0], position))) return this->getStatus();
-		// if (!(this->transmit(reg.UInt16[1], position + 1))) return this->getStatus();
-	// } else if (std::is_same<T, uint16_t>::value) this->transmit(data, position);
-	} else if (std::is_same<T, uint16_t>::value) {
-		reg.UInt16 = data;
+		if (!(this->transmit(valuesFST, sizeof(valuesFST), position))) return this->getStatus();
+		if (!(this->transmit(valuesSND, sizeof(valuesSND), position + 1))) return this->getStatus();
+	} else if (std::is_same<T, int>::value, std::is_same<T, int16_t>::value || std::is_same<T, uint16_t>::value) {
+		reg.UInt16[0] = data;
 		uint8_t values[2] = { reg.UInt8[0], reg.UInt8[1] };
-		this->transmit(values, position);
-	} else if (std::is_same<T, uint8_t>::value) {
-		if (!(this->acquire(&(reg.UInt16[0]), position))) return this->getStatus();
-		// if (middleByte == FST_QUARTER_BYTE) reg.UInt8[0] = data; 
+		if (!(this->transmit(values, sizeof(values), position))) return this->getStatus();
+	} else if (std::is_same<T, int8_t>::value || std::is_same<T, uint8_t>::value || std::is_same<T, char>::value) {
+		uint8_t values[2];
+		if (!(this->acquire(values, sizeof(values), position))) return this->getStatus();
 		if (middleByte == FST_QUARTER_BYTE) {
-			reg.UInt8[0] = data;
-			uint8_t values[1] = { reg.UInt8[0] };
-			this->transmit(values, position);
-		// if (middleByte == SND_QUARTER_BYTE) reg.UInt8[1] = data;
+			values[0] = data;
+			if (!(this->transmit(values, sizeof(values), position))) return this->getStatus();
 		} else if (middleByte == SND_QUARTER_BYTE) {
-			reg.UInt8[1] = data;
-			uint8_t values[1] = { reg.UInt8[1] };
-			this->transmit(values, position);
+			values[1] = data;
+			if (!(this->transmit(values, sizeof(values), position))) return this->getStatus();
 		}
-		// this->transmit(reg.UInt16[0], position);
 	} else this->m_statusEEPROM = EEPROM_INCORRECT_MODIFIER;
 	return this->getStatus();
 }
@@ -257,26 +213,6 @@ template <typename T> EEPROM_result_t M24C16::write(T data, const uint16_t posit
 //SyncCommTWI::statusComm_t M24C16::transmitInt8(int8_t value) { return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS; }
 //
 //SyncCommTWI::statusComm_t M24C16::transmitByte(uint8_t value) { return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS; }
-
-//EEPROM_result_t M24C16::read(uint8_t *value, const uint16_t position, pageBlock_t pageBlock) {
-//	if (this->m_pageBock != pageBlock) this->m_pageBock = pageBlock;
-//
-//	////////////////////////////////////////////
-//	// Add the corresponding fragment of code //
-//	////////////////////////////////////////////
-//
-//	return this->getStatus();
-//}
-//
-//EEPROM_result_t M24C16::write(uint8_t value, const uint16_t position, pageBlock_t pageBlock) {
-//	if (this->m_pageBock != pageBlock) this->m_pageBock = pageBlock;
-//
-//	////////////////////////////////////////////
-//	// Add the corresponding fragment of code //
-//	////////////////////////////////////////////
-//
-//	return this->getStatus();
-//}
 
 EEPROM_result_t M24C16::getStatus(void) const {
 	return this->m_statusEEPROM;

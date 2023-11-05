@@ -50,16 +50,17 @@ public:
 	// FST_QUARTER_BYTE: Indicates a zero bit shift to the left of the 16-bit register. Useful for storing 8-bit values ​​in EEPROM memory.
 	// SND_QUARTER_BYTE: Indicates an 8-bit shift to the left of the 16-bit register. Useful for storing 8-bit values ​​in EEPROM memory.
 	enum middleByte_t { FST_QUARTER_BYTE, SND_QUARTER_BYTE };
+	enum modifierType_t { CHAR, UINT8, INT8, UINT16, INT16, UINT32, INT32, FLOAT };
 private:
 	static pageBlock_t m_pageBock;
 	EEPROM_result_t m_statusEEPROM;
 
-	template <typename T> statusComm_t acquire(T* values, const uint16_t position);
-	template <typename T> statusComm_t transmit(T values, const uint16_t position);
+	statusComm_t acquire(uint8_t values[], size_t numBytes, uint16_t position);
+	statusComm_t transmit(uint8_t values[], size_t numBytes, uint16_t position);
 public:
 	M24C16();
-	template <typename T> EEPROM_result_t read(T* data, const uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
-	template <typename T> EEPROM_result_t write(T data, const uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
+	template <typename T> EEPROM_result_t read(T* data, modifierType_t modifier, uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
+	template <typename T> EEPROM_result_t write(T data, uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
 
 	EEPROM_result_t getStatus(void) const;
 	virtual ~M24C16();

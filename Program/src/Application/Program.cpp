@@ -121,6 +121,11 @@ static void blue_red(PWM &blue, PWM &red) {
 
 #else // DEBUG_MODE
 
+//////////////////////////
+/// ADC implementation ///
+//////////////////////////
+
+/*
 int main(void) {
 	initDevice();
 	initDisplay();
@@ -136,6 +141,37 @@ int main(void) {
 	while (1) {
 		valueADC = g_preset->get();
 		g_display->set(valueADC);
+		g_timers_list.TimerEvents();
+		delay(1000);
+	}
+}
+*/
+
+/////////////////////////////
+/// M24C16 implementation ///
+/////////////////////////////
+
+int main(void) {
+	initDevice();
+//	initDisplay();
+//	initKeyboard();
+//	initLCD1602();
+//	initDS3231();
+	initM24C16();
+	initUSB0();
+//	initPreset(); // BREAKS!!
+
+	uint8_t value = 0, currentValue = 0;
+	uint16_t position = 0;
+
+	while (1) {
+		//if (!(g_eeprom->write(value, position))) LED_RED.ClearPin();
+		//else LED_RED.SetPin();
+		//if (!(g_eeprom->read(&currentValue, M24C16::UINT8, position))) LED_BLUE.ClearPin();
+		//else LED_BLUE.SetPin();
+		value++; position++;
+		g_display->set(currentValue, 0);
+		g_display->set(currentValue, 1);
 		g_timers_list.TimerEvents();
 		delay(1000);
 	}
