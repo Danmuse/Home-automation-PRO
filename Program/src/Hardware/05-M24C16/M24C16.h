@@ -9,25 +9,14 @@
 #ifndef M24C16_H_
 #define M24C16_H_
 
-// #include <type_traits>
 #include "I2C.h"
 #include "ProgramConfig.h"
 
 #define M24C16_ADDR_REG (0x50U)
 
-#define MAX_PAGE_BLOCK_BYTES 2048
-#define MAX_EEPROM_BYTES MAX_PAGE_BLOCK_BYTES * BYTE_SYZE
-
-typedef enum {
-	FIRST_PAGE_BLOCK,
-	SECOND_PAGE_BLOCK,
-	THIRD_PAGE_BLOCK,
-	FOURTH_PAGE_BLOCK,
-	FIFTH_PAGE_BLOCK,
-	SIXTH_PAGE_BLOCK,
-	SEVENTH_PAGE_BLOCK,
-	EIGHTH_PAGE_BLOCK
-} pageBlock_t;
+#define MAX_PAGE_BLOCKS 8
+#define MAX_PAGE_BLOCK_BITS (REG_BYTES_SIZE * BYTE_SIZE) * BYTE_SIZE // 2048 Bits
+#define MAX_EEPROM_BITS MAX_PAGE_BLOCK_BITS * MAX_PAGE_BLOCKS // 16384 Bits
 
 //! @brief <b>EEPROM_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the EEPROM memory operations can be found.
 typedef enum {
@@ -51,56 +40,22 @@ public:
 	// SND_QUARTER_BYTE: Indicates an 8-bit shift to the left of the 16-bit register. Useful for storing 8-bit values ​​in EEPROM memory.
 	enum middleByte_t { FST_QUARTER_BYTE, SND_QUARTER_BYTE };
 	enum modifierType_t { CHAR, UINT8, INT8, UINT16, INT16, UINT32, INT32, FLOAT };
+	enum pageBlock_t { FIRST_PAGE_BLOCK = (0x0U), SECOND_PAGE_BLOCK = (0x4U), THIRD_PAGE_BLOCK = (0x2U),
+		FOURTH_PAGE_BLOCK = (0x6U), FIFTH_PAGE_BLOCK = (0x1U), SIXTH_PAGE_BLOCK = (0x3U), SEVENTH_PAGE_BLOCK = (0x5U), EIGHTH_PAGE_BLOCK = (0x7U) };
 private:
-	static pageBlock_t m_pageBock;
+	static pageBlock_t m_pageBlock;
 	EEPROM_result_t m_statusEEPROM;
 
-	statusComm_t acquire(uint8_t values[], size_t numBytes, uint16_t position);
-	statusComm_t transmit(uint8_t values[], size_t numBytes, uint16_t position);
+	statusComm_t acquire(uint8_t values[], size_t numBytes, uint8_t position, pageBlock_t pageBlock);
+	statusComm_t transmit(uint8_t values[], size_t numBytes, uint8_t position, pageBlock_t pageBlock);
 public:
 	M24C16();
-	template <typename T> EEPROM_result_t read(T* data, modifierType_t modifier, uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
-	template <typename T> EEPROM_result_t write(T data, uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
+	template <typename T> EEPROM_result_t read(T* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
+	template <typename T> EEPROM_result_t write(T data, uint8_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
 
 	EEPROM_result_t getStatus(void) const;
 	virtual ~M24C16();
 };
-
-//if (std::is_same<T, float>::value) {
-//	std::cout << "Tipo: float" << std::endl;
-//}
-
-
-/*
-class M24C16 : protected I2C {
-private:
-	static pageBlock_t m_pageBock;
-	EEPROM_result_t m_statusEEPROM;
-	statusComm_t acquireFloat(float *value);
-	statusComm_t acquireInt32(int32_t *value);
-	statusComm_t acquireUInt32(uint32_t *value);
-	statusComm_t acquireInt16(int16_t *value);
-	statusComm_t acquireUInt16(uint16_t *value);
-	statusComm_t acquireInt8(int8_t *value);
-	statusComm_t acquireByte(uint8_t *value);
-
-	statusComm_t transmitFloat(float value);
-	statusComm_t transmitInt32(int32_t value);
-	statusComm_t transmitUInt32(uint32_t value);
-	statusComm_t transmitInt16(int16_t value);
-	statusComm_t transmitUInt16(uint16_t value);
-	statusComm_t transmitInt8(int8_t value);
-	statusComm_t transmitByte(uint8_t value);
-public:
-	M24C16();
-	// @param *value: USE TEMPLATES.
-	EEPROM_result_t read(uint8_t *value, const uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK);
-	// @param value: USE TEMPLATES.
-	EEPROM_result_t write(uint8_t value, const uint16_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK);
-	EEPROM_result_t getStatus(void) const;
-	virtual ~M24C16();
-};
-*/
 
 extern M24C16 *g_eeprom;
 
