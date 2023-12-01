@@ -26,7 +26,7 @@ m_TmrBase{base} {
 }
 
 void Timer::TimerStart(uint32_t counter, const TimerHandler handler, const bases_t base) {
-	switch(base) {
+	switch (base) {
 	case MILLI:
 			counter *= MILLIS;
 		break;
@@ -62,7 +62,7 @@ void Timer::TimerStart(uint32_t counter, const TimerHandler handler, const bases
 }
 
 void Timer::TimerStart(uint32_t counter) {
-	switch(this->m_TmrBase) {
+	switch (this->m_TmrBase) {
 	case MILLI:
 			counter *= MILLIS;
 		break;
@@ -95,7 +95,7 @@ void Timer::TimerStart(uint32_t counter) {
 }
 
 void Timer::SetTimer(uint32_t time) {
-	switch(this->m_TmrBase) {
+	switch (this->m_TmrBase) {
 	case MILLI:
 			time *= MILLIS;
 		break;
@@ -122,8 +122,8 @@ void Timer::SetTimer(uint32_t time) {
 	this->m_TmrRun = time;
 }
 
-void Timer::GetTimer(uint32_t &time) const {
-	time = this->m_TmrRun;
+uint32_t Timer::GetTimer(void) const {
+	uint32_t time = this->m_TmrRun;
 
 	switch(this->m_TmrBase) {
 	case MILLI:
@@ -147,9 +147,10 @@ void Timer::GetTimer(uint32_t &time) const {
 	default:
 		break;
 	}
+	return time;
 }
 
-uint32_t Timer::GetTimer(void) const {
+uint32_t Timer::GetTicks(void) const {
 	return this->m_TmrRun;
 }
 

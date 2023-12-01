@@ -114,7 +114,7 @@ private:
 	statusComm_t acquireCalendar(void);
 	statusComm_t transmitCalendar(uint8_t date, uint8_t month, uint8_t year);
 public:
-	DS3231();
+	DS3231(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel);
 
 	RTC_st get(void);
 	RTC_time_st getTime(void);

@@ -19,21 +19,21 @@
 
 class PWM : protected Gpio {
 protected:
-	const uint8_t m_channel; // Channel can be between 0 and 6
+	const uint8_t m_channel;
 	static uint8_t m_quantity;
 	static uint32_t m_period;
 	float m_duty;
 private:
-	void bind(void) const;
-	void unbind(void) const;
+	void EnableSWM(void) const;
+	void DisableSWM(void) const;
 	void initPWM(void) const;
 public:
 	PWM() = delete;
 	PWM(const Gpio &output, float duty, uint32_t period = 1000);
 	float getDuty(void) const;
 	void setDuty(float duty);
-	void enable(void);
-	void disable(void);
+	void bindChannel(void);
+	void unbindChannel(void);
 	virtual ~PWM();
 };
 

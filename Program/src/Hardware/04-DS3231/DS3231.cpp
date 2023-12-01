@@ -29,7 +29,7 @@ int main(void) {
 
 DS3231 *g_ds3231 = nullptr;
 
-DS3231::DS3231() : I2C(I2C0_SCL, I2C0_SDA),
+DS3231::DS3231(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel) : I2C(SCL, SDA, channel),
 m_statusRTC{RTC_OK},
 m_hoursMode{TWENTY_FOUR_HOURS_MODE},
 m_flagPM{false} { }
@@ -203,8 +203,6 @@ char* DS3231::print(void) {
     RTCstr[12] = this->m_RTC.CALENDAR.MONTH / 10 + '0'; RTCstr[13] = this->m_RTC.CALENDAR.MONTH % 10 + '0'; RTCstr[14] = '/';
     RTCstr[15] = this->m_RTC.CALENDAR.YEAR / 1000 + '0'; RTCstr[16] = (this->m_RTC.CALENDAR.YEAR / 100) % 10 + '0';
     RTCstr[17] = (this->m_RTC.CALENDAR.YEAR / 10) % 10 + '0'; RTCstr[18] = this->m_RTC.CALENDAR.YEAR % 10 + '0'; RTCstr[19] = '\n';
-//	sprintf(RTCstr, "%02u:%02u:%02u %02u/%02u/%04u\n", this->m_RTC.TIME.HOUR, this->m_RTC.TIME.MIN, this->m_RTC.TIME.SEC,
-//			this->m_RTC.CALENDAR.DATE, this->m_RTC.CALENDAR.MONTH, this->m_RTC.CALENDAR.YEAR);
 	return RTCstr;
 }
 
@@ -215,9 +213,9 @@ DS3231::~DS3231() { }
 /////////////////////////////
 
 void initDS3231(void) {
-	#if defined(I2C0_PINS) || defined(I2C1_PINS) || defined(I2C2_PINS) || defined(I2C3_PINS)
+	#if defined(I2C0_PINS)
 
-	static DS3231 ds3231;
+	static DS3231 ds3231(I2C0_SCL, I2C0_SDA, I2C::TWI0);
 	ds3231.set(0, 0, 0, 1, 1, 2000);
 
 	g_ds3231 = &ds3231;

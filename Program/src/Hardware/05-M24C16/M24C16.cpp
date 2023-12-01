@@ -31,7 +31,7 @@ int main(void) {
 }
 ******************** EEPROM Testing END *******************/
 
-M24C16::M24C16() : I2C(I2C0_SCL, I2C0_SDA),
+M24C16::M24C16(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel) : I2C(SCL, SDA, channel),
 m_statusEEPROM{EEPROM_OK} { }
 
 SyncCommTWI::statusComm_t M24C16::acquire(uint8_t values[], size_t numBytes, uint8_t position, pageBlock_t pageBlock) {
@@ -155,9 +155,9 @@ M24C16::~M24C16() { }
 ///////////////////////////////
 
 void initM24C16(void) {
-	#if defined(I2C0_PINS) || defined(I2C1_PINS) || defined(I2C2_PINS) || defined(I2C3_PINS)
+	#if defined(I2C0_PINS)
 
-	static M24C16 eeprom;
+	static M24C16 eeprom(I2C0_SCL, I2C0_SDA, I2C::TWI0);
 
 	g_eeprom = &eeprom;
 

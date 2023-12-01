@@ -17,5 +17,5 @@ void delay(uint32_t milliseconds) {
 		g_timers_list << delayTIMER;
 	}
 	delayTIMER.TimerStart(milliseconds, nullptr, Timer::MILLI);
-	while (delayTIMER.GetTimer());
+	while (delayTIMER.GetTicks());
 }

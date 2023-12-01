@@ -49,8 +49,6 @@ private:
 	statusComm_t prepareConditions(const uint8_t address, const uint8_t regOffset, actionComm_t action) override;
 	statusComm_t transmitStopBit(void) override;
 protected:
-	enum channel_t { TWI0, TWI1, TWI2, TWI3 };
-
 	statusComm_t transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, actionComm_t action = WRITE) override;
 	statusComm_t receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, actionComm_t action = READ) override;
 	statusComm_t transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, actionComm_t action = WRITE) override;
@@ -58,8 +56,10 @@ protected:
 
 	void I2C_IRQHandler(void) override;
 public:
+	enum channelTWI_t { TWI0, TWI1, TWI2, TWI3 };
+
 	I2C() = delete;
-	I2C(const Gpio& SCL, const Gpio& SDA, channel_t channel = TWI0, frequencyComm_t frequency = STD_FREQUENCY);
+	I2C(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel = TWI0, frequencyComm_t frequency = STD_FREQUENCY);
 	virtual ~I2C();
 };
 

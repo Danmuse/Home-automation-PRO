@@ -19,11 +19,11 @@
 #include "LCD1602.h"
 #include "DS3231.h"
 #include "M24C16.h"
-#include "Semaphore.h"
-
 #include "UART.h"
 #include "ADC.h"
 #include "DAC.h"
+
+#include "Semaphore.h"
 
 /////////////////////////////////
 /// HARDWARE GLOBAL VARIABLES ///
@@ -36,8 +36,10 @@
 /// --- "LCD1602 *g_lcd1602" located in "Hardware/03-LCD1602/LCD1602.h"
 /// --- "DS3231 *g_ds3231" located in "Hardware/04-DS3231/DS3231.h"
 /// --- "FM24C16U *g_eeprom" located in "Hardware/05-M24C16/M24C16.h"
-/// --- "ADC *g_preset" located in "Drivers/13-ADC/ADC.h"
 /// --- "UART *g_usb" located in "Drivers/10-UART/UART.h"
+/// --- "ADC *g_preset" located in "Drivers/13-ADC/ADC.h"
+/// --- "ADC *g_adcExternal" located in "Drivers/13-ADC/ADC.h"
+/// --- "DAC *g_dacExternal" located in "Drivers/14-DAC/DAC.h"
 
 /////////////////////////////////
 /// SOFTWARE GLOBAL VARIABLES ///
@@ -56,6 +58,7 @@
 /// --- "SyncCommTWI *g_TWI[MAX_I2C_CHANNELS]" located in "Drivers/11-I2C/I2C.cpp"
 /// --- "SyncCommSPI *g_SPI[MAX_SPI_CHANNELS]" located in "Drivers/12-SPI/SPI.cpp"
 /// --- "PinInterrupt *g_gpiohandler[MAX_PIN_INTERRUPTS]" located in "Drivers/06-PinInterrupt/PinInterrupt.cpp"
+/// --- "ADC *g_adc[MAX_ADC_CHANNELS]" located in "Drivers/13-ADC/ADC.cpp"
 
 //////////////////////////////////
 /// CRITICAL MACRO DEFINITIONS ///

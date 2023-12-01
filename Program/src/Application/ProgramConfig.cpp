@@ -23,14 +23,6 @@ Gpio LED_GREEN(DIG_OUT0);
 Gpio LED_BLUE(DIG_OUT1);
 #endif // CN6_PINS
 
-#ifdef CN7_PINS
-Gpio ANALOG_OUT(Gpio::PORT0, 29, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
-#endif // CN7_PINS
-
-#ifdef CN8_PINS
-Gpio ANALOG_IN(Gpio::PORT0, 6, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
-#endif // CN8_PINS
-
 #ifdef CN9_PINS
 Gpio SWDIO(Gpio::PORT0, 2, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
 Gpio SWCLK(Gpio::PORT0, 3, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
@@ -82,10 +74,6 @@ Gpio DIG_OUT0(Gpio::PORT1, 0, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio DIG_OUT1(Gpio::PORT1, 1, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio DIG_OUT2(Gpio::PORT1, 2, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN19_PINS
-
-#ifdef ANALOG_PIN
-Gpio ANALOG_POT(Gpio::PORT0, 7, Gpio::PULLDOWN, Gpio::INPUT, Gpio::LOW);
-#endif // ANALOG_PIN
 
 #ifdef USB0_PINS
 Gpio RX1_IN(Gpio::PORT0, 24, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);

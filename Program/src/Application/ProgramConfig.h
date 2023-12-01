@@ -11,29 +11,51 @@
 
 #include "GPIO.h"
 
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
-//#define CN5_PINS	// SENSOR_IN {Sensor}
+//////////////////////////////////////////////
+/// Hardware definitions (Infotronic 2023) ///
+//////////////////////////////////////////////
+
+#define CN5_PINS	// SENSOR_IN {Sensor}
 #define CN6_PINS	// DIG_OUT0 {O0} - DIG_OUT1 {O1} - DIG_OUT2 {O2} - DIG_OUT3 {A0} - DIG_OUT4 {A1}
-//#define CN7_PINS	// ANALOG_OUT {AOUT}
-//#define CN8_PINS	// ANALOG_IN {AIN}
+#define CN7_PINS	// ANALOG_OUT ~ DAC1_PIN {AOUT}
+#define CN8_PINS	// ANALOG_IN ~ ANALOG1_PIN {AIN}
 //#define CN9_PINS	// SWDIO [PIN 2] - SWCLK [PIN 3] - DIG_IN [PIN 4] - KEY_RESET [PIN 5]
 #define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 #define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
-#define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
-//#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
+//#define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
+#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 #define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
-#define ANALOG_PIN	// ANALOG_POT {INTERNAL}
-
 #define USB0_PINS	// RX1_IN {RX} - TX1_OUT {TX}
 
-#define I2C0_PINS	// I2C0_SCL - I2C0_SDA
+//#define I2C0_PINS	// I2C0_SCL - I2C0_SDA
 //#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
 
 //#define SPI0_PINS	// SPI0_SCK - SPI0_MISO - SPI0_MOSI - SPI0_SSEL0
 //#define SPI1_PINS	// SPI1_SCK - SPI1_MISO - SPI1_MOSI - SPI1_SSEL0
+
+#define ANALOG_FST_CHANNEL_ENABLED	// POTENCIOMETER - ANALOG1_PIN {P0.07}
+#define ANALOG_SND_CHANNEL_ENABLED	// ANALOG1_PIN {P0.06}
+#define ANALOG_TRD_CHANNEL_ENABLED	// ANALOG2_PIN {P0.14}
+//#define ANALOG_FOU_CHANNEL_ENABLED	// ANALOG3_PIN {P0.23}
+//#define ANALOG_FIF_CHANNEL_ENABLED	// ANALOG4_PIN {P0.22}
+//#define ANALOG_SIX_CHANNEL_ENABLED	// ANALOG5_PIN {P0.21}
+//#define ANALOG_SEV_CHANNEL_ENABLED	// ANALOG6_PIN {P0.20}
+//#define ANALOG_EGH_CHANNEL_ENABLED	// ANALOG7_PIN {P0.19}
+//#define ANALOG_NTH_CHANNEL_ENABLED	// ANALOG8_PIN {P0.18}
+//#define ANALOG_TTH_CHANNEL_ENABLED	// ANALOG9_PIN {P0.17}
+//#define ANALOG_ELE_CHANNEL_ENABLED	// ANALOG10_PIN {P0.13}
+//#define ANALOG_TWE_CHANNEL_ENABLED	// ANALOG11_PIN {P0.04}
+
+#define DAC_FST_CHANNEL_ENABLED 	// DAC0_PIN {P0.17}
+#define DAC_SND_CHANNEL_ENABLED		// DAC1_PIN {P0.29}
+
+/////////////////////////////////////
+/// Errors during the compilation ///
+/////////////////////////////////////
 
 #if defined(CN6_PINS) && defined(CN19_PINS)
 #error "Macros CN6_PINS and CN19_PINS cannot be defined simultaneously"
@@ -47,6 +69,18 @@
 #error "Macros CN13_PINS and I2C1_PINS cannot be defined simultaneously"
 #endif
 
+#if defined(CN13_PINS) && defined(I2C1_PINS)
+#error "Macros CN13_PINS and I2C1_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN13_PINS) && defined(DAC_FST_CHANNEL_ENABLED)
+#error "Macros CN13_PINS and DAC_FST_CHANNEL_ENABLED cannot be defined simultaneously"
+#endif
+
+#if defined(I2C1_PINS) && defined(DAC_FST_CHANNEL_ENABLED)
+#error "Macros I2C1_PINS and DAC_FST_CHANNEL_ENABLED cannot be defined simultaneously"
+#endif
+
 #if defined(CN12_PINS) && defined(SPI0_PINS)
 #error "Macros CN12_PINS and SPI0_PINS cannot be defined simultaneously"
 #endif
@@ -55,20 +89,76 @@
 #error "Macros USB0_PINS and SPI0_PINS cannot be defined simultaneously"
 #endif
 
-#if defined(CN8_PINS) && defined(SPI1_PINS)
-#error "Macros CN8_PINS and SPI1_PINS cannot be defined simultaneously"
+#if defined(ANALOG_FST_CHANNEL_ENABLED) && defined(SPI1_PINS)
+#error "Macros ANALOG_FST_CHANNEL_ENABLED and SPI1_PINS cannot be defined simultaneously"
 #endif
 
-#if defined(ANALOG_PIN) && defined(SPI1_PINS)
-#error "Macros ANALOG_PIN and SPI1_PINS cannot be defined simultaneously"
+#if (defined(CN8_PINS) && defined(ANALOG_SND_CHANNEL_ENABLED)) && defined(SPI1_PINS)
+#error "Macros CN8_PINS, ANALOG_SND_CHANNEL_ENABLED and SPI1_PINS cannot be defined simultaneously"
 #endif
+
+#if defined(ANALOG_FOU_CHANNEL_ENABLED) && defined(CN12_PINS)
+#error "Macros ANALOG_FOU_CHANNEL_ENABLED and CN12_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_FIF_CHANNEL_ENABLED) && defined(CN12_PINS)
+#error "Macros ANALOG_FIF_CHANNEL_ENABLED and CN12_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_SIX_CHANNEL_ENABLED) && defined(CN12_PINS)
+#error "Macros ANALOG_SIX_CHANNEL_ENABLED and CN12_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_SEV_CHANNEL_ENABLED) && defined(CN12_PINS)
+#error "Macros ANALOG_SEV_CHANNEL_ENABLED and CN12_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_EGH_CHANNEL_ENABLED) && defined(CN12_PINS)
+#error "Macros ANALOG_EGH_CHANNEL_ENABLED and CN12_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_NTH_CHANNEL_ENABLED) && defined(CN12_PINS)
+#error "Macros ANALOG_NTH_CHANNEL_ENABLED and CN12_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_TTH_CHANNEL_ENABLED) && defined(CN13_PINS)
+#error "Macros ANALOG_TTH_CHANNEL_ENABLED and CN13_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_ELE_CHANNEL_ENABLED) && defined(CN15_PINS)
+#error "Macros ANALOG_ELE_CHANNEL_ENABLED and CN15_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_TWE_CHANNEL_ENABLED) && defined(CN10_PINS)
+#error "Macros ANALOG_TWE_CHANNEL_ENABLED and CN10_PINS cannot be defined simultaneously"
+#endif
+
+///////////////////////////////////////
+/// Warnings during the compilation ///
+///////////////////////////////////////
 
 #if !defined(CN12_PINS)
 #warning "Macro CN12_PINS is not defined and Seven Segment Display module initialization will have no effect"
 #endif
 
-#if !defined(CN13_PINS)
+#if !defined(CN13_PINS) && !defined(DAC_FST_CHANNEL_ENABLED)
 #warning "Macro CN13_PINS is not defined and USB initialization will have no effect"
+#endif
+
+#if !defined(DAC_FST_CHANNEL_ENABLED) && !defined(CN13_PINS)
+#warning "Macro DAC_FST_CHANNEL_ENABLED is not defined and DAC pin will have no effect"
+#endif
+
+#if !(defined(CN7_PINS) && defined(DAC_SND_CHANNEL_ENABLED))
+#warning "Macros CN7_PINS and DAC_SND_CHANNEL_ENABLED are not defined and external DAC initialization will have no effect"
+#endif
+
+#if !(defined(CN8_PINS) && defined(ANALOG_SND_CHANNEL_ENABLED))
+#warning "Macros CN8_PINS and ANALOG_SND_CHANNEL_ENABLED are not defined and external ADC initialization will have no effect"
+#endif
+
+#if !defined(ANALOG_FST_CHANNEL_ENABLED)
+#warning "Macro ANALOG_FST_CHANNEL_ENABLED is not defined and internal preset initialization will have no effect"
 #endif
 
 #if !defined(CN16_PINS)
@@ -82,6 +172,10 @@
 #if !defined(I2C0_PINS) && !defined(CN15_PINS)
 #warning "Macro I2C0_PINS is not defined and the initialization of the TWI modules will have no effect"
 #endif
+
+//////////////////////////////////////////////////
+/// Hardware initializations (Infotronic 2023) ///
+//////////////////////////////////////////////////
 
 #ifdef CN5_PINS
 extern Gpio SENSOR_IN;
@@ -98,10 +192,6 @@ extern Gpio LED_RED;
 extern Gpio LED_GREEN;
 extern Gpio LED_BLUE;
 #endif // CN6_PINS
-
-#ifdef CN7_PINS
-extern Gpio ANALOG_OUT;
-#endif // CN7_PINS
 
 #ifdef CN8_PINS
 extern Gpio ANALOG_IN;
@@ -161,10 +251,6 @@ extern Gpio DIG_OUT0;
 extern Gpio DIG_OUT1;
 extern Gpio DIG_OUT2;
 #endif // CN19_PINS
-
-#ifdef ANALOG_PIN
-extern Gpio ANALOG_POT;
-#endif // ANALOG_PIN
 
 #ifdef USB0_PINS
 extern Gpio RX1_IN;

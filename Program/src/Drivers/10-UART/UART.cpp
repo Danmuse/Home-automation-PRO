@@ -58,7 +58,7 @@ bool UART::popTX(uint8_t *data) {
 
 void UART::Transmit(const char *message) {
 	while (*message) {
-		if (*message != 255 && *message != 252 && *message != 185 && *message != 12) this->pushTX(*message);
+		this->pushTX(*message);
 		message++;
 
 		if (!this->m_flagTX) {
@@ -78,19 +78,19 @@ void UART::Transmit(const char *message, uint32_t n) {
 	}
 }
 
-char *UART::Receive(char *message, uint32_t n) {
+bool UART::Receive(char *message, uint32_t n) {
 	uint8_t data;
 	static uint32_t cont = 0;
 	char *ptr = message;
-
-	if (this->popRX(&data)) {
-		if (data != 255 && data != 252 && data != 185 && data != 12) ptr[cont++] = data;
-		if (cont >= n || ptr[cont] == '\n') {
+	while (this->popRX(&data)) {
+		ptr[cont++] = data;
+		if (cont >= n || (ptr[cont - 1] == '\r' || ptr[cont - 1] == '\n')) {
+			ptr[cont] = '\0';
 			cont = 0;
-			return ptr;
+			return true;
 		}
 	}
-	return nullptr;
+	return false;
 }
 
 void UART::EnableInterrupt(void) {

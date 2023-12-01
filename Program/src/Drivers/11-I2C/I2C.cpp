@@ -9,7 +9,7 @@
 
 SyncCommTWI *g_TWI[MAX_I2C_CHANNELS] = { nullptr, nullptr, nullptr, nullptr };
 
-I2C::I2C(const Gpio& SCL, const Gpio& SDA, channel_t channel, frequencyComm_t frequency) : std::vector<Gpio>({SCL, SDA}),
+I2C::I2C(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel, frequencyComm_t frequency) : std::vector<Gpio>({SCL, SDA}),
 m_TWI{channel < TWI2 ? (I2C_Type *)(I2C0_BASE + channel*I2C_OFFSET_BASE) : (I2C_Type *)(I2C2_BASE + (channel % 2)*I2C_OFFSET_BASE)},
 m_frequency{frequency} {
 	if (this->m_TWI == I2C0 && g_TWI[0] != nullptr);

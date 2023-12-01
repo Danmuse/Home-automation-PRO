@@ -9,25 +9,20 @@
 #ifndef DAC_H_
 #define DAC_H_
 
-#include "LPC845.h"
-#include "GPIO.h"
+#include "ProgramConfig.h"
 
 #define MAX_DAC_CHANNELS 2
-#define MAX_DAC_DEFAULT_VALUE 0x3FF
 
 class DAC : protected Gpio {
 public:
 	//!< Digital-Analog Converter (<tt>DAC</tt>) channels.
-	enum channel_t { FST_CHANNEL, SND_CHANNEL };
-	//!< <tt>error_t</tt> enumeration reports any error. All thresholds will not be taken into account.
-	enum error_t { OK, ERROR };
+	enum channelDAC_t { DAC_0, DAC_1 };
 private:
 	enum offset_t { FST_SWM_OUT = 26, SND_SWM_OUT = 27, FST_SYS_OUT = 27, SND_SYS_OUT = 1, IOCON_DAC = 16 };
 
-	const channel_t m_channel;	//!< Digital-Analog Converter (<tt>DAC</tt>) channel.
-	uint16_t m_buffer;			//!< Digital-Analog Converter (<tt>DAC</tt>) buffer values.
-	uint16_t m_max_range;		//!< Maximum range of values provided by the user.
-	error_t m_error;			//!< Member that indicates an error happened.
+	const channelDAC_t m_channel;	//!< Digital-Analog Converter (<tt>DAC</tt>) channel.
+	uint16_t m_buffer;				//!< Digital-Analog Converter (<tt>DAC</tt>) buffer values.
+	uint16_t m_max_range;			//!< Maximum range of values provided by the user.
 
 	void EnablePower(void);
 	void EnableClock(void);
@@ -39,23 +34,20 @@ private:
 	void DisableSWM(void);
 	void DisableIOCON(void);
 public:
-	DAC(channel_t channel, uint16_t max_range = MAX_DAC_DEFAULT_VALUE);
-	error_t initialize(void);
-	void set(uint16_t value);
-	uint16_t get(void) const;
+	DAC(channelDAC_t channel);
+	void initialize(void);
+	void analogWrite(uint16_t value);
+	uint16_t readBuffer(void) const;
 
+	void bindChannel(void);
+	void unbindChannel(void);
 	void setMaxRange(uint16_t max_range);
 	uint16_t getMaxRange(void) const;
-
-	DAC& operator=(uint16_t value);
-	bool operator==(uint16_t value) const;
-	bool operator<(uint16_t value) const;
-	bool operator<=(uint16_t value) const;
-	bool operator>(uint16_t value) const;
-	bool operator>=(uint16_t value) const;
-	bool operator!=(uint16_t value) const;
-
 	virtual ~DAC();
 };
+
+extern DAC *g_dacExternal;
+
+void initDAC(void);
 
 #endif /* DAC_H_ */

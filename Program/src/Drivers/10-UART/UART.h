@@ -10,6 +10,7 @@
 #define UART_H_
 
 #include <vector>
+#include <cstring>
 #include "AsyncComm.h"
 #include "ProgramConfig.h"
 
@@ -47,7 +48,7 @@ public:
 	UART(const Gpio& RX, const Gpio& TX, channel_t channel = UART0, uint32_t baudrate = 9600, data_bits_t data_bits = EIGHT_BITS, parity_t parity = NONE, uint32_t maxRX = 64, uint32_t maxTX = 64);
 	void Transmit(const char *message) override;
 	void Transmit(const char *message, uint32_t n) override;
-	char *Receive(char *message, uint32_t n) override;
+	bool Receive(char *message, uint32_t n) override;
 	void SetBaudRate(uint32_t baudrate);
 	virtual ~UART();
 private:

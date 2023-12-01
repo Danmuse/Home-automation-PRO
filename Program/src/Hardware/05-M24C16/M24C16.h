@@ -49,7 +49,7 @@ private:
 	statusComm_t acquire(uint8_t values[], size_t numBytes, uint8_t position, pageBlock_t pageBlock);
 	statusComm_t transmit(uint8_t values[], size_t numBytes, uint8_t position, pageBlock_t pageBlock);
 public:
-	M24C16();
+	M24C16(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel);
 	template <typename T> EEPROM_result_t read(T* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
 	template <typename T> EEPROM_result_t write(T data, uint8_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
 

@@ -15,26 +15,12 @@
 #if defined (__cplusplus)
 extern "C" {
 	void PININT0_IRQHandler(void);
-}
-extern "C" {
 	void PININT1_IRQHandler(void);
-}
-extern "C" {
 	void PININT2_IRQHandler(void);
-}
-extern "C" {
 	void PININT3_IRQHandler(void);
-}
-extern "C" {
 	void PININT4_IRQHandler(void);
-}
-extern "C" {
 	void PININT5_IRQHandler(void);
-}
-extern "C" {
 	void PININT6_IRQHandler(void);
-}
-extern "C" {
 	void PININT7_IRQHandler(void);
 }
 #endif

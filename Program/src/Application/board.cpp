@@ -8,6 +8,8 @@
 #include "board.h"
 
 void initDevice(void) {
-	// initPhaseLockedLoop();
+	#if FREQ_CLOCK_MCU == 48000000UL
+	initPhaseLockedLoop();
+	#endif // FREQ_CLOCK_MCU == 48000000UL
 	initSysTick(FREQ_SYSTICK);
 }
