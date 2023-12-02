@@ -1,4 +1,4 @@
-/**!
+/*/*!
  * @file LCD1602.cpp
  * @par Author & Doxygen Editor
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
@@ -33,11 +33,11 @@ void LCD1602::initialize(void) {
 }
 
 LCD1602& LCD1602::operator=(const int8_t *ptr_str) {
-    this->write(ptr_str);
+    this->_write(ptr_str);
 	return *this;
 }
 
-void LCD1602::write(const int8_t *ptr_str) {
+void LCD1602::_write(const int8_t *ptr_str) {
 	uint8_t index = 0;
 	for (index = this->m_position; (index < this->m_rows * this->m_columns) && (ptr_str[index - this->m_position] != '\0'); index++)
 		this->m_buffer[index] = ptr_str[index - this->m_position];
@@ -45,7 +45,7 @@ void LCD1602::write(const int8_t *ptr_str) {
 	if (this->m_position >= (this->m_columns * this->m_rows)) this->m_position = 0;
 }
 
-void LCD1602::write(const int32_t value) {
+void LCD1602::_write(const int32_t value) {
 	int32_t auxiliar;
 	int8_t *ptr_number = new int8_t[12];
 	uint8_t position = 0;
@@ -67,21 +67,21 @@ void LCD1602::write(const int32_t value) {
 		position++;
 	}
 	ptr_number[position] = '\0';
-    this->write(ptr_number);
+    this->_write(ptr_number);
 	delete [] ptr_number;
 }
 
 void LCD1602::write(const int8_t *ptr_str, uint8_t row, uint8_t column) {
 	if ((this->m_columns * row) + column <= this->m_columns * this->m_rows) {
 		this->m_position = (this->m_columns * row) + column;
-        this->write(ptr_str);
+        this->_write(ptr_str);
 	}
 }
 
 void LCD1602::write(const int32_t value, const uint8_t row, const uint8_t column) {
 	if ((this->m_columns * row) + column <= this->m_columns * this->m_rows) {
 		this->m_position = (this->m_columns * row) + column;
-        this->write(value);
+        this->_write(value);
 	}
 }
 
