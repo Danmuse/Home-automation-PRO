@@ -18,7 +18,7 @@ m_max_range{(DAC_CR_VALUE_MASK >> DAC_CR_VALUE_SHIFT)} {
 
 void DAC::initialize(void) {
 	this->bindChannel();
-	this->EnableIOCON();
+    this->enableIOCON();
 }
 
 void DAC::analogWrite(uint16_t value) {
@@ -35,15 +35,15 @@ uint16_t DAC::readBuffer(void) const {
 }
 
 void DAC::bindChannel(void) {
-	this->EnablePower();
-	this->EnableClock();
-	this->EnableSWM();
+    this->enablePower();
+    this->enableClock();
+    this->enableSWM();
 }
 
 void DAC::unbindChannel(void) {
-	this->DisablePower();
-	this->DisableClock();
-	this->DisableSWM();
+    this->disablePower();
+    this->disableClock();
+    this->disableSWM();
 }
 
 void DAC::setMaxRange(uint16_t max_range) {
@@ -55,43 +55,43 @@ uint16_t DAC::getMaxRange(void) const {
 	return this->m_max_range;
 }
 
-void DAC::EnablePower(void) {
+void DAC::enablePower(void) {
 	SYSCON->PDRUNCFG &= ~(1 << (13 + this->m_channel));
 }
 
-void DAC::EnableClock(void) {
+void DAC::enableClock(void) {
 	if (this->m_channel == DAC_0) SYSCON->SYSAHBCLKCTRL0 |= (1 << FST_SYS_OUT);
 	else if (this->m_channel == DAC_1) SYSCON->SYSAHBCLKCTRL1 |= (1 << SND_SYS_OUT);
 }
 
-void DAC::EnableSWM(void) {
+void DAC::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	if (this->m_channel == DAC_0) SWM->PINENABLE0 &= ~(1 << FST_SWM_OUT);
 	else if (this->m_channel == DAC_1) SWM->PINENABLE0 &= ~(1 << SND_SWM_OUT);
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void DAC::EnableIOCON(void) {
+void DAC::enableIOCON(void) {
 	IOCON->PIO[IOCON_INDEX_PIO0[this->m_bit]] |= (1 << IOCON_DAC);
 }
 
-void DAC::DisablePower(void) {
+void DAC::disablePower(void) {
 	SYSCON->PDRUNCFG |= (1 << (13 + this->m_channel));
 }
 
-void DAC::DisableClock(void) {
+void DAC::disableClock(void) {
 	if (this->m_channel == DAC_0) SYSCON->SYSAHBCLKCTRL0 &= ~(1 << FST_SYS_OUT);
 	else if (this->m_channel == DAC_1) SYSCON->SYSAHBCLKCTRL1 &= ~(1 << SND_SYS_OUT);
 }
 
-void DAC::DisableSWM(void) {
+void DAC::disableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	if (this->m_channel == DAC_0) SWM->PINENABLE0 |= (1 << FST_SWM_OUT);
 	else if (this->m_channel == DAC_1) SWM->PINENABLE0 |= (1 << SND_SWM_OUT);
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void DAC::DisableIOCON(void) {
+void DAC::disableIOCON(void) {
 	IOCON->PIO[IOCON_INDEX_PIO0[this->m_bit]] &= ~(1 << IOCON_DAC);
 }
 

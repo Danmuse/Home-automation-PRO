@@ -11,7 +11,7 @@
 
 class Sweep {
 public:
-	virtual void SetDigit(void) = 0;
+	virtual void setDigit(void) = 0;
 	virtual ~Sweep() = default;
 };
 

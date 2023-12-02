@@ -16,6 +16,6 @@ void delay(uint32_t milliseconds) {
 		flagPush = !flagPush;
 		g_timers_list << delayTIMER;
 	}
-	delayTIMER.TimerStart(milliseconds, nullptr, Timer::MILLI);
-	while (delayTIMER.GetTicks());
+    delayTIMER.timerStart(milliseconds, nullptr, Timer::MILLI);
+	while (delayTIMER.getTicks());
 }

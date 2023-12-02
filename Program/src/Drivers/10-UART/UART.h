@@ -46,23 +46,23 @@ public:
 
 	UART() = delete;
 	UART(const Gpio& RX, const Gpio& TX, channel_t channel = UART0, uint32_t baudrate = 9600, data_bits_t data_bits = EIGHT_BITS, parity_t parity = NONE, uint32_t maxRX = 64, uint32_t maxTX = 64);
-	void Transmit(const char *message) override;
-	void Transmit(const char *message, uint32_t n) override;
-	bool Receive(char *message, uint32_t n) override;
-	void SetBaudRate(uint32_t baudrate);
+	void transmit(const char *message) override;
+	void transmit(const char *message, uint32_t n) override;
+	bool receive(char *message, uint32_t n) override;
+	void setBaudRate(uint32_t baudrate);
 	virtual ~UART();
 private:
-	void EnableSWM(void);
-	void EnableClock(void);
-	void Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity);
+	void enableSwm(void);
+	void enableClock(void);
+	void config(uint32_t baudrate, data_bits_t data_bits, parity_t parity);
 	void UART_IRQHandler(void) override;
 
 	void pushRX(uint8_t data) override;
 	bool popRX(uint8_t *data) override;
 	void pushTX(uint8_t data) override;
 	bool popTX(uint8_t *data) override;
-	void EnableInterrupt(void);
-	void DisableInterrupt(void);
+	void enableInterrupt(void);
+	void disableInterrupt(void);
 };
 
 extern UART *g_usb;

@@ -16,41 +16,41 @@ SyncCommSPI *g_SPI[MAX_SPI_CHANNELS] = { nullptr, nullptr };
 SPI::SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL, channel_t channel) : std::vector<Gpio>({SCK, MOSI, MISO, SSEL}), Callback(),
 m_SPI{(SPI_Type *)(SPI0_BASE + channel*SPI_OFFSET_BASE)},
 m_ticks{(uint8_t)(SCK_TICKS * (g_systick_freq / 1000))} {
-	this->EnableClock();
-	this->EnableSWM();
-	this->Config();
+    this->enableClock();
+    this->enableSwm();
+    this->config();
 }
 
 void SPI::Memory_Inicialization(void) {
 	uint8_t Temp[2];
 	this->SW_Reset();
 	this->HW_Write(COMMAND_DISABLE_QIO);
-	this->Write_Enable();
+    this->writeEnable();
 	this->HW_Write(COMMAND_WRITE_UNLOCK_PROTECTION);
-	this->Write_Enable();
-	Temp[0] = this->Read_Configuration(COMMAND_READ_STATUS);
+    this->writeEnable();
+	Temp[0] = this->readConfiguration(COMMAND_READ_STATUS);
 	Temp[1] = 0x00;
-	this->Save_Configuration(COMMAND_WRITE_STATUS, Temp, 2);
-	this->Wait_Busy();
-	this->Jedec_Id_Read();
-	Temp[0] = this->Read_Configuration(COMMAND_READ_CONF);
-	this->WriteBlock_Protection();
+    this->saveConfiguration(COMMAND_WRITE_STATUS, Temp, 2);
+    this->waitBusy();
+    this->jedecIdRead();
+	Temp[0] = this->readConfiguration(COMMAND_READ_CONF);
+    this->writeBlockProtection();
 }
 
-void SPI::CallbackMethod(void) {
+void SPI::callbackMethod(void) {
 	this->m_ticks--;
 	if (!this->m_ticks) {
-		at(SCK_IDX).TogglePin();
+        at(SCK_IDX).togglePin();
 		this->m_ticks = SCK_TICKS * (g_systick_freq / 1000);
 	}
 }
 
 void SPI::HW_Enable(void) {
-	at(SSEL_IDX).ClearPin();
+    at(SSEL_IDX).clearPin();
 }
 
 void SPI::HW_Disable(void) {
-	at(SSEL_IDX).SetPin();
+    at(SSEL_IDX).setPin();
 }
 
 void SPI::SW_Reset(void) {
@@ -63,7 +63,7 @@ void SPI::SW_Reset(void) {
 	this->HW_Disable();
 }
 
-void SPI::Write_Enable(void) {
+void SPI::writeEnable(void) {
 	this->HW_Enable();
 	this->HW_Write(COMMAND_ENABLE);
 	this->HW_Disable();
@@ -77,11 +77,11 @@ void SPI::Write_Disable(void) {
 
 void SPI::HW_Write(uint8_t data) {
 	for (uint8_t index = 0; index < 8; index++) {
-		if (data & ((uint8_t)(0x80) >> index)) at(MOSI_IDX).SetPin();
-		else at(MOSI_IDX).ClearPin();
-		at(SCK_IDX).SetPin();
+		if (data & ((uint8_t)(0x80) >> index)) at(MOSI_IDX).setPin();
+		else at(MOSI_IDX).clearPin();
+        at(SCK_IDX).setPin();
 		// Bounce
-		at(SCK_IDX).ClearPin();
+        at(SCK_IDX).clearPin();
 		// Bounce
 	}
 }
@@ -89,17 +89,17 @@ void SPI::HW_Write(uint8_t data) {
 uint8_t SPI::HW_Read(void) {
 	uint8_t data = 0;
 	for(uint8_t index = 0; index < 8; index++) {
-		at(SCK_IDX).SetPin();
+        at(SCK_IDX).setPin();
 		// Bounce
-		if(at(MISO_IDX).GetPin()) // Preguntar a Dani
+		if(at(MISO_IDX).getPin()) // Preguntar a Dani
 			data |= ((uint8_t)(0x80) >> index);
-		at(SCK_IDX).ClearPin();
+        at(SCK_IDX).clearPin();
 		// Bounce
 	}
 	return data;
 }
 
-uint8_t SPI::Read_Configuration(uint8_t command) {
+uint8_t SPI::readConfiguration(uint8_t command) {
 	uint8_t Temp;
 	this->HW_Enable();
 	this->HW_Write(command);
@@ -109,7 +109,7 @@ uint8_t SPI::Read_Configuration(uint8_t command) {
 }
 
 
-void SPI::Jedec_Id_Read(void) {
+void SPI::jedecIdRead(void) {
 	this->HW_Enable();
 	this->HW_Write(0x9F);
 	Manufacturer_Id = this->HW_Read();       /* receive byte */
@@ -118,54 +118,61 @@ void SPI::Jedec_Id_Read(void) {
 	this->HW_Disable();
 }
 
-void SPI::WriteBlock_Protection(void) {
-	this->Write_Enable();
+void SPI::writeBlockProtection(void) {
+    this->writeEnable();
 	this->HW_Enable();
 	this->HW_Write(COMMAND_WRITE_BLOCK_PROTECTION);
 	for(uint8_t index = 0; index < 10; index++) this->HW_Write(0);
 	this->HW_Disable();
-	this->Wait_Busy();
+    this->waitBusy();
 }
 
-void SPI::Wait_Busy(void) {
-	while ((this->Read_Configuration(COMMAND_READ_STATUS) & 0x80) == 0x80);	// Waste time until not busy
+void SPI::waitBusy(void) {
+	while ((this->readConfiguration(COMMAND_READ_STATUS) & 0x80) == 0x80);	// Waste time until not busy
 }
 
-void SPI::EnableInterrupt(void) {
+void SPI::enableInterrupt(void) {
 	this->m_SPI->INTENSET = (1 << 0); // Determines whether an interrupt occurs when receiver data is available.
 }
 
-void SPI::DisableInterrupt(void) {
+void SPI::disableInterrupt(void) {
 	this->m_SPI->INTENCLR = (1 << 0); // Determines whether an interrupt occurs when receiver data is available.
 }
 
-void SPI::EnableSWM(void) {
+void SPI::enableSwm(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	if (this->m_SPI == SPI0) {
-		SWM->PINASSIGN.PINASSIGN3 &= (((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 24) | ~(0xFF << 24));
-		SWM->PINASSIGN.PINASSIGN4 &= ((((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 0) | ((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 8) | ((at(SSEL_IDX).GetBit() + at(SSEL_IDX).GetPort() * 0x20) << 16)) | ~(0xFFFFFF << 0));
+		SWM->PINASSIGN.PINASSIGN3 &= (((at(SCK_IDX).getBit() + at(SCK_IDX).getPort() * 0x20) << 24) | ~(0xFF << 24));
+		SWM->PINASSIGN.PINASSIGN4 &= ((((at(MOSI_IDX).getBit() + at(MOSI_IDX).getPort() * 0x20) << 0) | ((
+                at(MISO_IDX).getBit() +
+                at(MISO_IDX).getPort() * 0x20) << 8) | ((at(SSEL_IDX).getBit() +
+                at(SSEL_IDX).getPort() * 0x20) << 16)) | ~(0xFFFFFF << 0));
 //		THE FOLLOWING FRAGMENT OF CODE IS NOT IMPLEMENT YET
-//		SWM->PINASSIGN.PINASSIGN4 &= (((at(SSEL1_IDX).GetBit() + at(SSEL1_IDX).GetPort() * 0x20) << 24) | ~(0xFF << 24));
-//		SWM->PINASSIGN.PINASSIGN5 &= ((((at(SSEL2_IDX).GetBit() + at(SSEL2_IDX).GetPort() * 0x20) << 0) | ((at(SSEL3_IDX).GetBit() + at(SSEL3_IDX).GetPort() * 0x20) << 8)) | ~(0xFFFF << 0));
+//		SWM->PINASSIGN.PINASSIGN4 &= (((at(SSEL1_IDX).getBit() + at(SSEL1_IDX).getPort() * 0x20) << 24) | ~(0xFF << 24));
+//		SWM->PINASSIGN.PINASSIGN5 &= ((((at(SSEL2_IDX).GetBit() + at(SSEL2_IDX).GetPort() * 0x20) << 0) | ((at(SSEL3_IDX).getBit() + at(SSEL3_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
 	}
 	if (this->m_SPI == SPI1) {
-		SWM->PINASSIGN.PINASSIGN5 &= ((((at(SCK_IDX).GetBit() + at(SCK_IDX).GetPort() * 0x20) << 16) | ((at(MOSI_IDX).GetBit() + at(MOSI_IDX).GetPort() * 0x20) << 24)) | ~(0xFFFF << 16));
-		SWM->PINASSIGN.PINASSIGN6 &= ((((at(MISO_IDX).GetBit() + at(MISO_IDX).GetPort() * 0x20) << 0) | ((at(SSEL_IDX).GetBit() + at(SSEL_IDX).GetPort() * 0x20) << 8)) | ~(0xFFFF << 0));
+		SWM->PINASSIGN.PINASSIGN5 &= ((((at(SCK_IDX).getBit() + at(SCK_IDX).getPort() * 0x20) << 16) | ((
+                at(MOSI_IDX).getBit() +
+                at(MOSI_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+		SWM->PINASSIGN.PINASSIGN6 &= ((((at(MISO_IDX).getBit() + at(MISO_IDX).getPort() * 0x20) << 0) | ((
+                at(SSEL_IDX).getBit() +
+                at(SSEL_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
 //		THE FOLLOWING FRAGMENT OF CODE IS NOT IMPLEMENT YET
-//		SWM->PINASSIGN.PINASSIGN6 &= (((at(SSEL1_IDX).GetBit() + at(SSEL1_IDX).GetPort() * 0x20) << 16) | ~(0xFF << 16));
+//		SWM->PINASSIGN.PINASSIGN6 &= (((at(SSEL1_IDX).getBit() + at(SSEL1_IDX).getPort() * 0x20) << 16) | ~(0xFF << 16));
 	}
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void SPI::Config(void) {
+void SPI::config(void) {
 	if (this->m_SPI == SPI0) NVIC->ISER[0] |= (1 << 0); // Enable SPI0_IRQ
 	if (this->m_SPI == SPI1) NVIC->ISER[0] |= (1 << 1); // Enable SPI1_IRQ
 	this->m_SPI->CFG |= (1 << 0); // The SPI is enabled for operation.
 	this->m_SPI->CFG |= (1 << 2); // The SPI will operate in master mode.
-//	this->EnableClock();
+//	this->enableClock();
 }
 
-void SPI::EnableClock(void) {
+void SPI::enableClock(void) {
 //	uint32_t divider, MSTSCL, DIVVAL;
 //  uint32_t err, best_err = 0;
 
@@ -173,13 +180,13 @@ void SPI::EnableClock(void) {
 		g_SPI[0] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 11);
 		SYSCON->PRESETCTRL0 &= ~(1 << 11); // Assert the SPI0 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 11); // Clear the SPI0 reset. Default register value.
+		SYSCON->PRESETCTRL0 |= (1 << 11); // clear the SPI0 reset. Default register value.
 	}
 	if (this->m_SPI == SPI1) {
 		g_SPI[1] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 12);
 		SYSCON->PRESETCTRL0 &= ~(1 << 12); // Assert the SPI1 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 12); // Clear the SPI1 reset. Default register value.
+		SYSCON->PRESETCTRL0 |= (1 << 12); // clear the SPI1 reset. Default register value.
 	}
 
 	/* COMPLETE THE FOLLOWING FRAGMENT OF CODE

@@ -13,9 +13,9 @@
 
 class Inputs {
 public:
-	virtual void SetDirInputs(void) = 0;
-	virtual bool GetPin(void) const = 0;
-	virtual void SetPinMode(void) = 0;
+	virtual void setDirInputs(void) = 0;
+	virtual bool getPin(void) const = 0;
+	virtual void setPinMode(void) = 0;
 	virtual ~Inputs() = default;
 };
 

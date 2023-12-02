@@ -28,35 +28,35 @@ m_mode{mode} {
 	this->SetDir();
 }
 
-void Gpio::SetPin(void) {
+void Gpio::setPin(void) {
 	if (this->m_activity == HIGH) GPIO->SET[this->m_port] |= (1 << this->m_bit);
 	else GPIO->CLR[this->m_port] |= (1 << this->m_bit);
 }
 
-void Gpio::ClearPin(void) {
+void Gpio::clearPin(void) {
 	if (this->m_activity == HIGH) GPIO->CLR[this->m_port] |= (1 << this->m_bit);
 	else GPIO->SET[this->m_port] |= (1 << this->m_bit);
 }
 
-void Gpio::SetDirOutputs(void) {
+void Gpio::setDirOutputs(void) {
 	GPIO->DIRSET[this->m_port] |= (1 << this->m_bit);
 }
 
-void Gpio::SetDirInputs(void) {
+void Gpio::setDirInputs(void) {
 	GPIO->DIRCLR[this->m_port] |= (1 << this->m_bit);
 }
 
-void Gpio::TogglePin(void) {
+void Gpio::togglePin(void) {
 	GPIO->NOT[this->m_port] |= (1 << this->m_bit);
 }
 
-bool Gpio::GetPin(void) const {
+bool Gpio::getPin(void) const {
 	return	this->m_activity == HIGH ?
 			((GPIO->PIN[this->m_port] >> this->m_bit) & 0x01) :
 			!((GPIO->PIN[this->m_port] >> this->m_bit) & 0x01);
 }
 
-void Gpio::SetPinMode(void) {
+void Gpio::setPinMode(void) {
 	uint8_t index = 0;
 	if (this->m_port == PORT0) index = IOCON_INDEX_PIO0[this->m_bit];
 	else if (this->m_port == PORT1) index = IOCON_INDEX_PIO1[this->m_bit];
@@ -64,7 +64,7 @@ void Gpio::SetPinMode(void) {
 	IOCON->PIO[index] |= (this->m_mode << 10);
 }
 
-void Gpio::SetPinResistor(void) {
+void Gpio::setPinResistor(void) {
 	uint8_t index = 0;
 	if (this->m_port == PORT0) index = IOCON_INDEX_PIO0[this->m_bit];
 	else if (this->m_port == PORT1) index = IOCON_INDEX_PIO1[this->m_bit];
@@ -78,14 +78,14 @@ Gpio::error_t Gpio::SetDir(void) {
 		if (this->m_direction == INPUT) {
 			// Sets a default pin mode in case it does not match the elements of the mode_input_t enumeration
 			if (this->m_mode != INACTIVE && this->m_mode != PULLDOWN && this->m_mode != PULLUP && this->m_mode != REPEATER) this->m_mode = REPEATER;
-			this->SetDirInputs();
-			this->SetPinResistor();
+            this->setDirInputs();
+            this->setPinResistor();
 		} else if (this->m_direction == OUTPUT) {
 			// Sets a default pin mode in case it does not match the elements of the mode_output_t enumeration
 			if (this->m_mode != PUSHPULL && this->m_mode != OPENCOLECTOR) this->m_mode = PUSHPULL;
-			this->SetDirOutputs();
-			this->SetPinMode();
-			this->m_activity == LOW ? this->ClearPin() : this->SetPin();
+            this->setDirOutputs();
+            this->setPinMode();
+			this->m_activity == LOW ? this->clearPin() : this->setPin();
 		}
 	}
 	return this->m_error;

@@ -17,11 +17,11 @@
 class SCTimer {
 public:
 	SCTimer();
-	void SetTime(uint32_t time, uint32_t channel);
-	void SetUnify(bool status);
-	void SetAutoLimit(bool status);
-	void SetSwitchMatrixSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number);
-	void StartTimer(void);
+	void setTime(uint32_t time, uint32_t channel);
+	void setUnify(bool status);
+	void setAutoLimit(bool status);
+	void setSwitchMatrixSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number);
+	void startTimer(void);
 	void StopTimer(void);
 
 	virtual ~SCTimer();

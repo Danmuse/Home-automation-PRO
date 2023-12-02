@@ -25,15 +25,15 @@ void PinInterrupt::EnableClockInterrupt(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 28);
 }
 
-void PinInterrupt::EnableInterupt(void) {
+void PinInterrupt::enableInterupt(void) {
 	SYSCON->PINTSEL[this->m_interrupt_number] = this->m_bit + this->m_port * 32;
 }
 
-void PinInterrupt::DisableInterupt(void) {
+void PinInterrupt::disableInterupt(void) {
 	SYSCON->PINTSEL[this->m_interrupt_number] = 0;
 }
 
-void PinInterrupt::InitInterrupt(void) {
+void PinInterrupt::initInterrupt(void) {
 	if (this->m_quantity == 1) this->EnableClockInterrupt();
 
 	SYSCON->PINTSEL[this->m_interrupt_number] = this->m_bit + this->m_port * 32;
@@ -54,46 +54,46 @@ void PinInterrupt::InitInterrupt(void) {
 }
 
 PinInterrupt::~PinInterrupt() {
-	this->DisableInterupt();
+    this->disableInterupt();
 	this->m_quantity--;
 }
 
 void PININT0_IRQHandler(void) {
-	g_gpiohandler[0]->GpioHandler();
+    g_gpiohandler[0]->gpioHandler();
 	PIN_INTERRUPT->IST |= (1 << 0);
 }
 
 void PININT1_IRQHandler(void) {
-	g_gpiohandler[1]->GpioHandler();
+    g_gpiohandler[1]->gpioHandler();
 	PIN_INTERRUPT->IST |= (1 << 1);
 }
 
 void PININT2_IRQHandler(void) {
-	g_gpiohandler[2]->GpioHandler();
+    g_gpiohandler[2]->gpioHandler();
 	PIN_INTERRUPT->IST |= (1 << 2);
 }
 
 void PININT3_IRQHandler(void) {
-	g_gpiohandler[3]->GpioHandler();
+    g_gpiohandler[3]->gpioHandler();
 	PIN_INTERRUPT->IST |= (1 << 3);
 }
 
 void PININT4_IRQHandler(void) {
-	g_gpiohandler[4]->GpioHandler();
+    g_gpiohandler[4]->gpioHandler();
 	PIN_INTERRUPT->IST |= (1 << 4);
 }
 
 void PININT5_IRQHandler(void) {
-	g_gpiohandler[5]->GpioHandler();
+    g_gpiohandler[5]->gpioHandler();
 	PIN_INTERRUPT->IST |= (1 << 5);
 }
 
 void PININT6_IRQHandler(void) {
-	g_gpiohandler[6]->GpioHandler();
+    g_gpiohandler[6]->gpioHandler();
 	PIN_INTERRUPT->IST |= (1 << 6);
 }
 
 void PININT7_IRQHandler(void) {
-	g_gpiohandler[7]->GpioHandler();
+    g_gpiohandler[7]->gpioHandler();
 	PIN_INTERRUPT->IST |= (1 << 7);
 }

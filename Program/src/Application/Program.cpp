@@ -23,7 +23,7 @@ int main(void) {
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
     while (1) {
-    	g_timers_list.TimerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
+        g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 }
 
@@ -213,11 +213,11 @@ int main(void) {
 		rtc = g_ds3231->get();
 		if (g_ds3231->getStatus()) {
 			LED_GREEN.SetPin();
-			LED_BLUE.SetPin();
-		} else LED_BLUE.ClearPin();
+			LED_BLUE.setPin();
+		} else LED_BLUE.clearPin();
 		g_display->set(rtc.TIME.MIN, 0);
 		g_display->set(rtc.TIME.SEC, 1);
-		g_usb->Transmit(g_ds3231->print());
+		g_usb->transmit(g_ds3231->print());
     		g_timers_list.TimerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
 		delay(1000);
 	}
@@ -273,7 +273,7 @@ int main(void) {
     	g_lcd1602->write("   ", 1, 4);
     	g_lcd1602->write("   ", 0, 12);
     	g_lcd1602->write("   ", 1, 12);
-//    	g_timers_list.TimerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
+//    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 }
 

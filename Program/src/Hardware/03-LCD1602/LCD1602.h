@@ -35,11 +35,11 @@ private:
 	uint8_t m_sweep;					//!< Buffer write position
 	uint8_t m_position;					//!< User write position
 
-	void Initialize(void);
-	void WriteInstruction(const uint8_t data, const Gpio::activity_t mode);
-	uint32_t Pow(uint32_t base, uint32_t exponent);
-	void Write(const int8_t *ptr_str);
-	void Write(const int32_t value);
+	void initialize(void);
+	void writeInstruction(const uint8_t data, const Gpio::activity_t mode);
+	uint32_t pow(uint32_t base, uint32_t exponent);
+	void write(const int8_t *ptr_str);
+	void write(const int32_t value);
 public:
 	enum { D7, D6, D5, D4, RS, ENABLE };
 
@@ -49,7 +49,7 @@ public:
 	void write(const int8_t *ptr_str, const uint8_t row = 0, const uint8_t column = 0);
 	void write(const int32_t value, const uint8_t row = 0, const uint8_t column = 0);
 	void clear(void);
-	void CallbackMethod(void);
+	void callbackMethod(void);
 	virtual ~LCD1602();
 };
 

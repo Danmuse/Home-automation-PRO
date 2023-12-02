@@ -24,9 +24,9 @@ private:
 public:
 	CD4017() = delete;
 	CD4017(const std::vector<Gpio*> &pins4017, uint8_t maxOutputs);
-	void SetDigit(void) override;
-	void SetReset(void);
-	void SetClock(void);
+	void setDigit(void) override;
+	void setReset(void);
+	void setClock(void);
 	virtual ~CD4017();
 };
 

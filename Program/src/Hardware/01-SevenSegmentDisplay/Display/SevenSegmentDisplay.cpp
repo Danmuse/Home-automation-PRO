@@ -29,7 +29,7 @@ m_relativePos{relativePos} {
 	this->m_index = 0;
 }
 
-void SevenSegmentDisplay::CallbackMethod(void) {
+void SevenSegmentDisplay::callbackMethod(void) {
 	this->m_ticks--;
 	if (!this->m_blink_status) this->m_blink_ticks_on--;
 	else this->m_blink_ticks_off--;
@@ -41,10 +41,10 @@ void SevenSegmentDisplay::CallbackMethod(void) {
 			this->m_blink_ticks_off = BLINK_TICKS_OFF * (g_systick_freq / 1000);
 			this->m_blink_status = !this->m_blink_status;
 		}
-		this->m_sweep->SetDigit();
-		this->m_segments->SetSegments(Digit::TURNOFF);
-		if (!this->m_blink_status || this->m_bufferDisplay[this->m_index]->GetMode() != Digit::BLINK)
-			this->m_segments->SetSegments(this->m_bufferDisplay[this->m_index]->Get());
+        this->m_sweep->setDigit();
+        this->m_segments->setSegments(Digit::TURNOFF);
+		if (!this->m_blink_status || this->m_bufferDisplay[this->m_index]->getMode() != Digit::BLINK)
+            this->m_segments->setSegments(this->m_bufferDisplay[this->m_index]->get());
 		this->m_ticks = UPDATE_TICKS * (g_systick_freq / 1000);
 		this->m_index++;
 		this->m_index %= this->m_maxdigits;
@@ -54,17 +54,22 @@ void SevenSegmentDisplay::CallbackMethod(void) {
 void SevenSegmentDisplay::set(uint32_t value, uint8_t display) {
 	uint16_t auxiliar[this->m_maxdigits], index = 0;
 	for (index = 0; index < this->m_groups[display]->m_quantity; index++, value /= 10) auxiliar[index] = value % 10;
-	for (index = 0; index < this->m_groups[display]->m_quantity; index++) this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->Set(auxiliar[index]);
+	for (index = 0; index < this->m_groups[display]->m_quantity; index++)
+        this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->set(auxiliar[index]);
 }
 
 void SevenSegmentDisplay::clear(uint8_t display) {
-	for (uint8_t index = 0; index < this->m_groups[display]->m_quantity; index++) this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->Clear();
+	for (uint8_t index = 0; index < this->m_groups[display]->m_quantity; index++)
+        this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->clear();
 }
 
 void SevenSegmentDisplay::mode(Digit::mode_t mode, uint8_t display) {
-	if (mode == Digit::BLINK) for (uint8_t index = 0; index < this->m_groups[display]->m_quantity; index++) this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->BlinkBind();
-	else if (mode == Digit::NONE) for (uint8_t index = 0; index < this->m_groups[display]->m_quantity; index++) this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->BlinkUnbind();
-	else for (uint8_t index = 0; index < this->m_groups[display]->m_quantity; index++) this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->Clear();
+	if (mode == Digit::BLINK) for (uint8_t index = 0; index < this->m_groups[display]->m_quantity; index++)
+            this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->blinkBind();
+	else if (mode == Digit::NONE) for (uint8_t index = 0; index < this->m_groups[display]->m_quantity; index++)
+            this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->blinkUnbind();
+	else for (uint8_t index = 0; index < this->m_groups[display]->m_quantity; index++)
+            this->m_bufferDisplay[this->m_relativePos[index + this->m_groups[display]->m_begin]]->clear();
 }
 
 SevenSegmentDisplay::~SevenSegmentDisplay() {

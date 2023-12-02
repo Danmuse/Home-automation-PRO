@@ -8,6 +8,7 @@
 
 #ifndef UTILS_H_
 #define UTILS_H_
+#include <stddef.h>
 
 #define __I    				volatile const  //!< Defines 'read only' permission
 #define __O    				volatile        //!< Defines 'write only' permission

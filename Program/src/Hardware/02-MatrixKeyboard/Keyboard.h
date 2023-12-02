@@ -28,12 +28,12 @@ private:
 public:
 	Keyboard() = delete;
 	Keyboard(std::vector<Gpio*> &columns, std::vector<Gpio*> &rows);
-	void CallbackMethod(void);
-	uint8_t	Get(void);
+	void callbackMethod(void);
+	uint8_t	get(void);
 	virtual ~Keyboard();
 private:
-	uint8_t KeyboardHW(void);
-	void KeyboardSW(uint8_t keyStatus);
+	uint8_t keyboardHW(void);
+	void keyboardSW(uint8_t keyStatus);
 };
 
 extern Keyboard *g_keyboard;
