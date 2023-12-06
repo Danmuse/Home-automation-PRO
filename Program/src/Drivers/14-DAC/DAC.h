@@ -24,15 +24,15 @@ private:
 	uint16_t m_buffer;				//!< Digital-Analog Converter (<tt>DAC</tt>) buffer values.
 	uint16_t m_max_range;			//!< Maximum range of values provided by the user.
 
-	void EnablePower(void);
-	void EnableClock(void);
-	void EnableSWM(void);
-	void EnableIOCON(void);
+	void enablePower(void);
+	void enableClock(void);
+	void enableSWM(void);
+	void enableIOCON(void);
 
-	void DisablePower(void);
-	void DisableClock(void);
-	void DisableSWM(void);
-	void DisableIOCON(void);
+	void disablePower(void);
+	void disableClock(void);
+	void disableSWM(void);
+	void disableIOCON(void);
 public:
 	DAC(channelDAC_t channel);
 	void initialize(void);

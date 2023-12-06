@@ -51,14 +51,14 @@ private:
 	bool m_acquisition_ready;				//!< Status of the Analog-Digital Converter (<tt>ADC</tt>) conversion.
 
 	void initADC(void);
-	uint32_t CalculateDivisor(void);
-	void ConfigVoltage(trm_voltage_config_t config);
-	void EnablePower(void);
-	void EnableClock(void);
-	void EnableSWM(void);
-	void DisableSWM(void);
-	void CalibrateADC(void);
-	void Config(void);
+	uint32_t calculateDivisor(void);
+	void configVoltage(trm_voltage_config_t config);
+	void enablePower(void);
+	void enableClock(void);
+	void enableSwm(void);
+	void disableSwm(void);
+	void calibrateAdc(void);
+	void config(void);
 	void setSampleRate(void);
 	void bindSEQA(void);
 	void bindSEQB(void);
@@ -66,19 +66,19 @@ private:
 	void unbindSEQB(void);
 	void setModeSEQA(conversion_mode_t mode);
 	void setModeSEQB(conversion_mode_t mode);
-	void EnableSEQA(void);
-	void EnableSEQB(void);
-	void DisableSEQA(void);
-	void DisableSEQB(void);
-	void ConfigSEQA(void);
-	void ConfigSEQB(void);
+	void enableSEQA(void);
+	void enableSEQB(void);
+	void disableSEQA(void);
+	void disableSEQB(void);
+	void configSEQA(void);
+	void configSEQB(void);
 	void EnableNVIC_IRQ(irq_source_nvic_t source);
 	void DisableNVIC_IRQ(irq_source_nvic_t source);
 	irq_source_nvic_t getNVIC_IRQ(irq_source_inten_t irq);
 
 	void triggerSEQ(void);
-	void HandlerSEQA(void);
-	void HandlerSEQB(void);
+	void handlerSEQA(void);
+	void handlerSEQB(void);
 	uint16_t getResult(void);
 public:
 	ADC(uint32_t clk_freq, channelADC_t channel, uint32_t sample_rate, adc_sequence_t sequence = ADC_SEQA);
@@ -86,9 +86,9 @@ public:
 	void setLowPowerMode(bool low_power);
 	void bindChannel(void);
 	void unbindChannel(void);
-	void EnableIRQ(irq_source_inten_t irq);
-	void DisableIRQ(irq_source_inten_t irq);
-	void Handler(adc_isr_t isr);
+	void enableIRQ(irq_source_inten_t irq);
+	void disableIRQ(irq_source_inten_t irq);
+	void handler(adc_isr_t isr);
 	bool checkResult(void);
 	uint16_t analogRead(void);
 	virtual ~ADC();

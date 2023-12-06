@@ -17,7 +17,7 @@ private:
 	void (*m_callback)(void);
 public:
 	Callback(void (*function)(void) = nullptr);
-	virtual void CallbackMethod(void);
+	virtual void callbackMethod(void);
 	virtual ~Callback();
 };
 

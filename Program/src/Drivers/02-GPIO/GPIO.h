@@ -39,21 +39,21 @@ private:
 	uint8_t m_mode;
 	error_t m_error = OK;
 
-	void SetDirOutputs(void) override;
-	void SetDirInputs(void) override;
-	void SetPinMode(void) override;
-	void SetPinResistor(void) override;
+	void setDirOutputs(void) override;
+	void setDirInputs(void) override;
+	void setPinMode(void) override;
+	void setPinResistor(void) override;
 public:
 	Gpio() = delete;
 	Gpio(const Gpio& original);
 	Gpio(port_t port, uint8_t bit, uint8_t mode, direction_t direction, activity_t activity);
-	void SetPin(void) override;
-	void ClearPin(void) override;
-	void TogglePin(void) override;
-	bool GetPin(void) const override;
+	void setPin(void) override;
+	void clearPin(void) override;
+	void togglePin(void) override;
+	bool getPin(void) const override;
 	// The following methods are used in synchronous or asynchronous communications
-	port_t GetPort(void) const { return this->m_port; }
-	uint8_t GetBit(void) const { return this->m_bit; }
+	port_t getPort(void) const { return this->m_port; }
+	uint8_t getBit(void) const { return this->m_bit; }
 	virtual ~Gpio();
 };
 

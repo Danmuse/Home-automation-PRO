@@ -12,7 +12,7 @@ m_system{system},
 m_value{value},
 m_action{NONE} { }
 
-bool Digit::Set(uint16_t value) {
+bool Digit::set(uint16_t value) {
 	switch (this->m_system) {
 	case BCD:
 		if (value < 10) {
@@ -38,24 +38,24 @@ bool Digit::Set(uint16_t value) {
 	return false;
 }
 
-uint16_t Digit::Get(void) const {
+uint16_t Digit::get(void) const {
 	return this->m_value;
 }
 
-void Digit::Clear(void) {
+void Digit::clear(void) {
 	this->m_value = TURNOFF;
 	this->m_action = NONE;
 }
 
-void Digit::BlinkBind(void) {
+void Digit::blinkBind(void) {
 	this->m_action = BLINK;
 }
 
-void Digit::BlinkUnbind(void) {
+void Digit::blinkUnbind(void) {
 	this->m_action = NONE;
 }
 
-Digit::mode_t Digit::GetMode(void) const {
+Digit::mode_t Digit::getMode(void) const {
 	return this->m_action;
 }
 

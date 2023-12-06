@@ -25,38 +25,38 @@ m_sequence{sequence} {
 
 void ADC::initialize(void) {
 	this->initADC();
-	if (this->m_sequence == ADC_SEQA) this->ConfigSEQA();
-	else if (this->m_sequence == ADC_SEQB) this->ConfigSEQB();
+	if (this->m_sequence == ADC_SEQA) this->configSEQA();
+	else if (this->m_sequence == ADC_SEQB) this->configSEQB();
 }
 
-void ADC::EnableSWM(void) {
+void ADC::enableSwm(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	SWM->PINENABLE0 &= ~(1 << (this->m_channel + 14)); // Bits 14 to 25 for each channel.
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void ADC::DisableSWM(void) {
+void ADC::disableSwm(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	SWM->PINENABLE0 |= (1 << (this->m_channel + 14)); // Bits 14 to 25 for each channel.
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-uint32_t ADC::CalculateDivisor(void) {
+uint32_t ADC::calculateDivisor(void) {
 	return (uint32_t)(((this->m_clk_freq / ADC_STD_SAMPLE_RATE) - 1) / ADC_CLOCKS_PER_SAMPLE);
 }
 
-void ADC::ConfigVoltage(trm_voltage_config_t config) {
+void ADC::configVoltage(trm_voltage_config_t config) {
 	if (config) ADC0->TRM |= (1 << ADC_TRM_VRANGE_SHIFT);
 	else ADC0->TRM &= ~(1 << ADC_TRM_VRANGE_SHIFT);
 }
 
-void ADC::EnablePower(void) {
+void ADC::enablePower(void) {
 	// Turn on the Analog-Digital Converter (<tt>ADC</tt>).
 	// To turn off tied it on low consumption.
 	SYSCON->PDRUNCFG &= ~(1 << 4);
 }
 
-void ADC::EnableClock(void) {
+void ADC::enableClock(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 24);
 	SYSCON->ADCCLKDIV &= ~ADC_CTRL_CLKDIV_MASK;
 	SYSCON->ADCCLKDIV |= 1; // ADCCLK = FRO
@@ -72,10 +72,10 @@ void ADC::DisableNVIC_IRQ(irq_source_nvic_t source) {
 	NVIC->ICER[0] |= (1 << source);
 }
 
-void ADC::CalibrateADC(void) {
+void ADC::calibrateAdc(void) {
 	uint32_t original_ctrl = ADC0->CTRL;
 	uint32_t new_ctrl = (original_ctrl) & ~(ADC_CTRL_CLKDIV_MASK | (1 << ADC_CTRL_LPWRMODE_SHIFT) | (1 << ADC_SEQ_CTRL_MODE_SHIFT)); // CLKDIV = 0, LP = 0, CALMODE = 0
-	new_ctrl |= (this->CalculateDivisor() | (1 << ADC_SEQ_CTRL_MODE_SHIFT)); // CALMODE = 1
+	new_ctrl |= (this->calculateDivisor() | (1 << ADC_SEQ_CTRL_MODE_SHIFT)); // CALMODE = 1
 	ADC0->CTRL = new_ctrl; // The register must be wrote in once instruction.
 
 	while ((ADC0->CTRL & (1 << ADC_SEQ_CTRL_MODE_SHIFT))); // Await for CALMODE = 0
@@ -89,39 +89,39 @@ void ADC::setLowPowerMode(bool low_power) {
 }
 
 void ADC::setSampleRate(void) {
-	uint32_t clkdiv = this->CalculateDivisor();
+	uint32_t clkdiv = this->calculateDivisor();
 	uint32_t temp = ADC0->CTRL & ~ADC_CTRL_CLKDIV_MASK;
 	ADC0->CTRL = temp | clkdiv;
 }
 
-void ADC::Config(void) {
+void ADC::config(void) {
 	ADC0->INTEN = 0;
 	this->setLowPowerMode(false);
 	this->setSampleRate();
 }
 
 void ADC::bindSEQA(void) {
-	if (ADC0->SEQ_CTRL[0] & (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT)) this->DisableSEQA();
+	if (ADC0->SEQ_CTRL[0] & (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT)) this->disableSEQA();
 	ADC0->SEQ_CTRL[0] |= (1 << this->m_channel);
-	this->EnableSEQA();
+    this->enableSEQA();
 }
 
 void ADC::bindSEQB(void) {
-	if (ADC0->SEQ_CTRL[1] & (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT)) this->DisableSEQB();
+	if (ADC0->SEQ_CTRL[1] & (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT)) this->disableSEQB();
 	ADC0->SEQ_CTRL[1] |= (1 << this->m_channel);
-	this->EnableSEQB();
+    this->enableSEQB();
 }
 
 void ADC::unbindSEQA(void) {
-	if (ADC0->SEQ_CTRL[0] & (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT)) this->DisableSEQA();
+	if (ADC0->SEQ_CTRL[0] & (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT)) this->disableSEQA();
 	ADC0->SEQ_CTRL[0] &= ~(1 << this->m_channel);
-	this->EnableSEQA();
+    this->enableSEQA();
 }
 
 void ADC::unbindSEQB(void) {
-	if (ADC0->SEQ_CTRL[1] & (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT)) this->DisableSEQB();
+	if (ADC0->SEQ_CTRL[1] & (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT)) this->disableSEQB();
 	ADC0->SEQ_CTRL[1] &= ~(1 << this->m_channel);
-	this->EnableSEQB();
+    this->enableSEQB();
 }
 
 void ADC::setModeSEQA(conversion_mode_t mode) {
@@ -134,19 +134,19 @@ void ADC::setModeSEQB(conversion_mode_t mode) {
 	else ADC0->SEQ_CTRL[1] &= ~(1 << ADC_SEQ_CTRL_MODE_SHIFT);
 }
 
-void ADC::EnableSEQA(void) {
+void ADC::enableSEQA(void) {
 	ADC0->SEQ_CTRL[0] |= (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT);
 }
 
-void ADC::EnableSEQB(void) {
+void ADC::enableSEQB(void) {
 	ADC0->SEQ_CTRL[1] |= (1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT);
 }
 
-void ADC::DisableSEQA(void) {
+void ADC::disableSEQA(void) {
 	ADC0->SEQ_CTRL[0] &= ~(1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT);
 }
 
-void ADC::DisableSEQB(void) {
+void ADC::disableSEQB(void) {
 	ADC0->SEQ_CTRL[1] &= ~(1 << ADC_SEQ_CTRL_SEQ_ENA_SHIFT);
 }
 
@@ -163,31 +163,31 @@ ADC::irq_source_nvic_t ADC::getNVIC_IRQ(irq_source_inten_t irq) {
 	}
 }
 
-void ADC::EnableIRQ(irq_source_inten_t irq) {
+void ADC::enableIRQ(irq_source_inten_t irq) {
 	if (this->getNVIC_IRQ(irq) != INVALID_IRQ) {
 		ADC0->INTEN |= (1 << irq);
 		this->EnableNVIC_IRQ(this->getNVIC_IRQ(irq));
 	}
 }
 
-void ADC::DisableIRQ(irq_source_inten_t irq) {
+void ADC::disableIRQ(irq_source_inten_t irq) {
 	if (this->getNVIC_IRQ(irq) != INVALID_IRQ) {
 		ADC0->INTEN &= ~(1 << irq);
-		this->DisableNVIC_IRQ(this->getNVIC_IRQ(irq));
+        this->DisableNVIC_IRQ(this->getNVIC_IRQ(irq));
 	}
 }
 
 void ADC::initADC(void) {
-	this->EnablePower();
-	this->EnableClock();
-	this->CalibrateADC();
-	this->ConfigVoltage(HIGH_VOLTAGE);
-	this->Config();
+    this->enablePower();
+    this->enableClock();
+    this->calibrateAdc();
+    this->configVoltage(HIGH_VOLTAGE);
+    this->config();
 }
 
-void ADC::ConfigSEQA(void) {
+void ADC::configSEQA(void) {
 	this->setModeSEQA(SEQUENCE_INTERRUPT);
-	this->EnableIRQ(ADC_SEQA_IRQ_INTEN);
+    this->enableIRQ(ADC_SEQA_IRQ_INTEN);
 	this->bindChannel();
 	// The SEQA sequence has configured by default:
 	// * - Without triggers by hardware.
@@ -199,9 +199,9 @@ void ADC::ConfigSEQA(void) {
 	// * - Disabled.
 }
 
-void ADC::ConfigSEQB(void) {
+void ADC::configSEQB(void) {
 	this->setModeSEQB(SEQUENCE_INTERRUPT);
-	this->EnableIRQ(ADC_SEQB_IRQ_INTEN);
+    this->enableIRQ(ADC_SEQB_IRQ_INTEN);
 	this->bindChannel();
 	// The SEQB sequence has configured by default:
 	// * - Without triggers by hardware.
@@ -214,13 +214,13 @@ void ADC::ConfigSEQB(void) {
 }
 
 void ADC::bindChannel(void) {
-	this->EnableSWM();
+    this->enableSwm();
 	if (this->m_sequence == ADC_SEQA) this->bindSEQA();
 	else if (this->m_sequence == ADC_SEQB) this->bindSEQB();
 }
 
 void ADC::unbindChannel(void) {
-	this->DisableSWM();
+    this->disableSwm();
 	if (this->m_sequence == ADC_SEQA) this->unbindSEQA();
 	else if (this->m_sequence == ADC_SEQB) this->unbindSEQB();
 }
@@ -244,27 +244,27 @@ uint16_t ADC::analogRead(void) {
 	return this->m_result;
 }
 
-void ADC::HandlerSEQA(void) {
+void ADC::handlerSEQA(void) {
 	this->m_result = this->getResult();
 	this->m_acquisition_ready = true;
 
 	ADC0->FLAGS |= (1 << ADC_FLAGS_SEQA_INT_SHIFT); // Cleans ADC interrupt flag.
 }
 
-void ADC::HandlerSEQB(void) {
+void ADC::handlerSEQB(void) {
 	this->m_result = this->getResult();
 	this->m_acquisition_ready = true;
 
 	ADC0->FLAGS |= (1 << ADC_FLAGS_SEQB_INT_SHIFT); // Cleans ADC interrupt flag.
 }
 
-void ADC::Handler(adc_isr_t isr) {
+void ADC::handler(adc_isr_t isr) {
 	switch(isr) {
 	case SEQA_ISR:
-		this->HandlerSEQA();
+        this->handlerSEQA();
 		break;
 	case SEQB_ISR:
-		this->HandlerSEQB();
+        this->handlerSEQB();
 		break;
 	case THCMP_ISR:
 		// Not implemented yet
@@ -282,25 +282,25 @@ ADC::~ADC() { }
 
 void ADC_SEQA_IRQHandler(void) {
 	for (uint8_t index = 0; index < MAX_ADC_CHANNELS; index++) {
-		if (g_adc[index] != nullptr) g_adc[index]->Handler(ADC::SEQA_ISR);
+		if (g_adc[index] != nullptr) g_adc[index]->handler(ADC::SEQA_ISR);
 	}
 }
 
 void ADC_SEQB_IRQHandler(void) {
 	for (uint8_t index = 0; index < MAX_ADC_CHANNELS; index++) {
-		if (g_adc[index] != nullptr) g_adc[index]->Handler(ADC::SEQB_ISR);
+		if (g_adc[index] != nullptr) g_adc[index]->handler(ADC::SEQB_ISR);
 	}
 }
 
 void ADC_THCMP_IRQHandler(void) {
 	for (uint8_t index = 0; index < MAX_ADC_CHANNELS; index++) {
-		if (g_adc[index] != nullptr) g_adc[index]->Handler(ADC::THCMP_ISR);
+		if (g_adc[index] != nullptr) g_adc[index]->handler(ADC::THCMP_ISR);
 	}
 }
 
 void ADC_OVR_IRQHandler(void) {
 	for (uint8_t index = 0; index < MAX_ADC_CHANNELS; index++) {
-		if (g_adc[index] != nullptr) g_adc[index]->Handler(ADC::OVR_ISR);
+		if (g_adc[index] != nullptr) g_adc[index]->handler(ADC::OVR_ISR);
 	}
 }
 

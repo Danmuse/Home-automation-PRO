@@ -13,9 +13,9 @@
 
 class AsyncComm {
 public:
-	virtual void Transmit(const char *msg) = 0;
-	virtual void Transmit(const char *msg, uint32_t n) = 0;
-	virtual bool Receive(char *message, uint32_t n) = 0;
+	virtual void transmit(const char *msg) = 0;
+	virtual void transmit(const char *msg, uint32_t n) = 0;
+	virtual bool receive(char *message, uint32_t n) = 0;
 	virtual void UART_IRQHandler(void) = 0;
 	virtual ~AsyncComm() = default;
 protected:

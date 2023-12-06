@@ -11,7 +11,7 @@ SCTimer::SCTimer() {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << CLK_SCT);
 }
 
-void SCTimer::SetTime(uint32_t time, uint32_t channel) {
+void SCTimer::setTime(uint32_t time, uint32_t channel) {
 	SCT->MATCH[channel] = time;
 	SCT->MATCHREL[channel] = time;
 
@@ -19,7 +19,7 @@ void SCTimer::SetTime(uint32_t time, uint32_t channel) {
 	SCT->EV[channel].CTRL = (channel << 0) | (1 << 12);
 }
 
-void SCTimer::StartTimer(void) {
+void SCTimer::startTimer(void) {
 	SCT->CTRL &= ~(1 << 2);
 }
 
@@ -27,17 +27,17 @@ void SCTimer::StopTimer(void) {
 	SCT->CTRL |= (1 << 2);
 }
 
-void SCTimer::SetUnify(bool status) {
+void SCTimer::setUnify(bool status) {
 	if (status) SCT->CONFIG |= (1 << 0);
 	else SCT->CONFIG &= ~(1 << 0);
 }
 
-void SCTimer::SetAutoLimit(bool status) {
+void SCTimer::setAutoLimit(bool status) {
 	if (status) SCT->CONFIG |= (1 << 17);
 	else SCT->CONFIG &= ~(1 << 17);
 }
 
-void SCTimer::SetSwitchMatrixSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number) {
+void SCTimer::setSwitchMatrixSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << CLK_SWM);
 	uint8_t aux = ~(bit + port * 0x20); // Default: 0xFF
 

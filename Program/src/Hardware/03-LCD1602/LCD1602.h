@@ -13,14 +13,14 @@
 #include "systick.h"
 #include "ProgramConfig.h"
 
-#define CLEAR_DISPLAY			0b00000001 //!< Set CLEAR register
-#define RETURN_HOME				0b00000010 //!< Set Cursor = 0 register
-#define ENTRY_MODE_SET			0b00000100 //!< Set Input Writer register
-#define DISPLAY_CONTROL			0b00001000 //!< Set Control register
-#define CURSOR_DISPLAY_SHIFT	0b00010000 //!< Set Cursor register
-#define FUNCTION_SET			0b00100000 //!< Set Operation Mode register
-#define SET_CGRAM				0b01000000 //!< Set CGRAM register
-#define SET_DDRAM				0b10000000 //!< Set DDRAM register
+#define CLEAR_DISPLAY			0b00000001 //!< set CLEAR register
+#define RETURN_HOME				0b00000010 //!< set Cursor = 0 register
+#define ENTRY_MODE_SET			0b00000100 //!< set Input Writer register
+#define DISPLAY_CONTROL			0b00001000 //!< set Control register
+#define CURSOR_DISPLAY_SHIFT	0b00010000 //!< set Cursor register
+#define FUNCTION_SET			0b00100000 //!< set Operation Mode register
+#define SET_CGRAM				0b01000000 //!< set CGRAM register
+#define SET_DDRAM				0b10000000 //!< set DDRAM register
 
 class LCD1602 : public Callback {
 private:
@@ -28,18 +28,18 @@ private:
 
 	const std::vector<Gpio*> m_outputs;	//!< Vector of GPIO outputs
 	mode_LCD1602_t m_mode;				//!< Current state of the display
-	uint8_t *m_buffer;					//!< Display write buffer
+	uint8_t *m_buffer;					//!< Display _write buffer
 	const uint8_t m_rows;				//!< Number of display rows
 	const uint8_t m_columns;			//!< Number of display columns
 	uint16_t m_ticks;
-	uint8_t m_sweep;					//!< Buffer write position
-	uint8_t m_position;					//!< User write position
+	uint8_t m_sweep;					//!< Buffer _write position
+	uint8_t m_position;					//!< User _write position
 
-	void Initialize(void);
-	void WriteInstruction(const uint8_t data, const Gpio::activity_t mode);
-	uint32_t Pow(uint32_t base, uint32_t exponent);
-	void Write(const int8_t *ptr_str);
-	void Write(const int32_t value);
+	void initialize(void);
+	void writeInstruction(const uint8_t data, const Gpio::activity_t mode);
+	uint32_t pow(uint32_t base, uint32_t exponent);
+	void _write(const int8_t *ptr_str);
+	void _write(const int32_t value);
 public:
 	enum { D7, D6, D5, D4, RS, ENABLE };
 
@@ -49,7 +49,7 @@ public:
 	void write(const int8_t *ptr_str, const uint8_t row = 0, const uint8_t column = 0);
 	void write(const int32_t value, const uint8_t row = 0, const uint8_t column = 0);
 	void clear(void);
-	void CallbackMethod(void);
+	void callbackMethod(void);
 	virtual ~LCD1602();
 };
 

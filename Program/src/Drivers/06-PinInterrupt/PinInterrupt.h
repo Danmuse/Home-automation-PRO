@@ -36,11 +36,11 @@ protected:
 public:
 	PinInterrupt() = delete;
 	PinInterrupt(const Gpio& interrupt, interrupt_mode_t interrupt_mode);
-	void InitInterrupt(void);
-	void EnableInterupt(void);
-	void DisableInterupt(void);
+	void initInterrupt(void);
+	void enableInterupt(void);
+	void disableInterupt(void);
 	// Function that is executed when performing the interrupt
-	virtual void GpioHandler(void) = 0;
+	virtual void gpioHandler(void) = 0;
 	virtual ~PinInterrupt();
 private:
 	void EnableClockInterrupt(void);

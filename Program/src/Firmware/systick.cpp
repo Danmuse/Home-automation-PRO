@@ -19,5 +19,5 @@ void initSysTick(uint32_t period_us) {
 
 void SysTick_Handler(void) {
 	if (!g_callback_list.empty())
-		for (Callback* q : g_callback_list) q->CallbackMethod();
+		for (Callback* q : g_callback_list) q->callbackMethod();
 }

@@ -25,7 +25,7 @@ m_TmrBase{base} {
 	g_callback_list.push_back(this);
 }
 
-void Timer::TimerStart(uint32_t counter, const TimerHandler handler, const bases_t base) {
+void Timer::timerStart(uint32_t counter, const TimerHandler handler, const bases_t base) {
 	switch (base) {
 	case MILLI:
 			counter *= MILLIS;
@@ -94,7 +94,7 @@ void Timer::TimerStart(uint32_t counter) {
 	}
 }
 
-void Timer::SetTimer(uint32_t time) {
+void Timer::setTimer(uint32_t time) {
 	switch (this->m_TmrBase) {
 	case MILLI:
 			time *= MILLIS;
@@ -122,7 +122,7 @@ void Timer::SetTimer(uint32_t time) {
 	this->m_TmrRun = time;
 }
 
-uint32_t Timer::GetTimer(void) const {
+uint32_t Timer::getTimer(void) const {
 	uint32_t time = this->m_TmrRun;
 
 	switch(this->m_TmrBase) {
@@ -150,22 +150,22 @@ uint32_t Timer::GetTimer(void) const {
 	return time;
 }
 
-uint32_t Timer::GetTicks(void) const {
+uint32_t Timer::getTicks(void) const {
 	return this->m_TmrRun;
 }
 
-void Timer::StandBy(standby_t action) {
+void Timer::standBy(standby_t action) {
 	this->m_TmrStandBy = action;
 }
 
-void Timer::TimerStop(void) {
+void Timer::timerStop(void) {
 	this->m_TmrRun = 0;
 	this->m_TmrEvent = false;
 	this->m_TmrHandler = nullptr;
 	this->m_TmrStandBy = RUN;
 }
 
-Timer::error_t Timer::TimerEvent(void) {
+Timer::error_t Timer::timerEvent(void) {
 	if (this->m_TmrHandler != nullptr) {
 		if (this->m_TmrEvent) {
 			this->m_TmrEvent = false;
@@ -205,7 +205,7 @@ Timer::operator bool(void) {
 	return this->m_TmrEvent;
 }
 
-void Timer::CallbackMethod(void) {
+void Timer::callbackMethod(void) {
 	if (this->m_TmrRun) {
 		if (this->m_TmrStandBy == RUN) {
 			this->m_TmrRun--;

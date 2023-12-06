@@ -16,10 +16,10 @@ m_frequency{frequency} {
 	else if (this->m_TWI == I2C1 && g_TWI[1] != nullptr);
 	else if (this->m_TWI == I2C2 && g_TWI[2] != nullptr);
 	else if (this->m_TWI == I2C3 && g_TWI[3] != nullptr);
-	else { // Initialize the corresponding TWI channel.
-		this->EnableClock();
-		this->EnableSWM();
-		this->Config();
+	else { // initialize the corresponding TWI channel.
+        this->enableClock();
+        this->enableSwm();
+        this->config();
 	}
 }
 
@@ -164,36 +164,42 @@ SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t
 	return TWI_SUCCESS;
 }
 
-void I2C::EnableInterrupt(void) {
+void I2C::enableInterrupt(void) {
 	this->m_TWI->INTENSET = (1 << 0); // Master Pending interrupt Enable.
 //	this->m_TWI->INTENSET = (1 << 25); // Enable SCL time-out interruption.
 }
 
-void I2C::DisableInterrupt(void) {
+void I2C::disableInterrupt(void) {
 	this->m_TWI->INTENCLR = (1 << 0); // Master Pending interrupt Disable.
 //	this->m_TWI->INTENCLR = (1 << 25); // Disable SCL time-out interruption.
 }
 
-void I2C::EnableSWM(void) {
+void I2C::enableSwm(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	// I2C0_SCL enabled on pin PIO0_10 and I2C0_SDA enabled on pin PIO0_11
 	if (this->m_TWI == I2C0) SWM->PINENABLE0 &= ~((1 << 13) | (1 << 12));
-	if (this->m_TWI == I2C1) SWM->PINASSIGN.PINASSIGN9 &= ((((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 16) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 24)) | ~(0xFFFF << 16));
-	if (this->m_TWI == I2C2) SWM->PINASSIGN.PINASSIGN10 &= ((((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 0) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 8)) | ~(0xFFFF << 0));
-	if (this->m_TWI == I2C3) SWM->PINASSIGN.PINASSIGN10 &= ((((at(SDA_IDX).GetBit() + at(SDA_IDX).GetPort() * 0x20) << 16) | ((at(SCL_IDX).GetBit() + at(SCL_IDX).GetPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+	if (this->m_TWI == I2C1) SWM->PINASSIGN.PINASSIGN9 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 16) | ((
+                at(SCL_IDX).getBit() +
+                at(SCL_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+	if (this->m_TWI == I2C2) SWM->PINASSIGN.PINASSIGN10 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 0) | ((
+                at(SCL_IDX).getBit() +
+                at(SCL_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
+	if (this->m_TWI == I2C3) SWM->PINASSIGN.PINASSIGN10 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 16) | ((
+                at(SCL_IDX).getBit() +
+                at(SCL_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void I2C::Config(void) {
+void I2C::config(void) {
 	if (this->m_TWI == I2C0) NVIC->ISER[0] |= (1 << 8); // Enable I2C0_IRQ
 	if (this->m_TWI == I2C1) NVIC->ISER[0] |= (1 << 7); // Enable I2C1_IRQ
 	if (this->m_TWI == I2C2) NVIC->ISER[0] |= (1 << 21); // Enable I2C2_IRQ
 	if (this->m_TWI == I2C3) NVIC->ISER[0] |= (1 << 22); // Enable I2C3_IRQ
 	this->m_TWI->CFG |= (1 << 0); // I2C is enabled as MASTER device
-//	this->EnableInterrupt();
+//	this->enableInterrupt();
 }
 
-void I2C::EnableClock(void) {
+void I2C::enableClock(void) {
 	uint32_t divider, MSTSCL, DIVVAL;
     uint32_t err, best_err = 0;
 
@@ -201,7 +207,7 @@ void I2C::EnableClock(void) {
 		g_TWI[0] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 5);
 		SYSCON->PRESETCTRL0 &= ~(1 << 5); // Assert the I2C0 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 5); // Clear the I2C0 reset. Default register value.
+		SYSCON->PRESETCTRL0 |= (1 << 5); // clear the I2C0 reset. Default register value.
 		if (!(this->m_frequency == FAST_FREQUENCY)) {
 		// Standard GPIO functionality. Requires external pull-up for GPIO output function.
 		// IOCON->PIO[IOCON_INDEX_PIO0[10]] = 0x80; // PIO0_10/I2C0_SCL. This is the pin configuration for the true open-drain pin.
@@ -216,19 +222,19 @@ void I2C::EnableClock(void) {
 		g_TWI[1] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 21);
 		SYSCON->PRESETCTRL0 &= ~(1 << 21); // Assert the I2C1 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 21); // Clear the I2C1 reset. Default register value.
+		SYSCON->PRESETCTRL0 |= (1 << 21); // clear the I2C1 reset. Default register value.
 	}
 	if (this->m_TWI == I2C2) {
 		g_TWI[2] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 22);
 		SYSCON->PRESETCTRL0 &= ~(1 << 22); // Assert the I2C2 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 22); // Clear the I2C2 reset. Default register value.
+		SYSCON->PRESETCTRL0 |= (1 << 22); // clear the I2C2 reset. Default register value.
 	}
 	if (this->m_TWI == I2C3) {
 		g_TWI[3] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 23);
 		SYSCON->PRESETCTRL0 &= ~(1 << 23); // Assert the I2C3 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 23); // Clear the I2C3 reset. Default register value.
+		SYSCON->PRESETCTRL0 |= (1 << 23); // clear the I2C3 reset. Default register value.
 	}
 
     for (uint32_t MSTSCL_IDX = 9; MSTSCL_IDX > 1; MSTSCL_IDX--) {

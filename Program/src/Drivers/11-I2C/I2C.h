@@ -38,11 +38,11 @@ private:
 	statusComm_t m_statusComm = TWI_SUCCESS;
 	frequencyComm_t m_frequency;
 
-	void EnableSWM(void);
-	void EnableClock(void);
-	void Config(void);
-	void EnableInterrupt(void);
-	void DisableInterrupt(void);
+	void enableSwm(void);
+	void enableClock(void);
+	void config(void);
+	void enableInterrupt(void);
+	void disableInterrupt(void);
 
 	statusComm_t awaitACK(void);
 	statusComm_t awaitNACK(void);

@@ -28,20 +28,20 @@ protected:
 public:
 	Timer();
 	Timer(const TimerHandler handler, const bases_t base);
-	void TimerStart(uint32_t counter, const TimerHandler handler, const bases_t base);
+	void timerStart(uint32_t counter, const TimerHandler handler, const bases_t base);
 	void TimerStart(uint32_t counter);
-	void SetTimer(uint32_t time);
-	uint32_t GetTimer(void) const;
-	uint32_t GetTicks(void) const;
-	void StandBy(standby_t action);
-	void TimerStop(void);
-	error_t TimerEvent(void);
+	void setTimer(uint32_t time);
+	uint32_t getTimer(void) const;
+	uint32_t getTicks(void) const;
+	void standBy(standby_t action);
+	void timerStop(void);
+	error_t timerEvent(void);
 	Timer& operator=(uint32_t counter);
 	bool operator!(void);
 	bool operator==(bool checkEvent);
 	friend bool operator==(bool checkEvent, Timer& timer);
 	explicit operator bool(void);
-	void CallbackMethod(void);
+	void callbackMethod(void);
 	virtual ~Timer();
 };
 

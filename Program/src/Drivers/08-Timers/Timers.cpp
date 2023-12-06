@@ -19,16 +19,16 @@ Timers& Timers::operator<<(Timer& timer) {
 	return *this;
 }
 
-void Timers::AllStandBy(Timer::standby_t action) {
-	for (Timer* q : this->m_timers) q->StandBy(action);
+void Timers::allStandBy(Timer::standby_t action) {
+	for (Timer* q : this->m_timers) q->standBy(action);
 }
 
-void Timers::TimerStops(void) {
-	for (Timer* q : this->m_timers) q->TimerStop();
+void Timers::timerStops(void) {
+	for (Timer* q : this->m_timers) q->timerStop();
 }
 
-void Timers::TimerEvents(void) {
-	for (Timer* q : this->m_timers)	q->TimerEvent();
+void Timers::timerEvents(void) {
+	for (Timer* q : this->m_timers) q->timerEvent();
 }
 
 Timers::~Timers() { }

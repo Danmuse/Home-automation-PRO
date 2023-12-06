@@ -12,23 +12,23 @@ m_index{maxOutputs},
 m_pins4017{pins4017},
 m_maxOutputs{(uint8_t)(maxOutputs <= 10 ? maxOutputs : 10)} { }
 
-void CD4017::SetDigit(void) {
-	if (this->m_index < this->m_maxOutputs) SetClock();
-	else SetReset();
+void CD4017::setDigit(void) {
+	if (this->m_index < this->m_maxOutputs) setClock();
+	else setReset();
 	this->m_index++;
 }
 
-void CD4017::SetReset(void) {
-	this->m_pins4017[RST_INDEX]->ClearPin();
-	this->m_pins4017[RST_INDEX]->SetPin();
-	this->m_pins4017[RST_INDEX]->ClearPin();
+void CD4017::setReset(void) {
+    this->m_pins4017[RST_INDEX]->clearPin();
+    this->m_pins4017[RST_INDEX]->setPin();
+    this->m_pins4017[RST_INDEX]->clearPin();
 	this->m_index = 0;
 }
 
-void CD4017::SetClock(void) {
-	this->m_pins4017[RST_INDEX]->ClearPin();
-	this->m_pins4017[CLK_INDEX]->SetPin();
-	this->m_pins4017[CLK_INDEX]->ClearPin();
+void CD4017::setClock(void) {
+    this->m_pins4017[RST_INDEX]->clearPin();
+    this->m_pins4017[CLK_INDEX]->setPin();
+    this->m_pins4017[CLK_INDEX]->clearPin();
 }
 
 CD4017::~CD4017() { }

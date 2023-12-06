@@ -24,8 +24,8 @@ protected:
 	static uint32_t m_period;
 	float m_duty;
 private:
-	void EnableSWM(void) const;
-	void DisableSWM(void) const;
+	void enableSwm(void) const;
+	void disableSwm(void) const;
 	void initPWM(void) const;
 public:
 	PWM() = delete;

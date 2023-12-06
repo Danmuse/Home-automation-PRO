@@ -19,30 +19,30 @@ m_debounces{DEBOUNCE_TIME} {
 	g_callback_list.push_back(this);
 }
 
-void Keyboard::CallbackMethod(void) {
+void Keyboard::callbackMethod(void) {
 	uint8_t keyPressed;
-	keyPressed = this->KeyboardHW();
-	this->KeyboardSW(keyPressed);
+	keyPressed = this->keyboardHW();
+    this->keyboardSW(keyPressed);
 }
 
-uint8_t	Keyboard::Get(void) {
+uint8_t	Keyboard::get(void) {
 	uint8_t keyPressed = this->m_current_keyPressed;
 	this->m_current_keyPressed = NO_KEY;
 	return keyPressed;
 }
 
-uint8_t Keyboard::KeyboardHW(void) {
+uint8_t Keyboard::keyboardHW(void) {
 	for (uint8_t index = 0; index < this->m_rows.size(); index++) {
 		for (uint8_t j_index = 0; j_index < this->m_rows.size(); j_index++)
-			this->m_rows[j_index]->SetPin();
-		this->m_rows[index]->ClearPin(); // Enable the row's pin to be checked
+            this->m_rows[j_index]->setPin();
+        this->m_rows[index]->clearPin(); // Enable the row's pin to be checked
 		for (uint8_t j_index = 0; j_index < this->m_columns.size(); j_index++)
-			if (this->m_columns[j_index]->GetPin()) return j_index + index * this->m_columns.size();
+			if (this->m_columns[j_index]->getPin()) return j_index + index * this->m_columns.size();
 	}
 	return NO_KEY;
 }
 
-void Keyboard::KeyboardSW(uint8_t keyStatus) {
+void Keyboard::keyboardSW(uint8_t keyStatus) {
 	if (keyStatus == NO_KEY) {
 		this->m_debounceCounter = 0;
 		this->m_last_keyPressed = NO_KEY;

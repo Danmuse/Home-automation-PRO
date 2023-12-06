@@ -32,13 +32,13 @@ private:
 	uint8_t m_blink_ticks_off;			 //!< Blink ticks counter
 	bool m_blink_status;				 //!< Blink sequence status
 
-	std::vector<Digit*> m_bufferDisplay; //!< Write buffer
+	std::vector<Digit*> m_bufferDisplay; //!< write buffer
 	const Digit::code_t m_system;		 //!< Usage system to be used
 	const uint8_t *m_relativePos;		 //!< Vector with user positions
 public:
 	SevenSegmentDisplay() = delete;
 	SevenSegmentDisplay(std::vector<DigitsGroup*> groups, CD4511B *segments_IC, CD4017 *sweep_IC, const uint8_t *relativePos, const Digit::code_t system);
-	void CallbackMethod(void);
+	void callbackMethod(void);
 	void set(uint32_t value, uint8_t display = 0);
 	void clear(uint8_t display = 0);
 	void mode(Digit::mode_t mode, uint8_t display = 0);

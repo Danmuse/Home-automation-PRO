@@ -37,12 +37,12 @@ private:
 public:
 	Digit() = delete;
 	Digit(code_t system = BCD, uint8_t value = TURNOFF);
-	bool Set(uint16_t value);
-	uint16_t Get(void) const;
-	void Clear(void);
-	void BlinkBind(void);
-	void BlinkUnbind(void);
-	mode_t GetMode(void) const;
+	bool set(uint16_t value);
+	uint16_t get(void) const;
+	void clear(void);
+	void blinkBind(void);
+	void blinkUnbind(void);
+	mode_t getMode(void) const;
 	virtual ~Digit();
 };
 

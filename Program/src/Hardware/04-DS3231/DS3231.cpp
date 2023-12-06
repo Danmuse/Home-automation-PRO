@@ -21,7 +21,7 @@ int main(void) {
 		if (g_ds3231->getStatus()) return EXIT_FAILURE;
 		g_display->set(rtc.TIME.MIN, 0);
 		g_display->set(rtc.TIME.SEC, 1);
-		g_timers_list.TimerEvents();
+		g_timers_list.timerEvents();
 		delay(1000);
 	}
 }

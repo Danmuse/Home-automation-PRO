@@ -59,24 +59,24 @@ public:
 	void HW_Disable(void);
 	void HW_Write(uint8_t data);
 	uint8_t HW_Read(void);
-	void Write_Enable(void);
+	void writeEnable(void);
 	void Write_Disable(void);
-	void CallbackMethod(void);
+	void callbackMethod(void);
 	void SW_Reset(void);
-	uint8_t Read_Configuration(uint8_t command);
-	void Save_Configuration(uint8_t command, uint8_t *data, uint32_t size);
-	void Wait_Busy(void);
-	void WriteBlock_Protection(void);
-	void Jedec_Id_Read(void);
+	uint8_t readConfiguration(uint8_t command);
+	void saveConfiguration(uint8_t command, uint8_t *data, uint32_t size);
+	void waitBusy(void);
+	void writeBlockProtection(void);
+	void jedecIdRead(void);
 	virtual ~SPI();
 private:
-	void EnableSWM(void);
-	void EnableClock(void);
-	void Config(void);
+	void enableSwm(void);
+	void enableClock(void);
+	void config(void);
 	void SPI_IRQHandler(void) override;
 
-	void EnableInterrupt(void);
-	void DisableInterrupt(void);
+	void enableInterrupt(void);
+	void disableInterrupt(void);
 };
 
 #endif /* SPI_H_ */

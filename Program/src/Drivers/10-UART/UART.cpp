@@ -23,9 +23,9 @@ m_usart{(USART_Type *)(USART0_BASE + channel*USART_OFFSET_BASE)} {
 
 	m_flagTX = false;
 
-	this->EnableClock();
-	this->EnableSWM();
-	this->Config(baudrate, data_bits, parity);
+    this->enableClock();
+    this->enableSwm();
+    this->config(baudrate, data_bits, parity);
 }
 
 void UART::pushRX(uint8_t data) {
@@ -56,29 +56,29 @@ bool UART::popTX(uint8_t *data) {
 	return false;
 }
 
-void UART::Transmit(const char *message) {
+void UART::transmit(const char *message) {
 	while (*message) {
 		this->pushTX(*message);
 		message++;
 
 		if (!this->m_flagTX) {
 			this->m_flagTX = true;
-			this->EnableInterrupt();
+            this->enableInterrupt();
 		}
 	}
 }
 
-void UART::Transmit(const char *message, uint32_t n) {
+void UART::transmit(const char *message, uint32_t n) {
 	for (uint32_t index = 0; index < n; index++) {
 		this->pushTX(message[index]);
 		if (!this->m_flagTX) {
 			this->m_flagTX = true;
-			this->EnableInterrupt();
+            this->enableInterrupt();
 		}
 	}
 }
 
-bool UART::Receive(char *message, uint32_t n) {
+bool UART::receive(char *message, uint32_t n) {
 	uint8_t data;
 	static uint32_t cont = 0;
 	char *ptr = message;
@@ -93,28 +93,36 @@ bool UART::Receive(char *message, uint32_t n) {
 	return false;
 }
 
-void UART::EnableInterrupt(void) {
+void UART::enableInterrupt(void) {
 	this->m_usart->INTENSET = (1 << 2); // Enable TX interruption.
 }
 
-void UART::DisableInterrupt(void) {
+void UART::disableInterrupt(void) {
 	this->m_usart->INTENCLR = (1 << 2); // Disable TX interruption.
 }
 
-void UART::EnableSWM(void) {
+void UART::enableSwm(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 &= ((((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 0) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 8)) | ~(0xFFFF << 0));
-	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 &= ((((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 8) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 16)) | ~(0xFFFF << 8));
-	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 &= ((((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 0) | ((
+                at(RX_IDX).getBit() +
+                at(RX_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
+	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 8) | ((
+                at(RX_IDX).getBit() +
+                at(RX_IDX).getPort() * 0x20) << 16)) | ~(0xFFFF << 8));
+	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 16) | ((
+                at(RX_IDX).getBit() +
+                at(RX_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 	if (this->m_usart == USART3) {
-		SWM->PINASSIGN.PINASSIGN11 &= (((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 24) | ~(0xFF << 24));
-		SWM->PINASSIGN.PINASSIGN12 &= (((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 0) | ~(0xFF << 0));
+		SWM->PINASSIGN.PINASSIGN11 &= (((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 24) | ~(0xFF << 24));
+		SWM->PINASSIGN.PINASSIGN12 &= (((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 0) | ~(0xFF << 0));
 	}
-	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 &= ((((at(TX_IDX).GetBit() + at(TX_IDX).GetPort() * 0x20) << 16) | ((at(RX_IDX).GetBit() + at(RX_IDX).GetPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 16) | ((
+                at(RX_IDX).getBit() +
+                at(RX_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void UART::Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
+void UART::config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 	this->m_usart->CFG = ((0 << 0) // 0 = DISABLE 		1 = ENABLE
 	| (data_bits << 2) 		  	   // 0 = 7 BITS 		1 = 8 BITS 		2 = 9 BITS
 	| (parity << 4)		 		   // 0 = NOPARITY 		2 = PAR 		3 = IMPAR
@@ -138,13 +146,13 @@ void UART::Config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 	this->m_usart->CFG |= (1 << 0); // Enable USART
 }
 
-void UART::SetBaudRate(uint32_t baudrate) {
+void UART::setBaudRate(uint32_t baudrate) {
 	this->m_usart->CFG &= ~(1 << 0);	// Disable UART
 	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1;	// Change baudrate
 	this->m_usart->CFG |= (1 << 0);		// Enable UART
 }
 
-void UART::EnableClock(void) {
+void UART::enableClock(void) {
 	if (this->m_usart == USART0) {
 		g_usart[0] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 14);
@@ -187,7 +195,7 @@ void UART::UART_IRQHandler(void) {
 		endTransmission = this->popTX(&data);
 		if (endTransmission) this->m_usart->TXDAT = (uint8_t)data;
 		else {
-			this->DisableInterrupt();
+            this->disableInterrupt();
 			this->m_flagTX = false;
 		}
 	}

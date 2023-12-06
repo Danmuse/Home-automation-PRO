@@ -18,9 +18,9 @@ public:
 	Timers();
 	Timers& operator<<(Timer* timer);
 	Timers& operator<<(Timer& timer);
-	void AllStandBy(Timer::standby_t action);
-	void TimerStops(void);
-	void TimerEvents(void);
+	void allStandBy(Timer::standby_t action);
+	void timerStops(void);
+	void timerEvents(void);
 	virtual ~Timers();
 };
 

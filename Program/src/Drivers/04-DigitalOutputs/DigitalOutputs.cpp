@@ -9,28 +9,28 @@
 
 DigitalOutput::DigitalOutput(const Gpio& output, Gpio::activity_t state) : Gpio(output), Callback() {
 	if (this->m_direction != Gpio::OUTPUT) this->ToggleDir();
-	if (state == Gpio::HIGH) this->SetPin();
-	else this->ClearPin();
+	if (state == Gpio::HIGH) this->setPin();
+	else this->clearPin();
 	g_callback_list.push_back(this);
 }
 
 void DigitalOutput::set(void) {
-	this->SetPin();
+    this->setPin();
 }
 
 void DigitalOutput::clear(void) {
-	this->ClearPin();
+    this->clearPin();
 }
 
 DigitalOutput& DigitalOutput::operator=(Gpio::activity_t state) {
-	if (state == Gpio::HIGH) this->SetPin();
-	else this->ClearPin();
+	if (state == Gpio::HIGH) this->setPin();
+	else this->clearPin();
 	return *this;
 }
 
-void DigitalOutput::CallbackMethod(void) {
-	if (this->GetPin()) this->SetPin();
-	else this->ClearPin();
+void DigitalOutput::callbackMethod(void) {
+	if (this->getPin()) this->setPin();
+	else this->clearPin();
 }
 
 DigitalOutput::~DigitalOutput() { }

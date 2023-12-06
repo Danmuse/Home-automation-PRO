@@ -12,12 +12,12 @@ m_maxBounces{maxBounces},
 m_bounceCounter{0},
 m_lastPressed{false} {
 	if (this->m_direction != Gpio::INPUT) this->ToggleDir();
-	this->m_currentPressed = this->GetPin();
+	this->m_currentPressed = this->getPin();
 	g_callback_list.push_back(this);
 }
 
 bool DigitalInput::getHW(void) {
-	return this->GetPin() ? true : false;
+	return this->getPin() ? true : false;
 }
 
 void DigitalInput::getSW(bool statusPressed) {
@@ -39,7 +39,7 @@ void DigitalInput::getSW(bool statusPressed) {
 	}
 }
 
-void DigitalInput::CallbackMethod(void) {
+void DigitalInput::callbackMethod(void) {
 	bool keyPressed = this->getHW();
 	this->getSW(keyPressed);
 }

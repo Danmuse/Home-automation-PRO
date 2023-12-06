@@ -40,7 +40,7 @@ void PWM::initPWM(void) const {
 	SCT->CTRL &= ~(1 << 2);
 }
 
-void PWM::EnableSWM(void) const {
+void PWM::enableSwm(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
     if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 &= (((0x20 * this->m_port + this->m_bit) << 24) | ~(0xFF << 24));
     else if (this->m_channel < MAX_PWM_CHANNELS - 2) SWM->PINASSIGN.PINASSIGN8 &= (((0x20 * this->m_port + this->m_bit) << (8 * (this->m_channel - 1))) | ~(0xFF << (8 * (this->m_channel - 1))));
@@ -48,7 +48,7 @@ void PWM::EnableSWM(void) const {
     SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void PWM::DisableSWM(void) const {
+void PWM::disableSwm(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
     if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 |= ((~(0x20 * this->m_port + this->m_bit)) << 24);
     else if (this->m_channel < MAX_PWM_CHANNELS - 2) SWM->PINASSIGN.PINASSIGN8 |= ((~(0x20 * this->m_port + this->m_bit)) << (8 * (this->m_channel - 1)));
@@ -77,7 +77,7 @@ void PWM::bindChannel(void) {
     SCT->EV[eventNumber].CTRL = eventNumber | (1 << 12); // Only uses specified match event
     SCT->OUT[this->m_channel].SET = 1; // Turn on the first channel
     SCT->OUT[this->m_channel].CLR = (1 << eventNumber); // Turn off the following channel
-    this->EnableSWM();
+    this->enableSwm();
 }
 
 void PWM::unbindChannel(void) {
@@ -86,7 +86,7 @@ void PWM::unbindChannel(void) {
     SCT->EV[eventNumber].CTRL = 0;
     SCT->OUT[this->m_channel].SET = 0;
     SCT->OUT[this->m_channel].CLR = 0;
-    this->DisableSWM();
+    this->disableSwm();
 }
 
 PWM::~PWM() {

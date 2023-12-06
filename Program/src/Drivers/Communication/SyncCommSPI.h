@@ -16,8 +16,8 @@ public:
 	virtual void SPI_IRQHandler(void) = 0;
 	virtual ~SyncCommSPI() = default;
 protected:
-	virtual void SendData(uint32_t address, const uint8_t value) = 0;
-	virtual void ReadData(uint32_t address, const uint8_t *value) = 0;
+	virtual void sendData(uint32_t address, const uint8_t value) = 0;
+	virtual void readData(uint32_t address, const uint8_t *value) = 0;
 };
 
 #endif /* SYNC_COMM_SPI_H_ */
