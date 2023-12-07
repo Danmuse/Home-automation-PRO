@@ -9,10 +9,19 @@
 #ifndef SPI_H_
 #define SPI_H_
 
-#include <vector>
-#include "systick.h"
-#include "SyncCommSPI.h"
+#include "LPC845.h"
 #include "GPIO.h"
+#include <algorithm>
+#include <vector>
+
+#define SPI_MAX_CHANNELS 2
+#define SPI0_CLK_REG 11
+#define SPI1_CLK_REG 12
+#define SPI0_MAX_SSEL 4
+#define SPI1_MAX_SSEL 2
+
+#define SEND_BUFFER_SIZE 64
+#define RECEIVE_BUFFER_SIZE 64
 
 #if defined (__cplusplus)
 extern "C" {
@@ -21,62 +30,60 @@ extern "C" {
 }
 #endif
 
-#define SCK_IDX 0
-#define MOSI_IDX 1
-#define MISO_IDX 2
-#define SSEL_IDX 3
+class SPI {
+    public:
+        enum bitOrder_t { MSB_FIRST, LSB_FIRST };
+        enum mode_t { MODE0, MODE1, MODE2, MODE3 };
+    private:
+        SPI_Type *m_SPI;
+        Gpio m_SCK;
+        Gpio m_MISO;
+        Gpio m_MOSI;
+        std::vector<Gpio> m_SSEL;
+        const uint8_t m_channel; /**Channel number, from 0 to MAX non inclusively*/
+        const bool m_master;
+        bitOrder_t m_bitOrder;
+        uint8_t m_maxSSELSize;
 
-#define MAX_SPI_CHANNELS 2
+        //TODO: You need one per SSEL, also should change rx,tx acordingly
 
-#define SPI_OFFSET_BASE (0x4000U)
+        //Buffers are uint8_t because in TXDATCTL LEN is set on 8
+        uint8_t m_receiveBuffer[RECEIVE_BUFFER_SIZE];
+        uint8_t m_receiveBufferIndexIn;
+        uint8_t m_receiveBufferIndexOut;
+        uint8_t m_sendBuffer[SEND_BUFFER_SIZE];
+        uint8_t m_sendBufferIndexIn;
+        uint8_t m_sendBufferIndexOut;
 
-#define SCK_TICKS 30
+        bool m_isSending;
+    public:
+        SPI(Gpio &SCK, Gpio &MISO, Gpio &MOSI, std::vector<Gpio> SSEL, uint32_t bps, uint8_t channel = 0,
+               bool master = true, bitOrder_t bitOrder = MSB_FIRST, mode_t mode = MODE0);
+        SPI(Gpio &SCK, Gpio &MISO, Gpio &MOSI, uint32_t bps, uint8_t channel);
+        bool bindSSEL(Gpio &SSEL, uint8_t &SSELNumber);
+        void setBaudRate(uint32_t bps) const;
+        void enableSSEL(uint8_t SSEL) const;
+        void disableSSEL(uint8_t SSEL) const;
+        void transmit(uint8_t *message, uint8_t length = 1);
+        void transmit(char *cString);
+        bool receive(uint8_t &message);
+        bool receive(uint8_t *message, uint8_t length);
+        bool receive(char *cString);
+        // TODO: Make protected the following method
+        void SPI_IRQHandler(void);
 
-#define	ON 1
-#define	OFF	0
-
-#define	COMMAND_DISABLE_QIO	0xFF
-#define	COMMAND_WRITE_UNLOCK_PROTECTION	0x98
-#define	COMMAND_ENABLE 0x06
-#define	COMMAND_DISABLE	0x04
-#define	COMMAND_READ_STATUS	0x05
-#define	COMMAND_WRITE_STATUS 0x01
-#define	COMMAND_WRITE_BLOCK_PROTECTION 0x42
-#define	COMMAND_WRITE_UNLOCK_PROTECTION	0x98
-#define	COMMAND_READ_CONF 0x35
-
-class SPI : protected std::vector<Gpio>, public SyncCommSPI, Callback {
-private:
-	SPI_Type* m_SPI;
-	uint8_t m_ticks;
-protected:
-	enum channel_t { FST_SPI, SND_SPI };
-public:
-	SPI() = delete;
-	SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL, channel_t channel = FST_SPI);
-	void Memory_Inicialization(void); // UNUSED METHOD
-	void HW_Enable(void);
-	void HW_Disable(void);
-	void HW_Write(uint8_t data);
-	uint8_t HW_Read(void);
-	void writeEnable(void);
-	void Write_Disable(void);
-	void callbackMethod(void);
-	void SW_Reset(void);
-	uint8_t readConfiguration(uint8_t command);
-	void saveConfiguration(uint8_t command, uint8_t *data, uint32_t size);
-	void waitBusy(void);
-	void writeBlockProtection(void);
-	void jedecIdRead(void);
-	virtual ~SPI();
-private:
-	void enableSwm(void);
-	void enableClock(void);
-	void config(void);
-	void SPI_IRQHandler(void) override;
-
-	void enableInterrupt(void);
-	void disableInterrupt(void);
+        ~SPI();
+    private:
+        void config(bool master, mode_t mode, bitOrder_t bitOrder, uint32_t bps) const;
+        void enableClock() const;
+        void enableSWM() const;
+        void enableTxInterrupt() const;
+        void disableSendInterrupt() const;
+    protected:
+        void pushReceive(uint8_t data);
+        bool popReceive(uint8_t *data);
+        void pushSend(uint8_t data);
+        bool popSend(uint8_t *data);
 };
 
 #endif /* SPI_H_ */

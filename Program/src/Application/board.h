@@ -20,6 +20,7 @@
 #include "DS3231.h"
 #include "M24C16.h"
 #include "UART.h"
+#include "SPI.h"
 #include "ADC.h"
 #include "DAC.h"
 

@@ -17,8 +17,8 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
   <span>&#10038;</span> Infrared sensor KY-032 or HW-201.<br>
   <span>&#10038;</span> EEPROM Memory FM24C16U 16KB.<br>
   <span>&#10038;</span> RTC module DS3231SN.<br>
-  <span>&#10038;</span> RFID RC-522 reader (Optional).<br>
-  <span>&#10038;</span> Micro SD module (Optional).<br>
+  <span>&#10038;</span> RFID RC-522 reader.<br>
+  <span>&#10038;</span> DFPlayer module.<br>
   </ul>
 </details>
 
@@ -33,9 +33,9 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 - [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 3`
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 112` `AO ~ 14` `LC ~ 4` `CY ~ 1`
+`DDM ~ 114` `AO ~ 19` `LC ~ 4` `CY ~ 1`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7)
-- [ ] Micro SD card adaptation for data handling and ".wav" files.
+- [ ] Micro SD card adaptation for data handling and ".mp3" files using DFPlayer module.
 
 ### 📚️ __Documentation & Doxygen__
 

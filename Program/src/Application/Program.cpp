@@ -10,6 +10,11 @@
 
 #if !DEBUG_MODE
 
+Gpio SCK_PIN(LCD_D7); 	// {P0.13}
+Gpio MISO_PIN(LCD_D6); 	// {P0.11}
+Gpio MOSI_PIN(LCD_D5); 	// {P0.10}
+Gpio SSEL0_PIN(LCD_D4); // {P0.09}
+
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop at FCLKOUT = 48 MHz if FREQ_CLOCK_MCU macro in LPC845.h is defined as 48000000UL
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
@@ -22,8 +27,24 @@ int main(void) {
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
+    SPI spi(SCK_PIN, MISO_PIN, MOSI_PIN, 1000000, 0);
+
+    uint8_t returnSSELNum = 0;
+
+    spi.bindSSEL(SSEL0_PIN, returnSSELNum);
+    spi.enableSSEL(returnSSELNum);
+
+    char string[] = "Hello World!";
+//    char SSELsize[2];
+//    SSELsize[0] = returnSSELNum + '0';
+//    SSELsize[1] = '\n';
+//    g_usb->transmit(SSELsize);
+
     while (1) {
-        g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
+    	// for (uint32_t i = 0; i < 10000; i++) __asm("nop"); // delay 10 milli-seconds.
+        spi.transmit(string);
+        delay(10);
+//    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 }
 

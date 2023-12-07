@@ -16,7 +16,7 @@ m_interrupt_mode{interrupt_mode},
 m_interrupt_number{this->m_quantity} {
 	if (this->m_direction != Gpio::INPUT) this->ToggleDir();
 	// SYSTEM STOPPED, MAXIMUM PIN INTERRUPTIONS REACHED
-	if (this->m_quantity >= MAX_PIN_INTERRUPTS)	while (1);
+	if (this->m_quantity >= MAX_PIN_INTERRUPTS) while (1);
 	g_gpiohandler[this->m_interrupt_number] = this;
 	this->m_quantity++;
 }
@@ -25,11 +25,11 @@ void PinInterrupt::EnableClockInterrupt(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 28);
 }
 
-void PinInterrupt::enableInterupt(void) {
+void PinInterrupt::enableInterrupt(void) {
 	SYSCON->PINTSEL[this->m_interrupt_number] = this->m_bit + this->m_port * 32;
 }
 
-void PinInterrupt::disableInterupt(void) {
+void PinInterrupt::disableInterrupt(void) {
 	SYSCON->PINTSEL[this->m_interrupt_number] = 0;
 }
 
@@ -54,7 +54,7 @@ void PinInterrupt::initInterrupt(void) {
 }
 
 PinInterrupt::~PinInterrupt() {
-    this->disableInterupt();
+    this->disableInterrupt();
 	this->m_quantity--;
 }
 

@@ -38,7 +38,7 @@ private:
 	statusComm_t m_statusComm = TWI_SUCCESS;
 	frequencyComm_t m_frequency;
 
-	void enableSwm(void);
+	void enableSWM(void);
 	void enableClock(void);
 	void config(void);
 	void enableInterrupt(void);

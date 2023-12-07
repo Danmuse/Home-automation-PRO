@@ -24,7 +24,7 @@ m_usart{(USART_Type *)(USART0_BASE + channel*USART_OFFSET_BASE)} {
 	m_flagTX = false;
 
     this->enableClock();
-    this->enableSwm();
+    this->enableSWM();
     this->config(baudrate, data_bits, parity);
 }
 
@@ -101,7 +101,7 @@ void UART::disableInterrupt(void) {
 	this->m_usart->INTENCLR = (1 << 2); // Disable TX interruption.
 }
 
-void UART::enableSwm(void) {
+void UART::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 0) | ((
                 at(RX_IDX).getBit() +

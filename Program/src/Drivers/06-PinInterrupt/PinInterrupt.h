@@ -37,8 +37,8 @@ public:
 	PinInterrupt() = delete;
 	PinInterrupt(const Gpio& interrupt, interrupt_mode_t interrupt_mode);
 	void initInterrupt(void);
-	void enableInterupt(void);
-	void disableInterupt(void);
+	void enableInterrupt(void);
+	void disableInterrupt(void);
 	// Function that is executed when performing the interrupt
 	virtual void gpioHandler(void) = 0;
 	virtual ~PinInterrupt();

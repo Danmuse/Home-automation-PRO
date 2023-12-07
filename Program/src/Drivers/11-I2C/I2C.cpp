@@ -18,7 +18,7 @@ m_frequency{frequency} {
 	else if (this->m_TWI == I2C3 && g_TWI[3] != nullptr);
 	else { // initialize the corresponding TWI channel.
         this->enableClock();
-        this->enableSwm();
+        this->enableSWM();
         this->config();
 	}
 }
@@ -174,7 +174,7 @@ void I2C::disableInterrupt(void) {
 //	this->m_TWI->INTENCLR = (1 << 25); // Disable SCL time-out interruption.
 }
 
-void I2C::enableSwm(void) {
+void I2C::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	// I2C0_SCL enabled on pin PIO0_10 and I2C0_SDA enabled on pin PIO0_11
 	if (this->m_TWI == I2C0) SWM->PINENABLE0 &= ~((1 << 13) | (1 << 12));

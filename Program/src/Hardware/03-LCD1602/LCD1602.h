@@ -13,14 +13,14 @@
 #include "systick.h"
 #include "ProgramConfig.h"
 
-#define CLEAR_DISPLAY			0b00000001 //!< set CLEAR register
-#define RETURN_HOME				0b00000010 //!< set Cursor = 0 register
-#define ENTRY_MODE_SET			0b00000100 //!< set Input Writer register
-#define DISPLAY_CONTROL			0b00001000 //!< set Control register
-#define CURSOR_DISPLAY_SHIFT	0b00010000 //!< set Cursor register
-#define FUNCTION_SET			0b00100000 //!< set Operation Mode register
-#define SET_CGRAM				0b01000000 //!< set CGRAM register
-#define SET_DDRAM				0b10000000 //!< set DDRAM register
+#define CLEAR_DISPLAY			0b00000001 //!< Set CLEAR register
+#define RETURN_HOME				0b00000010 //!< Set Cursor = 0 register
+#define ENTRY_MODE_SET			0b00000100 //!< Set Input Writer register
+#define DISPLAY_CONTROL			0b00001000 //!< Set Control register
+#define CURSOR_DISPLAY_SHIFT	0b00010000 //!< Set Cursor register
+#define FUNCTION_SET			0b00100000 //!< Set Operation Mode register
+#define SET_CGRAM				0b01000000 //!< Set CGRAM register
+#define SET_DDRAM				0b10000000 //!< Set DDRAM register
 
 class LCD1602 : public Callback {
 private:

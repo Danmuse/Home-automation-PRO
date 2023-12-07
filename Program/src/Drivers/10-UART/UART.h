@@ -52,7 +52,7 @@ public:
 	void setBaudRate(uint32_t baudrate);
 	virtual ~UART();
 private:
-	void enableSwm(void);
+	void enableSWM(void);
 	void enableClock(void);
 	void config(uint32_t baudrate, data_bits_t data_bits, parity_t parity);
 	void UART_IRQHandler(void) override;
