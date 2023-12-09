@@ -7,18 +7,15 @@
 
 #include "SPI.h"
 
-SPI_Type *const SPI_ADDRESSES[] = SPI_BASE_PTRS;
+SyncCommSPI *g_SPI[SPI_MAX_CHANNELS] = { nullptr, nullptr };
 
-SPI *g_SPI[SPI_MAX_CHANNELS] = { nullptr, nullptr };
-
-SPI::SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, std::vector<Gpio> SSEL, frequencyComm_t frequency, channel_t channel, bool master, bitOrder_t bitOrder, mode_t mode) : std::vector<Gpio>({SCK, MOSI, MISO}),
+SPI::SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, std::vector<Gpio> SSEL, frequencyComm_t frequency, channelSPI_t channel, bool master, bitOrder_t bitOrder, mode_t mode) : std::vector<Gpio>({SCK, MOSI, MISO}),
 m_SPI{(SPI_Type *)(SPI0_BASE + channel * SPI_OFFSET_BASE)}, m_bitOrder{bitOrder}, m_receiveBufferIndexIn{0}, m_receiveBufferIndexOut{0}, m_sendBufferIndexIn{0}, m_sendBufferIndexOut{0}, m_isSending{false} {
 	// Maybe do something if it already exists
 	if (g_SPI[channel] == nullptr) g_SPI[channel] = this;
-    this->m_SPI = SPI_ADDRESSES[channel];
 
-    if (!channel) this->m_maxSSELSize = SPI0_MAX_SSEL;
-    else if (channel) this->m_maxSSELSize = SPI1_MAX_SSEL;
+    if (channel == FST_SPI) this->m_maxSSELSize = SPI0_MAX_SSEL;
+    else if (channel == SND_SPI) this->m_maxSSELSize = SPI1_MAX_SSEL;
 
     uint8_t size = std::min((int) this->m_SSEL.size(), (int) this->m_maxSSELSize);
     std::copy(this->m_SSEL.begin(), this->m_SSEL.begin() + size, std::back_inserter(this->m_SSEL));
@@ -28,39 +25,8 @@ m_SPI{(SPI_Type *)(SPI0_BASE + channel * SPI_OFFSET_BASE)}, m_bitOrder{bitOrder}
     enableSWM();
 }
 
-SPI::SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency, channel_t channel) :
+SPI::SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency, channelSPI_t channel) :
 SPI(SCK, MOSI, MISO, std::vector<Gpio>(), frequency, channel) { }
-
-/*
-
-SPI::SPI(Gpio &SCK, Gpio &MISO, Gpio &MOSI, std::vector<Gpio> SSEL, uint32_t bps, uint8_t channel, bool master, bitOrder_t bitOrder, mode_t mode) :
-m_SCK{SCK}, m_MISO{MISO}, m_MOSI{MOSI}, m_channel{(uint8_t)(channel < SPI_MAX_CHANNELS ? channel : 0)},
-m_master{master}, m_receiveBufferIndexIn{0}, m_receiveBufferIndexOut{0}, m_sendBufferIndexIn{0}, m_sendBufferIndexOut{0}, m_isSending{false} {
-	// Maybe do something if it already exists
-	if (g_SPI[this->m_channel] == nullptr) g_SPI[this->m_channel] = this;
-    this->m_SPI = SPI_ADDRESSES[this->m_channel];
-
-    switch (this->m_channel) {
-        case 0:
-            this->m_maxSSELSize = SPI0_MAX_SSEL;
-            break;
-        case 1:
-            this->m_maxSSELSize = SPI1_MAX_SSEL;
-            break;
-    }
-
-    uint8_t size = std::min((int) this->m_SSEL.size(), (int) this->m_maxSSELSize);
-    std::copy(this->m_SSEL.begin(), this->m_SSEL.begin() + size, std::back_inserter(this->m_SSEL));
-
-    config(master, mode, bitOrder, bps);
-    enableClock();
-    enableSWM();
-}
-
-SPI::SPI(Gpio &SCK, Gpio &MISO, Gpio &MOSI, uint32_t bps, uint8_t channel) :
-SPI(SCK, MISO, MOSI, std::vector<Gpio>(), bps, channel) { }
-
-*/
 
 void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) const {
     uint8_t CPHA = 0, CPOL = 0;
@@ -88,21 +54,22 @@ void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) const {
             break;
     }
 
-    this->m_SPI->CFG |= (master << 2) // If true master mode is set
+    this->m_SPI->CFG |= ((0 << 0)     // Disable SPI channel
+    | (master << 2) 				  // If true master mode is set
 	| (this->m_bitOrder << 3)		  // LSB first
 	| (CPHA << 4) 					  // Clock phase
-	| (CPOL << 5); 					  // Clock polarity
+	| (CPOL << 5)); 				  // Clock polarity
     // Configure SSEL polarity on device implementations
     // TODO: Maybe configure delays
     this->m_SPI->DIV = (FREQ_CLOCK_MCU / frequency) - 1;
 
-    this->m_SPI->TXDATCTL |= (7 << 24); // 8 bits per transfer (Maybe change?)
+    this->m_SPI->TXDATCTL |= (0b111 << 24); // 8 bits per transfer
 
-    if (this->m_SPI == SPI0) NVIC->ISER[0] |= (1 << 0); // Enables interrupts
-    if (this->m_SPI == SPI1) NVIC->ISER[0] |= (1 << 1); // Enables interrupts
+    if (this->m_SPI == SPI0) NVIC->ISER[0] |= (1 << 0); // Enable SPI0_IRQ
+    else if (this->m_SPI == SPI1) NVIC->ISER[0] |= (1 << 1); // Enable SPI1_IRQ
     this->m_SPI->INTENSET |= (1 << 0); // Enable RXRDY interrupt
-    //                    | (1 << 4) // Enable when the Slave Select is asserted
-    //                    | (1 << 5) // Enable when the Slave Select is deasserted.
+    //                    | (1 << 4)   // Enable when the Slave Select is asserted
+    //                    | (1 << 5)   // Enable when the Slave Select is deasserted.
 
     this->m_SPI->TXDATCTL |= (0b1111 << 16); // Not assert any SSELs
 
@@ -114,7 +81,7 @@ void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) const {
  * @param SSELNumber (output) Number of the SSEL, use it for transmission and reception
  * @return whether or not the SSEL was added
  */
-bool SPI::bindSSEL(Gpio &SSEL, uint8_t &SSELNumber) {
+bool SPI::bindSSEL(const Gpio &SSEL, uint8_t &SSELNumber) {
     if (this->m_SSEL.size() < this->m_maxSSELSize) {
         SSELNumber = this->m_SSEL.size();
         this->m_SSEL.push_back(SSEL);
@@ -127,9 +94,7 @@ bool SPI::bindSSEL(Gpio &SSEL, uint8_t &SSELNumber) {
 				else if (i == 3) SWM->PINASSIGN.PINASSIGN5 &= (((this->m_SSEL[i].getBit() + this->m_SSEL[i].getPort() * 0x20) << 8) | ~(0xFF << 8));
 			}
 		    SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
-        }
-
-        if (this->m_SPI == SPI1) {
+        } else if (this->m_SPI == SPI1) {
             SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 			for (size_t i = 0; i < this->m_SSEL.size() + 1; i++) {
 				if (i == 0) SWM->PINASSIGN.PINASSIGN6 &= (((this->m_SSEL[i].getBit() + this->m_SSEL[i].getPort() * 0x20) << 8) | ~(0xFF << 8));
@@ -142,9 +107,9 @@ bool SPI::bindSSEL(Gpio &SSEL, uint8_t &SSELNumber) {
     return false;
 }
 
-void SPI::setBaudRate(uint32_t bps) const {
+void SPI::setBaudRate(frequencyComm_t frequency) const {
 	this->m_SPI->CFG &= ~(1 << 0); // Enable SPI channel
-	this->m_SPI->DIV = (FREQ_CLOCK_MCU / bps) - 1;
+	this->m_SPI->DIV = (FREQ_CLOCK_MCU / frequency) - 1;
 	this->m_SPI->CFG |= (1 << 0); // Enable SPI channel
 }
 
@@ -172,62 +137,13 @@ void SPI::enableClock(void) const {
 
 void SPI::enableSWM(void) const {
     SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-//  uint8_t regNumber;
-
 	if (this->m_SPI == SPI0) {
 		SWM->PINASSIGN.PINASSIGN3 &= (((at(SCK_IDX).getBit() + at(SCK_IDX).getPort() * 0x20) << 24) | ~(0xFF << 24));
 		SWM->PINASSIGN.PINASSIGN4 &= ((((at(MOSI_IDX).getBit() + at(MOSI_IDX).getPort() * 0x20) << 0) | ((at(MISO_IDX).getBit() + at(MISO_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
-//		SWM->PINASSIGN.PINASSIGN3 &= (((this->m_SCK.getBit() + this->m_SCK.getPort() * 0x20) << 24) | ~(0xFF << 24));
-//		SWM->PINASSIGN.PINASSIGN4 &= ((((this->m_MOSI.getBit() + this->m_MOSI.getPort() * 0x20) << 0) | ((this->m_MISO.getBit() + this->m_MISO.getPort() * 0x20) << 8)) | ~(0xFFFF << 0)); // | ((at(SSEL_IDX).getBit() + at(SSEL_IDX).getPort() * 0x20) << 16)) | ~(0xFFFFFF << 0));
-
-//		THE FOLLOWING FRAGMENT OF CODE IS NOT IMPLEMENT YET
-//		SWM->PINASSIGN.PINASSIGN4 &= (((at(SSEL1_IDX).GetBit() + at(SSEL1_IDX).GetPort() * 0x20) << 24) | ~(0xFF << 24));
-//		SWM->PINASSIGN.PINASSIGN5 &= ((((at(SSEL2_IDX).GetBit() + at(SSEL2_IDX).GetPort() * 0x20) << 0) | ((at(SSEL3_IDX).GetBit() + at(SSEL3_IDX).GetPort() * 0x20) << 8)) | ~(0xFFFF << 0));
-	}
-	if (this->m_SPI == SPI1) {
+	} else if (this->m_SPI == SPI1) {
 		SWM->PINASSIGN.PINASSIGN5 &= ((((at(SCK_IDX).getBit() + at(SCK_IDX).getPort() * 0x20) << 16) | ((at(MOSI_IDX).getBit() + at(MOSI_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 		SWM->PINASSIGN.PINASSIGN6 &= (((at(MISO_IDX).getBit() + at(MISO_IDX).getPort() * 0x20) << 0) | ~(0xFF << 0));
-
-//		THE FOLLOWING FRAGMENT OF CODE IS NOT IMPLEMENT YET
-//		SWM->PINASSIGN.PINASSIGN6 &= (((at(SSEL1_IDX).GetBit() + at(SSEL1_IDX).GetPort() * 0x20) << 16) | ~(0xFF << 16));
 	}
-
-	/*
-    switch (this->m_channel) {
-        case 0:
-            regNumber = 3;
-            SWM->PINASSIGN_DATA[regNumber++] |= (this->m_SCK.getPort() * 32 + this->m_SCK.getBit()) << 24;
-            SWM->PINASSIGN_DATA[regNumber] |= (this->m_MOSI.getPort() * 32 + this->m_MOSI.getBit()) | (this->m_MISO.getPort() * 32 + this->m_MISO.getBit()) << 8;
-
-            for (size_t i = 0; i < this->m_SSEL.size(); i++) {
-                uint8_t shift = 16 + i * 8;
-                if (shift > 24) {
-                    shift = 32 - shift;
-                    regNumber++;
-                }
-                SWM->PINASSIGN_DATA[regNumber] |= (this->m_SSEL[i].getPort() * 32 + this->m_SSEL[i].getBit()) << regNumber;
-            }
-            break;
-        case 1:
-            regNumber = 5;
-            SWM->PINASSIGN_DATA[regNumber] |= (this->m_SCK.getPort() * 32 + this->m_SCK.getBit()) << 16;
-            SWM->PINASSIGN_DATA[regNumber++] |= (this->m_MOSI.getPort() * 32 + this->m_MOSI.getBit()) << 24;
-            SWM->PINASSIGN_DATA[regNumber] |= (this->m_MISO.getPort() * 32 + this->m_MISO.getBit()) << 0;
-
-            for (size_t i = 0; i < this->m_SSEL.size(); i++) {
-                uint8_t shift = 8 + i * 8;
-                if (shift > 24) {
-                    // Not gonna happen, it is 16 or 24, but just in case
-                    shift = 32 - shift;
-                    regNumber++;
-                }
-                SWM->PINASSIGN_DATA[regNumber] |= (this->m_SSEL[i].getPort() * 32 + this->m_SSEL[i].getBit()) << regNumber;
-            }
-            break;
-        default:
-            break;
-    }
-    */
     SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
@@ -270,22 +186,22 @@ bool SPI::popSend(uint8_t *data) {
 void SPI::transmit(uint8_t *message, uint8_t length) {
     for (int i = 0; i < length; i++) {
         pushSend(message[i]);
-    }
-    // Potential issue with very long strings
-    if (!this->m_isSending) {
-    	this->m_isSending = true;
-        enableSendInterrupt();
+		if (!this->m_isSending) {
+			this->m_isSending = true;
+			enableSendInterrupt();
+		}
     }
 }
 
-void SPI::transmit(char *cString) {
-    while (*cString) {
-        pushSend(*cString);
-        cString++;
-    }
-    if (!this->m_isSending) {
-    	this->m_isSending = true;
-        enableSendInterrupt();
+void SPI::transmit(const char *message) {
+    while (*message) {
+        pushSend(*message);
+        message++;
+
+        if (!this->m_isSending) {
+        	this->m_isSending = true;
+            enableSendInterrupt();
+        }
     }
 }
 
@@ -306,13 +222,13 @@ bool SPI::receive(uint8_t *message, uint8_t length) {
     return false;
 }
 
-bool SPI::receive(char *cString) {
+bool SPI::receive(char *message) {
     uint8_t data;
     static uint32_t cont = 0;
     while (this->popReceive(&data)) {
-        cString[cont++] = data;
+    	message[cont++] = data;
         if (data == '\r' || data == '\n') {
-            cString[cont] = '\0';
+        	message[cont] = '\0';
             cont = 0;
             return true;
         }
@@ -339,9 +255,9 @@ void SPI::SPI_IRQHandler(void) {
 }
 
 SPI::~SPI() {
-    if (this->m_SPI == SPI0) NVIC->ISER[0] &= ~(1 << 0);
-    if (this->m_SPI == SPI1) NVIC->ISER[0] &= ~(1 << 1);
-    this->m_SPI->INTENCLR |= (1 << 0);
+    this->disableSendInterrupt();
+    if (this->m_SPI == SPI0) NVIC->ISER[0] &= ~(1 << 0); // Disable SPI0_IRQ
+    else if (this->m_SPI == SPI1) NVIC->ISER[0] &= ~(1 << 1); // Disable SPI1_IRQ
 }
 
 void SPI0_IRQHandler(void) {

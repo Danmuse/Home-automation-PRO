@@ -24,6 +24,9 @@ extern "C" {
 }
 #endif
 
+#define RX_BUFFER_SIZE 64
+#define TX_BUFFER_SIZE 64
+
 #define RX_IDX 0
 #define TX_IDX 1
 
@@ -35,20 +38,20 @@ class UART : protected std::vector<Gpio>, public AsyncComm {
 private:
 	USART_Type*	m_usart;							//!< Register to be used
 	uint8_t*	m_bufferRX;							//!< Reception buffer
-	uint32_t	m_indexRXIn, m_indexRXOut, m_maxRX;	//!< RX buffer input position - RX buffer output position - RX buffer size
+	uint32_t	m_indexRXIn, m_indexRXOut;			//!< RX buffer input position - RX buffer output position - RX buffer size
 	uint8_t*	m_bufferTX;							//!< Transmission buffer
-	uint32_t	m_indexTXIn, m_indexTXOut, m_maxTX;	//!< TX buffer input position - TX buffer output position - TX buffer size
+	uint32_t	m_indexTXIn, m_indexTXOut;			//!< TX buffer input position - TX buffer output position - TX buffer size
 	bool 		m_flagTX;							//!< Error in sending data (Buffer overload)
 public:
 	enum parity_t 		{ NONE, ODD, EVEN };
 	enum data_bits_t	{ SEVEN_BITS, EIGHT_BITS };
-	enum channel_t		{ UART0, UART1, UART2, UART3, UART4 };
+	enum channelUART_t	{ UART0, UART1, UART2, UART3, UART4 };
 
 	UART() = delete;
-	UART(const Gpio& RX, const Gpio& TX, channel_t channel = UART0, uint32_t baudrate = 9600, data_bits_t data_bits = EIGHT_BITS, parity_t parity = NONE, uint32_t maxRX = 64, uint32_t maxTX = 64);
+	UART(const Gpio& RX, const Gpio& TX, channelUART_t channel = UART0, uint32_t baudrate = 9600, data_bits_t data_bits = EIGHT_BITS, parity_t parity = NONE);
 	void transmit(const char *message) override;
-	void transmit(const char *message, uint32_t n) override;
-	bool receive(char *message, uint32_t n) override;
+	void transmit(const char *message, uint8_t length) override;
+	bool receive(char *message, uint8_t length) override;
 	void setBaudRate(uint32_t baudrate);
 	virtual ~UART();
 private:

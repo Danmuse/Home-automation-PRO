@@ -11,10 +11,10 @@
 #ifndef SPI_H_
 #define SPI_H_
 
-#include "LPC845.h"
-#include "GPIO.h"
-#include <algorithm>
 #include <vector>
+#include <algorithm>
+#include "SyncCommSPI.h"
+#include "GPIO.h"
 
 #define SPI_MAX_CHANNELS 2
 #define SPI0_CLK_REG 11
@@ -22,13 +22,12 @@
 #define SPI0_MAX_SSEL 4
 #define SPI1_MAX_SSEL 2
 
-#define SEND_BUFFER_SIZE 64
 #define RECEIVE_BUFFER_SIZE 64
+#define SEND_BUFFER_SIZE 64
 
 #define SCK_IDX 0
 #define MOSI_IDX 1
 #define MISO_IDX 2
-#define SSEL_IDX 3
 
 #define SPI_OFFSET_BASE (0x4000U)
 
@@ -39,23 +38,9 @@ extern "C" {
 }
 #endif
 
-class SPI : protected std::vector<Gpio> {
-    public:
-		enum channel_t { FST_SPI, SND_SPI };
-        enum bitOrder_t { MSB_FIRST, LSB_FIRST };
-		// DEFAULT_FREQUENCY: Clock period at 1 Mb/s.
-		enum frequencyComm_t { DEFAULT_FREQUENCY = 1000000 };
-        // MODE0: The SPI captures serial data on the first clock transition of the transfer. Data is changed on the following edge.
-    	// 		  The rest state of the clock is low.
-		// MODE1: The SPI captures serial data on the first clock transition of the transfer. Data is changed on the following edge.
-		// 		  The rest state of the clock is high.
-		// MODE2: The SPI changes serial data on the first clock transition of the transfer. Data is changed on the following edge.
-		// 		  The rest state of the clock is low.
-		// MODE3: The SPI changes serial data on the first clock transition of the transfer. Data is changed on the following edge.
-		// 		  The rest state of the clock is high.
-        enum mode_t { MODE0, MODE1, MODE2, MODE3 };
+class SPI : protected std::vector<Gpio>, public SyncCommSPI {
     private:
-        SPI_Type *m_SPI;
+        SPI_Type* m_SPI;
         std::vector<Gpio> m_SSEL;
         bitOrder_t m_bitOrder;
         uint8_t m_maxSSELSize;
@@ -69,21 +54,19 @@ class SPI : protected std::vector<Gpio> {
         uint8_t m_sendBufferIndexOut;
         bool m_isSending;
     public:
-        SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, std::vector<Gpio> SSEL, frequencyComm_t frequency = DEFAULT_FREQUENCY, channel_t channel = FST_SPI, bool master = true, bitOrder_t bitOrder = MSB_FIRST, mode_t mode = MODE0);
-        SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency = DEFAULT_FREQUENCY, channel_t channel = FST_SPI);
-        // SPI(Gpio &SCK, Gpio &MISO, Gpio &MOSI, std::vector<Gpio> SSEL, uint32_t bps, uint8_t channel = 0, bool master = true, bitOrder_t bitOrder = MSB_FIRST, mode_t mode = MODE0);
-        // SPI(Gpio &SCK, Gpio &MISO, Gpio &MOSI, uint32_t bps, uint8_t channel);
-        bool bindSSEL(Gpio &SSEL, uint8_t &SSELNumber);
-        void setBaudRate(uint32_t bps) const;
+		enum channelSPI_t { FST_SPI, SND_SPI };
+
+		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, std::vector<Gpio> SSEL, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = FST_SPI, bool master = true, bitOrder_t bitOrder = MSB_FIRST, mode_t mode = MODE0);
+		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = FST_SPI);
+        bool bindSSEL(const Gpio& SSEL, uint8_t &SSELNumber);
+        void setBaudRate(frequencyComm_t frequency) const;
         void enableSSEL(uint8_t SSEL) const;
         void disableSSEL(uint8_t SSEL) const;
-        void transmit(uint8_t *message, uint8_t length = 1);
-        void transmit(char *cString);
-        bool receive(uint8_t &message);
-        bool receive(uint8_t *message, uint8_t length);
-        bool receive(char *cString);
-        // TODO: Make protected the following method
-        void SPI_IRQHandler(void);
+        void transmit(uint8_t *message, uint8_t length = 1) override;
+        void transmit(const char *message) override;
+        bool receive(uint8_t &message) override;
+        bool receive(uint8_t *message, uint8_t length) override;
+        bool receive(char *message) override;
         ~SPI();
     private:
         void config(bool master, mode_t mode, frequencyComm_t frequency) const;
@@ -91,11 +74,13 @@ class SPI : protected std::vector<Gpio> {
         void enableSWM(void) const;
         void enableSendInterrupt(void) const;
         void disableSendInterrupt(void) const;
+
+        void SPI_IRQHandler(void) override;
     protected:
-        void pushReceive(uint8_t data);
-        bool popReceive(uint8_t *data);
-        void pushSend(uint8_t data);
-        bool popSend(uint8_t *data);
+        void pushReceive(uint8_t data) override;
+        bool popReceive(uint8_t *data) override;
+        void pushSend(uint8_t data) override;
+        bool popSend(uint8_t *data) override;
 };
 
 #endif /* SPI_H_ */

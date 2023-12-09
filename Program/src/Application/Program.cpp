@@ -10,11 +10,6 @@
 
 #if !DEBUG_MODE
 
-//Gpio SCK_PIN(LCD_D7); 	// {P0.13}
-//Gpio MISO_PIN(LCD_D6); 	// {P0.11}
-//Gpio MOSI_PIN(LCD_D5); 	// {P0.10}
-//Gpio SSEL0_PIN(LCD_D4); // {P0.09}
-
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop at FCLKOUT = 48 MHz if FREQ_CLOCK_MCU macro in LPC845.h is defined as 48000000UL
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
@@ -22,17 +17,18 @@ int main(void) {
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
+	initRFID();		// Initializes the g_rfid        ~ Define the SPI0_PINS macro in ProgramConfig.h {P0.20 - P0.21 - P0.25 - P0.24}
+//	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
-    SPI spi(LCD_D7, LCD_D6, LCD_D5, std::vector<Gpio>()); // , 1000000, 0);
+//    SPI spi(LCD_D7, LCD_D6, LCD_D5, std::vector<Gpio>()); // , 1000000, 0);
 
-    uint8_t returnSSELNum = 0;
+//    uint8_t returnSSELNum = 0;
 
-    spi.bindSSEL(LCD_D4, returnSSELNum);
-    spi.enableSSEL(returnSSELNum);
+//    spi.bindSSEL(LCD_D4, returnSSELNum);
+//    spi.enableSSEL(returnSSELNum);
 
     char string[] = "Hello World!";
 //    char SSELsize[3];
@@ -43,7 +39,7 @@ int main(void) {
 
     while (1) {
     	// for (uint32_t i = 0; i < 10000; i++) __asm("nop"); // delay 10 milli-seconds.
-        spi.transmit(string);
+        g_rfid->send(string);
         delay(10);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }

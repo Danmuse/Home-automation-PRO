@@ -13,8 +13,11 @@
 #include "ProgramConfig.h"
 
 class MFRC522 : protected SPI {
+private:
+	uint8_t m_slaveSelected;
 public:
 	MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL);
+	void send(const char *message);
 	virtual ~MFRC522();
 };
 

@@ -10,7 +10,7 @@
 SyncCommTWI *g_TWI[MAX_I2C_CHANNELS] = { nullptr, nullptr, nullptr, nullptr };
 
 I2C::I2C(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel, frequencyComm_t frequency) : std::vector<Gpio>({SCL, SDA}),
-m_TWI{channel < TWI2 ? (I2C_Type *)(I2C0_BASE + channel*I2C_OFFSET_BASE) : (I2C_Type *)(I2C2_BASE + (channel % 2)*I2C_OFFSET_BASE)},
+m_TWI{channel < TWI2 ? (I2C_Type *)(I2C0_BASE + channel * I2C_OFFSET_BASE) : (I2C_Type *)(I2C2_BASE + (channel % 2) * I2C_OFFSET_BASE)},
 m_frequency{frequency} {
 	if (this->m_TWI == I2C0 && g_TWI[0] != nullptr);
 	else if (this->m_TWI == I2C1 && g_TWI[1] != nullptr);
@@ -178,17 +178,17 @@ void I2C::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	// I2C0_SCL enabled on pin PIO0_10 and I2C0_SDA enabled on pin PIO0_11
 	if (this->m_TWI == I2C0) SWM->PINENABLE0 &= ~((1 << 13) | (1 << 12));
-	if (this->m_TWI == I2C1) SWM->PINASSIGN.PINASSIGN9 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 16) | ((at(SCL_IDX).getBit() + at(SCL_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
-	if (this->m_TWI == I2C2) SWM->PINASSIGN.PINASSIGN10 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 0) | ((at(SCL_IDX).getBit() + at(SCL_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
-	if (this->m_TWI == I2C3) SWM->PINASSIGN.PINASSIGN10 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 16) | ((at(SCL_IDX).getBit() + at(SCL_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+	else if (this->m_TWI == I2C1) SWM->PINASSIGN.PINASSIGN9 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 16) | ((at(SCL_IDX).getBit() + at(SCL_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+	else if (this->m_TWI == I2C2) SWM->PINASSIGN.PINASSIGN10 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 0) | ((at(SCL_IDX).getBit() + at(SCL_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
+	else if (this->m_TWI == I2C3) SWM->PINASSIGN.PINASSIGN10 &= ((((at(SDA_IDX).getBit() + at(SDA_IDX).getPort() * 0x20) << 16) | ((at(SCL_IDX).getBit() + at(SCL_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
 void I2C::config(void) {
 	if (this->m_TWI == I2C0) NVIC->ISER[0] |= (1 << 8); // Enable I2C0_IRQ
-	if (this->m_TWI == I2C1) NVIC->ISER[0] |= (1 << 7); // Enable I2C1_IRQ
-	if (this->m_TWI == I2C2) NVIC->ISER[0] |= (1 << 21); // Enable I2C2_IRQ
-	if (this->m_TWI == I2C3) NVIC->ISER[0] |= (1 << 22); // Enable I2C3_IRQ
+	else if (this->m_TWI == I2C1) NVIC->ISER[0] |= (1 << 7); // Enable I2C1_IRQ
+	else if (this->m_TWI == I2C2) NVIC->ISER[0] |= (1 << 21); // Enable I2C2_IRQ
+	else if (this->m_TWI == I2C3) NVIC->ISER[0] |= (1 << 22); // Enable I2C3_IRQ
 	this->m_TWI->CFG |= (1 << 0); // I2C is enabled as MASTER device
 //	this->enableInterrupt();
 }
@@ -211,20 +211,17 @@ void I2C::enableClock(void) {
 			IOCON->PIO[IOCON_INDEX_PIO0[10]] = 0x100; // PIO0_10/I2C0_SCL. This is the pin configuration for the true open-drain pin.
 			IOCON->PIO[IOCON_INDEX_PIO0[11]] = 0x100; // PIO0_11/I2C0_SDA. This is the pin configuration for the true open-drain pin.
 		}
-	}
-	if (this->m_TWI == I2C1) {
+	} else if (this->m_TWI == I2C1) {
 		g_TWI[1] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 21);
 		SYSCON->PRESETCTRL0 &= ~(1 << 21); // Assert the I2C1 reset.
 		SYSCON->PRESETCTRL0 |= (1 << 21); // clear the I2C1 reset. Default register value.
-	}
-	if (this->m_TWI == I2C2) {
+	} else if (this->m_TWI == I2C2) {
 		g_TWI[2] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 22);
 		SYSCON->PRESETCTRL0 &= ~(1 << 22); // Assert the I2C2 reset.
 		SYSCON->PRESETCTRL0 |= (1 << 22); // clear the I2C2 reset. Default register value.
-	}
-	if (this->m_TWI == I2C3) {
+	} else if (this->m_TWI == I2C3) {
 		g_TWI[3] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 23);
 		SYSCON->PRESETCTRL0 &= ~(1 << 23); // Assert the I2C3 reset.
@@ -258,9 +255,9 @@ void I2C::enableClock(void) {
 	// There's an abnormally performance caused by communication channels other than I2C0
 	// Select Clock PPAL.: FCLKSEL
 	if (this->m_TWI == I2C0) SYSCON->FCLKSEL[5] = 1;
-	if (this->m_TWI == I2C1) SYSCON->FCLKSEL[6] = 1;
-	if (this->m_TWI == I2C2) SYSCON->FCLKSEL[7] = 1;
-	if (this->m_TWI == I2C3) SYSCON->FCLKSEL[8] = 1;
+	else if (this->m_TWI == I2C1) SYSCON->FCLKSEL[6] = 1;
+	else if (this->m_TWI == I2C2) SYSCON->FCLKSEL[7] = 1;
+	else if (this->m_TWI == I2C3) SYSCON->FCLKSEL[8] = 1;
 }
 
 void I2C::I2C_IRQHandler(void) {
@@ -288,7 +285,13 @@ void I2C::I2C_IRQHandler(void) {
 	}
 }
 
-I2C::~I2C() { }
+I2C::~I2C() {
+	this->disableInterrupt();
+	if (this->m_TWI == I2C0) NVIC->ISER[0] &= ~(1 << 8); // Disable I2C0_IRQ
+	else if (this->m_TWI == I2C1) NVIC->ISER[0] &= ~(1 << 7); // Disable I2C1_IRQ
+	else if (this->m_TWI == I2C2) NVIC->ISER[0] &= ~(1 << 21); // Disable I2C2_IRQ
+	else if (this->m_TWI == I2C3) NVIC->ISER[0] &= ~(1 << 22); // Disable I2C3_IRQ
+}
 
 void I2C0_IRQHandler(void) {
 	g_TWI[0]->I2C_IRQHandler();

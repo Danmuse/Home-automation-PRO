@@ -13,11 +13,31 @@
 
 class SyncCommSPI {
 public:
+    enum bitOrder_t { MSB_FIRST, LSB_FIRST };
+	// DEFAULT_FREQUENCY: Clock period at 1 Mb/s.
+	enum frequencyComm_t { DEFAULT_FREQUENCY = 1000000 };
+    // MODE0: The SPI captures serial data on the first clock transition of the transfer. Data is changed on the following edge.
+	// 		  The rest state of the clock is low.
+	// MODE1: The SPI captures serial data on the first clock transition of the transfer. Data is changed on the following edge.
+	// 		  The rest state of the clock is high.
+	// MODE2: The SPI changes serial data on the first clock transition of the transfer. Data is changed on the following edge.
+	// 		  The rest state of the clock is low.
+	// MODE3: The SPI changes serial data on the first clock transition of the transfer. Data is changed on the following edge.
+	// 		  The rest state of the clock is high.
+    enum mode_t { MODE0, MODE1, MODE2, MODE3 };
+
+    virtual void transmit(uint8_t *message, uint8_t length = 1) = 0;
+    virtual void transmit(const char *message) = 0;
+    virtual bool receive(uint8_t &message) = 0;
+    virtual bool receive(uint8_t *message, uint8_t length) = 0;
+    virtual bool receive(char *message) = 0;
 	virtual void SPI_IRQHandler(void) = 0;
 	virtual ~SyncCommSPI() = default;
 protected:
-	virtual void sendData(uint32_t address, const uint8_t value) = 0;
-	virtual void readData(uint32_t address, const uint8_t *value) = 0;
+	virtual void pushReceive(uint8_t data) = 0;
+	virtual bool popReceive(uint8_t *data) = 0;
+	virtual void pushSend(uint8_t data) = 0;
+	virtual bool popSend(uint8_t *data) = 0;
 };
 
 #endif /* SYNC_COMM_SPI_H_ */
