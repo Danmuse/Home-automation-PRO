@@ -161,5 +161,5 @@ void initM24C16(void) {
 
 	g_eeprom = &eeprom;
 
-	#endif // defined(I2C0_PINS) || defined(I2C1_PINS)
+	#endif // defined(I2C0_PINS)
 }

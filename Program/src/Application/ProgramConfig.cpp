@@ -58,7 +58,7 @@ Gpio LCD_D6(Gpio::PORT0, 11, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio LCD_D5(Gpio::PORT0, 10, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio LCD_D4(Gpio::PORT0, 9, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio LCD_RS(Gpio::PORT0, 1, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
-Gpio LCD_EN(Gpio::PORT0, 14, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::HIGH);
+Gpio LCD_EN(Gpio::PORT0, 14, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN15_PINS
 
 #ifdef CN16_PINS

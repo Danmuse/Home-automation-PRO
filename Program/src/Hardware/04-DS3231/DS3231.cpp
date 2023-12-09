@@ -202,7 +202,7 @@ char* DS3231::print(void) {
     RTCstr[9] = this->m_RTC.CALENDAR.DATE / 10 + '0'; RTCstr[10] = this->m_RTC.CALENDAR.DATE % 10 + '0'; RTCstr[11] = '/';
     RTCstr[12] = this->m_RTC.CALENDAR.MONTH / 10 + '0'; RTCstr[13] = this->m_RTC.CALENDAR.MONTH % 10 + '0'; RTCstr[14] = '/';
     RTCstr[15] = this->m_RTC.CALENDAR.YEAR / 1000 + '0'; RTCstr[16] = (this->m_RTC.CALENDAR.YEAR / 100) % 10 + '0';
-    RTCstr[17] = (this->m_RTC.CALENDAR.YEAR / 10) % 10 + '0'; RTCstr[18] = this->m_RTC.CALENDAR.YEAR % 10 + '0'; RTCstr[19] = '\n';
+    RTCstr[17] = (this->m_RTC.CALENDAR.YEAR / 10) % 10 + '0'; RTCstr[18] = this->m_RTC.CALENDAR.YEAR % 10 + '0'; RTCstr[19] = '\n'; RTCstr[20] = '\0';
 	return RTCstr;
 }
 
@@ -220,5 +220,5 @@ void initDS3231(void) {
 
 	g_ds3231 = &ds3231;
 
-	#endif // defined(I2C0_PINS) || defined(I2C1_PINS)
+	#endif // defined(I2C0_PINS)
 }

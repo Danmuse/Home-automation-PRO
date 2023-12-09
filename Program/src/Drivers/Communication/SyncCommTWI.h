@@ -26,7 +26,7 @@ public:
 	enum actionComm_t { READ, WRITE, READ_OFFSET_NONE, WRITE_OFFSET_NONE };
 	// SLOW_FREQUENCY: Clock period at 100 Kb/s.
 	// STD_FREQUENCY: Clock period at 400 Kb/s.
-	// FAST_FREQUENCY: Clock period at 1 Kb/s.
+	// FAST_FREQUENCY: Clock period at 1 Mb/s.
 	enum frequencyComm_t { SLOW_FREQUENCY = 100000, STD_FREQUENCY = 400000, FAST_FREQUENCY = 1000000 };
 private:
 	virtual statusComm_t prepareConditions(const uint8_t address, const uint8_t regOffset, actionComm_t action) = 0;

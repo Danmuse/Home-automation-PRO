@@ -14,7 +14,7 @@ m_outputs{outputs},
 m_mode{s_eigth_bits},
 m_rows{rows},
 m_columns{columns},
-m_ticks{(uint16_t)(200 * (g_systick_freq / 1000))},
+m_ticks{(uint8_t)(100 * (g_systick_freq / 1000))},
 m_sweep(0),
 m_position{0} {
 	g_callback_list.push_back(this);
@@ -133,7 +133,7 @@ void LCD1602::callbackMethod(void) {
 			break;
 		case s_clear:
             this->writeInstruction(CLEAR_DISPLAY, Gpio::LOW);
-			this->m_ticks = 200 * (g_systick_freq / 1000);
+			this->m_ticks = 100 * (g_systick_freq / 1000);
 			this->m_mode = s_print;
 			break;
 		}

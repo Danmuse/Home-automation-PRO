@@ -31,7 +31,7 @@ private:
 	uint8_t *m_buffer;					//!< Display _write buffer
 	const uint8_t m_rows;				//!< Number of display rows
 	const uint8_t m_columns;			//!< Number of display columns
-	uint16_t m_ticks;
+	uint8_t m_ticks;
 	uint8_t m_sweep;					//!< Buffer _write position
 	uint8_t m_position;					//!< User _write position
 

@@ -63,7 +63,7 @@ void UART::transmit(const char *message) {
 
 		if (!this->m_flagTX) {
 			this->m_flagTX = true;
-            this->enableInterrupt();
+			this->enableInterrupt();
 		}
 	}
 }
@@ -103,22 +103,14 @@ void UART::disableInterrupt(void) {
 
 void UART::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 0) | ((
-                at(RX_IDX).getBit() +
-                at(RX_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
-	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 8) | ((
-                at(RX_IDX).getBit() +
-                at(RX_IDX).getPort() * 0x20) << 16)) | ~(0xFFFF << 8));
-	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 16) | ((
-                at(RX_IDX).getBit() +
-                at(RX_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 0) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
+	if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 8) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 16)) | ~(0xFFFF << 8));
+	if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 16) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 	if (this->m_usart == USART3) {
 		SWM->PINASSIGN.PINASSIGN11 &= (((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 24) | ~(0xFF << 24));
 		SWM->PINASSIGN.PINASSIGN12 &= (((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 0) | ~(0xFF << 0));
 	}
-	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 16) | ((
-                at(RX_IDX).getBit() +
-                at(RX_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
+	if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 16) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
 	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 

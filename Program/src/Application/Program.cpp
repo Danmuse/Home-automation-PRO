@@ -10,10 +10,10 @@
 
 #if !DEBUG_MODE
 
-Gpio SCK_PIN(LCD_D7); 	// {P0.13}
-Gpio MISO_PIN(LCD_D6); 	// {P0.11}
-Gpio MOSI_PIN(LCD_D5); 	// {P0.10}
-Gpio SSEL0_PIN(LCD_D4); // {P0.09}
+//Gpio SCK_PIN(LCD_D7); 	// {P0.13}
+//Gpio MISO_PIN(LCD_D6); 	// {P0.11}
+//Gpio MOSI_PIN(LCD_D5); 	// {P0.10}
+//Gpio SSEL0_PIN(LCD_D4); // {P0.09}
 
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop at FCLKOUT = 48 MHz if FREQ_CLOCK_MCU macro in LPC845.h is defined as 48000000UL
@@ -27,17 +27,18 @@ int main(void) {
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
-    SPI spi(SCK_PIN, MISO_PIN, MOSI_PIN, 1000000, 0);
+    SPI spi(LCD_D7, LCD_D6, LCD_D5, std::vector<Gpio>()); // , 1000000, 0);
 
     uint8_t returnSSELNum = 0;
 
-    spi.bindSSEL(SSEL0_PIN, returnSSELNum);
+    spi.bindSSEL(LCD_D4, returnSSELNum);
     spi.enableSSEL(returnSSELNum);
 
     char string[] = "Hello World!";
-//    char SSELsize[2];
+//    char SSELsize[3];
 //    SSELsize[0] = returnSSELNum + '0';
 //    SSELsize[1] = '\n';
+//    SSELsize[2] = '\0';
 //    g_usb->transmit(SSELsize);
 
     while (1) {

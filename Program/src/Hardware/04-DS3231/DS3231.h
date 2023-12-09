@@ -57,7 +57,7 @@
 #define MIN_YEAR 2023 //!< <pre><strong>Value:</strong> 2023
 
 //! @hideinitializer Number of characters to store the time captured by the Real Time Clock (<tt>RTC</tt>).
-#define RTC_STR_SIZE 20 //!< <pre><strong>Value:</strong> 20
+#define RTC_STR_SIZE 21 //!< <pre><strong>Value:</strong> 21
 
 //! @brief <b>RTC_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the Real Time Clock (<tt>RTC</tt>) operations can be found.
 typedef enum {

@@ -19,8 +19,8 @@
 #include "LCD1602.h"
 #include "DS3231.h"
 #include "M24C16.h"
+#include "MFRC522.h"
 #include "UART.h"
-#include "SPI.h"
 #include "ADC.h"
 #include "DAC.h"
 
@@ -37,6 +37,7 @@
 /// --- "LCD1602 *g_lcd1602" located in "Hardware/03-LCD1602/LCD1602.h"
 /// --- "DS3231 *g_ds3231" located in "Hardware/04-DS3231/DS3231.h"
 /// --- "FM24C16U *g_eeprom" located in "Hardware/05-M24C16/M24C16.h"
+/// --- "MFRC522 *g_rfid" located in "Hardware/06-MFRC522/MFRC522.h"
 /// --- "UART *g_usb" located in "Drivers/10-UART/UART.h"
 /// --- "ADC *g_preset" located in "Drivers/13-ADC/ADC.h"
 /// --- "ADC *g_adcExternal" located in "Drivers/13-ADC/ADC.h"
