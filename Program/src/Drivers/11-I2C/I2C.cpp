@@ -12,11 +12,11 @@ SyncCommTWI *g_TWI[MAX_I2C_CHANNELS] = { nullptr, nullptr, nullptr, nullptr };
 I2C::I2C(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel, frequencyComm_t frequency) : std::vector<Gpio>({SCL, SDA}),
 m_TWI{channel < TWI2 ? (I2C_Type *)(I2C0_BASE + channel * I2C_OFFSET_BASE) : (I2C_Type *)(I2C2_BASE + (channel % 2) * I2C_OFFSET_BASE)},
 m_frequency{frequency} {
-	if (this->m_TWI == I2C0 && g_TWI[0] != nullptr);
-	else if (this->m_TWI == I2C1 && g_TWI[1] != nullptr);
-	else if (this->m_TWI == I2C2 && g_TWI[2] != nullptr);
-	else if (this->m_TWI == I2C3 && g_TWI[3] != nullptr);
-	else { // initialize the corresponding TWI channel.
+	if (this->m_TWI == I2C0 && g_TWI[TWI0] != nullptr);
+	else if (this->m_TWI == I2C1 && g_TWI[TWI1] != nullptr);
+	else if (this->m_TWI == I2C2 && g_TWI[TWI2] != nullptr);
+	else if (this->m_TWI == I2C3 && g_TWI[TWI3] != nullptr);
+	else { // Initialize the corresponding TWI channel.
         this->enableClock();
         this->enableSWM();
         this->config();
@@ -141,7 +141,6 @@ SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_
 	}
 
 	if (this->transmitStopBit()) return TWI_FAILURE;
-
 	return TWI_SUCCESS;
 }
 
@@ -160,7 +159,6 @@ SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t
 		this->m_TWI->MSTCTL = (1 << 2); // Master Stop control. A STOP will be generated on the I2C bus at the next allowed time.
 		this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
 	} else return TWI_FAILURE;
-
 	return TWI_SUCCESS;
 }
 
@@ -198,7 +196,7 @@ void I2C::enableClock(void) {
     uint32_t err, best_err = 0;
 
 	if (this->m_TWI == I2C0) {
-		g_TWI[0] = this;
+		g_TWI[TWI0] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 5);
 		SYSCON->PRESETCTRL0 &= ~(1 << 5); // Assert the I2C0 reset.
 		SYSCON->PRESETCTRL0 |= (1 << 5); // clear the I2C0 reset. Default register value.
@@ -212,17 +210,17 @@ void I2C::enableClock(void) {
 			IOCON->PIO[IOCON_INDEX_PIO0[11]] = 0x100; // PIO0_11/I2C0_SDA. This is the pin configuration for the true open-drain pin.
 		}
 	} else if (this->m_TWI == I2C1) {
-		g_TWI[1] = this;
+		g_TWI[TWI1] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 21);
 		SYSCON->PRESETCTRL0 &= ~(1 << 21); // Assert the I2C1 reset.
 		SYSCON->PRESETCTRL0 |= (1 << 21); // clear the I2C1 reset. Default register value.
 	} else if (this->m_TWI == I2C2) {
-		g_TWI[2] = this;
+		g_TWI[TWI2] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 22);
 		SYSCON->PRESETCTRL0 &= ~(1 << 22); // Assert the I2C2 reset.
 		SYSCON->PRESETCTRL0 |= (1 << 22); // clear the I2C2 reset. Default register value.
 	} else if (this->m_TWI == I2C3) {
-		g_TWI[3] = this;
+		g_TWI[TWI3] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 23);
 		SYSCON->PRESETCTRL0 &= ~(1 << 23); // Assert the I2C3 reset.
 		SYSCON->PRESETCTRL0 |= (1 << 23); // clear the I2C3 reset. Default register value.
@@ -294,17 +292,17 @@ I2C::~I2C() {
 }
 
 void I2C0_IRQHandler(void) {
-	g_TWI[0]->I2C_IRQHandler();
+	g_TWI[I2C::TWI0]->I2C_IRQHandler();
 }
 
 void I2C1_IRQHandler(void) {
-	g_TWI[1]->I2C_IRQHandler();
+	g_TWI[I2C::TWI1]->I2C_IRQHandler();
 }
 
 void I2C2_IRQHandler(void) {
-	g_TWI[2]->I2C_IRQHandler();
+	g_TWI[I2C::TWI2]->I2C_IRQHandler();
 }
 
 void I2C3_IRQHandler(void) {
-	g_TWI[3]->I2C_IRQHandler();
+	g_TWI[I2C::TWI3]->I2C_IRQHandler();
 }

@@ -17,8 +17,6 @@
 #include "GPIO.h"
 
 #define SPI_MAX_CHANNELS 2
-#define SPI0_CLK_REG 11
-#define SPI1_CLK_REG 12
 #define SPI0_MAX_SSEL 4
 #define SPI1_MAX_SSEL 2
 
@@ -54,14 +52,14 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         uint8_t m_sendBufferIndexOut;
         bool m_isSending;
     public:
-		enum channelSPI_t { FST_SPI, SND_SPI };
+		enum channelSPI_t { SPI_CHANNEL0, SPI_CHANNEL1 };
 
-		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, std::vector<Gpio> SSEL, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = FST_SPI, bool master = true, bitOrder_t bitOrder = MSB_FIRST, mode_t mode = MODE0);
-		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = FST_SPI);
+		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, std::vector<Gpio> SSEL, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = SPI_CHANNEL0, bool master = true, bitOrder_t bitOrder = MSB_FIRST, mode_t mode = MODE0);
+		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = SPI_CHANNEL0);
         bool bindSSEL(const Gpio& SSEL, uint8_t &SSELNumber);
-        void setBaudRate(frequencyComm_t frequency) const;
-        void enableSSEL(uint8_t SSEL) const;
-        void disableSSEL(uint8_t SSEL) const;
+        void setBaudRate(frequencyComm_t frequency);
+        void enableSSEL(uint8_t SSEL);
+        void disableSSEL(uint8_t SSEL);
         void transmit(uint8_t *message, uint8_t length = 1) override;
         void transmit(const char *message) override;
         bool receive(uint8_t &message) override;
@@ -69,11 +67,11 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         bool receive(char *message) override;
         ~SPI();
     private:
-        void config(bool master, mode_t mode, frequencyComm_t frequency) const;
-        void enableClock(void) const;
-        void enableSWM(void) const;
-        void enableSendInterrupt(void) const;
-        void disableSendInterrupt(void) const;
+        void config(bool master, mode_t mode, frequencyComm_t frequency);
+        void enableClock(void);
+        void enableSWM(void);
+        void enableSendInterrupt(void);
+        void disableSendInterrupt(void);
 
         void SPI_IRQHandler(void) override;
     protected:

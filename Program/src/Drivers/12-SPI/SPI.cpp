@@ -11,24 +11,25 @@ SyncCommSPI *g_SPI[SPI_MAX_CHANNELS] = { nullptr, nullptr };
 
 SPI::SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, std::vector<Gpio> SSEL, frequencyComm_t frequency, channelSPI_t channel, bool master, bitOrder_t bitOrder, mode_t mode) : std::vector<Gpio>({SCK, MOSI, MISO}),
 m_SPI{(SPI_Type *)(SPI0_BASE + channel * SPI_OFFSET_BASE)}, m_bitOrder{bitOrder}, m_receiveBufferIndexIn{0}, m_receiveBufferIndexOut{0}, m_sendBufferIndexIn{0}, m_sendBufferIndexOut{0}, m_isSending{false} {
-	// Maybe do something if it already exists
-	if (g_SPI[channel] == nullptr) g_SPI[channel] = this;
+	if (this->m_SPI == SPI0 && g_SPI[SPI_CHANNEL0] != nullptr);
+	else if (this->m_SPI == SPI1 && g_SPI[SPI_CHANNEL1] != nullptr);
+	else { // Initialize the corresponding SPI channel.
+		if (channel == SPI_CHANNEL0) this->m_maxSSELSize = SPI0_MAX_SSEL;
+		else if (channel == SPI_CHANNEL1) this->m_maxSSELSize = SPI1_MAX_SSEL;
 
-    if (channel == FST_SPI) this->m_maxSSELSize = SPI0_MAX_SSEL;
-    else if (channel == SND_SPI) this->m_maxSSELSize = SPI1_MAX_SSEL;
+		uint8_t size = std::min((int) this->m_SSEL.size(), (int) this->m_maxSSELSize);
+		std::copy(this->m_SSEL.begin(), this->m_SSEL.begin() + size, std::back_inserter(this->m_SSEL));
 
-    uint8_t size = std::min((int) this->m_SSEL.size(), (int) this->m_maxSSELSize);
-    std::copy(this->m_SSEL.begin(), this->m_SSEL.begin() + size, std::back_inserter(this->m_SSEL));
-
-    config(master, mode, frequency);
-    enableClock();
-    enableSWM();
+		enableClock();
+		enableSWM();
+		config(master, mode, frequency);
+	}
 }
 
 SPI::SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency, channelSPI_t channel) :
 SPI(SCK, MOSI, MISO, std::vector<Gpio>(), frequency, channel) { }
 
-void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) const {
+void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) {
     uint8_t CPHA = 0, CPOL = 0;
 
     switch (mode) {
@@ -107,35 +108,39 @@ bool SPI::bindSSEL(const Gpio &SSEL, uint8_t &SSELNumber) {
     return false;
 }
 
-void SPI::setBaudRate(frequencyComm_t frequency) const {
+void SPI::setBaudRate(frequencyComm_t frequency) {
 	this->m_SPI->CFG &= ~(1 << 0); // Enable SPI channel
 	this->m_SPI->DIV = (FREQ_CLOCK_MCU / frequency) - 1;
 	this->m_SPI->CFG |= (1 << 0); // Enable SPI channel
 }
 
-void SPI::enableSendInterrupt(void) const {
-	this->m_SPI->INTENSET |= (1 << 1); // Enable TXRDY interrupt
+void SPI::enableSendInterrupt(void) {
+	this->m_SPI->INTENSET = (1 << 1); // Enable TXRDY interrupt
 }
 
-void SPI::disableSendInterrupt(void) const {
-	this->m_SPI->INTENCLR |= (1 << 1); // Disable TXRDY interrupt
+void SPI::disableSendInterrupt(void) {
+	this->m_SPI->INTENCLR = (1 << 1); // Disable TXRDY interrupt
 }
 
-void SPI::enableClock(void) const {
+void SPI::enableClock(void) {
     if (this->m_SPI == SPI0) {
-        SYSCON->SYSAHBCLKCTRL0 |= (1 << SPI0_CLK_REG); // Enable SPI channels
-        // Full reset of the module
-        SYSCON->PRESETCTRL0 &= ~(1 << SPI0_CLK_REG);
-        SYSCON->PRESETCTRL0 |= (1 << SPI0_CLK_REG);
+    	g_SPI[SPI_CHANNEL0] = this;
+        SYSCON->SYSAHBCLKCTRL0 |= (1 << 11); // Enable SPI channels
+        SYSCON->PRESETCTRL0 &= ~(1 << 11);
+        SYSCON->PRESETCTRL0 |= (1 << 11);
     } else if (this->m_SPI == SPI1) {
-        SYSCON->SYSAHBCLKCTRL0 |= (1 << SPI1_CLK_REG); // Enable SPI channels
-        // Full reset of the module
-        SYSCON->PRESETCTRL0 &= ~(1 << SPI1_CLK_REG);
-        SYSCON->PRESETCTRL0 |= (1 << SPI1_CLK_REG);
+    	g_SPI[SPI_CHANNEL1] = this;
+        SYSCON->SYSAHBCLKCTRL0 |= (1 << 12); // Enable SPI channels
+        SYSCON->PRESETCTRL0 &= ~(1 << 12);
+        SYSCON->PRESETCTRL0 |= (1 << 12);
     }
+
+	// Select Clock PPAL.: FCLKSEL
+    if (this->m_SPI == SPI0) SYSCON->FCLKSEL[9] = 1;
+	else if (this->m_SPI == SPI1) SYSCON->FCLKSEL[10] = 1;
 }
 
-void SPI::enableSWM(void) const {
+void SPI::enableSWM(void) {
     SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
 	if (this->m_SPI == SPI0) {
 		SWM->PINASSIGN.PINASSIGN3 &= (((at(SCK_IDX).getBit() + at(SCK_IDX).getPort() * 0x20) << 24) | ~(0xFF << 24));
@@ -147,11 +152,11 @@ void SPI::enableSWM(void) const {
     SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
 }
 
-void SPI::enableSSEL(uint8_t SSEL) const {
+void SPI::enableSSEL(uint8_t SSEL) {
 	this->m_SPI->TXDATCTL &= ~(1 << (16 + SSEL));
 }
 
-void SPI::disableSSEL(uint8_t SSEL) const {
+void SPI::disableSSEL(uint8_t SSEL) {
 	this->m_SPI->TXDATCTL |= (1 << (16 + SSEL)); // Maybe I should use EOT to set the end
 }
 
@@ -261,9 +266,9 @@ SPI::~SPI() {
 }
 
 void SPI0_IRQHandler(void) {
-	g_SPI[0]->SPI_IRQHandler();
+	g_SPI[SPI::SPI_CHANNEL0]->SPI_IRQHandler();
 }
 
 void SPI1_IRQHandler(void) {
-	g_SPI[1]->SPI_IRQHandler();
+	g_SPI[SPI::SPI_CHANNEL1]->SPI_IRQHandler();
 }

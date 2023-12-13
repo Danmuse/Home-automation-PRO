@@ -17,8 +17,8 @@ int main(void) {
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-	initRFID();		// Initializes the g_rfid        ~ Define the SPI0_PINS macro in ProgramConfig.h {P0.20 - P0.21 - P0.25 - P0.24}
-//	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
+//	initRFID();		// Initializes the g_rfid        ~ Define the SPI0_PINS macro in ProgramConfig.h {P0.20 - P0.21 - P0.25 - P0.24}
+	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
@@ -30,6 +30,7 @@ int main(void) {
 //    spi.bindSSEL(LCD_D4, returnSSELNum);
 //    spi.enableSSEL(returnSSELNum);
 
+	char EOT_characterControl = 4;
     char string[] = "Hello World!";
 //    char SSELsize[3];
 //    SSELsize[0] = returnSSELNum + '0';
@@ -37,9 +38,12 @@ int main(void) {
 //    SSELsize[2] = '\0';
 //    g_usb->transmit(SSELsize);
 
+	MFRC522 rfid(LCD_D7, LCD_D6, LCD_D5, LCD_D4);
+
     while (1) {
     	// for (uint32_t i = 0; i < 10000; i++) __asm("nop"); // delay 10 milli-seconds.
-        g_rfid->send(string);
+        rfid.send(string);
+        rfid.send(&EOT_characterControl);
         delay(10);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }

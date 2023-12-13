@@ -14,12 +14,19 @@ UART *g_usb = nullptr;
 UART::UART(const Gpio& RX, const Gpio& TX, channelUART_t channel, uint32_t baudrate, data_bits_t data_bits, parity_t parity) : std::vector<Gpio>({RX, TX}),
 m_usart{(USART_Type *)(USART0_BASE + channel * USART_OFFSET_BASE)},
 m_indexRXIn{0}, m_indexRXOut{0}, m_indexTXIn{0}, m_indexTXOut{0}, m_flagTX{false} {
-	this->m_bufferRX = new uint8_t[RX_BUFFER_SIZE];
-	this->m_bufferTX = new uint8_t[TX_BUFFER_SIZE];
+	if (this->m_usart == USART0 && g_usart[UART0] != nullptr);
+	else if (this->m_usart == USART1 && g_usart[UART1] != nullptr);
+	else if (this->m_usart == USART2 && g_usart[UART2] != nullptr);
+	else if (this->m_usart == USART3 && g_usart[UART3] != nullptr);
+	else if (this->m_usart == USART3 && g_usart[UART4] != nullptr);
+	else { // Initialize the corresponding USART channel.
+		this->m_bufferRX = new uint8_t[RX_BUFFER_SIZE];
+		this->m_bufferTX = new uint8_t[TX_BUFFER_SIZE];
 
-    this->enableClock();
-    this->enableSWM();
-    this->config(baudrate, data_bits, parity);
+		this->enableClock();
+		this->enableSWM();
+		this->config(baudrate, data_bits, parity);
+	}
 }
 
 void UART::pushRX(uint8_t data) {
@@ -139,19 +146,19 @@ void UART::setBaudRate(uint32_t baudrate) {
 
 void UART::enableClock(void) {
 	if (this->m_usart == USART0) {
-		g_usart[0] = this;
+		g_usart[UART0] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 14);
 	} else if (this->m_usart == USART1) {
-		g_usart[1] = this;
+		g_usart[UART1] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 15);
 	} else if (this->m_usart == USART2) {
-		g_usart[2] = this;
+		g_usart[UART2] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 16);
 	} else if (this->m_usart == USART3) {
-		g_usart[3] = this;
+		g_usart[UART3] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 30);
 	} else if (this->m_usart == USART4) {
-		g_usart[4] = this;
+		g_usart[UART4] = this;
 		SYSCON->SYSAHBCLKCTRL0 |= (1 << 31);
 	}
 
@@ -208,21 +215,21 @@ void initUSB0(void) {
 }
 
 void UART0_IRQHandler(void) {
-	g_usart[0]->UART_IRQHandler();
+	g_usart[UART::UART0]->UART_IRQHandler();
 }
 
 void UART1_IRQHandler(void) {
-	g_usart[1]->UART_IRQHandler();
+	g_usart[UART::UART1]->UART_IRQHandler();
 }
 
 void UART2_IRQHandler(void) {
-	g_usart[2]->UART_IRQHandler();
+	g_usart[UART::UART2]->UART_IRQHandler();
 }
 
 void UART3_IRQHandler(void) {
-	g_usart[3]->UART_IRQHandler();
+	g_usart[UART::UART3]->UART_IRQHandler();
 }
 
 void UART4_IRQHandler(void) {
-	g_usart[4]->UART_IRQHandler();
+	g_usart[UART::UART4]->UART_IRQHandler();
 }
