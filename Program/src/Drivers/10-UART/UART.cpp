@@ -103,7 +103,7 @@ void UART::disableInterrupt(void) {
 }
 
 void UART::enableSWM(void) {
-	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
+	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 0) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
 	else if (this->m_usart == USART1) SWM->PINASSIGN.PINASSIGN1 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 8) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 16)) | ~(0xFFFF << 8));
 	else if (this->m_usart == USART2) SWM->PINASSIGN.PINASSIGN2 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 16) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
@@ -111,7 +111,7 @@ void UART::enableSWM(void) {
 		SWM->PINASSIGN.PINASSIGN11 &= (((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 24) | ~(0xFF << 24));
 		SWM->PINASSIGN.PINASSIGN12 &= (((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 0) | ~(0xFF << 0));
 	} else if (this->m_usart == USART4) SWM->PINASSIGN.PINASSIGN12 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 16) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 24)) | ~(0xFFFF << 16));
-	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
+	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
 void UART::config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
@@ -129,7 +129,7 @@ void UART::config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 
 	this->m_usart->INTENSET = (1 << 0);	// Enable RX interruption.
 
-	if (this->m_usart == USART0) NVIC->ISER[0] |= (1 << 3);  // Enable UART0_IRQ
+	if (this->m_usart == USART0) NVIC->ISER[0] |= (1 << 3);       // Enable UART0_IRQ
 	else if (this->m_usart == USART1) NVIC->ISER[0] |= (1 << 4);  // Enable UART1_IRQ
 	else if (this->m_usart == USART2) NVIC->ISER[0] |= (1 << 5);  // Enable UART2_IRQ
 	else if (this->m_usart == USART3) NVIC->ISER[0] |= (1 << 30); // Enable UART3_IRQ
@@ -191,7 +191,7 @@ void UART::UART_IRQHandler(void) {
 
 UART::~UART() {
 	this->disableInterrupt();
-	if (this->m_usart == USART0) NVIC->ISER[0] &= ~(1 << 3);  // Disable UART0_IRQ
+	if (this->m_usart == USART0) NVIC->ISER[0] &= ~(1 << 3);       // Disable UART0_IRQ
 	else if (this->m_usart == USART1) NVIC->ISER[0] &= ~(1 << 4);  // Disable UART1_IRQ
 	else if (this->m_usart == USART2) NVIC->ISER[0] &= ~(1 << 5);  // Disable UART2_IRQ
 	else if (this->m_usart == USART3) NVIC->ISER[0] &= ~(1 << 30); // Disable UART3_IRQ

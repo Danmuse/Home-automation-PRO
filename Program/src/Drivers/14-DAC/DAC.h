@@ -18,8 +18,6 @@ public:
 	//!< Digital-Analog Converter (<tt>DAC</tt>) channels.
 	enum channelDAC_t { DAC_0, DAC_1 };
 private:
-	enum offset_t { FST_SWM_OUT = 26, SND_SWM_OUT = 27, FST_SYS_OUT = 27, SND_SYS_OUT = 1, IOCON_DAC = 16 };
-
 	const channelDAC_t m_channel;	//!< Digital-Analog Converter (<tt>DAC</tt>) channel.
 	uint16_t m_buffer;				//!< Digital-Analog Converter (<tt>DAC</tt>) buffer values.
 	uint16_t m_max_range;			//!< Maximum range of values provided by the user.

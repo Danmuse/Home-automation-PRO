@@ -43,7 +43,7 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         bitOrder_t m_bitOrder;
         uint8_t m_maxSSELSize;
         // TODO: You need one per SSEL, also should change RX, TX accordingly.
-        // Buffers are uint8_t because in TXDATCTL LEN is set on 8
+        // Buffers are uint8_t because in TXDATCTL LEN is set on eight.
         uint8_t m_receiveBuffer[RECEIVE_BUFFER_SIZE];
         uint8_t m_receiveBufferIndexIn;
         uint8_t m_receiveBufferIndexOut;
@@ -60,8 +60,8 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         void setBaudRate(frequencyComm_t frequency);
         void enableSSEL(uint8_t SSEL);
         void disableSSEL(uint8_t SSEL);
-        void transmit(uint8_t *message, uint8_t length = 1) override;
         void transmit(const char *message) override;
+        void transmitBytes(uint8_t *message, uint8_t length = 1) override;
         bool receive(uint8_t &message) override;
         bool receive(uint8_t *message, uint8_t length) override;
         bool receive(char *message) override;
@@ -70,15 +70,14 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         void config(bool master, mode_t mode, frequencyComm_t frequency);
         void enableClock(void);
         void enableSWM(void);
-        void enableSendInterrupt(void);
-        void disableSendInterrupt(void);
-
-        void SPI_IRQHandler(void) override;
-    protected:
         void pushReceive(uint8_t data) override;
         bool popReceive(uint8_t *data) override;
         void pushSend(uint8_t data) override;
         bool popSend(uint8_t *data) override;
+        void enableSendInterrupt(void);
+        void disableSendInterrupt(void);
+
+        void SPI_IRQHandler(void) override;
 };
 
 #endif /* SPI_H_ */

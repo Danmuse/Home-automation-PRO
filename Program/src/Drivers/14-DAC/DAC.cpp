@@ -60,19 +60,19 @@ void DAC::enablePower(void) {
 }
 
 void DAC::enableClock(void) {
-	if (this->m_channel == DAC_0) SYSCON->SYSAHBCLKCTRL0 |= (1 << FST_SYS_OUT);
-	else if (this->m_channel == DAC_1) SYSCON->SYSAHBCLKCTRL1 |= (1 << SND_SYS_OUT);
+	if (this->m_channel == DAC_0) SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_DAC0_MASK;
+	else if (this->m_channel == DAC_1) SYSCON->SYSAHBCLKCTRL1 |= SYSCON_SYSAHBCLKCTRL1_DAC1_MASK;
 }
 
 void DAC::enableSWM(void) {
-	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_channel == DAC_0) SWM->PINENABLE0 &= ~(1 << FST_SWM_OUT);
-	else if (this->m_channel == DAC_1) SWM->PINENABLE0 &= ~(1 << SND_SWM_OUT);
-	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
+	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
+	if (this->m_channel == DAC_0) SWM->PINENABLE0 &= ~SYSCON_SYSAHBCLKCTRL0_DAC0_MASK;
+	else if (this->m_channel == DAC_1) SWM->PINENABLE0 &= ~SYSCON_SYSAHBCLKCTRL1_DAC1_MASK;
+	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
 void DAC::enableIOCON(void) {
-	IOCON->PIO[IOCON_INDEX_PIO0[this->m_bit]] |= (1 << IOCON_DAC);
+	IOCON->PIO[IOCON_INDEX_PIO0[this->m_bit]] |= (1 << 16);
 }
 
 void DAC::disablePower(void) {
@@ -80,19 +80,19 @@ void DAC::disablePower(void) {
 }
 
 void DAC::disableClock(void) {
-	if (this->m_channel == DAC_0) SYSCON->SYSAHBCLKCTRL0 &= ~(1 << FST_SYS_OUT);
-	else if (this->m_channel == DAC_1) SYSCON->SYSAHBCLKCTRL1 &= ~(1 << SND_SYS_OUT);
+	if (this->m_channel == DAC_0) SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_DAC0_MASK;
+	else if (this->m_channel == DAC_1) SYSCON->SYSAHBCLKCTRL1 &= ~SYSCON_SYSAHBCLKCTRL1_DAC1_MASK;
 }
 
 void DAC::disableSWM(void) {
-	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
-	if (this->m_channel == DAC_0) SWM->PINENABLE0 |= (1 << FST_SWM_OUT);
-	else if (this->m_channel == DAC_1) SWM->PINENABLE0 |= (1 << SND_SWM_OUT);
-	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
+	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
+	if (this->m_channel == DAC_0) SWM->PINENABLE0 |= SYSCON_SYSAHBCLKCTRL0_DAC0_MASK;
+	else if (this->m_channel == DAC_1) SWM->PINENABLE0 |= SYSCON_SYSAHBCLKCTRL1_DAC1_MASK;
+	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
 void DAC::disableIOCON(void) {
-	IOCON->PIO[IOCON_INDEX_PIO0[this->m_bit]] &= ~(1 << IOCON_DAC);
+	IOCON->PIO[IOCON_INDEX_PIO0[this->m_bit]] &= ~(1 << 16);
 }
 
 DAC::~DAC() {

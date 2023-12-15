@@ -26,8 +26,8 @@ public:
 	// 		  The rest state of the clock is high.
     enum mode_t { MODE0, MODE1, MODE2, MODE3 };
 
-    virtual void transmit(uint8_t *message, uint8_t length = 1) = 0;
     virtual void transmit(const char *message) = 0;
+    virtual void transmitBytes(uint8_t *message, uint8_t length = 1) = 0;
     virtual bool receive(uint8_t &message) = 0;
     virtual bool receive(uint8_t *message, uint8_t length) = 0;
     virtual bool receive(char *message) = 0;

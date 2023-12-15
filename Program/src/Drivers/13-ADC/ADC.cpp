@@ -30,15 +30,15 @@ void ADC::initialize(void) {
 }
 
 void ADC::enableSwm(void) {
-	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
+	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	SWM->PINENABLE0 &= ~(1 << (this->m_channel + 14)); // Bits 14 to 25 for each channel.
-	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
+	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
 void ADC::disableSwm(void) {
-	SYSCON->SYSAHBCLKCTRL0 |= (1 << 7);
+	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	SWM->PINENABLE0 |= (1 << (this->m_channel + 14)); // Bits 14 to 25 for each channel.
-	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << 7);
+	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
 uint32_t ADC::calculateDivisor(void) {

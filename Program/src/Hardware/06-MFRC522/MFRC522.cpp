@@ -11,11 +11,19 @@ MFRC522 *g_rfid = nullptr;
 
 MFRC522::MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL) : SPI(SCK, MOSI, MISO, std::vector<Gpio>({SSEL})) {
 	this->bindSSEL(SSEL, this->m_slaveSelected);
-	this->enableSSEL(this->m_slaveSelected);
+	this->enable();
 }
 
 void MFRC522::send(const char *message) {
 	this->transmit(message);
+}
+
+void MFRC522::enable(void) {
+	this->enableSSEL(this->m_slaveSelected);
+}
+
+void MFRC522::disable(void) {
+	this->disableSSEL(this->m_slaveSelected);
 }
 
 MFRC522::~MFRC522() { }

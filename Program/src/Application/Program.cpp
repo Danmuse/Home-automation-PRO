@@ -30,7 +30,6 @@ int main(void) {
 //    spi.bindSSEL(LCD_D4, returnSSELNum);
 //    spi.enableSSEL(returnSSELNum);
 
-	char EOT_characterControl = 4;
     char string[] = "Hello World!";
 //    char SSELsize[3];
 //    SSELsize[0] = returnSSELNum + '0';
@@ -38,12 +37,12 @@ int main(void) {
 //    SSELsize[2] = '\0';
 //    g_usb->transmit(SSELsize);
 
-	MFRC522 rfid(LCD_D7, LCD_D6, LCD_D5, LCD_D4);
+	MFRC522 rfidFST(LCD_EN, LCD_D7, LCD_D6, LCD_D5);
+//	MFRC522 rfidSND(LCD_EN, LCD_D7, LCD_D6, LCD_D4);
 
     while (1) {
-    	// for (uint32_t i = 0; i < 10000; i++) __asm("nop"); // delay 10 milli-seconds.
-        rfid.send(string);
-        rfid.send(&EOT_characterControl);
+        rfidFST.send(string);
+//        rfidSND.send(string);
         delay(10);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
