@@ -25,7 +25,7 @@
 #define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 #define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
 //#define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
-#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
+//#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 #define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
@@ -34,8 +34,10 @@
 //#define I2C0_PINS	// I2C0_SCL - I2C0_SDA
 //#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
 
-//#define SPI0_PINS	// SPI0_SCK - SPI0_MISO - SPI0_MOSI - SPI0_SSEL0
-//#define SPI1_PINS	// SPI1_SCK - SPI1_MISO - SPI1_MOSI - SPI1_SSEL0
+//#define SPI0_PINS	// SPI0_SCK - SPI0_MOSI - SPI0_MISO - SPI0_SSEL0
+//#define SPI1_PINS	// SPI1_SCK - SPI1_MOSI - SPI1_MISO - SPI1_SSEL0
+
+#define SPI_DEBUG_PINS	// SPI_DEBUG_SCK - SPI_DEBUG_MOSI - SPI_DEBUG_MISO - SPI_DEBUG_SSEL0 - SPI_DEBUG_SSEL1
 
 #define ANALOG_FST_CHANNEL_ENABLED	// POTENCIOMETER - ANALOG1_PIN {P0.07}
 #define ANALOG_SND_CHANNEL_ENABLED	// ANALOG1_PIN {P0.06}
@@ -129,6 +131,14 @@
 #error "Macros ANALOG_ELE_CHANNEL_ENABLED and CN15_PINS cannot be defined simultaneously"
 #endif
 
+#if defined(SPI_DEBUG_PINS) && defined(CN15_PINS)
+#error "Macros SPI_DEBUG_PINS and CN15_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(ANALOG_ELE_CHANNEL_ENABLED) && defined(SPI_DEBUG_PINS)
+#error "Macros ANALOG_ELE_CHANNEL_ENABLED and SPI_DEBUG_PINS cannot be defined simultaneously"
+#endif
+
 #if defined(ANALOG_TWE_CHANNEL_ENABLED) && defined(CN10_PINS)
 #error "Macros ANALOG_TWE_CHANNEL_ENABLED and CN10_PINS cannot be defined simultaneously"
 #endif
@@ -165,12 +175,16 @@
 #warning "Macro CN16_PINS is not defined and Matrix Keyboard module initialization will have no effect"
 #endif
 
-#if !defined(CN15_PINS) && !defined(I2C0_PINS)
+#if !defined(CN15_PINS) && !defined(I2C0_PINS) && !defined(SPI_DEBUG_PINS)
 #warning "Macro CN15_PINS is not defined and LCD1602 module initialization will have no effect"
 #endif
 
-#if !defined(I2C0_PINS) && !defined(CN15_PINS)
+#if !defined(I2C0_PINS) && !defined(CN15_PINS) && !defined(SPI_DEBUG_PINS)
 #warning "Macro I2C0_PINS is not defined and the initialization of the TWI modules will have no effect"
+#endif
+
+#if !defined(I2C0_PINS) && !defined(CN15_PINS) && !defined(SPI_DEBUG_PINS)
+#warning "Macro SPI_DEBUG_PINS is not defined and the initialization of the SPI modules will have no effect"
 #endif
 
 //////////////////////////////////////////////////
@@ -269,17 +283,25 @@ extern Gpio I2C1_SDA;
 
 #ifdef SPI0_PINS
 extern Gpio SPI0_SCK;
-extern Gpio SPI0_MISO;
 extern Gpio SPI0_MOSI;
+extern Gpio SPI0_MISO;
 extern Gpio SPI0_SSEL0;
 #endif // SPI0_PINS
 
 #ifdef SPI1_PINS
 extern Gpio SPI1_SCK;
-extern Gpio SPI1_MISO;
 extern Gpio SPI1_MOSI;
+extern Gpio SPI1_MISO;
 extern Gpio SPI1_SSEL0;
 #endif // SPI1_PINS
+
+#ifdef SPI_DEBUG_PINS
+extern Gpio SPI_DEBUG_SCK;
+extern Gpio SPI_DEBUG_MOSI;
+extern Gpio SPI_DEBUG_MISO;
+extern Gpio SPI_DEBUG_SSEL0;
+extern Gpio SPI_DEBUG_SSEL1;
+#endif // SPI_DEBUG_PINS
 
 #endif /* PROGRAM_CONFIG_H_ */
 

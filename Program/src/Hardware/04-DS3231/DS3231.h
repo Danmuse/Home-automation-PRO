@@ -62,7 +62,7 @@
 //! @brief <b>RTC_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the Real Time Clock (<tt>RTC</tt>) operations can be found.
 typedef enum {
 	RTC_OK,				//!< Successful operation.
-	RTC_UPDATE_ERR,		//!< No valid data has been acquired or transmitted via i2C communication
+	RTC_UPDATE_ERR,		//!< No valid data has been acquired or transmitted via I2C communication.
 	RTC_TIME_INVALID,	//!< Time Register has contained invalid data since it was last programmed.
 	RTC_CALR_INVALID,	//!< Calendar Register has contained invalid data since it was last programmed.
 	RTC_SEC_INVALID,	//!< No valid data has been detected in Current Second Register.

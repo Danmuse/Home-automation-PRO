@@ -92,14 +92,22 @@ Gpio I2C1_SCL(Gpio::PORT0, 16, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
 
 #ifdef SPI0_PINS
 Gpio SPI0_SCK(Gpio::PORT0, 20, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
-Gpio SPI0_MISO(Gpio::PORT0, 21, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
 Gpio SPI0_MOSI(Gpio::PORT0, 25, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+Gpio SPI0_MISO(Gpio::PORT0, 21, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
 Gpio SPI0_SSEL0(Gpio::PORT0, 24, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
 #endif // SPI0_PINS
 
 #ifdef SPI1_PINS
 Gpio SPI1_SCK(Gpio::PORT0, 6, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
-Gpio SPI1_MISO(Gpio::PORT0, 7, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
 Gpio SPI1_MOSI(Gpio::PORT1, 19, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+Gpio SPI1_MISO(Gpio::PORT0, 7, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
 Gpio SPI1_SSEL0(Gpio::PORT1, 18, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
 #endif // SPI1_PINS
+
+#ifdef SPI_DEBUG_PINS
+Gpio SPI_DEBUG_SCK(Gpio::PORT0, 9, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio SPI_DEBUG_MOSI(Gpio::PORT0, 10, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio SPI_DEBUG_MISO(Gpio::PORT0, 11, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio SPI_DEBUG_SSEL0(Gpio::PORT0, 1, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio SPI_DEBUG_SSEL1(Gpio::PORT0, 14, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+#endif // SPI_DEBUG_PINS

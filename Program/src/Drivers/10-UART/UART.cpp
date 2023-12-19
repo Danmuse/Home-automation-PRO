@@ -139,9 +139,9 @@ void UART::config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 }
 
 void UART::setBaudRate(uint32_t baudrate) {
-	this->m_usart->CFG &= ~(1 << 0);	// Disable UART
-	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1;	// Change baudrate
-	this->m_usart->CFG |= (1 << 0);		// Enable UART
+	this->m_usart->CFG &= ~(1 << 0); // Disable UART
+	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1; // Change baudrate
+	this->m_usart->CFG |= (1 << 0);	 // Enable UART
 }
 
 void UART::enableClock(void) {

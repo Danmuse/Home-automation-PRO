@@ -21,7 +21,7 @@
 //! @brief <b>EEPROM_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the EEPROM memory operations can be found.
 typedef enum {
 	EEPROM_OK,					//!< Successful operation.
-	EEPROM_UPDATE_ERR,			//!< No valid data has been acquired or transmitted via i2C communication
+	EEPROM_UPDATE_ERR,			//!< No valid data has been acquired or transmitted via I2C communication.
 	EEPROM_PAGE_BLOCK_INVALID,	//!< Exceeds the limit of allowed pages block.
 	EEPROM_OVERFLOW_INVALID,	//!< Exceeds the limit of allowed bytes into the desired page block.
 	EEPROM_INCORRECT_MODIFIER	//!< The method parameter does not match the supported modifiers.

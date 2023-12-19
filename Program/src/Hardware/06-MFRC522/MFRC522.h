@@ -12,14 +12,24 @@
 #include "SPI.h"
 #include "ProgramConfig.h"
 
+//! @brief <b>RFID_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the RFID reader operations can be found.
+typedef enum {
+	RFID_OK,			//!< Successful operation.
+	RFID_UPDATE_ERR,	//!< No valid data has been acquired or transmitted via SPI communication.
+	RFID_SSEL_ERR		//!< Error binding or unbinding SSEL GPIO.
+} RFID_result_t;
+
 class MFRC522 : protected SPI {
 private:
+	const Gpio m_SSEL;
 	uint8_t m_slaveSelected;
+	RFID_result_t m_statusRFID;
 public:
 	MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL);
 	void send(const char *message); // WARNING: DEBUG METHOD!!
-	void enable(void);
-	void disable(void);
+	RFID_result_t enable(void);
+	RFID_result_t disable(void);
+	RFID_result_t getStatus(void) const;
 	virtual ~MFRC522();
 };
 

@@ -17,32 +17,29 @@ int main(void) {
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initRFID();		// Initializes the g_rfid        ~ Define the SPI0_PINS macro in ProgramConfig.h {P0.20 - P0.21 - P0.25 - P0.24}
 	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
+	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
-//    SPI spi(LCD_D7, LCD_D6, LCD_D5, std::vector<Gpio>()); // , 1000000, 0);
-
-//    uint8_t returnSSELNum = 0;
-
-//    spi.bindSSEL(LCD_D4, returnSSELNum);
-//    spi.enableSSEL(returnSSELNum);
-
-    char string[] = "Hello World!";
+    char stringFST[] = "Hello World!";
+    char stringSND[] = "Goodbye!";
 //    char SSELsize[3];
 //    SSELsize[0] = returnSSELNum + '0';
 //    SSELsize[1] = '\n';
 //    SSELsize[2] = '\0';
 //    g_usb->transmit(SSELsize);
 
-	MFRC522 rfidFST(LCD_EN, LCD_D7, LCD_D6, LCD_D5);
-//	MFRC522 rfidSND(LCD_EN, LCD_D7, LCD_D6, LCD_D4);
+	MFRC522 rfid(SPI_DEBUG_SCK, SPI_DEBUG_MOSI, SPI_DEBUG_MISO, SPI_DEBUG_SSEL1);
+
+	if (g_rfid->getStatus()) LED_RED.setPin();
+	if (rfid.getStatus()) LED_BLUE.setPin();
 
     while (1) {
-        rfidFST.send(string);
-//        rfidSND.send(string);
+    	g_rfid->send(stringFST);
+    	delay(10);
+    	rfid.send(stringSND);
         delay(10);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }

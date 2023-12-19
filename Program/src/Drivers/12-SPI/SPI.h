@@ -39,9 +39,10 @@ extern "C" {
 class SPI : protected std::vector<Gpio>, public SyncCommSPI {
     private:
         SPI_Type* m_SPI;
-        std::vector<Gpio> m_SSEL;
+        static uint8_t m_SPI0_SSELs;
+        static uint8_t m_SPI1_SSELs;
+        uint8_t m_bindSSELs;
         bitOrder_t m_bitOrder;
-        uint8_t m_maxSSELSize;
         // TODO: You need one per SSEL, also should change RX, TX accordingly.
         // Buffers are uint8_t because in TXDATCTL LEN is set on eight.
         uint8_t m_receiveBuffer[RECEIVE_BUFFER_SIZE];
@@ -54,9 +55,9 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
     public:
 		enum channelSPI_t { SPI_CHANNEL0, SPI_CHANNEL1 };
 
-		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, std::vector<Gpio> SSEL, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = SPI_CHANNEL0, bool master = true, bitOrder_t bitOrder = MSB_FIRST, mode_t mode = MODE0);
-		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = SPI_CHANNEL0);
-        bool bindSSEL(const Gpio& SSEL, uint8_t &SSELNumber);
+		SPI(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, frequencyComm_t frequency = DEFAULT_FREQUENCY, channelSPI_t channel = SPI_CHANNEL0, bool master = true, bitOrder_t bitOrder = MSB_FIRST, mode_t mode = MODE0);
+		bool bindSSEL(const Gpio& SSEL, uint8_t &bindedSSEL);
+		bool unbindSSEL(uint8_t unbindedSSEL);
         void setBaudRate(frequencyComm_t frequency);
         void enableSSEL(uint8_t SSEL);
         void disableSSEL(uint8_t SSEL);
