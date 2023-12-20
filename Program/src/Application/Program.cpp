@@ -25,11 +25,6 @@ int main(void) {
 
     char stringFST[] = "Hello World!";
     char stringSND[] = "Goodbye!";
-//    char SSELsize[3];
-//    SSELsize[0] = returnSSELNum + '0';
-//    SSELsize[1] = '\n';
-//    SSELsize[2] = '\0';
-//    g_usb->transmit(SSELsize);
 
 	MFRC522 rfid(SPI_DEBUG_SCK, SPI_DEBUG_MOSI, SPI_DEBUG_MISO, SPI_DEBUG_SSEL1);
 

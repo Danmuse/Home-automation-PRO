@@ -132,11 +132,21 @@ void SPI::setBaudRate(frequencyComm_t frequency) {
 }
 
 void SPI::enableSSEL(uint8_t SSEL) {
+	if (this->m_SPI == SPI0) g_SPI[SPI_CHANNEL0] = this;
+	if (this->m_SPI == SPI1) g_SPI[SPI_CHANNEL1] = this;
+//	this->m_SPI->CFG &= ~SPI_CFG_ENABLE_MASK; // Disable SPI channel
+//	this->m_SPI->TXDATCTL &= ~(1 << (SPI_TXDATCTL_TXSSEL0_N_SHIFT + SSEL));
 	this->m_SPI->TXCTL &= ~(1 << (SPI_TXCTL_TXSSEL0_N_SHIFT + SSEL));
+//	this->m_SPI->CFG |= SPI_CFG_ENABLE_MASK; // Enable SPI channel
 }
 
 void SPI::disableSSEL(uint8_t SSEL) {
+	if (this->m_SPI == SPI0) g_SPI[SPI_CHANNEL0] = this;
+	if (this->m_SPI == SPI1) g_SPI[SPI_CHANNEL1] = this;
+//	this->m_SPI->CFG &= ~SPI_CFG_ENABLE_MASK; // Disable SPI channel
+//	this->m_SPI->TXDATCTL |= (1 << (SPI_TXDATCTL_TXSSEL0_N_SHIFT + SSEL));
 	this->m_SPI->TXCTL |= (1 << (SPI_TXCTL_TXSSEL0_N_SHIFT + SSEL));
+//	this->m_SPI->CFG |= SPI_CFG_ENABLE_MASK; // Enable SPI channel
 }
 
 void SPI::transmit(const char *message) {
@@ -201,12 +211,12 @@ bool SPI::receive(char *message) {
 }
 
 void SPI::enableClock(void) {
-    if (this->m_SPI == SPI0 && !(g_SPI[SPI_CHANNEL0])) {
+    if (this->m_SPI == SPI0) {
     	g_SPI[SPI_CHANNEL0] = this;
         SYSCON->SYSAHBCLKCTRL0 |= (1 << 11); // Enable SPI channels
         SYSCON->PRESETCTRL0 &= ~(1 << 11);
         SYSCON->PRESETCTRL0 |= (1 << 11);
-    } else if (this->m_SPI == SPI1 && !(g_SPI[SPI_CHANNEL1])) {
+    } else if (this->m_SPI == SPI1) {
     	g_SPI[SPI_CHANNEL1] = this;
         SYSCON->SYSAHBCLKCTRL0 |= (1 << 12); // Enable SPI channels
         SYSCON->PRESETCTRL0 &= ~(1 << 12);
@@ -267,14 +277,16 @@ void SPI::disableSendInterrupt(void) {
 }
 
 void SPI::SPI_IRQHandler(void) {
-    uint16_t stat = this->m_SPI->STAT; // Not 32bits because last 17 bits are reserved
+    uint16_t stat = this->m_SPI->STAT; // Not 32 bits because last 17 bits are reserved
 
     if (stat & (1 << 0)) {
-        uint16_t data = this->m_SPI->RXDAT; // Only reading 8 bits because LEN is set to 8
+        uint16_t data = this->m_SPI->RXDAT;
+        // Only reading 8 bits because TXDATCTL.LEN register is set to 8
         pushReceive((uint8_t)data);
     }
     if (stat & (1 << 1)) {
         uint16_t data;
+        // Only writing 8 bits because TXDATCTL.LEN register is set to 8
         if (popSend((uint8_t*)(&data))) this->m_SPI->TXDAT = data;
         else {
         	this->m_isSending = false;

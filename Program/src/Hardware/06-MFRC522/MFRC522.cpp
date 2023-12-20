@@ -25,26 +25,22 @@ MFRC522 *g_rfid = nullptr;
 
 MFRC522::MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL) : SPI(SCK, MOSI, MISO),
 m_SSEL{SSEL}, m_statusRFID{RFID_OK} {
-//	this->enable();
+	this->enable();
 }
 
 void MFRC522::send(const char *message) {
-//	if (!(this->m_statusRFID)) this->enableSSEL(this->m_slaveSelected);
-	this->enable();
+	if (!(this->m_statusRFID)) this->enableSSEL(this->m_slaveSelected);
 	this->transmit(message);
-	this->disable();
-//	if (!(this->m_statusRFID)) this->disableSSEL(this->m_slaveSelected);
+	if (!(this->m_statusRFID)) this->disableSSEL(this->m_slaveSelected);
 }
 
 RFID_result_t MFRC522::enable(void) {
 	if (!(this->bindSSEL(this->m_SSEL, this->m_slaveSelected))) this->m_statusRFID = RFID_SSEL_ERR;
-	if (!(this->m_statusRFID)) this->enableSSEL(this->m_slaveSelected);
 	return this->getStatus();
 }
 
 RFID_result_t MFRC522::disable(void) {
 	if (!(this->unbindSSEL(this->m_slaveSelected))) this->m_statusRFID = RFID_SSEL_ERR;
-	if (!(this->m_statusRFID)) this->disableSSEL(this->m_slaveSelected);
 	return this->getStatus();
 }
 
