@@ -33,8 +33,8 @@ protected:
 	const activity_t m_activity;
 	direction_t m_direction;
 
-	error_t SetDir(void);
-	error_t ToggleDir(void);
+	error_t setDir(void);
+	error_t toggleDir(void);
 private:
 	uint8_t m_mode;
 	error_t m_error = OK;

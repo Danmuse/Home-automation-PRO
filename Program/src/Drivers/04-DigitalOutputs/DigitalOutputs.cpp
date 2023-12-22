@@ -8,7 +8,7 @@
 #include "DigitalOutputs.h"
 
 DigitalOutput::DigitalOutput(const Gpio& output, Gpio::activity_t state) : Gpio(output), Callback() {
-	if (this->m_direction != Gpio::OUTPUT) this->ToggleDir();
+	if (this->m_direction != Gpio::OUTPUT) this->toggleDir();
 	if (state == Gpio::HIGH) this->setPin();
 	else this->clearPin();
 	g_callback_list.push_back(this);

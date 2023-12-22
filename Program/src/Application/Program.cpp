@@ -26,16 +26,16 @@ int main(void) {
     char stringFST[] = "Hello World!";
     char stringSND[] = "Goodbye!";
 
-	MFRC522 rfid(SPI_DEBUG_SCK, SPI_DEBUG_MOSI, SPI_DEBUG_MISO, SPI_DEBUG_SSEL1);
+//	MFRC522 rfid(SPI_DEBUG_SCK, SPI_DEBUG_MOSI, SPI_DEBUG_MISO, SPI_DEBUG_SSEL1);
 
 	if (g_rfid->getStatus()) LED_RED.setPin();
-	if (rfid.getStatus()) LED_BLUE.setPin();
+//	if (rfid.getStatus()) LED_BLUE.setPin();
 
     while (1) {
     	g_rfid->send(stringFST);
     	delay(10);
-    	rfid.send(stringSND);
-        delay(10);
+//    	rfid.send(stringSND);
+//		delay(10);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 }

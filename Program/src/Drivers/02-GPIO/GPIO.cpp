@@ -25,7 +25,7 @@ m_mode{mode} {
     else if (this->m_port == PORT0 && this->m_bit >= B_PORT0) this->m_error = ERROR;
     else if (this->m_port == PORT1 && this->m_bit >= B_PORT1) this->m_error = ERROR;
 	SYSCON->SYSAHBCLKCTRL0 |= ((1 << CLK_GPIO0) | (1 << CLK_GPIO1) | (1 << CLK_IOCON));
-	this->SetDir();
+	this->setDir();
 }
 
 void Gpio::setPin(void) {
@@ -73,7 +73,7 @@ void Gpio::setPinResistor(void) {
 	// IOCON_PIO_OD(this->m_mode);
 }
 
-Gpio::error_t Gpio::SetDir(void) {
+Gpio::error_t Gpio::setDir(void) {
 	if (this->m_error == OK) {
 		if (this->m_direction == INPUT) {
 			// Sets a default pin mode in case it does not match the elements of the mode_input_t enumeration
@@ -91,11 +91,11 @@ Gpio::error_t Gpio::SetDir(void) {
 	return this->m_error;
 }
 
-Gpio::error_t Gpio::ToggleDir(void) {
+Gpio::error_t Gpio::toggleDir(void) {
 	GPIO->DIRNOT[this->m_port] |= (1 << this->m_bit);
 	if (this->m_direction == OUTPUT) this->m_direction = INPUT;
 	else if (this->m_direction == INPUT) this->m_direction = OUTPUT;
-	return this->SetDir();
+	return this->setDir();
 }
 
 Gpio::~Gpio() { }

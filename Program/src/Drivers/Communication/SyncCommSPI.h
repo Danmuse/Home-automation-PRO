@@ -15,7 +15,7 @@ class SyncCommSPI {
 public:
     enum bitOrder_t { MSB_FIRST, LSB_FIRST };
 	// DEFAULT_FREQUENCY: Clock period at 1 Mb/s.
-	enum frequencyComm_t { DEFAULT_FREQUENCY = 1000000 };
+	enum frequencyComm_t { DEFAULT_FREQUENCY = 1000000, FAST_FREQUENCY = 4000000 };
     // MODE0: The SPI captures serial data on the first clock transition of the transfer. Data is changed on the following edge.
 	// 		  The rest state of the clock is low.
 	// MODE1: The SPI captures serial data on the first clock transition of the transfer. Data is changed on the following edge.

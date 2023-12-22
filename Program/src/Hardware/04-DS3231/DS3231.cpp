@@ -194,7 +194,7 @@ void DS3231::changeHoursMode(hoursMode_t hoursMode) {
 	this->m_flagPM = false;
 }
 
-char* DS3231::print(void) {
+char* DS3231::printTimestamp(void) {
 	static char RTCstr[RTC_STR_SIZE];
     RTCstr[0] = this->m_RTC.TIME.HOUR / 10 + '0'; RTCstr[1] = this->m_RTC.TIME.HOUR % 10 + '0'; RTCstr[2] = ':';
     RTCstr[3] = this->m_RTC.TIME.MIN / 10 + '0'; RTCstr[4] = this->m_RTC.TIME.MIN % 10 + '0'; RTCstr[5] = ':';

@@ -11,7 +11,7 @@ DigitalInput::DigitalInput(const Gpio& input, uint8_t maxBounces) : Gpio(input),
 m_maxBounces{maxBounces},
 m_bounceCounter{0},
 m_lastPressed{false} {
-	if (this->m_direction != Gpio::INPUT) this->ToggleDir();
+	if (this->m_direction != Gpio::INPUT) this->toggleDir();
 	this->m_currentPressed = this->getPin();
 	g_callback_list.push_back(this);
 }

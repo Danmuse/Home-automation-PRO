@@ -126,7 +126,7 @@ public:
 	RTC_result_t setCalendar(uint8_t date, uint8_t month, uint16_t year);
 
 	void changeHoursMode(hoursMode_t hoursMode);
-	char* print(void);
+	char* printTimestamp(void);
 	virtual ~DS3231();
 };
 

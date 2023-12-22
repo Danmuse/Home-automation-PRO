@@ -14,7 +14,7 @@ PinInterrupt *g_gpiohandler[MAX_PIN_INTERRUPTS];
 PinInterrupt::PinInterrupt(const Gpio& interrupt, Gpio::interrupt_mode_t interrupt_mode) : Gpio(interrupt),
 m_interrupt_mode{interrupt_mode},
 m_interrupt_number{this->m_quantity} {
-	if (this->m_direction != Gpio::INPUT) this->ToggleDir();
+	if (this->m_direction != Gpio::INPUT) this->toggleDir();
 	// SYSTEM STOPPED, MAXIMUM PIN INTERRUPTIONS REACHED
 	if (this->m_quantity >= MAX_PIN_INTERRUPTS) while (1);
 	g_gpiohandler[this->m_interrupt_number] = this;
