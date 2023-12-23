@@ -36,7 +36,7 @@ void MFRC522::send(const char *message) {
 }
 
 /*!
- * @brief Writes a number of bytes to the specified register in the MFRC522 chip.
+ * @brief Writes a byte to the specified register in the MFRC522 chip.
  * @details The interface is described in the datasheet section 8.1.2.
  */
 void MFRC522::writeRegisterPCD(uint8_t reg, uint8_t value) {
@@ -44,6 +44,23 @@ void MFRC522::writeRegisterPCD(uint8_t reg, uint8_t value) {
 	if (this->m_statusRFID != RFID_SSEL_ERR) this->enableSSEL(this->m_slaveSelected);
 	this->transmitBytes(buffer, sizeof(buffer));
 	if (this->m_statusRFID != RFID_SSEL_ERR) this->disableSSEL(this->m_slaveSelected);
+}
+
+/**
+ * Writes a number of bytes to the specified register in the MFRC522 chip.
+ * The interface is described in the datasheet section 8.1.2.
+ */
+
+void MFRC522::writeRegisterPCD(uint8_t reg, uint8_t count,uint8_t *values){
+    uint8_t buffer[count+1];
+    buffer[0] = reg;
+    for (uint8_t index = 0; index < count; index++){
+        buffer[index+1] = values[index];
+    }
+    if (this->m_statusRFID != RFID_SSEL_ERR) this->enableSSEL(this->m_slaveSelected);
+    this->transmitBytes(buffer, sizeof(buffer));
+    if (this->m_statusRFID != RFID_SSEL_ERR) this->disableSSEL(this->m_slaveSelected);
+
 }
 
 /*!
@@ -84,12 +101,33 @@ RFID_result_t MFRC522::PCD_CalculateCRC(uint8_t *data, uint8_t length, uint8_t *
 
 RFID_result_t MFRC522::PCD_TransceiveData(uint8_t *sendData, uint8_t sendLen, uint8_t *backData, uint8_t *backLen, uint8_t *validBits, uint8_t rxAlign, bool checkCRC) {
 
+    uint8_t waitIRq = 0x30;		// RxIRq and IdleIRq
+    PCD_CommunicateWithPICC(PCD_TRANSCEIVE, waitIRq, sendData, sendLen, backData, backLen, validBits, rxAlign, checkCRC);
+
 	return this->getStatus();
 }
 
 RFID_result_t MFRC522::PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq, uint8_t *sendData, uint8_t sendLen, uint8_t *backData, uint8_t *backLen, uint8_t *validBits, uint8_t rxAlign, bool checkCRC) {
 
-	return this->getStatus();
+    // Prepare values for BitFramingReg
+    uint8_t txLastBits = validBits ? *validBits : 0;
+    uint8_t bitFraming = (rxAlign << 4) + txLastBits;		// RxAlign = BitFramingReg[6..4]. TxLastBits = BitFramingReg[2..0]
+
+    writeRegisterPCD(RC522_COMMAND_REG,PCD_IDLE);			// Stop any active command.
+    writeRegisterPCD(RC522_COM_IRQ_REG, 0x7F);					// Clear all seven interrupt request bits
+    writeRegisterPCD(RC522_FIFO_LEVEL_REG, 0x80);				// FlushBuffer = 1, FIFO initialization
+    writeRegisterPCD(RC522_FIFO_DATA_REG, sendLen, sendData);	// Write sendData to the FIFO
+    writeRegisterPCD(RC522_BIT_FRAMING_REG, bitFraming);		// Bit adjustments
+    writeRegisterPCD(RC522_COMMAND_REG, command);				// Execute the command
+
+    if (command == PCD_TRANSCEIVE) {
+        setRegisterBitMaskPCD(RC522_BIT_FRAMING_REG, 0x80);	// StartSend=1, transmission of data starts
+    }
+    //TODO: Finish
+
+
+
+    return this->getStatus();
 }
 
 /*!
@@ -367,11 +405,14 @@ void MFRC522::resetPCD(void) {
 }
 
 void MFRC522::antennaOnPCD(void) {
-
+    uint8_t oldRegValue = readRegisterPCD(RC522_TX_CONTROL_REG);
+    if ((oldRegValue & 0x03) != 0x03) {
+        writeRegisterPCD(RC522_TX_CONTROL_REG, oldRegValue | 0x03);
+    }
 }
 
 void MFRC522::antennaOffPCD(void) {
-
+    clearRegisterBitMaskPCD(RC522_TX_CONTROL_REG, 0x03);
 }
 
 /*!
@@ -399,6 +440,8 @@ RFID_result_t MFRC522::isCardPICC(void) {
 bool MFRC522::readCardPICC(void) {
 	return this->PICC_Select();
 }
+
+ // End PCD_TransceiveData()
 
 RFID_result_t MFRC522::haltPICC(void) {
 

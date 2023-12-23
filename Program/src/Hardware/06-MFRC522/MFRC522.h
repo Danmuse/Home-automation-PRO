@@ -155,6 +155,7 @@ private:
 	UID_st m_UID;
 
 	void writeRegisterPCD(uint8_t reg, uint8_t value);
+    void writeRegisterPCD(uint8_t reg, uint8_t count,uint8_t *values);
 	uint8_t readRegisterPCD(uint8_t reg);
 	void setRegisterBitMaskPCD(uint8_t reg, uint8_t mask);
 	void clearRegisterBitMaskPCD(uint8_t reg, uint8_t mask);
