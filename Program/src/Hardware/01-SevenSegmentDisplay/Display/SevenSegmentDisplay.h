@@ -38,7 +38,7 @@ private:
 public:
 	SevenSegmentDisplay() = delete;
 	SevenSegmentDisplay(std::vector<DigitsGroup*> groups, CD4511B *segments_IC, CD4017 *sweep_IC, const uint8_t *relativePos, const Digit::code_t system);
-	void callbackMethod(void);
+	void callbackMethod(void) override;
 	void set(uint32_t value, uint8_t display = 0);
 	void clear(uint8_t display = 0);
 	void mode(Digit::mode_t mode, uint8_t display = 0);

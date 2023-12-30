@@ -49,7 +49,7 @@ public:
 	void write(const int8_t *ptr_str, const uint8_t row = 0, const uint8_t column = 0);
 	void write(const int32_t value, const uint8_t row = 0, const uint8_t column = 0);
 	void clear(void);
-	void callbackMethod(void);
+	void callbackMethod(void) override;
 	virtual ~LCD1602();
 };
 

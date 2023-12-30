@@ -23,8 +23,7 @@ int main(void) {
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
-    char stringFST[] = "Hello World!";
-    char stringSND[] = "Goodbye!";
+	MFRC522::UID_st UID;
 
 //	MFRC522 rfid(SPI_DEBUG_SCK, SPI_DEBUG_MOSI, SPI_DEBUG_MISO, SPI_DEBUG_SSEL1);
 
@@ -32,11 +31,9 @@ int main(void) {
 //	if (rfid.getStatus()) LED_BLUE.setPin();
 
     while (1) {
-    	g_rfid->send(stringFST);
-    	delay(10);
-//    	rfid.send(stringSND);
-//		delay(10);
-//    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
+    	g_rfid->getUID(&UID); // Debug instruction
+    	g_usb->transmit(g_rfid->printUID());
+    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 }
 

@@ -41,7 +41,7 @@ public:
 	bool operator==(bool checkEvent);
 	friend bool operator==(bool checkEvent, Timer& timer);
 	explicit operator bool(void);
-	void callbackMethod(void);
+	void callbackMethod(void) override;
 	virtual ~Timer();
 };
 

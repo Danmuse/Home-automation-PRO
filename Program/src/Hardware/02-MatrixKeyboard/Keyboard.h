@@ -28,7 +28,7 @@ private:
 public:
 	Keyboard() = delete;
 	Keyboard(std::vector<Gpio*> &columns, std::vector<Gpio*> &rows);
-	void callbackMethod(void);
+	void callbackMethod(void) override;
 	uint8_t	get(void);
 	virtual ~Keyboard();
 private:

@@ -98,8 +98,7 @@ void LCD1602::callbackMethod(void) {
             this->writeInstruction(this->m_buffer[this->m_sweep], Gpio::HIGH);
 			this->m_ticks = 1 * (g_systick_freq / 1000);
 			this->m_sweep++;
-			if ((this->m_sweep == this->m_columns) || (this->m_sweep == (this->m_rows * this->m_columns)))
-				this->m_mode = s_row;
+			if ((this->m_sweep == this->m_columns) || (this->m_sweep == (this->m_rows * this->m_columns))) this->m_mode = s_row;
 			break;
 		case s_row:
 			if (this->m_sweep == (this->m_rows * this->m_columns)) {

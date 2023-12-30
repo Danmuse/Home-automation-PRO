@@ -19,7 +19,7 @@ public:
 	void set(void);
 	void clear(void);
 	DigitalOutput& operator=(Gpio::activity_t state);
-	void callbackMethod(void);
+	void callbackMethod(void) override;
 	virtual ~DigitalOutput();
 };
 

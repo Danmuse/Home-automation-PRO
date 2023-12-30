@@ -29,7 +29,7 @@ public:
 	bool get(void);
 	explicit operator bool(void);
 	bool operator!(void);
-	void callbackMethod(void);
+	void callbackMethod(void) override;
 	virtual ~DigitalInput();
 };
 

@@ -259,7 +259,7 @@ void ADC::handlerSEQB(void) {
 }
 
 void ADC::handler(adc_isr_t isr) {
-	switch(isr) {
+	switch (isr) {
 	case SEQA_ISR:
         this->handlerSEQA();
 		break;
@@ -267,13 +267,12 @@ void ADC::handler(adc_isr_t isr) {
         this->handlerSEQB();
 		break;
 	case THCMP_ISR:
-		// Not implemented yet
+		// TODO (Minor priority): Not implemented yet
 		break;
 	case OVR_ISR:
-		// Not implemented yet
+		// TODO (Minor priority): Not implemented yet
 		break;
 	default:
-		// INVALID VALUE
 		break;
 	}
 }

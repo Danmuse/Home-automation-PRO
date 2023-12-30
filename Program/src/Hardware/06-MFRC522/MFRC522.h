@@ -9,6 +9,7 @@
 #ifndef MFRC522_H_
 #define MFRC522_H_
 
+#include "systick.h"
 #include "SPI.h"
 #include "Semaphore.h"
 
@@ -29,6 +30,9 @@
 #define RC522_CONTROL_REG			(0x0CU << 1)	//!< Miscellaneous control registers
 #define RC522_BIT_FRAMING_REG		(0x0DU << 1)	//!< Adjustments for bit-oriented frames
 #define RC522_COLL_REG				(0x0EU << 1)	//!< Bit position of the first bit-collision detected on the RF interface
+
+#define RC522_IdleIRq_MASK	(0x10U)	//!< CommandReg changes its value from any command to the Idle command
+#define RC522_RxIRq_MASK	(0x20U)	//!< Receiver has detected the end of a valid data stream
 
 ///////////////////////////////
 // Page 1: Command Registers //
@@ -78,13 +82,18 @@
 #define RC522_TEST_DAC2_REG			(0x3AU << 1)	//!< Defines the test value for TestDAC2
 #define RC522_TEST_ADC_REG			(0x3BU << 1)	//!< Shows the value of ADC I and Q channels
 
+#define RFID_WAIT_IRQ	(RC522_IdleIRq_MASK | RC522_RxIRq_MASK)	// Interrupts of the CommandReg register used.
+
 #define RFID_MF_ACK 		10	//!< The MIFARE Classic uses a 4 bit ACK/NAK. Any other value than 10 is NAK.
-#define RFID_MF_KEY_SIZE	6	//!< A Mifare Crypto1 key is 6 bytes.
+#define RFID_MF_KEY_SIZE	6	//!< A MIFARE Crypto1 key is 6 bytes.
 
 #define MAXIMUM_UID_SIZE	10	//!< Maximum number of bytes in the UID.
 
+//! @hideinitializer Number of characters to store the CRC (<tt>Cyclic Redundancy Check</tt>) captured by the PCD (<tt>Proximity Coupling Device</tt>).
+#define RFID_CRC_SIZE	2	//!< <pre><strong>Value:</strong> 2
+
 //! @hideinitializer Number of characters to store the UID captured by the PCD (<tt>Proximity Coupling Device</tt>).
-#define RFID_STR_SIZE	21 //!< <pre><strong>Value:</strong> 21
+#define RFID_STR_SIZE	21	//!< <pre><strong>Value:</strong> 21
 
 //! @brief <b>RFID_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the RFID reader operations can be found.
 typedef enum {
@@ -100,7 +109,7 @@ typedef enum {
 	RFID_MIFARE_NACK = 0xFF	//!< A MIFARE PICC responded with NAK.
 } RFID_result_t;
 
-    class MFRC522 : protected SPI, Gpio, public Callback{
+class MFRC522 : protected SPI, Gpio, public Callback {
 public:
 	//! MIFARE_st: Structure used for passing a MIFARE Crypto1 key.
 	typedef struct { uint8_t keyByte[RFID_MF_KEY_SIZE]; } MIFARE_st;
@@ -108,7 +117,13 @@ public:
 	//! - The SAK (<tt>Select acknowledge</tt>) byte returned from the PICC after successful selection.
 	typedef struct { uint8_t size; uint8_t uidByte[MAXIMUM_UID_SIZE]; uint8_t sak; } UID_st;
 
-	//! brief <b>RFID_PCD_Command_t</b> enumeration is associated with the MFRC522 commands sent to the PCD (<tt>Proximity Coupling Device</tt>).
+	//! @brief <b>RFID_PCD_Operation_t</b> enumeration is associated with the MFRC522 operations executed by the PCD (<tt>Proximity Coupling Device</tt>).
+	typedef enum {
+		COMMUNICATION_PICC,
+		CALCULATE_CRC
+	} RFID_PCD_Operation_t;
+
+	//! @brief <b>RFID_PCD_Command_t</b> enumeration is associated with the MFRC522 commands sent to the PCD (<tt>Proximity Coupling Device</tt>).
 	typedef enum {
 		PCD_IDLE				= 0x00,	//!< No action, cancels current command execution
 		PCD_MEMORY				= 0x01,	//!< Stores 25 bytes into the internal buffer
@@ -122,7 +137,7 @@ public:
 		PCD_SOFTWARE_RESET		= 0x0F	//!< Resets the MFRC522
 	} RFID_PCD_Command_t;
 
-	//! brief <b>RFID_PICC_Command_t</b> enumeration is associated with the MFRC522 commands sent to the PICC (<tt>Proximity Integrated Circuit Card</tt>).
+	//! @brief <b>RFID_PICC_Command_t</b> enumeration is associated with the MFRC522 commands sent to the PICC (<tt>Proximity Integrated Circuit Card</tt>).
 	typedef enum {
 		// The commands used by the PCD to manage communication with several PICCs (ISO 14443-3, Type A, section 6.4)
 		PICC_CMD_REQA			= 0x26,	//!< REQuest command, Type A. Invites PICCs in state IDLE to go to READY and prepare for anticollision or selection. 7 bit frame.
@@ -152,22 +167,23 @@ private:
 	const Gpio m_SSEL;
 	uint8_t m_slaveSelected;
 	RFID_result_t m_statusRFID;
+	uint8_t m_timeOut;
+	RFID_PCD_Operation_t m_operation;
+	bool m_operationCompleted;
+	uint8_t m_resultCRC[RFID_CRC_SIZE];
 	UID_st m_UID;
 
 	void writeRegisterPCD(uint8_t reg, uint8_t value);
-    void writeRegisterPCD(uint8_t reg, uint8_t count,uint8_t *values);
+	void writeRegisterPCD(uint8_t reg, uint8_t count, uint8_t *values);
 	uint8_t readRegisterPCD(uint8_t reg);
-    void readRegisterPCD(uint8_t reg, uint8_t count, uint8_t *values, uint8_t rxAlign = 0);
+	void readRegisterPCD(uint8_t reg, uint8_t count, uint8_t *values, uint8_t rxAlign = 0);
 	void setRegisterBitMaskPCD(uint8_t reg, uint8_t mask);
 	void clearRegisterBitMaskPCD(uint8_t reg, uint8_t mask);
 
-	RFID_result_t PCD_CalculateCRC(uint8_t *data, uint8_t length, uint8_t *result);
-	RFID_result_t PCD_TransceiveData(uint8_t *sendData, uint8_t sendLen, uint8_t *backData, uint8_t *backLen, uint8_t *validBits = nullptr, uint8_t rxAlign = 0, bool checkCRC = false);
+	RFID_result_t PCD_CalculateCRC(uint8_t *data, uint8_t length);
 	RFID_result_t PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq, uint8_t *sendData, uint8_t sendLen, uint8_t *backData = nullptr, uint8_t *backLen = nullptr, uint8_t *validBits = nullptr, uint8_t rxAlign = 0, bool checkCRC = false);
 	RFID_result_t PICC_REQA(uint8_t *bufferATQA, uint8_t *bufferSize);
 	virtual RFID_result_t PICC_Select(uint8_t validBits = 0);
-
-    int m_timout;
 public:
 	MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL, const Gpio& hardRST);
 
@@ -181,7 +197,7 @@ public:
 	void antennaOnPCD(void);
 	void antennaOffPCD(void);
 
-	virtual RFID_result_t isCardPICC(void);
+	virtual bool isCardPICC(void);
 	virtual bool readCardPICC(void);
 	RFID_result_t haltPICC(void);
 	RFID_result_t getUID(UID_st *UID);
@@ -192,7 +208,7 @@ public:
 	void dumpDetails(UID_st *UID);
 	char* printUID(void);
 
-    void callbackMethod()override;
+	void callbackMethod(void) override;
 	virtual ~MFRC522();
 };
 
