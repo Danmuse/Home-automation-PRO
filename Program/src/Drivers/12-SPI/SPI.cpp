@@ -62,9 +62,6 @@ void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) {
     this->m_SPI->TXDATCTL |= (0b111 << SPI_TXDATCTL_LEN_SHIFT); // 8 bits per transfer
     if (this->m_SPI == SPI0) NVIC->ISER[0] |= (1 << 0);      // Enable SPI0_IRQ
     else if (this->m_SPI == SPI1) NVIC->ISER[0] |= (1 << 1); // Enable SPI1_IRQ
-    this->m_SPI->INTENSET |= SPI_INTENSET_RXRDYEN_MASK; // Enable RXRDY interrupt
-    //                    | SPI_INTENSET_SSAEN_MASK     // Enable when the Slave Select is asserted
-    //                    | SPI_INTENSET_SSDEN_MASK     // Enable when the Slave Select is deasserted.
     this->m_SPI->TXDATCTL |= (0b1111 << SPI_TXDATCTL_TXSSEL0_N_SHIFT); // Not assert any SSELs
     this->m_SPI->CFG |= SPI_CFG_ENABLE_MASK; // Enable SPI channel
 }
@@ -151,12 +148,12 @@ void SPI::disableSSEL(uint8_t SSEL) {
 
 void SPI::transmit(const char *message) {
     while (*message) {
-        pushSend(*message);
+        this->pushSend(*message);
         message++;
 
         if (!this->m_isSending) {
         	this->m_isSending = true;
-            enableSendInterrupt();
+        	this->enableSendInterrupt();
         }
     }
     // Software can set this bit to force an end to the current 0 transfer
@@ -167,10 +164,10 @@ void SPI::transmit(const char *message) {
 
 void SPI::transmitBytes(uint8_t *message, uint8_t length) {
     for (size_t index = 0; index < length; index++) {
-        pushSend(message[index]);
+    	this->pushSend(message[index]);
 		if (!this->m_isSending) {
 			this->m_isSending = true;
-			enableSendInterrupt();
+			this->enableSendInterrupt();
 		}
     }
     // Software can set this bit to force an end to the current 0 transfer
@@ -179,34 +176,45 @@ void SPI::transmitBytes(uint8_t *message, uint8_t length) {
     this->m_SPI->STAT |= SPI_STAT_ENDTRANSFER_MASK;
 }
 
-bool SPI::receive(uint8_t &message) {
-    return popReceive(&message);
+bool SPI::receive(uint8_t *address, uint8_t &message) {
+    this->enableReceiveInterrupt();
+	this->transmitBytes(address);
+    return this->popReceive(&message);
+    this->disableReceiveInterrupt();
 }
 
-bool SPI::receive(uint8_t *message, uint8_t length) {
+bool SPI::receive(uint8_t *address, uint8_t *message, uint8_t length) {
     uint8_t data;
     static uint32_t cont = 0;
+    this->enableReceiveInterrupt();
+	this->transmitBytes(address);
     while (this->popReceive(&data)) {
         message[cont++] = data;
         if (cont >= length) {
             cont = 0;
+            this->disableReceiveInterrupt();
             return true;
         }
     }
+    this->disableReceiveInterrupt();
     return false;
 }
 
-bool SPI::receive(char *message) {
+bool SPI::receive(uint8_t *address, char *message) {
     uint8_t data;
     static uint32_t cont = 0;
+    this->enableReceiveInterrupt();
+	this->transmitBytes(address);
     while (this->popReceive(&data)) {
     	message[cont++] = data;
         if (data == '\r' || data == '\n') {
         	message[cont] = '\0';
             cont = 0;
+            this->disableReceiveInterrupt();
             return true;
         }
     }
+    this->disableReceiveInterrupt();
     return false;
 }
 
@@ -268,29 +276,39 @@ bool SPI::popSend(uint8_t *data) {
     return false;
 }
 
+void SPI::enableReceiveInterrupt(void) {
+	this->m_SPI->INTENSET |= SPI_INTENSET_RXRDYEN_MASK; // Enable RXRDY interrupt
+	//                    | SPI_INTENSET_SSAEN_MASK     // Enable when the Slave Select is asserted
+	//                    | SPI_INTENSET_SSDEN_MASK     // Enable when the Slave Select is deasserted
+}
+
 void SPI::enableSendInterrupt(void) {
-	this->m_SPI->INTENSET = (1 << 1); // Enable TXRDY interrupt
+	this->m_SPI->INTENSET |= SPI_INTENSET_TXRDYEN_MASK; // Enable TXRDY interrupt
+}
+
+void SPI::disableReceiveInterrupt(void) {
+	this->m_SPI->INTENCLR |= SPI_INTENCLR_RXRDYEN_MASK; // Disable RXRDY interrupt
+	//                    | SPI_INTENCLR_SSAEN_MASK     // Disable when the Slave Select is asserted
+	//                    | SPI_INTENCLR_SSDEN_MASK     // Disable when the Slave Select is deasserted
 }
 
 void SPI::disableSendInterrupt(void) {
-	this->m_SPI->INTENCLR = (1 << 1); // Disable TXRDY interrupt
+	this->m_SPI->INTENCLR |= SPI_INTENCLR_TXRDYEN_MASK; // Disable TXRDY interrupt
 }
 
 void SPI::SPI_IRQHandler(void) {
-    uint16_t stat = this->m_SPI->STAT; // Not 32 bits because last 17 bits are reserved
-
-    if (stat & (1 << 0)) {
+    if (this->m_SPI->STAT & SPI_STAT_RXRDY_MASK) {
         uint16_t data = this->m_SPI->RXDAT;
         // Only reading 8 bits because TXDATCTL.LEN register is set to 8
-        pushReceive((uint8_t)data);
+        if (this->m_SPI->INTENSET & SPI_INTENSET_RXRDYEN_MASK) this->pushReceive((uint8_t)data);
     }
-    if (stat & (1 << 1)) {
+    if (this->m_SPI->STAT & SPI_STAT_TXRDY_MASK) {
         uint16_t data;
         // Only writing 8 bits because TXDATCTL.LEN register is set to 8
-        if (popSend((uint8_t*)(&data))) this->m_SPI->TXDAT = data;
+        if (this->popSend((uint8_t*)(&data))) this->m_SPI->TXDAT = data;
         else {
         	this->m_isSending = false;
-            disableSendInterrupt();
+            this->disableSendInterrupt();
         }
     }
 }
@@ -300,6 +318,7 @@ SPI::~SPI() {
 		// Remember to execute the unbindSSEL function on primitive classes where they are protected or publicly inherited from SPI.
 		this->m_SPI0_SSELs -= this->m_bindSSELs;
 		if (!(this->m_SPI0_SSELs)) {
+			this->disableReceiveInterrupt();
 			this->disableSendInterrupt();
 			NVIC->ISER[0] &= ~(1 << 0); // Disable SPI0_IRQ
 		}
@@ -307,6 +326,7 @@ SPI::~SPI() {
 		// Remember to execute the unbindSSEL function on primitive classes where they are protected or publicly inherited from SPI.
 		this->m_SPI1_SSELs -= this->m_bindSSELs;
 		if (!(this->m_SPI1_SSELs)) {
+			this->disableReceiveInterrupt();
 			this->disableSendInterrupt();
 			NVIC->ISER[0] &= ~(1 << 1); // Disable SPI1_IRQ
 		}

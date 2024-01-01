@@ -28,9 +28,9 @@ public:
 
     virtual void transmit(const char *message) = 0;
     virtual void transmitBytes(uint8_t *message, uint8_t length = 1) = 0;
-    virtual bool receive(uint8_t &message) = 0;
-    virtual bool receive(uint8_t *message, uint8_t length) = 0;
-    virtual bool receive(char *message) = 0;
+    virtual bool receive(uint8_t *address, uint8_t &message) = 0;
+    virtual bool receive(uint8_t *address, uint8_t *message, uint8_t length) = 0;
+    virtual bool receive(uint8_t *address, char *message) = 0;
 	virtual void SPI_IRQHandler(void) = 0;
 	virtual ~SyncCommSPI() = default;
 protected:

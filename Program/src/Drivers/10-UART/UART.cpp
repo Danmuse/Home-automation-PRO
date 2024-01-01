@@ -171,20 +171,16 @@ void UART::enableClock(void) {
 }
 
 void UART::UART_IRQHandler(void) {
-	uint8_t endTransmission, data;
-	uint32_t stat = this->m_usart->STAT;
-
-	if (stat & (1 << 0)) {
-		data = (uint8_t) this->m_usart->RXDAT;
+	if (this->m_usart->STAT & (1 << 0)) {
+		uint8_t data = this->m_usart->RXDAT;
 		this->pushRX(data);
 	}
-
-	if (stat & (1 << 2)) {
-		endTransmission = this->popTX(&data);
-		if (endTransmission) this->m_usart->TXDAT = (uint8_t)data;
+	if (this->m_usart->STAT & (1 << 2)) {
+		uint8_t data;
+		if (this->popTX(&data)) this->m_usart->TXDAT = data;
 		else {
-            this->disableInterrupt();
 			this->m_flagTX = false;
+            this->disableInterrupt();
 		}
 	}
 }

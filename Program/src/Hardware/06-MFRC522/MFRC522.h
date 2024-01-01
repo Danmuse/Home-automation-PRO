@@ -170,7 +170,6 @@ private:
 	uint8_t m_timeOut;
 	RFID_PCD_Operation_t m_operation;
 	bool m_operationCompleted;
-	uint8_t m_resultCRC[RFID_CRC_SIZE];
 	UID_st m_UID;
 
 	void writeRegisterPCD(uint8_t reg, uint8_t value);
@@ -180,14 +179,12 @@ private:
 	void setRegisterBitMaskPCD(uint8_t reg, uint8_t mask);
 	void clearRegisterBitMaskPCD(uint8_t reg, uint8_t mask);
 
-	RFID_result_t PCD_CalculateCRC(uint8_t *data, uint8_t length);
+	RFID_result_t PCD_CalculateCRC(uint8_t *data, uint8_t length, uint8_t *result);
 	RFID_result_t PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq, uint8_t *sendData, uint8_t sendLen, uint8_t *backData = nullptr, uint8_t *backLen = nullptr, uint8_t *validBits = nullptr, uint8_t rxAlign = 0, bool checkCRC = false);
 	RFID_result_t PICC_REQA(uint8_t *bufferATQA, uint8_t *bufferSize);
 	virtual RFID_result_t PICC_Select(uint8_t validBits = 0);
 public:
 	MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL, const Gpio& hardRST);
-
-	void send(const char *message); // WARNING: DEBUG METHOD!!
 
 	RFID_result_t enable(void);
 	RFID_result_t disable(void);

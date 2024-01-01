@@ -63,9 +63,9 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         void disableSSEL(uint8_t SSEL);
         void transmit(const char *message) override;
         void transmitBytes(uint8_t *message, uint8_t length = 1) override;
-        bool receive(uint8_t &message) override;
-        bool receive(uint8_t *message, uint8_t length) override;
-        bool receive(char *message) override;
+        bool receive(uint8_t *address, uint8_t &message) override;
+        bool receive(uint8_t *address, uint8_t *message, uint8_t length) override;
+        bool receive(uint8_t *address, char *message) override;
         ~SPI();
     private:
         void config(bool master, mode_t mode, frequencyComm_t frequency);
@@ -75,7 +75,9 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         bool popReceive(uint8_t *data) override;
         void pushSend(uint8_t data) override;
         bool popSend(uint8_t *data) override;
+        void enableReceiveInterrupt(void);
         void enableSendInterrupt(void);
+        void disableReceiveInterrupt(void);
         void disableSendInterrupt(void);
 
         void SPI_IRQHandler(void) override;
