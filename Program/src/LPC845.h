@@ -13,6 +13,12 @@
 
 #define FREQ_CLOCK_MCU 	(12000000UL)
 
+/*!
+ * @addtogroup SYSCON_Peripheral_Access_Layer SYSCON Peripheral Access Layer
+ * @{
+ */
+
+/** SYSCON - Register Layout Typedef */
 typedef struct {
   __IO uint32_t SYSMEMREMAP;                       /**< System Remap register, offset: 0x0 */
        uint8_t RESERVED_0[4];
@@ -87,6 +93,1289 @@ typedef struct {
 
 /*! @brief FRO clock setting API address in ROM. */
 #define CLOCK_FRO_SETTING_API_ROM_ADDRESS (0x0F0026F5U)
+
+/* ----------------------------------------------------------------------------
+   -- SYSCON Register Masks
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup SYSCON_Register_Masks SYSCON Register Masks
+ * @{
+ */
+
+/*! @name SYSMEMREMAP - System Remap register */
+/*! @{ */
+#define SYSCON_SYSMEMREMAP_MAP_MASK              (0x3U)
+#define SYSCON_SYSMEMREMAP_MAP_SHIFT             (0U)
+/*! MAP - System memory remap. Value 0x3 is reserved.
+ *  0b00..Boot Loader Mode. Interrupt vectors are re-mapped to Boot ROM.
+ *  0b01..User RAM Mode. Interrupt vectors are re-mapped to Static RAM.
+ *  0b10..User Flash Mode. Interrupt vectors are not re-mapped and reside in Flash.
+ */
+#define SYSCON_SYSMEMREMAP_MAP(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSMEMREMAP_MAP_SHIFT)) & SYSCON_SYSMEMREMAP_MAP_MASK)
+/*! @} */
+
+/*! @name SYSPLLCTRL - PLL control */
+/*! @{ */
+#define SYSCON_SYSPLLCTRL_MSEL_MASK              (0x1FU)
+#define SYSCON_SYSPLLCTRL_MSEL_SHIFT             (0U)
+/*! MSEL - Feedback divider value. The division value M is the programmed MSEL value + 1. 00000:
+ *    Division ratio M = 1 to 11111: Division ratio M = 32
+ */
+#define SYSCON_SYSPLLCTRL_MSEL(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSPLLCTRL_MSEL_SHIFT)) & SYSCON_SYSPLLCTRL_MSEL_MASK)
+#define SYSCON_SYSPLLCTRL_PSEL_MASK              (0x60U)
+#define SYSCON_SYSPLLCTRL_PSEL_SHIFT             (5U)
+/*! PSEL - Post divider ratio P. The division ratio is 2 x P.
+ *  0b00..P = 1
+ *  0b01..P = 2
+ *  0b10..P = 4
+ *  0b11..P = 8
+ */
+#define SYSCON_SYSPLLCTRL_PSEL(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSPLLCTRL_PSEL_SHIFT)) & SYSCON_SYSPLLCTRL_PSEL_MASK)
+/*! @} */
+
+/*! @name SYSPLLSTAT - PLL status */
+/*! @{ */
+#define SYSCON_SYSPLLSTAT_LOCK_MASK              (0x1U)
+#define SYSCON_SYSPLLSTAT_LOCK_SHIFT             (0U)
+/*! LOCK - PLL0 lock indicator
+ */
+#define SYSCON_SYSPLLSTAT_LOCK(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSPLLSTAT_LOCK_SHIFT)) & SYSCON_SYSPLLSTAT_LOCK_MASK)
+/*! @} */
+
+/*! @name SYSOSCCTRL - system oscillator control */
+/*! @{ */
+#define SYSCON_SYSOSCCTRL_BYPASS_MASK            (0x1U)
+#define SYSCON_SYSOSCCTRL_BYPASS_SHIFT           (0U)
+/*! BYPASS - oscillator (Xtal) Test Mode input (Active High)
+ */
+#define SYSCON_SYSOSCCTRL_BYPASS(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSOSCCTRL_BYPASS_SHIFT)) & SYSCON_SYSOSCCTRL_BYPASS_MASK)
+#define SYSCON_SYSOSCCTRL_FREQRANGE_MASK         (0x2U)
+#define SYSCON_SYSOSCCTRL_FREQRANGE_SHIFT        (1U)
+/*! FREQRANGE - oscillator low / high transconductance selection input (Active High) 1-20MHz '0' : 15-50MHz '1'
+ */
+#define SYSCON_SYSOSCCTRL_FREQRANGE(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSOSCCTRL_FREQRANGE_SHIFT)) & SYSCON_SYSOSCCTRL_FREQRANGE_MASK)
+/*! @} */
+
+/*! @name WDTOSCCTRL - Watchdog oscillator control */
+/*! @{ */
+#define SYSCON_WDTOSCCTRL_DIVSEL_MASK            (0x1FU)
+#define SYSCON_WDTOSCCTRL_DIVSEL_SHIFT           (0U)
+/*! DIVSEL - Select divider for Fclkana. wdt_osc_clk = Fclkana/ (2 x (1 + DIVSEL)) 00000: 2 x (1 +
+ *    DIVSEL) = 2 00001: 2 x (1 + DIVSEL) = 4 to 11111: 2 x (1 + DIVSEL) = 64
+ */
+#define SYSCON_WDTOSCCTRL_DIVSEL(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_WDTOSCCTRL_DIVSEL_SHIFT)) & SYSCON_WDTOSCCTRL_DIVSEL_MASK)
+#define SYSCON_WDTOSCCTRL_FREQSEL_MASK           (0x1E0U)
+#define SYSCON_WDTOSCCTRL_FREQSEL_SHIFT          (5U)
+/*! FREQSEL - Frequency select. Selects the frequency of the oscillator. 0x00 = invalid setting when
+ *    watchdog oscillator is running 0x1 = 0.6 MHz 0x2 = 1.05 MHz 0x3 = 1.4 MHz 0x4 = 1.75 MHz 0x5
+ *    = 2.1 MHz 0x6 = 2.4 MHz 0x7 = 2.7 MHz 0x8 = 3.0 MHz 0x9 = 3.25 MHz 0xA = 3.5 MHz 0xB = 3.75
+ *    MHz 0xC = 4.0 MHz 0xD = 4.2 MHz 0xE = 4.4 MHz 0xF = 4.6 MHz
+ */
+#define SYSCON_WDTOSCCTRL_FREQSEL(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_WDTOSCCTRL_FREQSEL_SHIFT)) & SYSCON_WDTOSCCTRL_FREQSEL_MASK)
+/*! @} */
+
+/*! @name FROOSCCTRL - FRO oscillator control */
+/*! @{ */
+#define SYSCON_FROOSCCTRL_FRO_DIRECT_MASK        (0x20000U)
+#define SYSCON_FROOSCCTRL_FRO_DIRECT_SHIFT       (17U)
+/*! FRO_DIRECT - fro direct clock select
+ *  0b0..fro clock is divider by 2 or 16,depend on FAIM slow boot value
+ *  0b1..fro clock is direct from FRO oscillator
+ */
+#define SYSCON_FROOSCCTRL_FRO_DIRECT(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_FROOSCCTRL_FRO_DIRECT_SHIFT)) & SYSCON_FROOSCCTRL_FRO_DIRECT_MASK)
+/*! @} */
+
+/*! @name FRODIRECTCLKUEN - FRO direct clock source update enable register */
+/*! @{ */
+#define SYSCON_FRODIRECTCLKUEN_ENA_MASK          (0x1U)
+#define SYSCON_FRODIRECTCLKUEN_ENA_SHIFT         (0U)
+/*! ENA - Enable fro clock source update
+ *  0b0..no change
+ *  0b1..update clock source
+ */
+#define SYSCON_FRODIRECTCLKUEN_ENA(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_FRODIRECTCLKUEN_ENA_SHIFT)) & SYSCON_FRODIRECTCLKUEN_ENA_MASK)
+/*! @} */
+
+/*! @name SYSRSTSTAT - System reset status register */
+/*! @{ */
+#define SYSCON_SYSRSTSTAT_POR_MASK               (0x1U)
+#define SYSCON_SYSRSTSTAT_POR_SHIFT              (0U)
+/*! POR - POR reset status
+ *  0b0..No POR detected
+ *  0b1..POR detected. Writing a one clears this reset.
+ */
+#define SYSCON_SYSRSTSTAT_POR(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSRSTSTAT_POR_SHIFT)) & SYSCON_SYSRSTSTAT_POR_MASK)
+#define SYSCON_SYSRSTSTAT_EXTRST_MASK            (0x2U)
+#define SYSCON_SYSRSTSTAT_EXTRST_SHIFT           (1U)
+/*! EXTRST - Status of the external RESET pin. External reset status.
+ *  0b0..No reset event detected.
+ *  0b1..Reset detected. Writing a one clears this reset.
+ */
+#define SYSCON_SYSRSTSTAT_EXTRST(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSRSTSTAT_EXTRST_SHIFT)) & SYSCON_SYSRSTSTAT_EXTRST_MASK)
+#define SYSCON_SYSRSTSTAT_WDT_MASK               (0x4U)
+#define SYSCON_SYSRSTSTAT_WDT_SHIFT              (2U)
+/*! WDT - Status of the Watchdog reset
+ *  0b0..No WDT reset detected
+ *  0b1..WDT reset detected. Writing a one clears this reset.
+ */
+#define SYSCON_SYSRSTSTAT_WDT(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSRSTSTAT_WDT_SHIFT)) & SYSCON_SYSRSTSTAT_WDT_MASK)
+#define SYSCON_SYSRSTSTAT_BOD_MASK               (0x8U)
+#define SYSCON_SYSRSTSTAT_BOD_SHIFT              (3U)
+/*! BOD - Status of the Brown-out detect reset
+ *  0b0..No BOD reset detected
+ *  0b1..BOD reset detected. Writing a one clears this reset.
+ */
+#define SYSCON_SYSRSTSTAT_BOD(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSRSTSTAT_BOD_SHIFT)) & SYSCON_SYSRSTSTAT_BOD_MASK)
+#define SYSCON_SYSRSTSTAT_SYSRST_MASK            (0x10U)
+#define SYSCON_SYSRSTSTAT_SYSRST_SHIFT           (4U)
+/*! SYSRST - Status of the software system reset
+ *  0b0..No System reset detected
+ *  0b1..System reset detected. Writing a one clears this reset.
+ */
+#define SYSCON_SYSRSTSTAT_SYSRST(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSRSTSTAT_SYSRST_SHIFT)) & SYSCON_SYSRSTSTAT_SYSRST_MASK)
+/*! @} */
+
+/*! @name SYSPLLCLKSEL - System PLL clock source select register */
+/*! @{ */
+#define SYSCON_SYSPLLCLKSEL_SEL_MASK             (0x3U)
+#define SYSCON_SYSPLLCLKSEL_SEL_SHIFT            (0U)
+/*! SEL - System PLL clock source
+ *  0b00..FRO
+ *  0b01..External clock
+ *  0b10..Watchdog oscillator
+ *  0b11..FRO DIV
+ */
+#define SYSCON_SYSPLLCLKSEL_SEL(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSPLLCLKSEL_SEL_SHIFT)) & SYSCON_SYSPLLCLKSEL_SEL_MASK)
+/*! @} */
+
+/*! @name SYSPLLCLKUEN - System PLL clock source update enable register */
+/*! @{ */
+#define SYSCON_SYSPLLCLKUEN_ENA_MASK             (0x1U)
+#define SYSCON_SYSPLLCLKUEN_ENA_SHIFT            (0U)
+/*! ENA - Enable system PLL clock source update
+ *  0b0..no change
+ *  0b1..update clock source
+ */
+#define SYSCON_SYSPLLCLKUEN_ENA(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSPLLCLKUEN_ENA_SHIFT)) & SYSCON_SYSPLLCLKUEN_ENA_MASK)
+/*! @} */
+
+/*! @name MAINCLKPLLSEL - Main clock source select register */
+/*! @{ */
+#define SYSCON_MAINCLKPLLSEL_SEL_MASK            (0x3U)
+#define SYSCON_MAINCLKPLLSEL_SEL_SHIFT           (0U)
+/*! SEL - System PLL clock source
+ *  0b00..main_clk_pre_pll
+ *  0b01..sys pll
+ *  0b10..none
+ *  0b11..none
+ */
+#define SYSCON_MAINCLKPLLSEL_SEL(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_MAINCLKPLLSEL_SEL_SHIFT)) & SYSCON_MAINCLKPLLSEL_SEL_MASK)
+/*! @} */
+
+/*! @name MAINCLKPLLUEN - Main clock source update enable register */
+/*! @{ */
+#define SYSCON_MAINCLKPLLUEN_ENA_MASK            (0x1U)
+#define SYSCON_MAINCLKPLLUEN_ENA_SHIFT           (0U)
+/*! ENA - Enable main clock source update
+ *  0b0..no change
+ *  0b1..update clock source
+ */
+#define SYSCON_MAINCLKPLLUEN_ENA(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_MAINCLKPLLUEN_ENA_SHIFT)) & SYSCON_MAINCLKPLLUEN_ENA_MASK)
+/*! @} */
+
+/*! @name MAINCLKSEL - Main clock source select register */
+/*! @{ */
+#define SYSCON_MAINCLKSEL_SEL_MASK               (0x3U)
+#define SYSCON_MAINCLKSEL_SEL_SHIFT              (0U)
+/*! SEL - System PLL clock source
+ *  0b00..FRO
+ *  0b01..External clock
+ *  0b10..Watchdog oscillator
+ *  0b11..FRO_DIV
+ */
+#define SYSCON_MAINCLKSEL_SEL(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_MAINCLKSEL_SEL_SHIFT)) & SYSCON_MAINCLKSEL_SEL_MASK)
+/*! @} */
+
+/*! @name MAINCLKUEN - Main clock source update enable register */
+/*! @{ */
+#define SYSCON_MAINCLKUEN_ENA_MASK               (0x1U)
+#define SYSCON_MAINCLKUEN_ENA_SHIFT              (0U)
+/*! ENA - Enable main clock source update
+ *  0b0..no change
+ *  0b1..update clock source
+ */
+#define SYSCON_MAINCLKUEN_ENA(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_MAINCLKUEN_ENA_SHIFT)) & SYSCON_MAINCLKUEN_ENA_MASK)
+/*! @} */
+
+/*! @name SYSAHBCLKDIV - System clock divider register */
+/*! @{ */
+#define SYSCON_SYSAHBCLKDIV_DIV_MASK             (0xFFU)
+#define SYSCON_SYSAHBCLKDIV_DIV_SHIFT            (0U)
+/*! DIV - System AHB clock divider values 0: System clock disabled. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_SYSAHBCLKDIV_DIV(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKDIV_DIV_SHIFT)) & SYSCON_SYSAHBCLKDIV_DIV_MASK)
+/*! @} */
+
+/*! @name CAPTCLKSEL - CAPT clock source select register */
+/*! @{ */
+#define SYSCON_CAPTCLKSEL_SEL_MASK               (0x7U)
+#define SYSCON_CAPTCLKSEL_SEL_SHIFT              (0U)
+/*! SEL - Clock source for CAPT clock
+ *  0b000..FRO
+ *  0b001..main clock
+ *  0b010..sys pll
+ *  0b011..FRO_DIV
+ *  0b100..Watchdog oscillator
+ *  0b101..None
+ *  0b110..None
+ *  0b111..None
+ */
+#define SYSCON_CAPTCLKSEL_SEL(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_CAPTCLKSEL_SEL_SHIFT)) & SYSCON_CAPTCLKSEL_SEL_MASK)
+/*! @} */
+
+/*! @name ADCCLKSEL - ADC clock source select register */
+/*! @{ */
+#define SYSCON_ADCCLKSEL_SEL_MASK                (0x3U)
+#define SYSCON_ADCCLKSEL_SEL_SHIFT               (0U)
+/*! SEL - Clock source for ADC clock
+ *  0b00..FRO
+ *  0b01..sys pll
+ *  0b10..none
+ *  0b11..none
+ */
+#define SYSCON_ADCCLKSEL_SEL(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_ADCCLKSEL_SEL_SHIFT)) & SYSCON_ADCCLKSEL_SEL_MASK)
+/*! @} */
+
+/*! @name ADCCLKDIV - ADC clock divider register */
+/*! @{ */
+#define SYSCON_ADCCLKDIV_DIV_MASK                (0xFFU)
+#define SYSCON_ADCCLKDIV_DIV_SHIFT               (0U)
+/*! DIV - ADC clock divider values 0: ADC clock disabled. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_ADCCLKDIV_DIV(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_ADCCLKDIV_DIV_SHIFT)) & SYSCON_ADCCLKDIV_DIV_MASK)
+/*! @} */
+
+/*! @name SCTCLKSEL - SCT clock source select register */
+/*! @{ */
+#define SYSCON_SCTCLKSEL_SEL_MASK                (0x3U)
+#define SYSCON_SCTCLKSEL_SEL_SHIFT               (0U)
+/*! SEL - Clock source for SCT clock
+ *  0b00..FRO
+ *  0b01..main clock
+ *  0b10..sys pll
+ *  0b11..none
+ */
+#define SYSCON_SCTCLKSEL_SEL(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_SCTCLKSEL_SEL_SHIFT)) & SYSCON_SCTCLKSEL_SEL_MASK)
+/*! @} */
+
+/*! @name SCTCLKDIV - SCT clock divider register */
+/*! @{ */
+#define SYSCON_SCTCLKDIV_DIV_MASK                (0xFFU)
+#define SYSCON_SCTCLKDIV_DIV_SHIFT               (0U)
+/*! DIV - SCT clock divider values 0: SCT clock disabled. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_SCTCLKDIV_DIV(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_SCTCLKDIV_DIV_SHIFT)) & SYSCON_SCTCLKDIV_DIV_MASK)
+/*! @} */
+
+/*! @name EXTCLKSEL - external clock source select register */
+/*! @{ */
+#define SYSCON_EXTCLKSEL_SEL_MASK                (0x1U)
+#define SYSCON_EXTCLKSEL_SEL_SHIFT               (0U)
+/*! SEL - Clock source for external clock
+ *  0b0..System oscillator
+ *  0b1..Clk_in
+ */
+#define SYSCON_EXTCLKSEL_SEL(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_EXTCLKSEL_SEL_SHIFT)) & SYSCON_EXTCLKSEL_SEL_MASK)
+/*! @} */
+
+/*! @name SYSAHBCLKCTRL0 - System clock group 0 control register */
+/*! @{ */
+#define SYSCON_SYSAHBCLKCTRL0_SYS_MASK           (0x1U)
+#define SYSCON_SYSAHBCLKCTRL0_SYS_SHIFT          (0U)
+/*! SYS - Enables the clock for the AHB, the APB bridge, the Cortex-M0+ core clocks, SYSCON, and the
+ *    PMU. This bit is read only and always reads as 1.
+ */
+#define SYSCON_SYSAHBCLKCTRL0_SYS(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_SYS_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_SYS_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_ROM_MASK           (0x2U)
+#define SYSCON_SYSAHBCLKCTRL0_ROM_SHIFT          (1U)
+/*! ROM - Enables clock for ROM.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_ROM(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_ROM_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_ROM_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_RAM0_1_MASK        (0x4U)
+#define SYSCON_SYSAHBCLKCTRL0_RAM0_1_SHIFT       (2U)
+/*! RAM0_1 - Enables clock for SRAM0 and SRAM1.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_RAM0_1(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_RAM0_1_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_RAM0_1_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_FLASH_MASK         (0x10U)
+#define SYSCON_SYSAHBCLKCTRL0_FLASH_SHIFT        (4U)
+/*! FLASH - Enables clock for flash.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_FLASH(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_FLASH_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_FLASH_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_I2C0_MASK          (0x20U)
+#define SYSCON_SYSAHBCLKCTRL0_I2C0_SHIFT         (5U)
+/*! I2C0 - Enables clock for I2C0.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_I2C0(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_I2C0_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_I2C0_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_GPIO0_MASK         (0x40U)
+#define SYSCON_SYSAHBCLKCTRL0_GPIO0_SHIFT        (6U)
+/*! GPIO0 - Enables clock for GPIO0 port registers.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_GPIO0(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_GPIO0_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_GPIO0_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_SWM_MASK           (0x80U)
+#define SYSCON_SYSAHBCLKCTRL0_SWM_SHIFT          (7U)
+/*! SWM - Enables clock for switch matrix.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_SWM(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_SWM_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_SWM_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_SCT_MASK           (0x100U)
+#define SYSCON_SYSAHBCLKCTRL0_SCT_SHIFT          (8U)
+/*! SCT - Enables clock for state configurable timer SCTimer/PWM.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_SCT(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_SCT_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_SCT_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_WKT_MASK           (0x200U)
+#define SYSCON_SYSAHBCLKCTRL0_WKT_SHIFT          (9U)
+/*! WKT - Enables clock for self-wake-up timer.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_WKT(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_WKT_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_WKT_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_MRT_MASK           (0x400U)
+#define SYSCON_SYSAHBCLKCTRL0_MRT_SHIFT          (10U)
+/*! MRT - Enables clock for multi-rate timer.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_MRT(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_MRT_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_MRT_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_SPI0_MASK          (0x800U)
+#define SYSCON_SYSAHBCLKCTRL0_SPI0_SHIFT         (11U)
+/*! SPI0 - Enables clock for SPI0.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_SPI0(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_SPI0_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_SPI0_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_SPI1_MASK          (0x1000U)
+#define SYSCON_SYSAHBCLKCTRL0_SPI1_SHIFT         (12U)
+/*! SPI1 - Enables clock for SPI1.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_SPI1(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_SPI1_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_SPI1_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_CRC_MASK           (0x2000U)
+#define SYSCON_SYSAHBCLKCTRL0_CRC_SHIFT          (13U)
+/*! CRC - Enables clock for CRC.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_CRC(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_CRC_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_CRC_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_UART0_MASK         (0x4000U)
+#define SYSCON_SYSAHBCLKCTRL0_UART0_SHIFT        (14U)
+/*! UART0 - Enables clock for UART0.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_UART0(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_UART0_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_UART0_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_UART1_MASK         (0x8000U)
+#define SYSCON_SYSAHBCLKCTRL0_UART1_SHIFT        (15U)
+/*! UART1 - Enables clock for UART1.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_UART1(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_UART1_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_UART1_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_UART2_MASK         (0x10000U)
+#define SYSCON_SYSAHBCLKCTRL0_UART2_SHIFT        (16U)
+/*! UART2 - Enables clock for UART2.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_UART2(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_UART2_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_UART2_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_WWDT_MASK          (0x20000U)
+#define SYSCON_SYSAHBCLKCTRL0_WWDT_SHIFT         (17U)
+/*! WWDT - Enables clock for WWDT.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_WWDT(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_WWDT_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_WWDT_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_IOCON_MASK         (0x40000U)
+#define SYSCON_SYSAHBCLKCTRL0_IOCON_SHIFT        (18U)
+/*! IOCON - Enables clock for IOCON.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_IOCON(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_IOCON_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_IOCON_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_ACMP_MASK          (0x80000U)
+#define SYSCON_SYSAHBCLKCTRL0_ACMP_SHIFT         (19U)
+/*! ACMP - Enables clock for analog comparator.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_ACMP(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_ACMP_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_ACMP_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_GPIO1_MASK         (0x100000U)
+#define SYSCON_SYSAHBCLKCTRL0_GPIO1_SHIFT        (20U)
+/*! GPIO1 - Enables clock for GPIO1 port registers.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_GPIO1(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_GPIO1_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_GPIO1_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_I2C1_MASK          (0x200000U)
+#define SYSCON_SYSAHBCLKCTRL0_I2C1_SHIFT         (21U)
+/*! I2C1 - Enables clock for I2C1.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_I2C1(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_I2C1_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_I2C1_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_I2C2_MASK          (0x400000U)
+#define SYSCON_SYSAHBCLKCTRL0_I2C2_SHIFT         (22U)
+/*! I2C2 - Enables clock for I2C2.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_I2C2(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_I2C2_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_I2C2_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_I2C3_MASK          (0x800000U)
+#define SYSCON_SYSAHBCLKCTRL0_I2C3_SHIFT         (23U)
+/*! I2C3 - Enables clock for I2C3.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_I2C3(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_I2C3_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_I2C3_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_ADC_MASK           (0x1000000U)
+#define SYSCON_SYSAHBCLKCTRL0_ADC_SHIFT          (24U)
+/*! ADC - Enables clock for ADC.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_ADC(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_ADC_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_ADC_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_CTIMER_MASK        (0x2000000U)
+#define SYSCON_SYSAHBCLKCTRL0_CTIMER_SHIFT       (25U)
+/*! CTIMER - Enables clock for CTIMER.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_CTIMER(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_CTIMER_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_CTIMER_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_MTB_MASK           (0x4000000U)
+#define SYSCON_SYSAHBCLKCTRL0_MTB_SHIFT          (26U)
+/*! MTB - Enables clock to micro-trace buffer control registers. Turn on this clock when using the
+ *    micro-trace buffer for debug purposes.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_MTB(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_MTB_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_MTB_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_DAC0_MASK          (0x8000000U)
+#define SYSCON_SYSAHBCLKCTRL0_DAC0_SHIFT         (27U)
+/*! DAC0 - Enables clock for DAC0.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_DAC0(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_DAC0_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_DAC0_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_GPIO_INT_MASK      (0x10000000U)
+#define SYSCON_SYSAHBCLKCTRL0_GPIO_INT_SHIFT     (28U)
+/*! GPIO_INT - Enable clock for GPIO pin interrupt registers
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_GPIO_INT(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_GPIO_INT_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_GPIO_INT_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_DMA_MASK           (0x20000000U)
+#define SYSCON_SYSAHBCLKCTRL0_DMA_SHIFT          (29U)
+/*! DMA - Enables clock for DMA.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_DMA(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_DMA_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_DMA_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_UART3_MASK         (0x40000000U)
+#define SYSCON_SYSAHBCLKCTRL0_UART3_SHIFT        (30U)
+/*! UART3 - Enables clock for UART3.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_UART3(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_UART3_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_UART3_MASK)
+#define SYSCON_SYSAHBCLKCTRL0_UART4_MASK         (0x80000000U)
+#define SYSCON_SYSAHBCLKCTRL0_UART4_SHIFT        (31U)
+/*! UART4 - Enables clock for UART4.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL0_UART4(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL0_UART4_SHIFT)) & SYSCON_SYSAHBCLKCTRL0_UART4_MASK)
+/*! @} */
+
+/*! @name SYSAHBCLKCTRL1 - System clock group 1 control register */
+/*! @{ */
+#define SYSCON_SYSAHBCLKCTRL1_CAPT_MASK          (0x1U)
+#define SYSCON_SYSAHBCLKCTRL1_CAPT_SHIFT         (0U)
+/*! CAPT - Enables clock for CAPT.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL1_CAPT(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL1_CAPT_SHIFT)) & SYSCON_SYSAHBCLKCTRL1_CAPT_MASK)
+#define SYSCON_SYSAHBCLKCTRL1_DAC1_MASK          (0x2U)
+#define SYSCON_SYSAHBCLKCTRL1_DAC1_SHIFT         (1U)
+/*! DAC1 - Enables clock for DAC1.
+ *  0b0..disable
+ *  0b1..enable
+ */
+#define SYSCON_SYSAHBCLKCTRL1_DAC1(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSAHBCLKCTRL1_DAC1_SHIFT)) & SYSCON_SYSAHBCLKCTRL1_DAC1_MASK)
+/*! @} */
+
+/*! @name PRESETCTRL0 - Peripheral reset group 0 control register */
+/*! @{ */
+#define SYSCON_PRESETCTRL0_FLASH_RST_N_MASK      (0x10U)
+#define SYSCON_PRESETCTRL0_FLASH_RST_N_SHIFT     (4U)
+/*! FLASH_RST_N - flash controller reset control
+ *  0b0..Assert the flash controller reset.
+ *  0b1..Clear the flash controller reset.
+ */
+#define SYSCON_PRESETCTRL0_FLASH_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_FLASH_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_FLASH_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_I2C0_RST_N_MASK       (0x20U)
+#define SYSCON_PRESETCTRL0_I2C0_RST_N_SHIFT      (5U)
+/*! I2C0_RST_N - I2C0 reset control
+ *  0b0..Assert the I2C0 reset.
+ *  0b1..Clear the I2C0 reset.
+ */
+#define SYSCON_PRESETCTRL0_I2C0_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_I2C0_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_I2C0_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_GPIO0_RST_N_MASK      (0x40U)
+#define SYSCON_PRESETCTRL0_GPIO0_RST_N_SHIFT     (6U)
+/*! GPIO0_RST_N - GPIO0 reset control
+ *  0b0..Assert the GPIO0 reset.
+ *  0b1..Clear the GPIO0 reset.
+ */
+#define SYSCON_PRESETCTRL0_GPIO0_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_GPIO0_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_GPIO0_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_SWM_RST_N_MASK        (0x80U)
+#define SYSCON_PRESETCTRL0_SWM_RST_N_SHIFT       (7U)
+/*! SWM_RST_N - SWM reset control
+ *  0b0..Assert the SWM reset.
+ *  0b1..Clear the SWM reset.
+ */
+#define SYSCON_PRESETCTRL0_SWM_RST_N(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_SWM_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_SWM_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_SCT_RST_N_MASK        (0x100U)
+#define SYSCON_PRESETCTRL0_SCT_RST_N_SHIFT       (8U)
+/*! SCT_RST_N - SCT reset control
+ *  0b0..Assert the SCT reset.
+ *  0b1..Clear the SCT reset.
+ */
+#define SYSCON_PRESETCTRL0_SCT_RST_N(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_SCT_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_SCT_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_WKT_RST_N_MASK        (0x200U)
+#define SYSCON_PRESETCTRL0_WKT_RST_N_SHIFT       (9U)
+/*! WKT_RST_N - Self-wake-up timer (WKT) reset control
+ *  0b0..Assert the WKT reset.
+ *  0b1..Clear the WKT reset.
+ */
+#define SYSCON_PRESETCTRL0_WKT_RST_N(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_WKT_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_WKT_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_MRT_RST_N_MASK        (0x400U)
+#define SYSCON_PRESETCTRL0_MRT_RST_N_SHIFT       (10U)
+/*! MRT_RST_N - Multi-rate timer (MRT) reset control
+ *  0b0..Assert the MRT reset.
+ *  0b1..Clear the MRT reset.
+ */
+#define SYSCON_PRESETCTRL0_MRT_RST_N(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_MRT_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_MRT_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_SPI0_RST_N_MASK       (0x800U)
+#define SYSCON_PRESETCTRL0_SPI0_RST_N_SHIFT      (11U)
+/*! SPI0_RST_N - SPI0 reset control
+ *  0b0..Assert the SPI0 reset.
+ *  0b1..Clear the SPI0 reset.
+ */
+#define SYSCON_PRESETCTRL0_SPI0_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_SPI0_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_SPI0_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_SPI1_RST_N_MASK       (0x1000U)
+#define SYSCON_PRESETCTRL0_SPI1_RST_N_SHIFT      (12U)
+/*! SPI1_RST_N - SPI1 reset control
+ *  0b0..Assert the SPI1 reset.
+ *  0b1..Clear the SPI1 reset.
+ */
+#define SYSCON_PRESETCTRL0_SPI1_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_SPI1_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_SPI1_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_CRC_RST_N_MASK        (0x2000U)
+#define SYSCON_PRESETCTRL0_CRC_RST_N_SHIFT       (13U)
+/*! CRC_RST_N - CRC engine reset control
+ *  0b0..Assert the CRC reset.
+ *  0b1..Clear the CRC reset.
+ */
+#define SYSCON_PRESETCTRL0_CRC_RST_N(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_CRC_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_CRC_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_UART0_RST_N_MASK      (0x4000U)
+#define SYSCON_PRESETCTRL0_UART0_RST_N_SHIFT     (14U)
+/*! UART0_RST_N - UART0 reset control
+ *  0b0..Assert the UART0 reset.
+ *  0b1..Clear the UART0 reset.
+ */
+#define SYSCON_PRESETCTRL0_UART0_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_UART0_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_UART0_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_UART1_RST_N_MASK      (0x8000U)
+#define SYSCON_PRESETCTRL0_UART1_RST_N_SHIFT     (15U)
+/*! UART1_RST_N - UART1 reset control
+ *  0b0..Assert the UART1 reset.
+ *  0b1..Clear the UART1 reset.
+ */
+#define SYSCON_PRESETCTRL0_UART1_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_UART1_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_UART1_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_UART2_RST_N_MASK      (0x10000U)
+#define SYSCON_PRESETCTRL0_UART2_RST_N_SHIFT     (16U)
+/*! UART2_RST_N - UART2 reset control
+ *  0b0..Assert the UART2 reset.
+ *  0b1..Clear the UART2 reset.
+ */
+#define SYSCON_PRESETCTRL0_UART2_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_UART2_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_UART2_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_IOCON_RST_N_MASK      (0x40000U)
+#define SYSCON_PRESETCTRL0_IOCON_RST_N_SHIFT     (18U)
+/*! IOCON_RST_N - IOCON reset control
+ *  0b0..Assert the IOCON reset.
+ *  0b1..Clear the IOCON reset.
+ */
+#define SYSCON_PRESETCTRL0_IOCON_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_IOCON_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_IOCON_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_ACMP_RST_N_MASK       (0x80000U)
+#define SYSCON_PRESETCTRL0_ACMP_RST_N_SHIFT      (19U)
+/*! ACMP_RST_N - Analog comparator reset control
+ *  0b0..Assert the analog comparator reset.
+ *  0b1..Clear the analog comparator reset.
+ */
+#define SYSCON_PRESETCTRL0_ACMP_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_ACMP_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_ACMP_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_GPIO1_RST_N_MASK      (0x100000U)
+#define SYSCON_PRESETCTRL0_GPIO1_RST_N_SHIFT     (20U)
+/*! GPIO1_RST_N - GPIO1 reset control
+ *  0b0..Assert the GPIO1 reset.
+ *  0b1..Clear the GPIO1 reset.
+ */
+#define SYSCON_PRESETCTRL0_GPIO1_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_GPIO1_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_GPIO1_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_I2C1_RST_N_MASK       (0x200000U)
+#define SYSCON_PRESETCTRL0_I2C1_RST_N_SHIFT      (21U)
+/*! I2C1_RST_N - I2C1 reset control
+ *  0b0..Assert the I2C1 reset.
+ *  0b1..Clear the I2C1 reset.
+ */
+#define SYSCON_PRESETCTRL0_I2C1_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_I2C1_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_I2C1_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_I2C2_RST_N_MASK       (0x400000U)
+#define SYSCON_PRESETCTRL0_I2C2_RST_N_SHIFT      (22U)
+/*! I2C2_RST_N - I2C2 reset control
+ *  0b0..Assert the I2C2 reset.
+ *  0b1..Clear the I2C2 reset.
+ */
+#define SYSCON_PRESETCTRL0_I2C2_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_I2C2_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_I2C2_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_I2C3_RST_N_MASK       (0x800000U)
+#define SYSCON_PRESETCTRL0_I2C3_RST_N_SHIFT      (23U)
+/*! I2C3_RST_N - I2C3 reset control
+ *  0b0..Assert the I2C3 reset.
+ *  0b1..Clear the I2C3 reset.
+ */
+#define SYSCON_PRESETCTRL0_I2C3_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_I2C3_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_I2C3_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_ADC_RST_N_MASK        (0x1000000U)
+#define SYSCON_PRESETCTRL0_ADC_RST_N_SHIFT       (24U)
+/*! ADC_RST_N - ADC reset control
+ *  0b0..Assert the ADC reset.
+ *  0b1..Clear the ADC reset.
+ */
+#define SYSCON_PRESETCTRL0_ADC_RST_N(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_ADC_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_ADC_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_CTIMER_RST_N_MASK     (0x2000000U)
+#define SYSCON_PRESETCTRL0_CTIMER_RST_N_SHIFT    (25U)
+/*! CTIMER_RST_N - CTIMER reset control
+ *  0b0..Assert the CTIMER reset.
+ *  0b1..Clear the CTIMER reset.
+ */
+#define SYSCON_PRESETCTRL0_CTIMER_RST_N(x)       (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_CTIMER_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_CTIMER_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_DAC0_RST_N_MASK       (0x8000000U)
+#define SYSCON_PRESETCTRL0_DAC0_RST_N_SHIFT      (27U)
+/*! DAC0_RST_N - DAC0 reset control
+ *  0b0..Assert the DAC0 reset.
+ *  0b1..Clear the DAC0 reset.
+ */
+#define SYSCON_PRESETCTRL0_DAC0_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_DAC0_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_DAC0_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_GPIOINT_RST_N_MASK    (0x10000000U)
+#define SYSCON_PRESETCTRL0_GPIOINT_RST_N_SHIFT   (28U)
+/*! GPIOINT_RST_N - GPIOINT reset control
+ *  0b0..Assert the GPIOINT reset.
+ *  0b1..Clear the GPIOINT reset.
+ */
+#define SYSCON_PRESETCTRL0_GPIOINT_RST_N(x)      (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_GPIOINT_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_GPIOINT_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_DMA_RST_N_MASK        (0x20000000U)
+#define SYSCON_PRESETCTRL0_DMA_RST_N_SHIFT       (29U)
+/*! DMA_RST_N - DMA reset control
+ *  0b0..Assert the DMA reset.
+ *  0b1..Clear the DMA reset.
+ */
+#define SYSCON_PRESETCTRL0_DMA_RST_N(x)          (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_DMA_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_DMA_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_UART3_RST_N_MASK      (0x40000000U)
+#define SYSCON_PRESETCTRL0_UART3_RST_N_SHIFT     (30U)
+/*! UART3_RST_N - UART3 reset control
+ *  0b0..Assert the UART3 reset.
+ *  0b1..Clear the UART3 reset.
+ */
+#define SYSCON_PRESETCTRL0_UART3_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_UART3_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_UART3_RST_N_MASK)
+#define SYSCON_PRESETCTRL0_UART4_RST_N_MASK      (0x80000000U)
+#define SYSCON_PRESETCTRL0_UART4_RST_N_SHIFT     (31U)
+/*! UART4_RST_N - UART4 reset control
+ *  0b0..Assert the UART4 reset.
+ *  0b1..Clear the UART4 reset.
+ */
+#define SYSCON_PRESETCTRL0_UART4_RST_N(x)        (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL0_UART4_RST_N_SHIFT)) & SYSCON_PRESETCTRL0_UART4_RST_N_MASK)
+/*! @} */
+
+/*! @name PRESETCTRL1 - Peripheral reset group 1 control register */
+/*! @{ */
+#define SYSCON_PRESETCTRL1_CAPT_RST_N_MASK       (0x1U)
+#define SYSCON_PRESETCTRL1_CAPT_RST_N_SHIFT      (0U)
+/*! CAPT_RST_N - Capacitive touch reset control
+ *  0b0..Assert the capacitive touch reset.
+ *  0b1..Clear the capacitive touch reset.
+ */
+#define SYSCON_PRESETCTRL1_CAPT_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL1_CAPT_RST_N_SHIFT)) & SYSCON_PRESETCTRL1_CAPT_RST_N_MASK)
+#define SYSCON_PRESETCTRL1_DAC1_RST_N_MASK       (0x2U)
+#define SYSCON_PRESETCTRL1_DAC1_RST_N_SHIFT      (1U)
+/*! DAC1_RST_N - DAC1 reset control
+ *  0b0..Assert the DAC1 reset.
+ *  0b1..Clear the DAC1 reset.
+ */
+#define SYSCON_PRESETCTRL1_DAC1_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL1_DAC1_RST_N_SHIFT)) & SYSCON_PRESETCTRL1_DAC1_RST_N_MASK)
+#define SYSCON_PRESETCTRL1_FRG0_RST_N_MASK       (0x8U)
+#define SYSCON_PRESETCTRL1_FRG0_RST_N_SHIFT      (3U)
+/*! FRG0_RST_N - Fractional baud rate generator 0 reset control
+ *  0b0..Assert the FRG0 reset.
+ *  0b1..Clear the FRG0 reset.
+ */
+#define SYSCON_PRESETCTRL1_FRG0_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL1_FRG0_RST_N_SHIFT)) & SYSCON_PRESETCTRL1_FRG0_RST_N_MASK)
+#define SYSCON_PRESETCTRL1_FRG1_RST_N_MASK       (0x10U)
+#define SYSCON_PRESETCTRL1_FRG1_RST_N_SHIFT      (4U)
+/*! FRG1_RST_N - Fractional baud rate generator 1 reset control
+ *  0b0..Assert the FRG1 reset.
+ *  0b1..Clear the FRG1 reset.
+ */
+#define SYSCON_PRESETCTRL1_FRG1_RST_N(x)         (((uint32_t)(((uint32_t)(x)) << SYSCON_PRESETCTRL1_FRG1_RST_N_SHIFT)) & SYSCON_PRESETCTRL1_FRG1_RST_N_MASK)
+/*! @} */
+
+/*! @name FCLKSEL - peripheral clock source select register. FCLK0SEL~FCLK4SEL are for UART0~UART4 clock source select register. FCLK5SEL~FCLK8SEL are for I2C0~I2C3 clock source select register. FCLK9SEL~FCLK10SEL are for SPI0~SPI1 clock source select register. */
+/*! @{ */
+#define SYSCON_FCLKSEL_SEL_MASK                  (0x7U)
+#define SYSCON_FCLKSEL_SEL_SHIFT                 (0U)
+/*! SEL - Peripheral clock source
+ *  0b000..FRO
+ *  0b001..main clock
+ *  0b010..Frg0clk
+ *  0b011..Frg1clk
+ *  0b100..FRO_DIV
+ *  0b101..none
+ *  0b110..none
+ *  0b111..none
+ */
+#define SYSCON_FCLKSEL_SEL(x)                    (((uint32_t)(((uint32_t)(x)) << SYSCON_FCLKSEL_SEL_SHIFT)) & SYSCON_FCLKSEL_SEL_MASK)
+/*! @} */
+
+/* The count of SYSCON_FCLKSEL */
+#define SYSCON_FCLKSEL_COUNT                     (11U)
+
+/*! @name FRG_FRGDIV - fractional generator N divider value register */
+/*! @{ */
+#define SYSCON_FRG_FRGDIV_DIV_MASK               (0xFFU)
+#define SYSCON_FRG_FRGDIV_DIV_SHIFT              (0U)
+/*! DIV - Denominator of the fractional divider. DIV is equal to the programmed value +1. Always set
+ *    to 0xFF to use with the fractional baud rate generator.
+ */
+#define SYSCON_FRG_FRGDIV_DIV(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_FRG_FRGDIV_DIV_SHIFT)) & SYSCON_FRG_FRGDIV_DIV_MASK)
+/*! @} */
+
+/* The count of SYSCON_FRG_FRGDIV */
+#define SYSCON_FRG_FRGDIV_COUNT                  (2U)
+
+/*! @name FRG_FRGMULT - fractional generator N multiplier value register */
+/*! @{ */
+#define SYSCON_FRG_FRGMULT_MULT_MASK             (0xFFU)
+#define SYSCON_FRG_FRGMULT_MULT_SHIFT            (0U)
+/*! MULT - Numerator of the fractional divider. MULT is equal to the programmed value.
+ */
+#define SYSCON_FRG_FRGMULT_MULT(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_FRG_FRGMULT_MULT_SHIFT)) & SYSCON_FRG_FRGMULT_MULT_MASK)
+/*! @} */
+
+/* The count of SYSCON_FRG_FRGMULT */
+#define SYSCON_FRG_FRGMULT_COUNT                 (2U)
+
+/*! @name FRG_FRGCLKSEL - FRG N clock source select register */
+/*! @{ */
+#define SYSCON_FRG_FRGCLKSEL_SEL_MASK            (0x3U)
+#define SYSCON_FRG_FRGCLKSEL_SEL_SHIFT           (0U)
+/*! SEL - Clock source for frgN_src clock
+ *  0b00..FRO
+ *  0b01..main clock
+ *  0b10..sys pll
+ *  0b11..None
+ */
+#define SYSCON_FRG_FRGCLKSEL_SEL(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_FRG_FRGCLKSEL_SEL_SHIFT)) & SYSCON_FRG_FRGCLKSEL_SEL_MASK)
+/*! @} */
+
+/* The count of SYSCON_FRG_FRGCLKSEL */
+#define SYSCON_FRG_FRGCLKSEL_COUNT               (2U)
+
+/*! @name CLKOUTSEL - CLKOUT clock source select register */
+/*! @{ */
+#define SYSCON_CLKOUTSEL_SEL_MASK                (0x7U)
+#define SYSCON_CLKOUTSEL_SEL_SHIFT               (0U)
+/*! SEL - CLKOUT clock source
+ *  0b000..FRO
+ *  0b001..main clock
+ *  0b010..sys pll
+ *  0b011..external clock
+ *  0b100..Watchdog oscillator
+ *  0b101..None
+ *  0b110..None
+ *  0b111..None
+ */
+#define SYSCON_CLKOUTSEL_SEL(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_CLKOUTSEL_SEL_SHIFT)) & SYSCON_CLKOUTSEL_SEL_MASK)
+/*! @} */
+
+/*! @name CLKOUTDIV - CLKOUT clock divider registers */
+/*! @{ */
+#define SYSCON_CLKOUTDIV_DIV_MASK                (0xFFU)
+#define SYSCON_CLKOUTDIV_DIV_SHIFT               (0U)
+/*! DIV - CLKOUT clock divider values 0: Disable CLKOUT clock divider. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_CLKOUTDIV_DIV(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_CLKOUTDIV_DIV_SHIFT)) & SYSCON_CLKOUTDIV_DIV_MASK)
+/*! @} */
+
+/*! @name EXTTRACECMD - External trace buffer command register */
+/*! @{ */
+#define SYSCON_EXTTRACECMD_START_MASK            (0x1U)
+#define SYSCON_EXTTRACECMD_START_SHIFT           (0U)
+/*! START - Trace start command. Writing a one to this bit sets the TSTART signal to the MTB to HIGH
+ *    and starts tracing if the TSTARTEN bit in the MTB master register is set to one as well.
+ */
+#define SYSCON_EXTTRACECMD_START(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_EXTTRACECMD_START_SHIFT)) & SYSCON_EXTTRACECMD_START_MASK)
+#define SYSCON_EXTTRACECMD_STOP_MASK             (0x2U)
+#define SYSCON_EXTTRACECMD_STOP_SHIFT            (1U)
+/*! STOP - Trace stop command. Writing a one to this bit sets the TSTOP signal in the MTB to HIGH
+ *    and stops tracing if the TSTOPEN bit in the MTB master register is set to one as well.
+ */
+#define SYSCON_EXTTRACECMD_STOP(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_EXTTRACECMD_STOP_SHIFT)) & SYSCON_EXTTRACECMD_STOP_MASK)
+/*! @} */
+
+/*! @name PIOPORCAP - POR captured PIO N status register(PIO0 has 32 PIOs, PIO1 has 22 PIOs) */
+/*! @{ */
+#define SYSCON_PIOPORCAP_PIOSTAT_MASK            (0xFFFFFFFFU)
+#define SYSCON_PIOPORCAP_PIOSTAT_SHIFT           (0U)
+/*! PIOSTAT - State of PION_31 through PION_0 at power-on reset
+ */
+#define SYSCON_PIOPORCAP_PIOSTAT(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_PIOPORCAP_PIOSTAT_SHIFT)) & SYSCON_PIOPORCAP_PIOSTAT_MASK)
+/*! @} */
+
+/* The count of SYSCON_PIOPORCAP */
+#define SYSCON_PIOPORCAP_COUNT                   (2U)
+
+/*! @name IOCONCLKDIV6 - Peripheral clock 6 to the IOCON block for programmable glitch filter */
+/*! @{ */
+#define SYSCON_IOCONCLKDIV6_DIV_MASK             (0xFFU)
+#define SYSCON_IOCONCLKDIV6_DIV_SHIFT            (0U)
+/*! DIV - IOCON glitch filter clock divider values 0: Disable IOCONFILTR_PCLK. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_IOCONCLKDIV6_DIV(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_IOCONCLKDIV6_DIV_SHIFT)) & SYSCON_IOCONCLKDIV6_DIV_MASK)
+/*! @} */
+
+/*! @name IOCONCLKDIV5 - Peripheral clock 6 to the IOCON block for programmable glitch filter */
+/*! @{ */
+#define SYSCON_IOCONCLKDIV5_DIV_MASK             (0xFFU)
+#define SYSCON_IOCONCLKDIV5_DIV_SHIFT            (0U)
+/*! DIV - IOCON glitch filter clock divider values 0: Disable IOCONFILTR_PCLK. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_IOCONCLKDIV5_DIV(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_IOCONCLKDIV5_DIV_SHIFT)) & SYSCON_IOCONCLKDIV5_DIV_MASK)
+/*! @} */
+
+/*! @name IOCONCLKDIV4 - Peripheral clock 4 to the IOCON block for programmable glitch filter */
+/*! @{ */
+#define SYSCON_IOCONCLKDIV4_DIV_MASK             (0xFFU)
+#define SYSCON_IOCONCLKDIV4_DIV_SHIFT            (0U)
+/*! DIV - IOCON glitch filter clock divider values 0: Disable IOCONFILTR_PCLK. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_IOCONCLKDIV4_DIV(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_IOCONCLKDIV4_DIV_SHIFT)) & SYSCON_IOCONCLKDIV4_DIV_MASK)
+/*! @} */
+
+/*! @name IOCONCLKDIV3 - Peripheral clock 3 to the IOCON block for programmable glitch filter */
+/*! @{ */
+#define SYSCON_IOCONCLKDIV3_DIV_MASK             (0xFFU)
+#define SYSCON_IOCONCLKDIV3_DIV_SHIFT            (0U)
+/*! DIV - IOCON glitch filter clock divider values 0: Disable IOCONFILTR_PCLK. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_IOCONCLKDIV3_DIV(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_IOCONCLKDIV3_DIV_SHIFT)) & SYSCON_IOCONCLKDIV3_DIV_MASK)
+/*! @} */
+
+/*! @name IOCONCLKDIV2 - Peripheral clock 2 to the IOCON block for programmable glitch filter */
+/*! @{ */
+#define SYSCON_IOCONCLKDIV2_DIV_MASK             (0xFFU)
+#define SYSCON_IOCONCLKDIV2_DIV_SHIFT            (0U)
+/*! DIV - IOCON glitch filter clock divider values 0: Disable IOCONFILTR_PCLK. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_IOCONCLKDIV2_DIV(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_IOCONCLKDIV2_DIV_SHIFT)) & SYSCON_IOCONCLKDIV2_DIV_MASK)
+/*! @} */
+
+/*! @name IOCONCLKDIV1 - Peripheral clock 1 to the IOCON block for programmable glitch filter */
+/*! @{ */
+#define SYSCON_IOCONCLKDIV1_DIV_MASK             (0xFFU)
+#define SYSCON_IOCONCLKDIV1_DIV_SHIFT            (0U)
+/*! DIV - IOCON glitch filter clock divider values 0: Disable IOCONFILTR_PCLK. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_IOCONCLKDIV1_DIV(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_IOCONCLKDIV1_DIV_SHIFT)) & SYSCON_IOCONCLKDIV1_DIV_MASK)
+/*! @} */
+
+/*! @name IOCONCLKDIV0 - Peripheral clock 0 to the IOCON block for programmable glitch filter */
+/*! @{ */
+#define SYSCON_IOCONCLKDIV0_DIV_MASK             (0xFFU)
+#define SYSCON_IOCONCLKDIV0_DIV_SHIFT            (0U)
+/*! DIV - IOCON glitch filter clock divider values 0: Disable IOCONFILTR_PCLK. 1: Divide by 1. to 255: Divide by 255.
+ */
+#define SYSCON_IOCONCLKDIV0_DIV(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_IOCONCLKDIV0_DIV_SHIFT)) & SYSCON_IOCONCLKDIV0_DIV_MASK)
+/*! @} */
+
+/*! @name BODCTRL - BOD control register */
+/*! @{ */
+#define SYSCON_BODCTRL_BODRSTLEV_MASK            (0x3U)
+#define SYSCON_BODCTRL_BODRSTLEV_SHIFT           (0U)
+/*! BODRSTLEV - BOD reset level
+ *  0b00..Reserved
+ *  0b01..Level 1
+ *  0b10..Level 2
+ *  0b11..Level 3
+ */
+#define SYSCON_BODCTRL_BODRSTLEV(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_BODCTRL_BODRSTLEV_SHIFT)) & SYSCON_BODCTRL_BODRSTLEV_MASK)
+#define SYSCON_BODCTRL_BODINTVAL_MASK            (0xCU)
+#define SYSCON_BODCTRL_BODINTVAL_SHIFT           (2U)
+/*! BODINTVAL - BOD interrupt level
+ *  0b00..Reserved
+ *  0b01..Level 1
+ *  0b10..Level 2
+ *  0b11..Level 3
+ */
+#define SYSCON_BODCTRL_BODINTVAL(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_BODCTRL_BODINTVAL_SHIFT)) & SYSCON_BODCTRL_BODINTVAL_MASK)
+#define SYSCON_BODCTRL_BODRSTENA_MASK            (0x10U)
+#define SYSCON_BODCTRL_BODRSTENA_SHIFT           (4U)
+/*! BODRSTENA - BOD reset enable
+ *  0b0..Disable reset function.
+ *  0b1..Enable reset function.
+ */
+#define SYSCON_BODCTRL_BODRSTENA(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_BODCTRL_BODRSTENA_SHIFT)) & SYSCON_BODCTRL_BODRSTENA_MASK)
+/*! @} */
+
+/*! @name SYSTCKCAL - System tick timer calibration register */
+/*! @{ */
+#define SYSCON_SYSTCKCAL_CAL_MASK                (0x3FFFFFFU)
+#define SYSCON_SYSTCKCAL_CAL_SHIFT               (0U)
+/*! CAL - System tick timer calibration value.
+ */
+#define SYSCON_SYSTCKCAL_CAL(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_SYSTCKCAL_CAL_SHIFT)) & SYSCON_SYSTCKCAL_CAL_MASK)
+/*! @} */
+
+/*! @name IRQLATENCY - IRQ latency register */
+/*! @{ */
+#define SYSCON_IRQLATENCY_LATENCY_MASK           (0xFFU)
+#define SYSCON_IRQLATENCY_LATENCY_SHIFT          (0U)
+/*! LATENCY - 8-bit latency value.
+ */
+#define SYSCON_IRQLATENCY_LATENCY(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_IRQLATENCY_LATENCY_SHIFT)) & SYSCON_IRQLATENCY_LATENCY_MASK)
+/*! @} */
+
+/*! @name NMISRC - NMI source selection register */
+/*! @{ */
+#define SYSCON_NMISRC_IRQN_MASK                  (0x1FU)
+#define SYSCON_NMISRC_IRQN_SHIFT                 (0U)
+/*! IRQN - The IRQ number of the interrupt that acts as the Non-Maskable Interrupt (NMI) if bit 31 is 1
+ */
+#define SYSCON_NMISRC_IRQN(x)                    (((uint32_t)(((uint32_t)(x)) << SYSCON_NMISRC_IRQN_SHIFT)) & SYSCON_NMISRC_IRQN_MASK)
+#define SYSCON_NMISRC_NMIEN_MASK                 (0x80000000U)
+#define SYSCON_NMISRC_NMIEN_SHIFT                (31U)
+/*! NMIEN - Write a 1 to this bit to enable the Non-Maskable Interrupt (NMI) source selected by bits 4:0.
+ */
+#define SYSCON_NMISRC_NMIEN(x)                   (((uint32_t)(((uint32_t)(x)) << SYSCON_NMISRC_NMIEN_SHIFT)) & SYSCON_NMISRC_NMIEN_MASK)
+/*! @} */
+
+/*! @name PINTSEL - Pin interrupt select registers N */
+/*! @{ */
+#define SYSCON_PINTSEL_INTPIN_MASK               (0x3FU)
+#define SYSCON_PINTSEL_INTPIN_SHIFT              (0U)
+/*! INTPIN - Pin number select for pin interrupt or pattern match engine input. (PIO0_0 to
+ *    PIO0_31correspond to numbers 0 to 31 and PIO1_0 to PIO1_31 correspond to numbers 32 to 63).
+ */
+#define SYSCON_PINTSEL_INTPIN(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_PINTSEL_INTPIN_SHIFT)) & SYSCON_PINTSEL_INTPIN_MASK)
+/*! @} */
+
+/* The count of SYSCON_PINTSEL */
+#define SYSCON_PINTSEL_COUNT                     (8U)
+
+/*! @name STARTERP0 - Start logic 0 pin wake-up enable register 0 */
+/*! @{ */
+#define SYSCON_STARTERP0_PINT0_MASK              (0x1U)
+#define SYSCON_STARTERP0_PINT0_SHIFT             (0U)
+/*! PINT0 - GPIO pin interrupt 0 wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP0_PINT0(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP0_PINT0_SHIFT)) & SYSCON_STARTERP0_PINT0_MASK)
+#define SYSCON_STARTERP0_PINT1_MASK              (0x2U)
+#define SYSCON_STARTERP0_PINT1_SHIFT             (1U)
+/*! PINT1 - GPIO pin interrupt 1 wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP0_PINT1(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP0_PINT1_SHIFT)) & SYSCON_STARTERP0_PINT1_MASK)
+#define SYSCON_STARTERP0_PINT2_MASK              (0x4U)
+#define SYSCON_STARTERP0_PINT2_SHIFT             (2U)
+/*! PINT2 - GPIO pin interrupt 2 wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP0_PINT2(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP0_PINT2_SHIFT)) & SYSCON_STARTERP0_PINT2_MASK)
+#define SYSCON_STARTERP0_PINT3_MASK              (0x8U)
+#define SYSCON_STARTERP0_PINT3_SHIFT             (3U)
+/*! PINT3 - GPIO pin interrupt 3 wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP0_PINT3(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP0_PINT3_SHIFT)) & SYSCON_STARTERP0_PINT3_MASK)
+#define SYSCON_STARTERP0_PINT4_MASK              (0x10U)
+#define SYSCON_STARTERP0_PINT4_SHIFT             (4U)
+/*! PINT4 - GPIO pin interrupt 4 wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP0_PINT4(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP0_PINT4_SHIFT)) & SYSCON_STARTERP0_PINT4_MASK)
+#define SYSCON_STARTERP0_PINT5_MASK              (0x20U)
+#define SYSCON_STARTERP0_PINT5_SHIFT             (5U)
+/*! PINT5 - GPIO pin interrupt 5 wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP0_PINT5(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP0_PINT5_SHIFT)) & SYSCON_STARTERP0_PINT5_MASK)
+#define SYSCON_STARTERP0_PINT6_MASK              (0x40U)
+#define SYSCON_STARTERP0_PINT6_SHIFT             (6U)
+/*! PINT6 - GPIO pin interrupt 6 wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP0_PINT6(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP0_PINT6_SHIFT)) & SYSCON_STARTERP0_PINT6_MASK)
+#define SYSCON_STARTERP0_PINT7_MASK              (0x80U)
+#define SYSCON_STARTERP0_PINT7_SHIFT             (7U)
+/*! PINT7 - GPIO pin interrupt 7 wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP0_PINT7(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP0_PINT7_SHIFT)) & SYSCON_STARTERP0_PINT7_MASK)
+/*! @} */
+
+/*! @name STARTERP1 - Start logic 0 pin wake-up enable register 1 */
+/*! @{ */
+#define SYSCON_STARTERP1_SPI0_MASK               (0x1U)
+#define SYSCON_STARTERP1_SPI0_SHIFT              (0U)
+/*! SPI0 - SPI0 interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_SPI0(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_SPI0_SHIFT)) & SYSCON_STARTERP1_SPI0_MASK)
+#define SYSCON_STARTERP1_SPI1_MASK               (0x2U)
+#define SYSCON_STARTERP1_SPI1_SHIFT              (1U)
+/*! SPI1 - SPI1 interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_SPI1(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_SPI1_SHIFT)) & SYSCON_STARTERP1_SPI1_MASK)
+#define SYSCON_STARTERP1_USART0_MASK             (0x8U)
+#define SYSCON_STARTERP1_USART0_SHIFT            (3U)
+/*! USART0 - USART0 interrupt wake-up. Configure USART in synchronous slave mode.
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_USART0(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_USART0_SHIFT)) & SYSCON_STARTERP1_USART0_MASK)
+#define SYSCON_STARTERP1_USART1_MASK             (0x10U)
+#define SYSCON_STARTERP1_USART1_SHIFT            (4U)
+/*! USART1 - USART1 interrupt wake-up. Configure USART in synchronous slave mode.
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_USART1(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_USART1_SHIFT)) & SYSCON_STARTERP1_USART1_MASK)
+#define SYSCON_STARTERP1_USART2_MASK             (0x20U)
+#define SYSCON_STARTERP1_USART2_SHIFT            (5U)
+/*! USART2 - USART2 interrupt wake-up. Configure USART in synchronous slave mode.
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_USART2(x)               (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_USART2_SHIFT)) & SYSCON_STARTERP1_USART2_MASK)
+#define SYSCON_STARTERP1_I2C1_MASK               (0x80U)
+#define SYSCON_STARTERP1_I2C1_SHIFT              (7U)
+/*! I2C1 - I2C1 interrupt wake-up.
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_I2C1(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_I2C1_SHIFT)) & SYSCON_STARTERP1_I2C1_MASK)
+#define SYSCON_STARTERP1_I2C0_MASK               (0x100U)
+#define SYSCON_STARTERP1_I2C0_SHIFT              (8U)
+/*! I2C0 - I2C0 interrupt wake-up.
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_I2C0(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_I2C0_SHIFT)) & SYSCON_STARTERP1_I2C0_MASK)
+#define SYSCON_STARTERP1_Cap_Touch_MASK          (0x800U)
+#define SYSCON_STARTERP1_Cap_Touch_SHIFT         (11U)
+/*! Cap_Touch - Cap Touch interrupt wake-up.
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_Cap_Touch(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_Cap_Touch_SHIFT)) & SYSCON_STARTERP1_Cap_Touch_MASK)
+#define SYSCON_STARTERP1_WWDT_MASK               (0x1000U)
+#define SYSCON_STARTERP1_WWDT_SHIFT              (12U)
+/*! WWDT - WWDT interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_WWDT(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_WWDT_SHIFT)) & SYSCON_STARTERP1_WWDT_MASK)
+#define SYSCON_STARTERP1_BOD_MASK                (0x2000U)
+#define SYSCON_STARTERP1_BOD_SHIFT               (13U)
+/*! BOD - BOD interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_BOD(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_BOD_SHIFT)) & SYSCON_STARTERP1_BOD_MASK)
+#define SYSCON_STARTERP1_WKT_MASK                (0x8000U)
+#define SYSCON_STARTERP1_WKT_SHIFT               (15U)
+/*! WKT - Self-wake-up timer interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_WKT(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_WKT_SHIFT)) & SYSCON_STARTERP1_WKT_MASK)
+#define SYSCON_STARTERP1_I2C2_MASK               (0x200000U)
+#define SYSCON_STARTERP1_I2C2_SHIFT              (21U)
+/*! I2C2 - I2C2 interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_I2C2(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_I2C2_SHIFT)) & SYSCON_STARTERP1_I2C2_MASK)
+#define SYSCON_STARTERP1_I2C3_MASK               (0x400000U)
+#define SYSCON_STARTERP1_I2C3_SHIFT              (22U)
+/*! I2C3 - I2C3 interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_I2C3(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_I2C3_SHIFT)) & SYSCON_STARTERP1_I2C3_MASK)
+#define SYSCON_STARTERP1_UART3_MASK              (0x40000000U)
+#define SYSCON_STARTERP1_UART3_SHIFT             (30U)
+/*! UART3 - UART3 interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_UART3(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_UART3_SHIFT)) & SYSCON_STARTERP1_UART3_MASK)
+#define SYSCON_STARTERP1_UART4_MASK              (0x80000000U)
+#define SYSCON_STARTERP1_UART4_SHIFT             (31U)
+/*! UART4 - UART4 interrupt wake-up
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_STARTERP1_UART4(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_STARTERP1_UART4_SHIFT)) & SYSCON_STARTERP1_UART4_MASK)
+/*! @} */
+
+/*! @name PDSLEEPCFG - Deep-sleep configuration register */
+/*! @{ */
+#define SYSCON_PDSLEEPCFG_BOD_PD_MASK            (0x8U)
+#define SYSCON_PDSLEEPCFG_BOD_PD_SHIFT           (3U)
+/*! BOD_PD - BOD power-down control for Deep-sleep and Power-down mode
+ *  0b0..powered
+ *  0b1..powered down
+ */
+#define SYSCON_PDSLEEPCFG_BOD_PD(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_PDSLEEPCFG_BOD_PD_SHIFT)) & SYSCON_PDSLEEPCFG_BOD_PD_MASK)
+#define SYSCON_PDSLEEPCFG_WDTOSC_PD_MASK         (0x40U)
+#define SYSCON_PDSLEEPCFG_WDTOSC_PD_SHIFT        (6U)
+/*! WDTOSC_PD - Watchdog oscillator power-down control for Deep-sleep and Power-down mode. Changing
+ *    this bit to powered-down has no effect when the LOCK bit in the WWDT MOD register is set. In
+ *    this case, the watchdog oscillator is always running.
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_PDSLEEPCFG_WDTOSC_PD(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_PDSLEEPCFG_WDTOSC_PD_SHIFT)) & SYSCON_PDSLEEPCFG_WDTOSC_PD_MASK)
+/*! @} */
+
+/*! @name PDAWAKECFG - Wake-up configuration register */
+/*! @{ */
+#define SYSCON_PDAWAKECFG_FROOUT_PD_MASK         (0x1U)
+#define SYSCON_PDAWAKECFG_FROOUT_PD_SHIFT        (0U)
+/*! FROOUT_PD - FRO oscillator output wake-up configuration
+ *  0b0..powered
+ *  0b1..powered down
+ */
+#define SYSCON_PDAWAKECFG_FROOUT_PD(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_FROOUT_PD_SHIFT)) & SYSCON_PDAWAKECFG_FROOUT_PD_MASK)
+#define SYSCON_PDAWAKECFG_FRO_PD_MASK            (0x2U)
+#define SYSCON_PDAWAKECFG_FRO_PD_SHIFT           (1U)
+/*! FRO_PD - FRO oscillator power-down wake-up configuration
+ *  0b0..powered
+ *  0b1..powered down
+ */
+#define SYSCON_PDAWAKECFG_FRO_PD(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_FRO_PD_SHIFT)) & SYSCON_PDAWAKECFG_FRO_PD_MASK)
+#define SYSCON_PDAWAKECFG_FLASH_PD_MASK          (0x4U)
+#define SYSCON_PDAWAKECFG_FLASH_PD_SHIFT         (2U)
+/*! FLASH_PD - Flash wake-up configuration
+ *  0b0..powered
+ *  0b1..powered down
+ */
+#define SYSCON_PDAWAKECFG_FLASH_PD(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_FLASH_PD_SHIFT)) & SYSCON_PDAWAKECFG_FLASH_PD_MASK)
+#define SYSCON_PDAWAKECFG_BOD_PD_MASK            (0x8U)
+#define SYSCON_PDAWAKECFG_BOD_PD_SHIFT           (3U)
+/*! BOD_PD - BOD wake-up configuration
+ *  0b0..powered
+ *  0b1..powered down
+ */
+#define SYSCON_PDAWAKECFG_BOD_PD(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_BOD_PD_SHIFT)) & SYSCON_PDAWAKECFG_BOD_PD_MASK)
+#define SYSCON_PDAWAKECFG_ADC_PD_MASK            (0x10U)
+#define SYSCON_PDAWAKECFG_ADC_PD_SHIFT           (4U)
+/*! ADC_PD - ADC wake-up configuration
+ *  0b0..powered
+ *  0b1..powered down
+ */
+#define SYSCON_PDAWAKECFG_ADC_PD(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_ADC_PD_SHIFT)) & SYSCON_PDAWAKECFG_ADC_PD_MASK)
+#define SYSCON_PDAWAKECFG_SYSOSC_PD_MASK         (0x20U)
+#define SYSCON_PDAWAKECFG_SYSOSC_PD_SHIFT        (5U)
+/*! SYSOSC_PD - Crystal oscillator wake-up configuration
+ *  0b0..powered
+ *  0b1..powered down
+ */
+#define SYSCON_PDAWAKECFG_SYSOSC_PD(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_SYSOSC_PD_SHIFT)) & SYSCON_PDAWAKECFG_SYSOSC_PD_MASK)
+#define SYSCON_PDAWAKECFG_WDTOSC_PD_MASK         (0x40U)
+#define SYSCON_PDAWAKECFG_WDTOSC_PD_SHIFT        (6U)
+/*! WDTOSC_PD - Watchdog oscillator wake-up configuration. Changing this bit to powered-down has no
+ *    effect when the LOCK bit in the WWDT MOD register is set. In this case, the watchdog
+ *    oscillator is always running
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_PDAWAKECFG_WDTOSC_PD(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_WDTOSC_PD_SHIFT)) & SYSCON_PDAWAKECFG_WDTOSC_PD_MASK)
+#define SYSCON_PDAWAKECFG_SYSPLL_PD_MASK         (0x80U)
+#define SYSCON_PDAWAKECFG_SYSPLL_PD_SHIFT        (7U)
+/*! SYSPLL_PD - System PLL wake-up configuration
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_PDAWAKECFG_SYSPLL_PD(x)           (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_SYSPLL_PD_SHIFT)) & SYSCON_PDAWAKECFG_SYSPLL_PD_MASK)
+#define SYSCON_PDAWAKECFG_VREF2_PD_MASK          (0x400U)
+#define SYSCON_PDAWAKECFG_VREF2_PD_SHIFT         (10U)
+/*! VREF2_PD - VREF2 wake-up configuration
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_PDAWAKECFG_VREF2_PD(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_VREF2_PD_SHIFT)) & SYSCON_PDAWAKECFG_VREF2_PD_MASK)
+#define SYSCON_PDAWAKECFG_DAC0_MASK              (0x2000U)
+#define SYSCON_PDAWAKECFG_DAC0_SHIFT             (13U)
+/*! DAC0 - DAC0 wake-up configuration
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_PDAWAKECFG_DAC0(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_DAC0_SHIFT)) & SYSCON_PDAWAKECFG_DAC0_MASK)
+#define SYSCON_PDAWAKECFG_DAC1_MASK              (0x4000U)
+#define SYSCON_PDAWAKECFG_DAC1_SHIFT             (14U)
+/*! DAC1 - DAC1 wake-up configuration
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_PDAWAKECFG_DAC1(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_DAC1_SHIFT)) & SYSCON_PDAWAKECFG_DAC1_MASK)
+#define SYSCON_PDAWAKECFG_ACMP_MASK              (0x8000U)
+#define SYSCON_PDAWAKECFG_ACMP_SHIFT             (15U)
+/*! ACMP - Analog comparator wake-up configuration
+ *  0b0..Disabled
+ *  0b1..Enabled
+ */
+#define SYSCON_PDAWAKECFG_ACMP(x)                (((uint32_t)(((uint32_t)(x)) << SYSCON_PDAWAKECFG_ACMP_SHIFT)) & SYSCON_PDAWAKECFG_ACMP_MASK)
+/*! @} */
 
 /*! @name PDRUNCFG - Power configuration register */
 /*! @{ */
@@ -171,116 +1460,37 @@ typedef struct {
 #define SYSCON_PDRUNCFG_ACMP(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_PDRUNCFG_ACMP_SHIFT)) & SYSCON_PDRUNCFG_ACMP_MASK)
 /*! @} */
 
-/*! @name FRODIRECTCLKUEN - FRO direct clock source update enable register */
+/*! @name DEVICE_ID - Part ID register */
 /*! @{ */
-#define SYSCON_FRODIRECTCLKUEN_ENA_MASK          (0x1U)
-#define SYSCON_FRODIRECTCLKUEN_ENA_SHIFT         (0U)
-/*! ENA - Enable fro clock source update
- *  0b0..no change
- *  0b1..update clock source
+#define SYSCON_DEVICE_ID_DEVICEID_MASK           (0xFFFFFFFFU)
+#define SYSCON_DEVICE_ID_DEVICEID_SHIFT          (0U)
+/*! DEVICEID - Part ID
  */
-#define SYSCON_FRODIRECTCLKUEN_ENA(x)            (((uint32_t)(((uint32_t)(x)) << SYSCON_FRODIRECTCLKUEN_ENA_SHIFT)) & SYSCON_FRODIRECTCLKUEN_ENA_MASK)
-
-/*! @name EXTCLKSEL - external clock source select register */
-/*! @{ */
-#define SYSCON_EXTCLKSEL_SEL_MASK                (0x1U)
-#define SYSCON_EXTCLKSEL_SEL_SHIFT               (0U)
-/*! SEL - Clock source for external clock
- *  0b0..System oscillator
- *  0b1..Clk_in
- */
-#define SYSCON_EXTCLKSEL_SEL(x)                  (((uint32_t)(((uint32_t)(x)) << SYSCON_EXTCLKSEL_SEL_SHIFT)) & SYSCON_EXTCLKSEL_SEL_MASK)
+#define SYSCON_DEVICE_ID_DEVICEID(x)             (((uint32_t)(((uint32_t)(x)) << SYSCON_DEVICE_ID_DEVICEID_SHIFT)) & SYSCON_DEVICE_ID_DEVICEID_MASK)
 /*! @} */
 
-/*! @name MAINCLKPLLSEL - Main clock source select register */
-/*! @{ */
-#define SYSCON_MAINCLKPLLSEL_SEL_MASK            (0x3U)
-#define SYSCON_MAINCLKPLLSEL_SEL_SHIFT           (0U)
-/*! SEL - System PLL clock source
- *  0b00..main_clk_pre_pll
- *  0b01..sys pll
- *  0b10..none
- *  0b11..none
- */
-#define SYSCON_MAINCLKPLLSEL_SEL(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_MAINCLKPLLSEL_SEL_SHIFT)) & SYSCON_MAINCLKPLLSEL_SEL_MASK)
-/*! @} */
 
-/*! @name MAINCLKUEN - Main clock source update enable register */
-/*! @{ */
-#define SYSCON_MAINCLKUEN_ENA_MASK               (0x1U)
-#define SYSCON_MAINCLKUEN_ENA_SHIFT              (0U)
-/*! ENA - Enable main clock source update
- *  0b0..no change
- *  0b1..update clock source
- */
-#define SYSCON_MAINCLKUEN_ENA(x)                 (((uint32_t)(((uint32_t)(x)) << SYSCON_MAINCLKUEN_ENA_SHIFT)) & SYSCON_MAINCLKUEN_ENA_MASK)
-/*! @} */
+/*!
+ * @}
+ */ /* end of group SYSCON_Register_Masks */
 
-/*! @name MAINCLKPLLUEN - Main clock source update enable register */
-/*! @{ */
-#define SYSCON_MAINCLKPLLUEN_ENA_MASK            (0x1U)
-#define SYSCON_MAINCLKPLLUEN_ENA_SHIFT           (0U)
-/*! ENA - Enable main clock source update
- *  0b0..no change
- *  0b1..update clock source
- */
-#define SYSCON_MAINCLKPLLUEN_ENA(x)              (((uint32_t)(((uint32_t)(x)) << SYSCON_MAINCLKPLLUEN_ENA_SHIFT)) & SYSCON_MAINCLKPLLUEN_ENA_MASK)
-/*! @} */
-
-/*! @name SYSAHBCLKCTRL0 - Registro de control de grupo 0 de System clock */
-/*! @{ */
-#define SYSCON_SYSAHBCLKCTRL0_GPIO0_MASK         (0x40U)
-#define SYSCON_SYSAHBCLKCTRL0_GPIO0_SHIFT        (6U)
-#define SYSCON_SYSAHBCLKCTRL0_GPIO1_MASK         (0x100000U)
-#define SYSCON_SYSAHBCLKCTRL0_GPIO1_SHIFT        (20U)
-
-#define SYSCON_SYSAHBCLKCTRL0_GPIOINT_MASK       0x10000000U
-#define SYSCON_SYSAHBCLKCTRL0_GPIOINT_SHIFT      (28U)
-
-#define SYSCON_SYSAHBCLKCTRL0_SWM_MASK           (0x80U)
-#define SYSCON_SYSAHBCLKCTRL0_SWM_SHIFT          (7U)
-
-#define SYSCON_SYSAHBCLKCTRL0_UART0_MASK         (0x4000U)
-#define SYSCON_SYSAHBCLKCTRL0_UART0_SHIFT        (14U)
-
-#define SYSCON_SYSAHBCLKCTRL0_DAC0_MASK          (0x8000000U)
-#define SYSCON_SYSAHBCLKCTRL0_DAC0_SHIFT         (27U)
-
-#define SYSCON_SYSAHBCLKCTRL1_DAC1_MASK          (0x2U)
-#define SYSCON_SYSAHBCLKCTRL1_DAC1_SHIFT         (1U)
-
-#define SYSCON_SYSAHBCLKCTRL0_ADC_MASK           (0x1000000U)
-#define SYSCON_SYSAHBCLKCTRL0_ADC_SHIFT          (24U)
-
-#define SYSCON_PRESETCTRL0_UART0_RST_N_MASK      (0x4000U)
-#define SYSCON_PRESETCTRL0_UART0_RST_N_SHIFT     (14U)
-
-#define SYSCON_PDRUNCFG_ADC_PD_MASK              (0x10U)
-#define SYSCON_PDRUNCFG_ADC_PD_SHIFT             (4U)
-/*! ADC_PD - ADC wake-up configuration
- *  0b0..powered
- *  0b1..powered down
- */
-
-#define SYSCON_PDAWAKECFG_DAC0_MASK              (0x2000U)
-#define SYSCON_PDAWAKECFG_DAC0_SHIFT             (13U)
-#define SYSCON_PDAWAKECFG_DAC1_MASK              (0x4000U)
-#define SYSCON_PDAWAKECFG_DAC1_SHIFT             (14U)
 
 /* SYSCON - Peripheral instance base addresses */
 /** Peripheral SYSCON base address */
 #define SYSCON_BASE                              (0x40048000u)
-
+/** Peripheral SYSCON base pointer */
+#define SYSCON                                   ((SYSCON_Type *)SYSCON_BASE)
 /** Array initializer of SYSCON peripheral base addresses */
 #define SYSCON_BASE_ADDRS                        { SYSCON_BASE }
 /** Array initializer of SYSCON peripheral base pointers */
 #define SYSCON_BASE_PTRS                         { SYSCON }
 /** Interrupt vectors for the SYSCON peripheral type */
 #define SYSCON_IRQS                              { BOD_IRQn }
-#define	SYSCON_PDRUNCFG_ADC_MASK				 (1 << 4)
 
-/** Peripheral SYSCON base pointer */
-#define SYSCON	((SYSCON_Type *) SYSCON_BASE)
+/*!
+ * @}
+ */ /* end of group SYSCON_Peripheral_Access_Layer */
+
 
 /* ----------------------------------------------------------------------------
    -- DAC Peripheral Access Layer
@@ -459,6 +1669,15 @@ typedef struct {
 /** Array initializer of IOCON peripheral base pointers */
 #define IOCON_BASE_PTRS                          { IOCON }
 
+/* ----------------------------------------------------------------------------
+   -- USART Peripheral Access Layer
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup USART_Peripheral_Access_Layer USART Peripheral Access Layer
+ * @{
+ */
+
 /** USART - Register Layout Typedef */
 typedef struct {
   __IO uint32_t CFG;                               /**< USART Configuration register. Basic USART configuration settings that typically are not changed during operation., offset: 0x0 */
@@ -474,6 +1693,591 @@ typedef struct {
   __IO uint32_t OSR;                               /**< Oversample selection register for asynchronous communication., offset: 0x28 */
   __IO uint32_t ADDR;                              /**< Address register for automatic address matching., offset: 0x2C */
 } USART_Type;
+
+/* ----------------------------------------------------------------------------
+   -- USART Register Masks
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup USART_Register_Masks USART Register Masks
+ * @{
+ */
+
+/*! @name CFG - USART Configuration register. Basic USART configuration settings that typically are not changed during operation. */
+/*! @{ */
+#define USART_CFG_ENABLE_MASK                    (0x1U)
+#define USART_CFG_ENABLE_SHIFT                   (0U)
+/*! ENABLE - USART Enable.
+ *  0b0..Disabled. The USART is disabled and the internal state machine and counters are reset. While Enable = 0,
+ *       all USART interrupts and DMA transfers are disabled. When Enable is set again, CFG and most other control
+ *       bits remain unchanged. When re-enabled, the USART will immediately be ready to transmit because the
+ *       transmitter has been reset and is therefore available.
+ *  0b1..Enabled. The USART is enabled for operation.
+ */
+#define USART_CFG_ENABLE(x)                      (((uint32_t)(((uint32_t)(x)) << USART_CFG_ENABLE_SHIFT)) & USART_CFG_ENABLE_MASK)
+#define USART_CFG_DATALEN_MASK                   (0xCU)
+#define USART_CFG_DATALEN_SHIFT                  (2U)
+/*! DATALEN - Selects the data size for the USART.
+ *  0b00..7 bit Data length.
+ *  0b01..8 bit Data length.
+ *  0b10..9 bit data length. The 9th bit is commonly used for addressing in multidrop mode. See the ADDRDET bit in the CTL register.
+ *  0b11..Reserved.
+ */
+#define USART_CFG_DATALEN(x)                     (((uint32_t)(((uint32_t)(x)) << USART_CFG_DATALEN_SHIFT)) & USART_CFG_DATALEN_MASK)
+#define USART_CFG_PARITYSEL_MASK                 (0x30U)
+#define USART_CFG_PARITYSEL_SHIFT                (4U)
+/*! PARITYSEL - Selects what type of parity is used by the USART.
+ *  0b00..No parity.
+ *  0b01..Reserved.
+ *  0b10..Even parity. Adds a bit to each character such that the number of 1s in a transmitted character is even,
+ *        and the number of 1s in a received character is expected to be even.
+ *  0b11..Odd parity. Adds a bit to each character such that the number of 1s in a transmitted character is odd,
+ *        and the number of 1s in a received character is expected to be odd.
+ */
+#define USART_CFG_PARITYSEL(x)                   (((uint32_t)(((uint32_t)(x)) << USART_CFG_PARITYSEL_SHIFT)) & USART_CFG_PARITYSEL_MASK)
+#define USART_CFG_STOPLEN_MASK                   (0x40U)
+#define USART_CFG_STOPLEN_SHIFT                  (6U)
+/*! STOPLEN - Number of stop bits appended to transmitted data. Only a single stop bit is required for received data.
+ *  0b0..1 stop bit.
+ *  0b1..2 stop bits. This setting should only be used for asynchronous communication.
+ */
+#define USART_CFG_STOPLEN(x)                     (((uint32_t)(((uint32_t)(x)) << USART_CFG_STOPLEN_SHIFT)) & USART_CFG_STOPLEN_MASK)
+#define USART_CFG_CTSEN_MASK                     (0x200U)
+#define USART_CFG_CTSEN_SHIFT                    (9U)
+/*! CTSEN - CTS Enable. Determines whether CTS is used for flow control. CTS can be from the input
+ *    pin, or from the USART's own RTS if loopback mode is enabled.
+ *  0b0..No flow control. The transmitter does not receive any automatic flow control signal.
+ *  0b1..Flow control enabled. The transmitter uses the CTS input (or RTS output in loopback mode) for flow control purposes.
+ */
+#define USART_CFG_CTSEN(x)                       (((uint32_t)(((uint32_t)(x)) << USART_CFG_CTSEN_SHIFT)) & USART_CFG_CTSEN_MASK)
+#define USART_CFG_SYNCEN_MASK                    (0x800U)
+#define USART_CFG_SYNCEN_SHIFT                   (11U)
+/*! SYNCEN - Selects synchronous or asynchronous operation.
+ *  0b0..Asynchronous mode.
+ *  0b1..Synchronous mode.
+ */
+#define USART_CFG_SYNCEN(x)                      (((uint32_t)(((uint32_t)(x)) << USART_CFG_SYNCEN_SHIFT)) & USART_CFG_SYNCEN_MASK)
+#define USART_CFG_CLKPOL_MASK                    (0x1000U)
+#define USART_CFG_CLKPOL_SHIFT                   (12U)
+/*! CLKPOL - Selects the clock polarity and sampling edge of received data in synchronous mode.
+ *  0b0..Falling edge. Un_RXD is sampled on the falling edge of SCLK.
+ *  0b1..Rising edge. Un_RXD is sampled on the rising edge of SCLK.
+ */
+#define USART_CFG_CLKPOL(x)                      (((uint32_t)(((uint32_t)(x)) << USART_CFG_CLKPOL_SHIFT)) & USART_CFG_CLKPOL_MASK)
+#define USART_CFG_SYNCMST_MASK                   (0x4000U)
+#define USART_CFG_SYNCMST_SHIFT                  (14U)
+/*! SYNCMST - Synchronous mode Master select.
+ *  0b0..Slave. When synchronous mode is enabled, the USART is a slave.
+ *  0b1..Master. When synchronous mode is enabled, the USART is a master.
+ */
+#define USART_CFG_SYNCMST(x)                     (((uint32_t)(((uint32_t)(x)) << USART_CFG_SYNCMST_SHIFT)) & USART_CFG_SYNCMST_MASK)
+#define USART_CFG_LOOP_MASK                      (0x8000U)
+#define USART_CFG_LOOP_SHIFT                     (15U)
+/*! LOOP - Selects data loopback mode.
+ *  0b0..Normal operation.
+ *  0b1..Loopback mode. This provides a mechanism to perform diagnostic loopback testing for USART data. Serial
+ *       data from the transmitter (Un_TXD) is connected internally to serial input of the receive (Un_RXD). Un_TXD
+ *       and Un_RTS activity will also appear on external pins if these functions are configured to appear on device
+ *       pins. The receiver RTS signal is also looped back to CTS and performs flow control if enabled by CTSEN.
+ */
+#define USART_CFG_LOOP(x)                        (((uint32_t)(((uint32_t)(x)) << USART_CFG_LOOP_SHIFT)) & USART_CFG_LOOP_MASK)
+#define USART_CFG_OETA_MASK                      (0x40000U)
+#define USART_CFG_OETA_SHIFT                     (18U)
+/*! OETA - Output Enable Turnaround time enable for RS-485 operation.
+ *  0b0..Disabled. If selected by OESEL, the Output Enable signal deasserted at the end of the last stop bit of a transmission.
+ *  0b1..Enabled. If selected by OESEL, the Output Enable signal remains asserted for one character time after the
+ *       end of the last stop bit of a transmission. OE will also remain asserted if another transmit begins
+ *       before it is deasserted.
+ */
+#define USART_CFG_OETA(x)                        (((uint32_t)(((uint32_t)(x)) << USART_CFG_OETA_SHIFT)) & USART_CFG_OETA_MASK)
+#define USART_CFG_AUTOADDR_MASK                  (0x80000U)
+#define USART_CFG_AUTOADDR_SHIFT                 (19U)
+/*! AUTOADDR - Automatic Address matching enable.
+ *  0b0..Disabled. When addressing is enabled by ADDRDET, address matching is done by software. This provides the
+ *       possibility of versatile addressing (e.g. respond to more than one address).
+ *  0b1..Enabled. When addressing is enabled by ADDRDET, address matching is done by hardware, using the value in
+ *       the ADDR register as the address to match.
+ */
+#define USART_CFG_AUTOADDR(x)                    (((uint32_t)(((uint32_t)(x)) << USART_CFG_AUTOADDR_SHIFT)) & USART_CFG_AUTOADDR_MASK)
+#define USART_CFG_OESEL_MASK                     (0x100000U)
+#define USART_CFG_OESEL_SHIFT                    (20U)
+/*! OESEL - Output Enable Select.
+ *  0b0..Standard. The RTS signal is used as the standard flow control function.
+ *  0b1..RS-485. The RTS signal configured to provide an output enable signal to control an RS-485 transceiver.
+ */
+#define USART_CFG_OESEL(x)                       (((uint32_t)(((uint32_t)(x)) << USART_CFG_OESEL_SHIFT)) & USART_CFG_OESEL_MASK)
+#define USART_CFG_OEPOL_MASK                     (0x200000U)
+#define USART_CFG_OEPOL_SHIFT                    (21U)
+/*! OEPOL - Output Enable Polarity.
+ *  0b0..Low. If selected by OESEL, the output enable is active low.
+ *  0b1..High. If selected by OESEL, the output enable is active high.
+ */
+#define USART_CFG_OEPOL(x)                       (((uint32_t)(((uint32_t)(x)) << USART_CFG_OEPOL_SHIFT)) & USART_CFG_OEPOL_MASK)
+#define USART_CFG_RXPOL_MASK                     (0x400000U)
+#define USART_CFG_RXPOL_SHIFT                    (22U)
+/*! RXPOL - Receive data polarity.
+ *  0b0..Standard. The RX signal is used as it arrives from the pin. This means that the RX rest value is 1, start
+ *       bit is 0, data is not inverted, and the stop bit is 1.
+ *  0b1..Inverted. The RX signal is inverted before being used by the USART. This means that the RX rest value is
+ *       0, start bit is 1, data is inverted, and the stop bit is 0.
+ */
+#define USART_CFG_RXPOL(x)                       (((uint32_t)(((uint32_t)(x)) << USART_CFG_RXPOL_SHIFT)) & USART_CFG_RXPOL_MASK)
+#define USART_CFG_TXPOL_MASK                     (0x800000U)
+#define USART_CFG_TXPOL_SHIFT                    (23U)
+/*! TXPOL - Transmit data polarity.
+ *  0b0..Standard. The TX signal is sent out without change. This means that the TX rest value is 1, start bit is
+ *       0, data is not inverted, and the stop bit is 1.
+ *  0b1..Inverted. The TX signal is inverted by the USART before being sent out. This means that the TX rest value
+ *       is 0, start bit is 1, data is inverted, and the stop bit is 0.
+ */
+#define USART_CFG_TXPOL(x)                       (((uint32_t)(((uint32_t)(x)) << USART_CFG_TXPOL_SHIFT)) & USART_CFG_TXPOL_MASK)
+/*! @} */
+
+/*! @name CTL - USART Control register. USART control settings that are more likely to change during operation. */
+/*! @{ */
+#define USART_CTL_TXBRKEN_MASK                   (0x2U)
+#define USART_CTL_TXBRKEN_SHIFT                  (1U)
+/*! TXBRKEN - Break Enable.
+ *  0b0..Normal operation.
+ *  0b1..Continuous break. Continuous break is sent immediately when this bit is set, and remains until this bit
+ *       is cleared. A break may be sent without danger of corrupting any currently transmitting character if the
+ *       transmitter is first disabled (TXDIS in CTL is set) and then waiting for the transmitter to be disabled
+ *       (TXDISINT in STAT = 1) before writing 1 to TXBRKEN.
+ */
+#define USART_CTL_TXBRKEN(x)                     (((uint32_t)(((uint32_t)(x)) << USART_CTL_TXBRKEN_SHIFT)) & USART_CTL_TXBRKEN_MASK)
+#define USART_CTL_ADDRDET_MASK                   (0x4U)
+#define USART_CTL_ADDRDET_SHIFT                  (2U)
+/*! ADDRDET - Enable address detect mode.
+ *  0b0..Disabled. The USART presents all incoming data.
+ *  0b1..Enabled. The USART receiver ignores incoming data that does not have the most significant bit of the data
+ *       (typically the 9th bit) = 1. When the data MSB bit = 1, the receiver treats the incoming data normally,
+ *       generating a received data interrupt. Software can then check the data to see if this is an address that
+ *       should be handled. If it is, the ADDRDET bit is cleared by software and further incoming data is handled
+ *       normally.
+ */
+#define USART_CTL_ADDRDET(x)                     (((uint32_t)(((uint32_t)(x)) << USART_CTL_ADDRDET_SHIFT)) & USART_CTL_ADDRDET_MASK)
+#define USART_CTL_TXDIS_MASK                     (0x40U)
+#define USART_CTL_TXDIS_SHIFT                    (6U)
+/*! TXDIS - Transmit Disable.
+ *  0b0..Not disabled. USART transmitter is not disabled.
+ *  0b1..Disabled. USART transmitter is disabled after any character currently being transmitted is complete. This
+ *       feature can be used to facilitate software flow control.
+ */
+#define USART_CTL_TXDIS(x)                       (((uint32_t)(((uint32_t)(x)) << USART_CTL_TXDIS_SHIFT)) & USART_CTL_TXDIS_MASK)
+#define USART_CTL_CC_MASK                        (0x100U)
+#define USART_CTL_CC_SHIFT                       (8U)
+/*! CC - Continuous Clock generation. By default, SCLK is only output while data is being transmitted in synchronous mode.
+ *  0b0..Clock on character. In synchronous mode, SCLK cycles only when characters are being sent on Un_TXD or to
+ *       complete a character that is being received.
+ *  0b1..Continuous clock. SCLK runs continuously in synchronous mode, allowing characters to be received on
+ *       Un_RxD independently from transmission on Un_TXD).
+ */
+#define USART_CTL_CC(x)                          (((uint32_t)(((uint32_t)(x)) << USART_CTL_CC_SHIFT)) & USART_CTL_CC_MASK)
+#define USART_CTL_CLRCCONRX_MASK                 (0x200U)
+#define USART_CTL_CLRCCONRX_SHIFT                (9U)
+/*! CLRCCONRX - Clear Continuous Clock.
+ *  0b0..No effect. No effect on the CC bit.
+ *  0b1..Auto-clear. The CC bit is automatically cleared when a complete character has been received. This bit is cleared at the same time.
+ */
+#define USART_CTL_CLRCCONRX(x)                   (((uint32_t)(((uint32_t)(x)) << USART_CTL_CLRCCONRX_SHIFT)) & USART_CTL_CLRCCONRX_MASK)
+#define USART_CTL_AUTOBAUD_MASK                  (0x10000U)
+#define USART_CTL_AUTOBAUD_SHIFT                 (16U)
+/*! AUTOBAUD - Autobaud enable.
+ *  0b0..Disabled. USART is in normal operating mode.
+ *  0b1..Enabled. USART is in autobaud mode. This bit should only be set when the USART receiver is idle. The
+ *       first start bit of RX is measured and used the update the BRG register to match the received data rate.
+ *       AUTOBAUD is cleared once this process is complete, or if there is an AERR.
+ */
+#define USART_CTL_AUTOBAUD(x)                    (((uint32_t)(((uint32_t)(x)) << USART_CTL_AUTOBAUD_SHIFT)) & USART_CTL_AUTOBAUD_MASK)
+/*! @} */
+
+/*! @name STAT - USART Status register. The complete status value can be read here. Writing ones clears some bits in the register. Some bits can be cleared by writing a 1 to them. */
+/*! @{ */
+#define USART_STAT_RXRDY_MASK                    (0x1U)
+#define USART_STAT_RXRDY_SHIFT                   (0U)
+/*! RXRDY - Receiver Ready flag. When 1, indicates that data is available to be read from the
+ *    receiver buffer. Cleared after a read of the RXDAT or RXDATSTAT registers.
+ */
+#define USART_STAT_RXRDY(x)                      (((uint32_t)(((uint32_t)(x)) << USART_STAT_RXRDY_SHIFT)) & USART_STAT_RXRDY_MASK)
+#define USART_STAT_RXIDLE_MASK                   (0x2U)
+#define USART_STAT_RXIDLE_SHIFT                  (1U)
+/*! RXIDLE - Receiver Idle. When 0, indicates that the receiver is currently in the process of
+ *    receiving data. When 1, indicates that the receiver is not currently in the process of receiving
+ *    data.
+ */
+#define USART_STAT_RXIDLE(x)                     (((uint32_t)(((uint32_t)(x)) << USART_STAT_RXIDLE_SHIFT)) & USART_STAT_RXIDLE_MASK)
+#define USART_STAT_TXRDY_MASK                    (0x4U)
+#define USART_STAT_TXRDY_SHIFT                   (2U)
+/*! TXRDY - Transmitter Ready flag. When 1, this bit indicates that data may be written to the
+ *    transmit buffer. Previous data may still be in the process of being transmitted. Cleared when data
+ *    is written to TXDAT. Set when the data is moved from the transmit buffer to the transmit shift
+ *    register.
+ */
+#define USART_STAT_TXRDY(x)                      (((uint32_t)(((uint32_t)(x)) << USART_STAT_TXRDY_SHIFT)) & USART_STAT_TXRDY_MASK)
+#define USART_STAT_TXIDLE_MASK                   (0x8U)
+#define USART_STAT_TXIDLE_SHIFT                  (3U)
+/*! TXIDLE - Transmitter Idle. When 0, indicates that the transmitter is currently in the process of
+ *    sending data.When 1, indicate that the transmitter is not currently in the process of sending
+ *    data.
+ */
+#define USART_STAT_TXIDLE(x)                     (((uint32_t)(((uint32_t)(x)) << USART_STAT_TXIDLE_SHIFT)) & USART_STAT_TXIDLE_MASK)
+#define USART_STAT_CTS_MASK                      (0x10U)
+#define USART_STAT_CTS_SHIFT                     (4U)
+/*! CTS - This bit reflects the current state of the CTS signal, regardless of the setting of the
+ *    CTSEN bit in the CFG register. This will be the value of the CTS input pin unless loopback mode
+ *    is enabled.
+ */
+#define USART_STAT_CTS(x)                        (((uint32_t)(((uint32_t)(x)) << USART_STAT_CTS_SHIFT)) & USART_STAT_CTS_MASK)
+#define USART_STAT_DELTACTS_MASK                 (0x20U)
+#define USART_STAT_DELTACTS_SHIFT                (5U)
+/*! DELTACTS - This bit is set when a change in the state is detected for the CTS flag above. This bit is cleared by software.
+ */
+#define USART_STAT_DELTACTS(x)                   (((uint32_t)(((uint32_t)(x)) << USART_STAT_DELTACTS_SHIFT)) & USART_STAT_DELTACTS_MASK)
+#define USART_STAT_TXDISSTAT_MASK                (0x40U)
+#define USART_STAT_TXDISSTAT_SHIFT               (6U)
+/*! TXDISSTAT - Transmitter Disabled Interrupt flag. When 1, this bit indicates that the USART
+ *    transmitter is fully idle after being disabled via the TXDIS in the CTL register (TXDIS = 1).
+ */
+#define USART_STAT_TXDISSTAT(x)                  (((uint32_t)(((uint32_t)(x)) << USART_STAT_TXDISSTAT_SHIFT)) & USART_STAT_TXDISSTAT_MASK)
+#define USART_STAT_OVERRUNINT_MASK               (0x100U)
+#define USART_STAT_OVERRUNINT_SHIFT              (8U)
+/*! OVERRUNINT - Overrun Error interrupt flag. This flag is set when a new character is received
+ *    while the receiver buffer is still in use. If this occurs, the newly received character in the
+ *    shift register is lost.
+ */
+#define USART_STAT_OVERRUNINT(x)                 (((uint32_t)(((uint32_t)(x)) << USART_STAT_OVERRUNINT_SHIFT)) & USART_STAT_OVERRUNINT_MASK)
+#define USART_STAT_RXBRK_MASK                    (0x400U)
+#define USART_STAT_RXBRK_SHIFT                   (10U)
+/*! RXBRK - Received Break. This bit reflects the current state of the receiver break detection
+ *    logic. It is set when the Un_RXD pin remains low for 16 bit times. Note that FRAMERRINT will also
+ *    be set when this condition occurs because the stop bit(s) for the character would be missing.
+ *    RXBRK is cleared when the Un_RXD pin goes high.
+ */
+#define USART_STAT_RXBRK(x)                      (((uint32_t)(((uint32_t)(x)) << USART_STAT_RXBRK_SHIFT)) & USART_STAT_RXBRK_MASK)
+#define USART_STAT_DELTARXBRK_MASK               (0x800U)
+#define USART_STAT_DELTARXBRK_SHIFT              (11U)
+/*! DELTARXBRK - This bit is set when a change in the state of receiver break detection occurs.Cleared by software.
+ */
+#define USART_STAT_DELTARXBRK(x)                 (((uint32_t)(((uint32_t)(x)) << USART_STAT_DELTARXBRK_SHIFT)) & USART_STAT_DELTARXBRK_MASK)
+#define USART_STAT_START_MASK                    (0x1000U)
+#define USART_STAT_START_SHIFT                   (12U)
+/*! START - This bit is set when a start is detected on the receiver input. Its purpose is primarily
+ *    to allow wake-up from Deep-sleep or Power-down mode immediately when a start is detected.
+ *    Cleared by software.
+ */
+#define USART_STAT_START(x)                      (((uint32_t)(((uint32_t)(x)) << USART_STAT_START_SHIFT)) & USART_STAT_START_MASK)
+#define USART_STAT_FRAMERRINT_MASK               (0x2000U)
+#define USART_STAT_FRAMERRINT_SHIFT              (13U)
+/*! FRAMERRINT - Framing Error interrupt flag. This flag is set when a character is received with a
+ *    missing stop bit at the expected location. This could be an indication of a baud rate or
+ *    configuration mismatch with the transmitting source.
+ */
+#define USART_STAT_FRAMERRINT(x)                 (((uint32_t)(((uint32_t)(x)) << USART_STAT_FRAMERRINT_SHIFT)) & USART_STAT_FRAMERRINT_MASK)
+#define USART_STAT_PARITYERRINT_MASK             (0x4000U)
+#define USART_STAT_PARITYERRINT_SHIFT            (14U)
+/*! PARITYERRINT - Parity Error interrupt flag. This flag is set when a parity error is detected in a received character.
+ */
+#define USART_STAT_PARITYERRINT(x)               (((uint32_t)(((uint32_t)(x)) << USART_STAT_PARITYERRINT_SHIFT)) & USART_STAT_PARITYERRINT_MASK)
+#define USART_STAT_RXNOISEINT_MASK               (0x8000U)
+#define USART_STAT_RXNOISEINT_SHIFT              (15U)
+/*! RXNOISEINT - Received Noise interrupt flag. Three samples of received data are taken in order to
+ *    determine the value of each received data bit, except in synchronous mode. This acts as a
+ *    noise filter if one sample disagrees. This flag is set when a received data bit contains one
+ *    disagreeing sample. This could indicate line noise, a baud rate or character format mismatch, or
+ *    loss of synchronization during data reception.
+ */
+#define USART_STAT_RXNOISEINT(x)                 (((uint32_t)(((uint32_t)(x)) << USART_STAT_RXNOISEINT_SHIFT)) & USART_STAT_RXNOISEINT_MASK)
+#define USART_STAT_ABERR_MASK                    (0x10000U)
+#define USART_STAT_ABERR_SHIFT                   (16U)
+/*! ABERR - Autobaud Error. An autobaud error can occur if the BRG counts to its limit before the
+ *    end of the start bit that is being measured, essentially an autobaud time-out.
+ */
+#define USART_STAT_ABERR(x)                      (((uint32_t)(((uint32_t)(x)) << USART_STAT_ABERR_SHIFT)) & USART_STAT_ABERR_MASK)
+/*! @} */
+
+/*! @name INTENSET - Interrupt Enable read and Set register. Contains an individual interrupt enable bit for each potential USART interrupt. A complete value may be read from this register. Writing a 1 to any implemented bit position causes that bit to be set. */
+/*! @{ */
+#define USART_INTENSET_RXRDYEN_MASK              (0x1U)
+#define USART_INTENSET_RXRDYEN_SHIFT             (0U)
+/*! RXRDYEN - When 1, enables an interrupt when there is a received character available to be read from the RXDAT register.
+ */
+#define USART_INTENSET_RXRDYEN(x)                (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_RXRDYEN_SHIFT)) & USART_INTENSET_RXRDYEN_MASK)
+#define USART_INTENSET_TXRDYEN_MASK              (0x4U)
+#define USART_INTENSET_TXRDYEN_SHIFT             (2U)
+/*! TXRDYEN - When 1, enables an interrupt when the TXDAT register is available to take another character to transmit.
+ */
+#define USART_INTENSET_TXRDYEN(x)                (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_TXRDYEN_SHIFT)) & USART_INTENSET_TXRDYEN_MASK)
+#define USART_INTENSET_TXIDLEEN_MASK             (0x8U)
+#define USART_INTENSET_TXIDLEEN_SHIFT            (3U)
+/*! TXIDLEEN - When 1, enables an interrupt when the transmitter becomes idle (TXIDLE = 1).
+ */
+#define USART_INTENSET_TXIDLEEN(x)               (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_TXIDLEEN_SHIFT)) & USART_INTENSET_TXIDLEEN_MASK)
+#define USART_INTENSET_DELTACTSEN_MASK           (0x20U)
+#define USART_INTENSET_DELTACTSEN_SHIFT          (5U)
+/*! DELTACTSEN - When 1, enables an interrupt when there is a change in the state of the CTS input.
+ */
+#define USART_INTENSET_DELTACTSEN(x)             (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_DELTACTSEN_SHIFT)) & USART_INTENSET_DELTACTSEN_MASK)
+#define USART_INTENSET_TXDISEN_MASK              (0x40U)
+#define USART_INTENSET_TXDISEN_SHIFT             (6U)
+/*! TXDISEN - When 1, enables an interrupt when the transmitter is fully disabled as indicated by
+ *    the TXDISINT flag in STAT. See description of the TXDISINT bit for details.
+ */
+#define USART_INTENSET_TXDISEN(x)                (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_TXDISEN_SHIFT)) & USART_INTENSET_TXDISEN_MASK)
+#define USART_INTENSET_OVERRUNEN_MASK            (0x100U)
+#define USART_INTENSET_OVERRUNEN_SHIFT           (8U)
+/*! OVERRUNEN - When 1, enables an interrupt when an overrun error occurred.
+ */
+#define USART_INTENSET_OVERRUNEN(x)              (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_OVERRUNEN_SHIFT)) & USART_INTENSET_OVERRUNEN_MASK)
+#define USART_INTENSET_DELTARXBRKEN_MASK         (0x800U)
+#define USART_INTENSET_DELTARXBRKEN_SHIFT        (11U)
+/*! DELTARXBRKEN - When 1, enables an interrupt when a change of state has occurred in the detection
+ *    of a received break condition (break condition asserted or deasserted).
+ */
+#define USART_INTENSET_DELTARXBRKEN(x)           (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_DELTARXBRKEN_SHIFT)) & USART_INTENSET_DELTARXBRKEN_MASK)
+#define USART_INTENSET_STARTEN_MASK              (0x1000U)
+#define USART_INTENSET_STARTEN_SHIFT             (12U)
+/*! STARTEN - When 1, enables an interrupt when a received start bit has been detected.
+ */
+#define USART_INTENSET_STARTEN(x)                (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_STARTEN_SHIFT)) & USART_INTENSET_STARTEN_MASK)
+#define USART_INTENSET_FRAMERREN_MASK            (0x2000U)
+#define USART_INTENSET_FRAMERREN_SHIFT           (13U)
+/*! FRAMERREN - When 1, enables an interrupt when a framing error has been detected.
+ */
+#define USART_INTENSET_FRAMERREN(x)              (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_FRAMERREN_SHIFT)) & USART_INTENSET_FRAMERREN_MASK)
+#define USART_INTENSET_PARITYERREN_MASK          (0x4000U)
+#define USART_INTENSET_PARITYERREN_SHIFT         (14U)
+/*! PARITYERREN - When 1, enables an interrupt when a parity error has been detected.
+ */
+#define USART_INTENSET_PARITYERREN(x)            (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_PARITYERREN_SHIFT)) & USART_INTENSET_PARITYERREN_MASK)
+#define USART_INTENSET_RXNOISEEN_MASK            (0x8000U)
+#define USART_INTENSET_RXNOISEEN_SHIFT           (15U)
+/*! RXNOISEEN - When 1, enables an interrupt when noise is detected.
+ */
+#define USART_INTENSET_RXNOISEEN(x)              (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_RXNOISEEN_SHIFT)) & USART_INTENSET_RXNOISEEN_MASK)
+#define USART_INTENSET_ABERREN_MASK              (0x10000U)
+#define USART_INTENSET_ABERREN_SHIFT             (16U)
+/*! ABERREN - When 1, enables an interrupt when an autobaud error occurs.
+ */
+#define USART_INTENSET_ABERREN(x)                (((uint32_t)(((uint32_t)(x)) << USART_INTENSET_ABERREN_SHIFT)) & USART_INTENSET_ABERREN_MASK)
+/*! @} */
+
+/*! @name INTENCLR - Interrupt Enable Clear register. Allows clearing any combination of bits in the INTENSET register. Writing a 1 to any implemented bit position causes the corresponding bit to be cleared. */
+/*! @{ */
+#define USART_INTENCLR_RXRDYCLR_MASK             (0x1U)
+#define USART_INTENCLR_RXRDYCLR_SHIFT            (0U)
+/*! RXRDYCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_RXRDYCLR(x)               (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_RXRDYCLR_SHIFT)) & USART_INTENCLR_RXRDYCLR_MASK)
+#define USART_INTENCLR_TXRDYCLR_MASK             (0x4U)
+#define USART_INTENCLR_TXRDYCLR_SHIFT            (2U)
+/*! TXRDYCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_TXRDYCLR(x)               (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_TXRDYCLR_SHIFT)) & USART_INTENCLR_TXRDYCLR_MASK)
+#define USART_INTENCLR_TXIDLECLR_MASK            (0x8U)
+#define USART_INTENCLR_TXIDLECLR_SHIFT           (3U)
+/*! TXIDLECLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_TXIDLECLR(x)              (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_TXIDLECLR_SHIFT)) & USART_INTENCLR_TXIDLECLR_MASK)
+#define USART_INTENCLR_DELTACTSCLR_MASK          (0x20U)
+#define USART_INTENCLR_DELTACTSCLR_SHIFT         (5U)
+/*! DELTACTSCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_DELTACTSCLR(x)            (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_DELTACTSCLR_SHIFT)) & USART_INTENCLR_DELTACTSCLR_MASK)
+#define USART_INTENCLR_TXDISINTCLR_MASK          (0x40U)
+#define USART_INTENCLR_TXDISINTCLR_SHIFT         (6U)
+/*! TXDISINTCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_TXDISINTCLR(x)            (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_TXDISINTCLR_SHIFT)) & USART_INTENCLR_TXDISINTCLR_MASK)
+#define USART_INTENCLR_OVERRUNCLR_MASK           (0x100U)
+#define USART_INTENCLR_OVERRUNCLR_SHIFT          (8U)
+/*! OVERRUNCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_OVERRUNCLR(x)             (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_OVERRUNCLR_SHIFT)) & USART_INTENCLR_OVERRUNCLR_MASK)
+#define USART_INTENCLR_DELTARXBRKCLR_MASK        (0x800U)
+#define USART_INTENCLR_DELTARXBRKCLR_SHIFT       (11U)
+/*! DELTARXBRKCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_DELTARXBRKCLR(x)          (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_DELTARXBRKCLR_SHIFT)) & USART_INTENCLR_DELTARXBRKCLR_MASK)
+#define USART_INTENCLR_STARTCLR_MASK             (0x1000U)
+#define USART_INTENCLR_STARTCLR_SHIFT            (12U)
+/*! STARTCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_STARTCLR(x)               (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_STARTCLR_SHIFT)) & USART_INTENCLR_STARTCLR_MASK)
+#define USART_INTENCLR_FRAMERRCLR_MASK           (0x2000U)
+#define USART_INTENCLR_FRAMERRCLR_SHIFT          (13U)
+/*! FRAMERRCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_FRAMERRCLR(x)             (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_FRAMERRCLR_SHIFT)) & USART_INTENCLR_FRAMERRCLR_MASK)
+#define USART_INTENCLR_PARITYERRCLR_MASK         (0x4000U)
+#define USART_INTENCLR_PARITYERRCLR_SHIFT        (14U)
+/*! PARITYERRCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_PARITYERRCLR(x)           (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_PARITYERRCLR_SHIFT)) & USART_INTENCLR_PARITYERRCLR_MASK)
+#define USART_INTENCLR_RXNOISECLR_MASK           (0x8000U)
+#define USART_INTENCLR_RXNOISECLR_SHIFT          (15U)
+/*! RXNOISECLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_RXNOISECLR(x)             (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_RXNOISECLR_SHIFT)) & USART_INTENCLR_RXNOISECLR_MASK)
+#define USART_INTENCLR_ABERRCLR_MASK             (0x10000U)
+#define USART_INTENCLR_ABERRCLR_SHIFT            (16U)
+/*! ABERRCLR - Writing 1 clears the corresponding bit in the INTENSET register.
+ */
+#define USART_INTENCLR_ABERRCLR(x)               (((uint32_t)(((uint32_t)(x)) << USART_INTENCLR_ABERRCLR_SHIFT)) & USART_INTENCLR_ABERRCLR_MASK)
+/*! @} */
+
+/*! @name RXDAT - Receiver Data register. Contains the last character received. */
+/*! @{ */
+#define USART_RXDAT_RXDAT_MASK                   (0x1FFU)
+#define USART_RXDAT_RXDAT_SHIFT                  (0U)
+/*! RXDAT - The USART Receiver Data register contains the next received character. The number of
+ *    bits that are relevant depends on the USART configuration settings.
+ */
+#define USART_RXDAT_RXDAT(x)                     (((uint32_t)(((uint32_t)(x)) << USART_RXDAT_RXDAT_SHIFT)) & USART_RXDAT_RXDAT_MASK)
+/*! @} */
+
+/*! @name RXDATSTAT - Receiver Data with Status register. Combines the last character received with the current USART receive status. Allows DMA or software to recover incoming data and status together. */
+/*! @{ */
+#define USART_RXDATSTAT_RXDAT_MASK               (0x1FFU)
+#define USART_RXDATSTAT_RXDAT_SHIFT              (0U)
+/*! RXDAT - The USART Receiver Data register contains the next received character. The number of
+ *    bits that are relevant depends on the USART configuration settings.
+ */
+#define USART_RXDATSTAT_RXDAT(x)                 (((uint32_t)(((uint32_t)(x)) << USART_RXDATSTAT_RXDAT_SHIFT)) & USART_RXDATSTAT_RXDAT_MASK)
+#define USART_RXDATSTAT_FRAMERR_MASK             (0x2000U)
+#define USART_RXDATSTAT_FRAMERR_SHIFT            (13U)
+/*! FRAMERR - Framing Error status flag. This bit is valid when there is a character to be read in
+ *    the RXDAT register and reflects the status of that character. This bit will set when the
+ *    character in RXDAT was received with a missing stop bit at the expected location. This could be an
+ *    indication of a baud rate or configuration mismatch with the transmitting source.
+ */
+#define USART_RXDATSTAT_FRAMERR(x)               (((uint32_t)(((uint32_t)(x)) << USART_RXDATSTAT_FRAMERR_SHIFT)) & USART_RXDATSTAT_FRAMERR_MASK)
+#define USART_RXDATSTAT_PARITYERR_MASK           (0x4000U)
+#define USART_RXDATSTAT_PARITYERR_SHIFT          (14U)
+/*! PARITYERR - Parity Error status flag. This bit is valid when there is a character to be read in
+ *    the RXDAT register and reflects the status of that character. This bit will be set when a
+ *    parity error is detected in a received character.
+ */
+#define USART_RXDATSTAT_PARITYERR(x)             (((uint32_t)(((uint32_t)(x)) << USART_RXDATSTAT_PARITYERR_SHIFT)) & USART_RXDATSTAT_PARITYERR_MASK)
+#define USART_RXDATSTAT_RXNOISE_MASK             (0x8000U)
+#define USART_RXDATSTAT_RXNOISE_SHIFT            (15U)
+/*! RXNOISE - Received Noise flag.
+ */
+#define USART_RXDATSTAT_RXNOISE(x)               (((uint32_t)(((uint32_t)(x)) << USART_RXDATSTAT_RXNOISE_SHIFT)) & USART_RXDATSTAT_RXNOISE_MASK)
+/*! @} */
+
+/*! @name TXDAT - Transmit Data register. Data to be transmitted is written here. */
+/*! @{ */
+#define USART_TXDAT_TXDAT_MASK                   (0x1FFU)
+#define USART_TXDAT_TXDAT_SHIFT                  (0U)
+/*! TXDAT - Writing to the USART Transmit Data Register causes the data to be transmitted as soon as
+ *    the transmit shift register is available and any conditions for transmitting data are met:
+ *    CTS low (if CTSEN bit = 1), TXDIS bit = 0.
+ */
+#define USART_TXDAT_TXDAT(x)                     (((uint32_t)(((uint32_t)(x)) << USART_TXDAT_TXDAT_SHIFT)) & USART_TXDAT_TXDAT_MASK)
+/*! @} */
+
+/*! @name BRG - Baud Rate Generator register. 16-bit integer baud rate divisor value. */
+/*! @{ */
+#define USART_BRG_BRGVAL_MASK                    (0xFFFFU)
+#define USART_BRG_BRGVAL_SHIFT                   (0U)
+/*! BRGVAL - This value is used to divide the USART input clock to determine the baud rate, based on
+ *    the input clock from the FRG. 0 = FCLK is used directly by the USART function. 1 = FCLK is
+ *    divided by 2 before use by the USART function. 2 = FCLK is divided by 3 before use by the USART
+ *    function. 0xFFFF = FCLK is divided by 65,536 before use by the USART function.
+ */
+#define USART_BRG_BRGVAL(x)                      (((uint32_t)(((uint32_t)(x)) << USART_BRG_BRGVAL_SHIFT)) & USART_BRG_BRGVAL_MASK)
+/*! @} */
+
+/*! @name INTSTAT - Interrupt status register. Reflects interrupts that are currently enabled. */
+/*! @{ */
+#define USART_INTSTAT_RXRDY_MASK                 (0x1U)
+#define USART_INTSTAT_RXRDY_SHIFT                (0U)
+/*! RXRDY - Receiver Ready flag.
+ */
+#define USART_INTSTAT_RXRDY(x)                   (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_RXRDY_SHIFT)) & USART_INTSTAT_RXRDY_MASK)
+#define USART_INTSTAT_TXRDY_MASK                 (0x4U)
+#define USART_INTSTAT_TXRDY_SHIFT                (2U)
+/*! TXRDY - Transmitter Ready flag.
+ */
+#define USART_INTSTAT_TXRDY(x)                   (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_TXRDY_SHIFT)) & USART_INTSTAT_TXRDY_MASK)
+#define USART_INTSTAT_TXIDLE_MASK                (0x8U)
+#define USART_INTSTAT_TXIDLE_SHIFT               (3U)
+/*! TXIDLE - Transmitter idle status.
+ */
+#define USART_INTSTAT_TXIDLE(x)                  (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_TXIDLE_SHIFT)) & USART_INTSTAT_TXIDLE_MASK)
+#define USART_INTSTAT_DELTACTS_MASK              (0x20U)
+#define USART_INTSTAT_DELTACTS_SHIFT             (5U)
+/*! DELTACTS - This bit is set when a change in the state of the CTS input is detected.
+ */
+#define USART_INTSTAT_DELTACTS(x)                (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_DELTACTS_SHIFT)) & USART_INTSTAT_DELTACTS_MASK)
+#define USART_INTSTAT_TXDISINT_MASK              (0x40U)
+#define USART_INTSTAT_TXDISINT_SHIFT             (6U)
+/*! TXDISINT - Transmitter Disabled Interrupt flag.
+ */
+#define USART_INTSTAT_TXDISINT(x)                (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_TXDISINT_SHIFT)) & USART_INTSTAT_TXDISINT_MASK)
+#define USART_INTSTAT_OVERRUNINT_MASK            (0x100U)
+#define USART_INTSTAT_OVERRUNINT_SHIFT           (8U)
+/*! OVERRUNINT - Overrun Error interrupt flag.
+ */
+#define USART_INTSTAT_OVERRUNINT(x)              (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_OVERRUNINT_SHIFT)) & USART_INTSTAT_OVERRUNINT_MASK)
+#define USART_INTSTAT_DELTARXBRK_MASK            (0x800U)
+#define USART_INTSTAT_DELTARXBRK_SHIFT           (11U)
+/*! DELTARXBRK - This bit is set when a change in the state of receiver break detection occurs.
+ */
+#define USART_INTSTAT_DELTARXBRK(x)              (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_DELTARXBRK_SHIFT)) & USART_INTSTAT_DELTARXBRK_MASK)
+#define USART_INTSTAT_START_MASK                 (0x1000U)
+#define USART_INTSTAT_START_SHIFT                (12U)
+/*! START - This bit is set when a start is detected on the receiver input.
+ */
+#define USART_INTSTAT_START(x)                   (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_START_SHIFT)) & USART_INTSTAT_START_MASK)
+#define USART_INTSTAT_FRAMERRINT_MASK            (0x2000U)
+#define USART_INTSTAT_FRAMERRINT_SHIFT           (13U)
+/*! FRAMERRINT - Framing Error interrupt flag.
+ */
+#define USART_INTSTAT_FRAMERRINT(x)              (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_FRAMERRINT_SHIFT)) & USART_INTSTAT_FRAMERRINT_MASK)
+#define USART_INTSTAT_PARITYERRINT_MASK          (0x4000U)
+#define USART_INTSTAT_PARITYERRINT_SHIFT         (14U)
+/*! PARITYERRINT - Parity Error interrupt flag.
+ */
+#define USART_INTSTAT_PARITYERRINT(x)            (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_PARITYERRINT_SHIFT)) & USART_INTSTAT_PARITYERRINT_MASK)
+#define USART_INTSTAT_RXNOISEINT_MASK            (0x8000U)
+#define USART_INTSTAT_RXNOISEINT_SHIFT           (15U)
+/*! RXNOISEINT - Received Noise interrupt flag.
+ */
+#define USART_INTSTAT_RXNOISEINT(x)              (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_RXNOISEINT_SHIFT)) & USART_INTSTAT_RXNOISEINT_MASK)
+#define USART_INTSTAT_ABERR_MASK                 (0x10000U)
+#define USART_INTSTAT_ABERR_SHIFT                (16U)
+/*! ABERR - Autobaud Error flag.
+ */
+#define USART_INTSTAT_ABERR(x)                   (((uint32_t)(((uint32_t)(x)) << USART_INTSTAT_ABERR_SHIFT)) & USART_INTSTAT_ABERR_MASK)
+/*! @} */
+
+/*! @name OSR - Oversample selection register for asynchronous communication. */
+/*! @{ */
+#define USART_OSR_OSRVAL_MASK                    (0xFU)
+#define USART_OSR_OSRVAL_SHIFT                   (0U)
+/*! OSRVAL - Oversample Selection Value. 0 to 3 = not supported 0x4 = 5 function clocks are used to
+ *    transmit and receive each data bit. 0x5 = 6 function clocks are used to transmit and receive
+ *    each data bit. 0xF= 16 function clocks are used to transmit and receive each data bit.
+ */
+#define USART_OSR_OSRVAL(x)                      (((uint32_t)(((uint32_t)(x)) << USART_OSR_OSRVAL_SHIFT)) & USART_OSR_OSRVAL_MASK)
+/*! @} */
+
+/*! @name ADDR - Address register for automatic address matching. */
+/*! @{ */
+#define USART_ADDR_ADDRESS_MASK                  (0xFFU)
+#define USART_ADDR_ADDRESS_SHIFT                 (0U)
+/*! ADDRESS - 8-bit address used with automatic address matching. Used when address detection is
+ *    enabled (ADDRDET in CTL = 1) and automatic address matching is enabled (AUTOADDR in CFG = 1).
+ */
+#define USART_ADDR_ADDRESS(x)                    (((uint32_t)(((uint32_t)(x)) << USART_ADDR_ADDRESS_SHIFT)) & USART_ADDR_ADDRESS_MASK)
+/*! @} */
+
+
+/*!
+ * @}
+ */ /* end of group USART_Register_Masks */
+
 
 /* USART - Peripheral instance base addresses */
 /** Peripheral USART0 base address */
@@ -503,6 +2307,10 @@ typedef struct {
 /** Interrupt vectors for the USART peripheral type */
 #define USART_IRQS                               { USART0_IRQn, USART1_IRQn, USART2_IRQn, PIN_INT6_USART3_IRQn, PIN_INT7_USART4_IRQn }
 
+/*!
+ * @}
+ */ /* end of group USART_Peripheral_Access_Layer */
+
 /**
   \brief  Structure type to access the Pin Interrupt.
  */
@@ -529,55 +2337,1724 @@ typedef struct {
 
 #define PIN_INTERRUPT 	((PIN_INTERRUPT_Type *) 0xA0004000UL)
 
-/**
-  \brief  Structure type to access the SCT.
+/* ----------------------------------------------------------------------------
+   -- CTIMER Peripheral Access Layer
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup CTIMER_Peripheral_Access_Layer CTIMER Peripheral Access Layer
+ * @{
  */
+
+/** CTIMER - Register Layout Typedef */
+typedef struct {
+  __IO uint32_t IR;                                /**< Interrupt Register. The IR can be written to clear interrupts. The IR can be read to identify which of eight possible interrupt sources are pending., offset: 0x0 */
+  __IO uint32_t TCR;                               /**< Timer Control Register. The TCR is used to control the Timer Counter functions. The Timer Counter can be disabled or reset through the TCR., offset: 0x4 */
+  __IO uint32_t TC;                                /**< Timer Counter. The 32 bit TC is incremented every PR+1 cycles of the APB bus clock. The TC is controlled through the TCR., offset: 0x8 */
+  __IO uint32_t PR;                                /**< Prescale Register. When the Prescale Counter (PC) is equal to this value, the next clock increments the TC and clears the PC., offset: 0xC */
+  __IO uint32_t PC;                                /**< Prescale Counter. The 32 bit PC is a counter which is incremented to the value stored in PR. When the value in PR is reached, the TC is incremented and the PC is cleared. The PC is observable and controllable through the bus interface., offset: 0x10 */
+  __IO uint32_t MCR;                               /**< Match Control Register. The MCR is used to control if an interrupt is generated and if the TC is reset when a Match occurs., offset: 0x14 */
+  __IO uint32_t MR[4];                             /**< Match Register . MR can be enabled through the MCR to reset the TC, stop both the TC and PC, and/or generate an interrupt every time MR matches the TC., array offset: 0x18, array step: 0x4 */
+  __IO uint32_t CCR;                               /**< Capture Control Register. The CCR controls which edges of the capture inputs are used to load the Capture Registers and whether or not an interrupt is generated when a capture takes place., offset: 0x28 */
+  __I  uint32_t CR[4];                             /**< Capture Register . CR is loaded with the value of TC when there is an event on the CAPn. input., array offset: 0x2C, array step: 0x4 */
+  __IO uint32_t EMR;                               /**< External Match Register. The EMR controls the match function and the external match pins., offset: 0x3C */
+       uint8_t RESERVED_0[48];
+  __IO uint32_t CTCR;                              /**< Count Control Register. The CTCR selects between Timer and Counter mode, and in Counter mode selects the signal and edge(s) for counting., offset: 0x70 */
+  __IO uint32_t PWMC;                              /**< PWM Control Register. The PWMCON enables PWM mode for the external match pins., offset: 0x74 */
+  __IO uint32_t MSR[4];                            /**< Match Shadow Register . If enabled, the Match Register will be automatically reloaded with the contents of this register whenever the TC is reset to zero., array offset: 0x78, array step: 0x4 */
+} CTIMER_Type;
+
+/* ----------------------------------------------------------------------------
+   -- CTIMER Register Masks
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup CTIMER_Register_Masks CTIMER Register Masks
+ * @{
+ */
+
+/*! @name IR - Interrupt Register. The IR can be written to clear interrupts. The IR can be read to identify which of eight possible interrupt sources are pending. */
+/*! @{ */
+#define CTIMER_IR_MR0INT_MASK                    (0x1U)
+#define CTIMER_IR_MR0INT_SHIFT                   (0U)
+/*! MR0INT - Interrupt flag for match channel 0.
+ */
+#define CTIMER_IR_MR0INT(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_IR_MR0INT_SHIFT)) & CTIMER_IR_MR0INT_MASK)
+#define CTIMER_IR_MR1INT_MASK                    (0x2U)
+#define CTIMER_IR_MR1INT_SHIFT                   (1U)
+/*! MR1INT - Interrupt flag for match channel 1.
+ */
+#define CTIMER_IR_MR1INT(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_IR_MR1INT_SHIFT)) & CTIMER_IR_MR1INT_MASK)
+#define CTIMER_IR_MR2INT_MASK                    (0x4U)
+#define CTIMER_IR_MR2INT_SHIFT                   (2U)
+/*! MR2INT - Interrupt flag for match channel 2.
+ */
+#define CTIMER_IR_MR2INT(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_IR_MR2INT_SHIFT)) & CTIMER_IR_MR2INT_MASK)
+#define CTIMER_IR_MR3INT_MASK                    (0x8U)
+#define CTIMER_IR_MR3INT_SHIFT                   (3U)
+/*! MR3INT - Interrupt flag for match channel 3.
+ */
+#define CTIMER_IR_MR3INT(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_IR_MR3INT_SHIFT)) & CTIMER_IR_MR3INT_MASK)
+#define CTIMER_IR_CR0INT_MASK                    (0x10U)
+#define CTIMER_IR_CR0INT_SHIFT                   (4U)
+/*! CR0INT - Interrupt flag for capture channel 0 event.
+ */
+#define CTIMER_IR_CR0INT(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_IR_CR0INT_SHIFT)) & CTIMER_IR_CR0INT_MASK)
+#define CTIMER_IR_CR1INT_MASK                    (0x20U)
+#define CTIMER_IR_CR1INT_SHIFT                   (5U)
+/*! CR1INT - Interrupt flag for capture channel 1 event.
+ */
+#define CTIMER_IR_CR1INT(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_IR_CR1INT_SHIFT)) & CTIMER_IR_CR1INT_MASK)
+#define CTIMER_IR_CR2INT_MASK                    (0x40U)
+#define CTIMER_IR_CR2INT_SHIFT                   (6U)
+/*! CR2INT - Interrupt flag for capture channel 2 event.
+ */
+#define CTIMER_IR_CR2INT(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_IR_CR2INT_SHIFT)) & CTIMER_IR_CR2INT_MASK)
+#define CTIMER_IR_CR3INT_MASK                    (0x80U)
+#define CTIMER_IR_CR3INT_SHIFT                   (7U)
+/*! CR3INT - Interrupt flag for capture channel 3 event.
+ */
+#define CTIMER_IR_CR3INT(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_IR_CR3INT_SHIFT)) & CTIMER_IR_CR3INT_MASK)
+/*! @} */
+
+/*! @name TCR - Timer Control Register. The TCR is used to control the Timer Counter functions. The Timer Counter can be disabled or reset through the TCR. */
+/*! @{ */
+#define CTIMER_TCR_CEN_MASK                      (0x1U)
+#define CTIMER_TCR_CEN_SHIFT                     (0U)
+/*! CEN - Counter enable.
+ *  0b0..Disabled.The counters are disabled.
+ *  0b1..Enabled. The Timer Counter and Prescale Counter are enabled.
+ */
+#define CTIMER_TCR_CEN(x)                        (((uint32_t)(((uint32_t)(x)) << CTIMER_TCR_CEN_SHIFT)) & CTIMER_TCR_CEN_MASK)
+#define CTIMER_TCR_CRST_MASK                     (0x2U)
+#define CTIMER_TCR_CRST_SHIFT                    (1U)
+/*! CRST - Counter reset.
+ *  0b0..Disabled. Do nothing.
+ *  0b1..Enabled. The Timer Counter and the Prescale Counter are synchronously reset on the next positive edge of
+ *       the APB bus clock. The counters remain reset until TCR[1] is returned to zero.
+ */
+#define CTIMER_TCR_CRST(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_TCR_CRST_SHIFT)) & CTIMER_TCR_CRST_MASK)
+/*! @} */
+
+/*! @name TC - Timer Counter. The 32 bit TC is incremented every PR+1 cycles of the APB bus clock. The TC is controlled through the TCR. */
+/*! @{ */
+#define CTIMER_TC_TCVAL_MASK                     (0xFFFFFFFFU)
+#define CTIMER_TC_TCVAL_SHIFT                    (0U)
+/*! TCVAL - Timer counter value.
+ */
+#define CTIMER_TC_TCVAL(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_TC_TCVAL_SHIFT)) & CTIMER_TC_TCVAL_MASK)
+/*! @} */
+
+/*! @name PR - Prescale Register. When the Prescale Counter (PC) is equal to this value, the next clock increments the TC and clears the PC. */
+/*! @{ */
+#define CTIMER_PR_PRVAL_MASK                     (0xFFFFFFFFU)
+#define CTIMER_PR_PRVAL_SHIFT                    (0U)
+/*! PRVAL - Prescale counter value.
+ */
+#define CTIMER_PR_PRVAL(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_PR_PRVAL_SHIFT)) & CTIMER_PR_PRVAL_MASK)
+/*! @} */
+
+/*! @name PC - Prescale Counter. The 32 bit PC is a counter which is incremented to the value stored in PR. When the value in PR is reached, the TC is incremented and the PC is cleared. The PC is observable and controllable through the bus interface. */
+/*! @{ */
+#define CTIMER_PC_PCVAL_MASK                     (0xFFFFFFFFU)
+#define CTIMER_PC_PCVAL_SHIFT                    (0U)
+/*! PCVAL - Prescale counter value.
+ */
+#define CTIMER_PC_PCVAL(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_PC_PCVAL_SHIFT)) & CTIMER_PC_PCVAL_MASK)
+/*! @} */
+
+/*! @name MCR - Match Control Register. The MCR is used to control if an interrupt is generated and if the TC is reset when a Match occurs. */
+/*! @{ */
+#define CTIMER_MCR_MR0I_MASK                     (0x1U)
+#define CTIMER_MCR_MR0I_SHIFT                    (0U)
+/*! MR0I - Interrupt on MR0: an interrupt is generated when MR0 matches the value in the TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR0I(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR0I_SHIFT)) & CTIMER_MCR_MR0I_MASK)
+#define CTIMER_MCR_MR0R_MASK                     (0x2U)
+#define CTIMER_MCR_MR0R_SHIFT                    (1U)
+/*! MR0R - Reset on MR0: the TC will be reset if MR0 matches it. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR0R(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR0R_SHIFT)) & CTIMER_MCR_MR0R_MASK)
+#define CTIMER_MCR_MR0S_MASK                     (0x4U)
+#define CTIMER_MCR_MR0S_SHIFT                    (2U)
+/*! MR0S - Stop on MR0: the TC and PC will be stopped and TCR[0] will be set to 0 if MR0 matches the TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR0S(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR0S_SHIFT)) & CTIMER_MCR_MR0S_MASK)
+#define CTIMER_MCR_MR1I_MASK                     (0x8U)
+#define CTIMER_MCR_MR1I_SHIFT                    (3U)
+/*! MR1I - Interrupt on MR1: an interrupt is generated when MR1 matches the value in the TC. 0 =
+ *    disabled. 1 = enabled. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR1I(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR1I_SHIFT)) & CTIMER_MCR_MR1I_MASK)
+#define CTIMER_MCR_MR1R_MASK                     (0x10U)
+#define CTIMER_MCR_MR1R_SHIFT                    (4U)
+/*! MR1R - Reset on MR1: the TC will be reset if MR1 matches it. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR1R(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR1R_SHIFT)) & CTIMER_MCR_MR1R_MASK)
+#define CTIMER_MCR_MR1S_MASK                     (0x20U)
+#define CTIMER_MCR_MR1S_SHIFT                    (5U)
+/*! MR1S - Stop on MR1: the TC and PC will be stopped and TCR[0] will be set to 0 if MR1 matches the TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR1S(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR1S_SHIFT)) & CTIMER_MCR_MR1S_MASK)
+#define CTIMER_MCR_MR2I_MASK                     (0x40U)
+#define CTIMER_MCR_MR2I_SHIFT                    (6U)
+/*! MR2I - Interrupt on MR2: an interrupt is generated when MR2 matches the value in the TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR2I(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR2I_SHIFT)) & CTIMER_MCR_MR2I_MASK)
+#define CTIMER_MCR_MR2R_MASK                     (0x80U)
+#define CTIMER_MCR_MR2R_SHIFT                    (7U)
+/*! MR2R - Reset on MR2: the TC will be reset if MR2 matches it. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR2R(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR2R_SHIFT)) & CTIMER_MCR_MR2R_MASK)
+#define CTIMER_MCR_MR2S_MASK                     (0x100U)
+#define CTIMER_MCR_MR2S_SHIFT                    (8U)
+/*! MR2S - Stop on MR2: the TC and PC will be stopped and TCR[0] will be set to 0 if MR2 matches the TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR2S(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR2S_SHIFT)) & CTIMER_MCR_MR2S_MASK)
+#define CTIMER_MCR_MR3I_MASK                     (0x200U)
+#define CTIMER_MCR_MR3I_SHIFT                    (9U)
+/*! MR3I - Interrupt on MR3: an interrupt is generated when MR3 matches the value in the TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR3I(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR3I_SHIFT)) & CTIMER_MCR_MR3I_MASK)
+#define CTIMER_MCR_MR3R_MASK                     (0x400U)
+#define CTIMER_MCR_MR3R_SHIFT                    (10U)
+/*! MR3R - Reset on MR3: the TC will be reset if MR3 matches it. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR3R(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR3R_SHIFT)) & CTIMER_MCR_MR3R_MASK)
+#define CTIMER_MCR_MR3S_MASK                     (0x800U)
+#define CTIMER_MCR_MR3S_SHIFT                    (11U)
+/*! MR3S - Stop on MR3: the TC and PC will be stopped and TCR[0] will be set to 0 if MR3 matches the TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR3S(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR3S_SHIFT)) & CTIMER_MCR_MR3S_MASK)
+#define CTIMER_MCR_MR0RL_MASK                    (0x1000000U)
+#define CTIMER_MCR_MR0RL_SHIFT                   (24U)
+/*! MR0RL - Reload MR0 with the contents of the Match 0 Shadow Register when the TC is reset to zero
+ *    (either via a match event or a write to bit 1 of the TCR). 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR0RL(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR0RL_SHIFT)) & CTIMER_MCR_MR0RL_MASK)
+#define CTIMER_MCR_MR1RL_MASK                    (0x2000000U)
+#define CTIMER_MCR_MR1RL_SHIFT                   (25U)
+/*! MR1RL - Reload MR1 with the contents of the Match 1 Shadow Register when the TC is reset to zero
+ *    (either via a match event or a write to bit 1 of the TCR). 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR1RL(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR1RL_SHIFT)) & CTIMER_MCR_MR1RL_MASK)
+#define CTIMER_MCR_MR2RL_MASK                    (0x4000000U)
+#define CTIMER_MCR_MR2RL_SHIFT                   (26U)
+/*! MR2RL - Reload MR2 with the contents of the Match 2 Shadow Register when the TC is reset to zero
+ *    (either via a match event or a write to bit 1 of the TCR). 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR2RL(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR2RL_SHIFT)) & CTIMER_MCR_MR2RL_MASK)
+#define CTIMER_MCR_MR3RL_MASK                    (0x8000000U)
+#define CTIMER_MCR_MR3RL_SHIFT                   (27U)
+/*! MR3RL - Reload MR3 with the contents of the Match 3 Shadow Register when the TC is reset to zero
+ *    (either via a match event or a write to bit 1 of the TCR). 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_MCR_MR3RL(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_MCR_MR3RL_SHIFT)) & CTIMER_MCR_MR3RL_MASK)
+/*! @} */
+
+/*! @name MR - Match Register . MR can be enabled through the MCR to reset the TC, stop both the TC and PC, and/or generate an interrupt every time MR matches the TC. */
+/*! @{ */
+#define CTIMER_MR_MATCH_MASK                     (0xFFFFFFFFU)
+#define CTIMER_MR_MATCH_SHIFT                    (0U)
+/*! MATCH - Timer counter match value.
+ */
+#define CTIMER_MR_MATCH(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_MR_MATCH_SHIFT)) & CTIMER_MR_MATCH_MASK)
+/*! @} */
+
+/* The count of CTIMER_MR */
+#define CTIMER_MR_COUNT                          (4U)
+
+/*! @name CCR - Capture Control Register. The CCR controls which edges of the capture inputs are used to load the Capture Registers and whether or not an interrupt is generated when a capture takes place. */
+/*! @{ */
+#define CTIMER_CCR_CAP0RE_MASK                   (0x1U)
+#define CTIMER_CCR_CAP0RE_SHIFT                  (0U)
+/*! CAP0RE - Rising edge of capture channel 0: a sequence of 0 then 1 causes CR0 to be loaded with
+ *    the contents of TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_CCR_CAP0RE(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP0RE_SHIFT)) & CTIMER_CCR_CAP0RE_MASK)
+#define CTIMER_CCR_CAP0FE_MASK                   (0x2U)
+#define CTIMER_CCR_CAP0FE_SHIFT                  (1U)
+/*! CAP0FE - Falling edge of capture channel 0: a sequence of 1 then 0 causes CR0 to be loaded with
+ *    the contents of TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_CCR_CAP0FE(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP0FE_SHIFT)) & CTIMER_CCR_CAP0FE_MASK)
+#define CTIMER_CCR_CAP0I_MASK                    (0x4U)
+#define CTIMER_CCR_CAP0I_SHIFT                   (2U)
+/*! CAP0I - Generate interrupt on channel 0 capture event: a CR0 load generates an interrupt.
+ */
+#define CTIMER_CCR_CAP0I(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP0I_SHIFT)) & CTIMER_CCR_CAP0I_MASK)
+#define CTIMER_CCR_CAP1RE_MASK                   (0x8U)
+#define CTIMER_CCR_CAP1RE_SHIFT                  (3U)
+/*! CAP1RE - Rising edge of capture channel 1: a sequence of 0 then 1 causes CR1 to be loaded with
+ *    the contents of TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_CCR_CAP1RE(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP1RE_SHIFT)) & CTIMER_CCR_CAP1RE_MASK)
+#define CTIMER_CCR_CAP1FE_MASK                   (0x10U)
+#define CTIMER_CCR_CAP1FE_SHIFT                  (4U)
+/*! CAP1FE - Falling edge of capture channel 1: a sequence of 1 then 0 causes CR1 to be loaded with
+ *    the contents of TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_CCR_CAP1FE(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP1FE_SHIFT)) & CTIMER_CCR_CAP1FE_MASK)
+#define CTIMER_CCR_CAP1I_MASK                    (0x20U)
+#define CTIMER_CCR_CAP1I_SHIFT                   (5U)
+/*! CAP1I - Generate interrupt on channel 1 capture event: a CR1 load generates an interrupt.
+ */
+#define CTIMER_CCR_CAP1I(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP1I_SHIFT)) & CTIMER_CCR_CAP1I_MASK)
+#define CTIMER_CCR_CAP2RE_MASK                   (0x40U)
+#define CTIMER_CCR_CAP2RE_SHIFT                  (6U)
+/*! CAP2RE - Rising edge of capture channel 2: a sequence of 0 then 1 causes CR2 to be loaded with
+ *    the contents of TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_CCR_CAP2RE(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP2RE_SHIFT)) & CTIMER_CCR_CAP2RE_MASK)
+#define CTIMER_CCR_CAP2FE_MASK                   (0x80U)
+#define CTIMER_CCR_CAP2FE_SHIFT                  (7U)
+/*! CAP2FE - Falling edge of capture channel 2: a sequence of 1 then 0 causes CR2 to be loaded with
+ *    the contents of TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_CCR_CAP2FE(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP2FE_SHIFT)) & CTIMER_CCR_CAP2FE_MASK)
+#define CTIMER_CCR_CAP2I_MASK                    (0x100U)
+#define CTIMER_CCR_CAP2I_SHIFT                   (8U)
+/*! CAP2I - Generate interrupt on channel 2 capture event: a CR2 load generates an interrupt.
+ */
+#define CTIMER_CCR_CAP2I(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP2I_SHIFT)) & CTIMER_CCR_CAP2I_MASK)
+#define CTIMER_CCR_CAP3RE_MASK                   (0x200U)
+#define CTIMER_CCR_CAP3RE_SHIFT                  (9U)
+/*! CAP3RE - Rising edge of capture channel 3: a sequence of 0 then 1 causes CR3 to be loaded with
+ *    the contents of TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_CCR_CAP3RE(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP3RE_SHIFT)) & CTIMER_CCR_CAP3RE_MASK)
+#define CTIMER_CCR_CAP3FE_MASK                   (0x400U)
+#define CTIMER_CCR_CAP3FE_SHIFT                  (10U)
+/*! CAP3FE - Falling edge of capture channel 3: a sequence of 1 then 0 causes CR3 to be loaded with
+ *    the contents of TC. 0 = disabled. 1 = enabled.
+ */
+#define CTIMER_CCR_CAP3FE(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP3FE_SHIFT)) & CTIMER_CCR_CAP3FE_MASK)
+#define CTIMER_CCR_CAP3I_MASK                    (0x800U)
+#define CTIMER_CCR_CAP3I_SHIFT                   (11U)
+/*! CAP3I - Generate interrupt on channel 3 capture event: a CR3 load generates an interrupt.
+ */
+#define CTIMER_CCR_CAP3I(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_CCR_CAP3I_SHIFT)) & CTIMER_CCR_CAP3I_MASK)
+/*! @} */
+
+/*! @name CR - Capture Register . CR is loaded with the value of TC when there is an event on the CAPn. input. */
+/*! @{ */
+#define CTIMER_CR_CAP_MASK                       (0xFFFFFFFFU)
+#define CTIMER_CR_CAP_SHIFT                      (0U)
+/*! CAP - Timer counter capture value.
+ */
+#define CTIMER_CR_CAP(x)                         (((uint32_t)(((uint32_t)(x)) << CTIMER_CR_CAP_SHIFT)) & CTIMER_CR_CAP_MASK)
+/*! @} */
+
+/* The count of CTIMER_CR */
+#define CTIMER_CR_COUNT                          (4U)
+
+/*! @name EMR - External Match Register. The EMR controls the match function and the external match pins. */
+/*! @{ */
+#define CTIMER_EMR_EM0_MASK                      (0x1U)
+#define CTIMER_EMR_EM0_SHIFT                     (0U)
+/*! EM0 - External Match 0. This bit reflects the state of output MAT0, whether or not this output
+ *    is connected to a pin. When a match occurs between the TC and MR0, this bit can either toggle,
+ *    go LOW, go HIGH, or do nothing, as selected by EMR[5:4]. This bit is driven to the MAT pins if
+ *    the match function is selected via IOCON. 0 = LOW. 1 = HIGH.
+ */
+#define CTIMER_EMR_EM0(x)                        (((uint32_t)(((uint32_t)(x)) << CTIMER_EMR_EM0_SHIFT)) & CTIMER_EMR_EM0_MASK)
+#define CTIMER_EMR_EM1_MASK                      (0x2U)
+#define CTIMER_EMR_EM1_SHIFT                     (1U)
+/*! EM1 - External Match 1. This bit reflects the state of output MAT1, whether or not this output
+ *    is connected to a pin. When a match occurs between the TC and MR1, this bit can either toggle,
+ *    go LOW, go HIGH, or do nothing, as selected by EMR[7:6]. This bit is driven to the MAT pins if
+ *    the match function is selected via IOCON. 0 = LOW. 1 = HIGH.
+ */
+#define CTIMER_EMR_EM1(x)                        (((uint32_t)(((uint32_t)(x)) << CTIMER_EMR_EM1_SHIFT)) & CTIMER_EMR_EM1_MASK)
+#define CTIMER_EMR_EM2_MASK                      (0x4U)
+#define CTIMER_EMR_EM2_SHIFT                     (2U)
+/*! EM2 - External Match 2. This bit reflects the state of output MAT2, whether or not this output
+ *    is connected to a pin. When a match occurs between the TC and MR2, this bit can either toggle,
+ *    go LOW, go HIGH, or do nothing, as selected by EMR[9:8]. This bit is driven to the MAT pins if
+ *    the match function is selected via IOCON. 0 = LOW. 1 = HIGH.
+ */
+#define CTIMER_EMR_EM2(x)                        (((uint32_t)(((uint32_t)(x)) << CTIMER_EMR_EM2_SHIFT)) & CTIMER_EMR_EM2_MASK)
+#define CTIMER_EMR_EM3_MASK                      (0x8U)
+#define CTIMER_EMR_EM3_SHIFT                     (3U)
+/*! EM3 - External Match 3. This bit reflects the state of output MAT3, whether or not this output
+ *    is connected to a pin. When a match occurs between the TC and MR3, this bit can either toggle,
+ *    go LOW, go HIGH, or do nothing, as selected by MR[11:10]. This bit is driven to the MAT pins
+ *    if the match function is selected via IOCON. 0 = LOW. 1 = HIGH.
+ */
+#define CTIMER_EMR_EM3(x)                        (((uint32_t)(((uint32_t)(x)) << CTIMER_EMR_EM3_SHIFT)) & CTIMER_EMR_EM3_MASK)
+#define CTIMER_EMR_EMC0_MASK                     (0x30U)
+#define CTIMER_EMR_EMC0_SHIFT                    (4U)
+/*! EMC0 - External Match Control 0. Determines the functionality of External Match 0.
+ *  0b00..Do Nothing.
+ *  0b01..Clear. Clear the corresponding External Match bit/output to 0 (MAT0 pin is LOW if pinned out).
+ *  0b10..Set. Set the corresponding External Match bit/output to 1 (MAT0 pin is HIGH if pinned out).
+ *  0b11..Toggle. Toggle the corresponding External Match bit/output.
+ */
+#define CTIMER_EMR_EMC0(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_EMR_EMC0_SHIFT)) & CTIMER_EMR_EMC0_MASK)
+#define CTIMER_EMR_EMC1_MASK                     (0xC0U)
+#define CTIMER_EMR_EMC1_SHIFT                    (6U)
+/*! EMC1 - External Match Control 1. Determines the functionality of External Match 1.
+ *  0b00..Do Nothing.
+ *  0b01..Clear. Clear the corresponding External Match bit/output to 0 (MAT1 pin is LOW if pinned out).
+ *  0b10..Set. Set the corresponding External Match bit/output to 1 (MAT1 pin is HIGH if pinned out).
+ *  0b11..Toggle. Toggle the corresponding External Match bit/output.
+ */
+#define CTIMER_EMR_EMC1(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_EMR_EMC1_SHIFT)) & CTIMER_EMR_EMC1_MASK)
+#define CTIMER_EMR_EMC2_MASK                     (0x300U)
+#define CTIMER_EMR_EMC2_SHIFT                    (8U)
+/*! EMC2 - External Match Control 2. Determines the functionality of External Match 2.
+ *  0b00..Do Nothing.
+ *  0b01..Clear. Clear the corresponding External Match bit/output to 0 (MAT2 pin is LOW if pinned out).
+ *  0b10..Set. Set the corresponding External Match bit/output to 1 (MAT2 pin is HIGH if pinned out).
+ *  0b11..Toggle. Toggle the corresponding External Match bit/output.
+ */
+#define CTIMER_EMR_EMC2(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_EMR_EMC2_SHIFT)) & CTIMER_EMR_EMC2_MASK)
+#define CTIMER_EMR_EMC3_MASK                     (0xC00U)
+#define CTIMER_EMR_EMC3_SHIFT                    (10U)
+/*! EMC3 - External Match Control 3. Determines the functionality of External Match 3.
+ *  0b00..Do Nothing.
+ *  0b01..Clear. Clear the corresponding External Match bit/output to 0 (MAT3 pin is LOW if pinned out).
+ *  0b10..Set. Set the corresponding External Match bit/output to 1 (MAT3 pin is HIGH if pinned out).
+ *  0b11..Toggle. Toggle the corresponding External Match bit/output.
+ */
+#define CTIMER_EMR_EMC3(x)                       (((uint32_t)(((uint32_t)(x)) << CTIMER_EMR_EMC3_SHIFT)) & CTIMER_EMR_EMC3_MASK)
+/*! @} */
+
+/*! @name CTCR - Count Control Register. The CTCR selects between Timer and Counter mode, and in Counter mode selects the signal and edge(s) for counting. */
+/*! @{ */
+#define CTIMER_CTCR_CTMODE_MASK                  (0x3U)
+#define CTIMER_CTCR_CTMODE_SHIFT                 (0U)
+/*! CTMODE - Counter/Timer Mode This field selects which rising APB bus clock edges can increment
+ *    Timer's Prescale Counter (PC), or clear PC and increment Timer Counter (TC). Timer Mode: the TC
+ *    is incremented when the Prescale Counter matches the Prescale Register.
+ *  0b00..Timer Mode. Incremented every rising APB bus clock edge.
+ *  0b01..Counter Mode rising edge. TC is incremented on rising edges on the CAP input selected by bits 3:2.
+ *  0b10..Counter Mode falling edge. TC is incremented on falling edges on the CAP input selected by bits 3:2.
+ *  0b11..Counter Mode dual edge. TC is incremented on both edges on the CAP input selected by bits 3:2.
+ */
+#define CTIMER_CTCR_CTMODE(x)                    (((uint32_t)(((uint32_t)(x)) << CTIMER_CTCR_CTMODE_SHIFT)) & CTIMER_CTCR_CTMODE_MASK)
+#define CTIMER_CTCR_CINSEL_MASK                  (0xCU)
+#define CTIMER_CTCR_CINSEL_SHIFT                 (2U)
+/*! CINSEL - Count Input Select When bits 1:0 in this register are not 00, these bits select which
+ *    CAP pin is sampled for clocking. Note: If Counter mode is selected for a particular CAPn input
+ *    in the CTCR, the 3 bits for that input in the Capture Control Register (CCR) must be
+ *    programmed as 000. However, capture and/or interrupt can be selected for the other 3 CAPn inputs in the
+ *    same timer.
+ *  0b00..Channel 0. CAPn.0 for CTIMERn
+ *  0b01..Channel 1. CAPn.1 for CTIMERn
+ *  0b10..Channel 2. CAPn.2 for CTIMERn
+ *  0b11..Channel 3. CAPn.3 for CTIMERn
+ */
+#define CTIMER_CTCR_CINSEL(x)                    (((uint32_t)(((uint32_t)(x)) << CTIMER_CTCR_CINSEL_SHIFT)) & CTIMER_CTCR_CINSEL_MASK)
+#define CTIMER_CTCR_ENCC_MASK                    (0x10U)
+#define CTIMER_CTCR_ENCC_SHIFT                   (4U)
+/*! ENCC - Setting this bit to 1 enables clearing of the timer and the prescaler when the
+ *    capture-edge event specified in bits 7:5 occurs.
+ */
+#define CTIMER_CTCR_ENCC(x)                      (((uint32_t)(((uint32_t)(x)) << CTIMER_CTCR_ENCC_SHIFT)) & CTIMER_CTCR_ENCC_MASK)
+#define CTIMER_CTCR_SELCC_MASK                   (0xE0U)
+#define CTIMER_CTCR_SELCC_SHIFT                  (5U)
+/*! SELCC - Edge select. When bit 4 is 1, these bits select which capture input edge will cause the
+ *    timer and prescaler to be cleared. These bits have no effect when bit 4 is low. Values 0x2 to
+ *    0x3 and 0x6 to 0x7 are reserved.
+ *  0b000..Channel 0 Rising Edge. Rising edge of the signal on capture channel 0 clears the timer (if bit 4 is set).
+ *  0b001..Channel 0 Falling Edge. Falling edge of the signal on capture channel 0 clears the timer (if bit 4 is set).
+ *  0b010..Channel 1 Rising Edge. Rising edge of the signal on capture channel 1 clears the timer (if bit 4 is set).
+ *  0b011..Channel 1 Falling Edge. Falling edge of the signal on capture channel 1 clears the timer (if bit 4 is set).
+ *  0b100..Channel 2 Rising Edge. Rising edge of the signal on capture channel 2 clears the timer (if bit 4 is set).
+ *  0b101..Channel 2 Falling Edge. Falling edge of the signal on capture channel 2 clears the timer (if bit 4 is set).
+ *  0b110..Channel 2 Rising Edge. Rising edge of the signal on capture channel 2 clears the timer (if bit 4 is set).
+ *  0b111..Channel 2 Falling Edge. Falling edge of the signal on capture channel 2 clears the timer (if bit 4 is set).
+ */
+#define CTIMER_CTCR_SELCC(x)                     (((uint32_t)(((uint32_t)(x)) << CTIMER_CTCR_SELCC_SHIFT)) & CTIMER_CTCR_SELCC_MASK)
+/*! @} */
+
+/*! @name PWMC - PWM Control Register. The PWMCON enables PWM mode for the external match pins. */
+/*! @{ */
+#define CTIMER_PWMC_PWMEN0_MASK                  (0x1U)
+#define CTIMER_PWMC_PWMEN0_SHIFT                 (0U)
+/*! PWMEN0 - PWM mode enable for channel0.
+ *  0b0..Match. CTIMERn_MAT0 is controlled by EM0.
+ *  0b1..PWM. PWM mode is enabled for CTIMERn_MAT0.
+ */
+#define CTIMER_PWMC_PWMEN0(x)                    (((uint32_t)(((uint32_t)(x)) << CTIMER_PWMC_PWMEN0_SHIFT)) & CTIMER_PWMC_PWMEN0_MASK)
+#define CTIMER_PWMC_PWMEN1_MASK                  (0x2U)
+#define CTIMER_PWMC_PWMEN1_SHIFT                 (1U)
+/*! PWMEN1 - PWM mode enable for channel1.
+ *  0b0..Match. CTIMERn_MAT01 is controlled by EM1.
+ *  0b1..PWM. PWM mode is enabled for CTIMERn_MAT1.
+ */
+#define CTIMER_PWMC_PWMEN1(x)                    (((uint32_t)(((uint32_t)(x)) << CTIMER_PWMC_PWMEN1_SHIFT)) & CTIMER_PWMC_PWMEN1_MASK)
+#define CTIMER_PWMC_PWMEN2_MASK                  (0x4U)
+#define CTIMER_PWMC_PWMEN2_SHIFT                 (2U)
+/*! PWMEN2 - PWM mode enable for channel2.
+ *  0b0..Match. CTIMERn_MAT2 is controlled by EM2.
+ *  0b1..PWM. PWM mode is enabled for CTIMERn_MAT2.
+ */
+#define CTIMER_PWMC_PWMEN2(x)                    (((uint32_t)(((uint32_t)(x)) << CTIMER_PWMC_PWMEN2_SHIFT)) & CTIMER_PWMC_PWMEN2_MASK)
+#define CTIMER_PWMC_PWMEN3_MASK                  (0x8U)
+#define CTIMER_PWMC_PWMEN3_SHIFT                 (3U)
+/*! PWMEN3 - PWM mode enable for channel3. Note: It is recommended to use match channel 3 to set the PWM cycle.
+ *  0b0..Match. CTIMERn_MAT3 is controlled by EM3.
+ *  0b1..PWM. PWM mode is enabled for CT132Bn_MAT3.
+ */
+#define CTIMER_PWMC_PWMEN3(x)                    (((uint32_t)(((uint32_t)(x)) << CTIMER_PWMC_PWMEN3_SHIFT)) & CTIMER_PWMC_PWMEN3_MASK)
+/*! @} */
+
+/*! @name MSR - Match Shadow Register . If enabled, the Match Register will be automatically reloaded with the contents of this register whenever the TC is reset to zero. */
+/*! @{ */
+#define CTIMER_MSR_MATCH_SHADOW_MASK             (0xFFFFFFFFU)
+#define CTIMER_MSR_MATCH_SHADOW_SHIFT            (0U)
+/*! MATCH_SHADOW - Timer counter match value.
+ */
+#define CTIMER_MSR_MATCH_SHADOW(x)               (((uint32_t)(((uint32_t)(x)) << CTIMER_MSR_MATCH_SHADOW_SHIFT)) & CTIMER_MSR_MATCH_SHADOW_MASK)
+/*! @} */
+
+/* The count of CTIMER_MSR */
+#define CTIMER_MSR_COUNT                         (4U)
+
+
+/*!
+ * @}
+ */ /* end of group CTIMER_Register_Masks */
+
+
+/* CTIMER - Peripheral instance base addresses */
+/** Peripheral CTIMER0 base address */
+#define CTIMER0_BASE                             (0x40038000u)
+/** Peripheral CTIMER0 base pointer */
+#define CTIMER0                                  ((CTIMER_Type *)CTIMER0_BASE)
+/** Array initializer of CTIMER peripheral base addresses */
+#define CTIMER_BASE_ADDRS                        { CTIMER0_BASE }
+/** Array initializer of CTIMER peripheral base pointers */
+#define CTIMER_BASE_PTRS                         { CTIMER0 }
+/** Interrupt vectors for the CTIMER peripheral type */
+#define CTIMER_IRQS                              { CTIMER0_IRQn }
+
+/*!
+ * @}
+ */ /* end of group CTIMER_Peripheral_Access_Layer */
+
+/* ----------------------------------------------------------------------------
+   -- SCT Peripheral Access Layer
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup SCT_Peripheral_Access_Layer SCT Peripheral Access Layer
+ * @{
+ */
+
 /** SCT - Register Layout Typedef */
 typedef struct {
-  __IO uint32_t CONFIG;                             /**< SCT configuration register, offset: 0x0 */
-  __IO uint32_t CTRL;                              	/**< SCT control register, offset: 0x4 */
-  __IO uint32_t LIMIT;                             	/**< SCT limit event select register, offset: 0x8 */
-  __IO uint32_t HALT;                              	/**< SCT halt event select register, offset: 0xC */
-  __IO uint32_t STOP;                              	/**< SCT stop event select register, offset: 0x10 */
-  __IO uint32_t START;                             	/**< SCT start event select register, offset: 0x14 */
-       uint8_t 	RESERVED_0[40];						/**<RESERVATED. NOT USED */
-  __IO uint32_t COUNT;                             	/**< SCT counter register, offset: 0x40 */
-  __IO uint32_t STATE;                             	/**< SCT state register, offset: 0x44 */
-  __I  uint32_t INPUT;                             	/**< SCT input register, offset: 0x48 */
-  __IO uint32_t REGMODE;                           	/**< SCT match/capture mode register, offset: 0x4C */
-  __IO uint32_t OUTPUT;                            	/**< SCT output register, offset: 0x50 */
-  __IO uint32_t OUTPUTDIRCTRL;                     	/**< SCT output counter direction control register, offset: 0x54 */
-  __IO uint32_t RES;                               	/**< SCT conflict resolution register, offset: 0x58 */
-  __IO uint32_t DMAREQ0;                           	/**< SCT DMA request 0 register, offset: 0x5C */
-  __IO uint32_t DMAREQ1;                           	/**< SCT DMA request 1 register, offset: 0x60 */
-       uint8_t 	RESERVED_1[140];						/**<RESERVATED. NOT USED */
-  __IO uint32_t EVEN;                              	/**< SCT event interrupt enable register, offset: 0xF0 */
-  __IO uint32_t EVFLAG;                            	/**< SCT event flag register, offset: 0xF4 */
-  __IO uint32_t CONEN;                             	/**< SCT conflict interrupt enable register, offset: 0xF8 */
-  __IO uint32_t CONFLAG;                           	/**< SCT conflict flag register, offset: 0xFC */
-  union {                                          	/* offset: 0x100 */
-    __IO uint32_t CAP[8];                           /**< SCT capture register of capture channel, array offset: 0x100, array step: 0x4 */
-    __IO uint32_t MATCH[8];                         /**< SCT match value register of match channels, array offset: 0x100, array step: 0x4 */
+  __IO uint32_t CONFIG;                            /**< SCT configuration register, offset: 0x0 */
+  union {                                          /* offset: 0x4 */
+    struct {                                         /* offset: 0x4 */
+      __IO uint16_t CTRLL;                             /**< SCT_CTRLL register, offset: 0x4 */
+      __IO uint16_t CTRLH;                             /**< SCT_CTRLH register, offset: 0x6 */
+    } CTRL_ACCESS16BIT;
+    __IO uint32_t CTRL;                              /**< SCT control register, offset: 0x4 */
   };
-       uint8_t RESERVED_2[224];						/**<RESERVATED. NOT USED */
-  union {                                           /* offset: 0x200 */
-    __IO uint32_t CAPCTRL[8];                       /**< SCT capture control register, array offset: 0x200, array step: 0x4 */
-    __IO uint32_t MATCHREL[8];                      /**< SCT match reload value register, array offset: 0x200, array step: 0x4 */
+  union {                                          /* offset: 0x8 */
+    struct {                                         /* offset: 0x8 */
+      __IO uint16_t LIMITL;                            /**< SCT_LIMITL register, offset: 0x8 */
+      __IO uint16_t LIMITH;                            /**< SCT_LIMITH register, offset: 0xA */
+    } LIMIT_ACCESS16BIT;
+    __IO uint32_t LIMIT;                             /**< SCT limit event select register, offset: 0x8 */
   };
-       uint8_t RESERVED_3[224];						/**<RESERVATED. NOT USED */
-  struct {                                          /* offset: 0x300, array step: 0x8 */
-    __IO uint32_t STATE;                            /**< SCT event state register 0, array offset: 0x300, array step: 0x8 */
-    __IO uint32_t CTRL;                             /**< SCT event control register 0, array offset: 0x304, array step: 0x8 */
-  } EV[8];											/**< SCT event state register */
-       uint8_t RESERVED_4[448];						/**< RESERVATED. NOT USED */
-  struct {                                      	/* offset: 0x500, array step: 0x8 */
-    __IO uint32_t SET;                              /**< SCT output 0 set register, array offset: 0x500, array step: 0x8 */
-    __IO uint32_t CLR;                              /**< SCT output 0 clear register, array offset: 0x504, array step: 0x8 */
-  } OUT[7];											/**< SCT output 0 set register*/
-} SCT_Type;											/** Registers for the SCTTIMER */
+  union {                                          /* offset: 0xC */
+    struct {                                         /* offset: 0xC */
+      __IO uint16_t HALTL;                             /**< SCT_HALTL register, offset: 0xC */
+      __IO uint16_t HALTH;                             /**< SCT_HALTH register, offset: 0xE */
+    } HALT_ACCESS16BIT;
+    __IO uint32_t HALT;                              /**< SCT halt event select register, offset: 0xC */
+  };
+  union {                                          /* offset: 0x10 */
+    struct {                                         /* offset: 0x10 */
+      __IO uint16_t STOPL;                             /**< SCT_STOPL register, offset: 0x10 */
+      __IO uint16_t STOPH;                             /**< SCT_STOPH register, offset: 0x12 */
+    } STOP_ACCESS16BIT;
+    __IO uint32_t STOP;                              /**< SCT stop event select register, offset: 0x10 */
+  };
+  union {                                          /* offset: 0x14 */
+    struct {                                         /* offset: 0x14 */
+      __IO uint16_t STARTL;                            /**< SCT_STARTL register, offset: 0x14 */
+      __IO uint16_t STARTH;                            /**< SCT_STARTH register, offset: 0x16 */
+    } START_ACCESS16BIT;
+    __IO uint32_t START;                             /**< SCT start event select register, offset: 0x14 */
+  };
+       uint8_t RESERVED_0[40];
+  union {                                          /* offset: 0x40 */
+    struct {                                         /* offset: 0x40 */
+      __IO uint16_t COUNTL;                            /**< SCT_COUNTL register, offset: 0x40 */
+      __IO uint16_t COUNTH;                            /**< SCT_COUNTH register, offset: 0x42 */
+    } COUNT_ACCESS16BIT;
+    __IO uint32_t COUNT;                             /**< SCT counter register, offset: 0x40 */
+  };
+  union {                                          /* offset: 0x44 */
+    struct {                                         /* offset: 0x44 */
+      __IO uint16_t STATEL;                            /**< SCT_STATEL register, offset: 0x44 */
+      __IO uint16_t STATEH;                            /**< SCT_STATEH register, offset: 0x46 */
+    } STATE_ACCESS16BIT;
+    __IO uint32_t STATE;                             /**< SCT state register, offset: 0x44 */
+  };
+  __I  uint32_t INPUT;                             /**< SCT input register, offset: 0x48 */
+  union {                                          /* offset: 0x4C */
+    struct {                                         /* offset: 0x4C */
+      __IO uint16_t REGMODEL;                          /**< SCT_REGMODEL register, offset: 0x4C */
+      __IO uint16_t REGMODEH;                          /**< SCT_REGMODEH register, offset: 0x4E */
+    } REGMODE_ACCESS16BIT;
+    __IO uint32_t REGMODE;                           /**< SCT match/capture mode register, offset: 0x4C */
+  };
+  __IO uint32_t OUTPUT;                            /**< SCT output register, offset: 0x50 */
+  __IO uint32_t OUTPUTDIRCTRL;                     /**< SCT output counter direction control register, offset: 0x54 */
+  __IO uint32_t RES;                               /**< SCT conflict resolution register, offset: 0x58 */
+  __IO uint32_t DMAREQ0;                           /**< SCT DMA request 0 register, offset: 0x5C */
+  __IO uint32_t DMAREQ1;                           /**< SCT DMA request 1 register, offset: 0x60 */
+       uint8_t RESERVED_1[140];
+  __IO uint32_t EVEN;                              /**< SCT event interrupt enable register, offset: 0xF0 */
+  __IO uint32_t EVFLAG;                            /**< SCT event flag register, offset: 0xF4 */
+  __IO uint32_t CONEN;                             /**< SCT conflict interrupt enable register, offset: 0xF8 */
+  __IO uint32_t CONFLAG;                           /**< SCT conflict flag register, offset: 0xFC */
+  union {                                          /* offset: 0x100 */
+    union {                                          /* offset: 0x100, array step: 0x4 */
+      struct {                                         /* offset: 0x100, array step: 0x4 */
+        __IO uint16_t CAPL;                              /**< SCT_CAPL register, array offset: 0x100, array step: 0x4 */
+        __IO uint16_t CAPH;                              /**< SCT_CAPH register, array offset: 0x102, array step: 0x4 */
+      } CAP_ACCESS16BIT[8];
+      __IO uint32_t CAP[8];                            /**< SCT capture register of capture channel, array offset: 0x100, array step: 0x4 */
+    };
+    union {                                          /* offset: 0x100, array step: 0x4 */
+      struct {                                         /* offset: 0x100, array step: 0x4 */
+        __IO uint16_t MATCHL;                            /**< SCT_MATCHL register, array offset: 0x100, array step: 0x4 */
+        __IO uint16_t MATCHH;                            /**< SCT_MATCHH register, array offset: 0x102, array step: 0x4 */
+      } MATCH_ACCESS16BIT[8];
+      __IO uint32_t MATCH[8];                          /**< SCT match value register of match channels, array offset: 0x100, array step: 0x4 */
+    };
+  };
+       uint8_t RESERVED_2[224];
+  union {                                          /* offset: 0x200 */
+    union {                                          /* offset: 0x200, array step: 0x4 */
+      struct {                                         /* offset: 0x200, array step: 0x4 */
+        __IO uint16_t CAPCTRLL;                          /**< SCT_CAPCTRLL register, array offset: 0x200, array step: 0x4 */
+        __IO uint16_t CAPCTRLH;                          /**< SCT_CAPCTRLH register, array offset: 0x202, array step: 0x4 */
+      } CAPCTRL_ACCESS16BIT[8];
+      __IO uint32_t CAPCTRL[8];                        /**< SCT capture control register, array offset: 0x200, array step: 0x4 */
+    };
+    union {                                          /* offset: 0x200, array step: 0x4 */
+      struct {                                         /* offset: 0x200, array step: 0x4 */
+        __IO uint16_t MATCHRELL;                         /**< SCT_MATCHRELL register, array offset: 0x200, array step: 0x4 */
+        __IO uint16_t MATCHRELH;                         /**< SCT_MATCHRELH register, array offset: 0x202, array step: 0x4 */
+      } MATCHREL_ACCESS16BIT[8];
+      __IO uint32_t MATCHREL[8];                       /**< SCT match reload value register, array offset: 0x200, array step: 0x4 */
+    };
+  };
+       uint8_t RESERVED_3[224];
+  struct {                                         /* offset: 0x300, array step: 0x8 */
+    __IO uint32_t STATE;                             /**< SCT event state register 0, array offset: 0x300, array step: 0x8 */
+    __IO uint32_t CTRL;                              /**< SCT event control register 0, array offset: 0x304, array step: 0x8 */
+  } EV[8];
+       uint8_t RESERVED_4[448];
+  struct {                                         /* offset: 0x500, array step: 0x8 */
+    __IO uint32_t SET;                               /**< SCT output 0 set register, array offset: 0x500, array step: 0x8 */
+    __IO uint32_t CLR;                               /**< SCT output 0 clear register, array offset: 0x504, array step: 0x8 */
+  } OUT[7];
+} SCT_Type;
 
-/** Register for the SCT0 */
-#define SCT	((SCT_Type *) 0x50004000UL)
+/* ----------------------------------------------------------------------------
+   -- SCT Register Masks
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup SCT_Register_Masks SCT Register Masks
+ * @{
+ */
+
+/*! @name CONFIG - SCT configuration register */
+/*! @{ */
+#define SCT_CONFIG_UNIFY_MASK                    (0x1U)
+#define SCT_CONFIG_UNIFY_SHIFT                   (0U)
+/*! UNIFY - SCT operation
+ *  0b0..The SCT operates as two 16-bit counters named COUNTER_L and COUNTER_H.
+ *  0b1..The SCT operates as a unified 32-bit counter.
+ */
+#define SCT_CONFIG_UNIFY(x)                      (((uint32_t)(((uint32_t)(x)) << SCT_CONFIG_UNIFY_SHIFT)) & SCT_CONFIG_UNIFY_MASK)
+#define SCT_CONFIG_CLKMODE_MASK                  (0x6U)
+#define SCT_CONFIG_CLKMODE_SHIFT                 (1U)
+/*! CLKMODE - SCT clock mode
+ *  0b00..System Clock Mode. The system clock clocks the entire SCT module including the counter(s) and counter prescalers.
+ *  0b01..Sampled System Clock Mode. The system clock clocks the SCT module, but the counter and prescalers are
+ *        only enabled to count when the designated edge is detected on the input selected by the CKSEL field. The
+ *        minimum pulse width on the selected clock-gate input is 1 bus clock period. This mode is the
+ *        high-performance, sampled-clock mode.
+ *  0b10..SCT Input Clock Mode. The input/edge selected by the CKSEL field clocks the SCT module, including the
+ *        counters and prescalers, after first being synchronized to the system clock. The minimum pulse width on the
+ *        clock input is 1 bus clock period. This mode is the low-power, sampled-clock mode.
+ *  0b11..Asynchronous Mode. The entire SCT module is clocked directly by the input/edge selected by the CKSEL
+ *        field. In this mode, the SCT outputs are switched synchronously to the SCT input clock - not the system
+ *        clock. The input clock rate must be at least half the system clock rate and can be the same or faster than
+ *        the system clock.
+ */
+#define SCT_CONFIG_CLKMODE(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_CONFIG_CLKMODE_SHIFT)) & SCT_CONFIG_CLKMODE_MASK)
+#define SCT_CONFIG_CKSEL_MASK                    (0x78U)
+#define SCT_CONFIG_CKSEL_SHIFT                   (3U)
+/*! CKSEL - SCT clock select. The specific functionality of the designated input/edge is dependent
+ *    on the CLKMODE bit selection in this register.
+ *  0b0000..Rising edges on input 0.
+ *  0b0001..Falling edges on input 0.
+ *  0b0010..Rising edges on input 1.
+ *  0b0011..Falling edges on input 1.
+ *  0b0100..Rising edges on input 2.
+ *  0b0101..Falling edges on input 2.
+ *  0b0110..Rising edges on input 3.
+ *  0b0111..Falling edges on input 3.
+ */
+#define SCT_CONFIG_CKSEL(x)                      (((uint32_t)(((uint32_t)(x)) << SCT_CONFIG_CKSEL_SHIFT)) & SCT_CONFIG_CKSEL_MASK)
+#define SCT_CONFIG_NORELOAD_L_MASK               (0x80U)
+#define SCT_CONFIG_NORELOAD_L_SHIFT              (7U)
+/*! NORELOAD_L - A 1 in this bit prevents the lower match registers from being reloaded from their
+ *    respective reload registers. Setting this bit eliminates the need to write to the reload
+ *    registers MATCHREL if the match values are fixed. Software can write to set or clear this bit at any
+ *    time. This bit applies to both the higher and lower registers when the UNIFY bit is set.
+ */
+#define SCT_CONFIG_NORELOAD_L(x)                 (((uint32_t)(((uint32_t)(x)) << SCT_CONFIG_NORELOAD_L_SHIFT)) & SCT_CONFIG_NORELOAD_L_MASK)
+#define SCT_CONFIG_NORELOAD_H_MASK               (0x100U)
+#define SCT_CONFIG_NORELOAD_H_SHIFT              (8U)
+/*! NORELOAD_H - A 1 in this bit prevents the higher match registers from being reloaded from their
+ *    respective reload registers. Setting this bit eliminates the need to write to the reload
+ *    registers MATCHREL if the match values are fixed. Software can write to set or clear this bit at
+ *    any time. This bit is not used when the UNIFY bit is set.
+ */
+#define SCT_CONFIG_NORELOAD_H(x)                 (((uint32_t)(((uint32_t)(x)) << SCT_CONFIG_NORELOAD_H_SHIFT)) & SCT_CONFIG_NORELOAD_H_MASK)
+#define SCT_CONFIG_INSYNC_MASK                   (0x1E00U)
+#define SCT_CONFIG_INSYNC_SHIFT                  (9U)
+/*! INSYNC - Synchronization for input N (bit 9 = input 0, bit 10 = input 1,, bit 12 = input 3); all
+ *    other bits are reserved. A 1 in one of these bits subjects the corresponding input to
+ *    synchronization to the SCT clock, before it is used to create an event. If an input is known to
+ *    already be synchronous to the SCT clock, this bit may be set to 0 for faster input response. (Note:
+ *    The SCT clock is the system clock for CKMODEs 0-2. It is the selected, asynchronous SCT input
+ *    clock for CKMODE3). Note that the INSYNC field only affects inputs used for event generation.
+ *    It does not apply to the clock input specified in the CKSEL field.
+ */
+#define SCT_CONFIG_INSYNC(x)                     (((uint32_t)(((uint32_t)(x)) << SCT_CONFIG_INSYNC_SHIFT)) & SCT_CONFIG_INSYNC_MASK)
+#define SCT_CONFIG_AUTOLIMIT_L_MASK              (0x20000U)
+#define SCT_CONFIG_AUTOLIMIT_L_SHIFT             (17U)
+/*! AUTOLIMIT_L - A one in this bit causes a match on match register 0 to be treated as a de-facto
+ *    LIMIT condition without the need to define an associated event. As with any LIMIT event, this
+ *    automatic limit causes the counter to be cleared to zero in unidirectional mode or to change
+ *    the direction of count in bi-directional mode. Software can write to set or clear this bit at
+ *    any time. This bit applies to both the higher and lower registers when the UNIFY bit is set.
+ */
+#define SCT_CONFIG_AUTOLIMIT_L(x)                (((uint32_t)(((uint32_t)(x)) << SCT_CONFIG_AUTOLIMIT_L_SHIFT)) & SCT_CONFIG_AUTOLIMIT_L_MASK)
+#define SCT_CONFIG_AUTOLIMIT_H_MASK              (0x40000U)
+#define SCT_CONFIG_AUTOLIMIT_H_SHIFT             (18U)
+/*! AUTOLIMIT_H - A one in this bit will cause a match on match register 0 to be treated as a
+ *    de-facto LIMIT condition without the need to define an associated event. As with any LIMIT event,
+ *    this automatic limit causes the counter to be cleared to zero in unidirectional mode or to
+ *    change the direction of count in bi-directional mode. Software can write to set or clear this bit
+ *    at any time. This bit is not used when the UNIFY bit is set.
+ */
+#define SCT_CONFIG_AUTOLIMIT_H(x)                (((uint32_t)(((uint32_t)(x)) << SCT_CONFIG_AUTOLIMIT_H_SHIFT)) & SCT_CONFIG_AUTOLIMIT_H_MASK)
+/*! @} */
+
+/*! @name CTRLL - SCT_CTRLL register */
+/*! @{ */
+#define SCT_CTRLL_DOWN_L_MASK                    (0x1U)
+#define SCT_CTRLL_DOWN_L_SHIFT                   (0U)
+/*! DOWN_L - This bit is 1 when the L or unified counter is counting down. Hardware sets this bit
+ *    when the counter is counting up, counter limit occurs, and BIDIR = 1.Hardware clears this bit
+ *    when the counter is counting down and a limit condition occurs or when the counter reaches 0.
+ */
+#define SCT_CTRLL_DOWN_L(x)                      (((uint16_t)(((uint16_t)(x)) << SCT_CTRLL_DOWN_L_SHIFT)) & SCT_CTRLL_DOWN_L_MASK)
+#define SCT_CTRLL_STOP_L_MASK                    (0x2U)
+#define SCT_CTRLL_STOP_L_SHIFT                   (1U)
+/*! STOP_L - When this bit is 1 and HALT is 0, the L or unified counter does not run, but I/O events
+ *    related to the counter can occur. If a designated start event occurs, this bit is cleared and
+ *    counting resumes.
+ */
+#define SCT_CTRLL_STOP_L(x)                      (((uint16_t)(((uint16_t)(x)) << SCT_CTRLL_STOP_L_SHIFT)) & SCT_CTRLL_STOP_L_MASK)
+#define SCT_CTRLL_HALT_L_MASK                    (0x4U)
+#define SCT_CTRLL_HALT_L_SHIFT                   (2U)
+/*! HALT_L - When this bit is 1, the L or unified counter does not run and no events can occur. A
+ *    reset sets this bit. When the HALT_L bit is one, the STOP_L bit is cleared. It is possible to
+ *    remove the halt condition while keeping the SCT in the stop condition (not running) with a
+ *    single write to this register to simultaneously clear the HALT bit and set the STOP bit. Once set,
+ *    only software can clear this bit to restore counter operation. This bit is set on reset.
+ */
+#define SCT_CTRLL_HALT_L(x)                      (((uint16_t)(((uint16_t)(x)) << SCT_CTRLL_HALT_L_SHIFT)) & SCT_CTRLL_HALT_L_MASK)
+#define SCT_CTRLL_CLRCTR_L_MASK                  (0x8U)
+#define SCT_CTRLL_CLRCTR_L_SHIFT                 (3U)
+/*! CLRCTR_L - Writing a 1 to this bit clears the L or unified counter. This bit always reads as 0.
+ */
+#define SCT_CTRLL_CLRCTR_L(x)                    (((uint16_t)(((uint16_t)(x)) << SCT_CTRLL_CLRCTR_L_SHIFT)) & SCT_CTRLL_CLRCTR_L_MASK)
+#define SCT_CTRLL_BIDIR_L_MASK                   (0x10U)
+#define SCT_CTRLL_BIDIR_L_SHIFT                  (4U)
+/*! BIDIR_L - L or unified counter direction select
+ *  0b0..Up. The counter counts up to a limit condition, then is cleared to zero.
+ *  0b1..Up-down. The counter counts up to a limit, then counts down to a limit condition or to 0.
+ */
+#define SCT_CTRLL_BIDIR_L(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_CTRLL_BIDIR_L_SHIFT)) & SCT_CTRLL_BIDIR_L_MASK)
+#define SCT_CTRLL_PRE_L_MASK                     (0x1FE0U)
+#define SCT_CTRLL_PRE_L_SHIFT                    (5U)
+/*! PRE_L - Specifies the factor by which the SCT clock is prescaled to produce the L or unified
+ *    counter clock. The counter clock is clocked at the rate of the SCT clock divided by PRE_L+1.
+ *    Clear the counter (by writing a 1 to the CLRCTR bit) whenever changing the PRE value.
+ */
+#define SCT_CTRLL_PRE_L(x)                       (((uint16_t)(((uint16_t)(x)) << SCT_CTRLL_PRE_L_SHIFT)) & SCT_CTRLL_PRE_L_MASK)
+/*! @} */
+
+/*! @name CTRLH - SCT_CTRLH register */
+/*! @{ */
+#define SCT_CTRLH_DOWN_H_MASK                    (0x1U)
+#define SCT_CTRLH_DOWN_H_SHIFT                   (0U)
+/*! DOWN_H - This bit is 1 when the H counter is counting down. Hardware sets this bit when the
+ *    counter is counting, a counter limit condition occurs, and BIDIR is 1. Hardware clears this bit
+ *    when the counter is counting down and a limit condition occurs or when the counter reaches 0.
+ */
+#define SCT_CTRLH_DOWN_H(x)                      (((uint16_t)(((uint16_t)(x)) << SCT_CTRLH_DOWN_H_SHIFT)) & SCT_CTRLH_DOWN_H_MASK)
+#define SCT_CTRLH_STOP_H_MASK                    (0x2U)
+#define SCT_CTRLH_STOP_H_SHIFT                   (1U)
+/*! STOP_H - When this bit is 1 and HALT is 0, the H counter does not, run but I/O events related to
+ *    the counter can occur. If such an event matches the mask in the Start register, this bit is
+ *    cleared and counting resumes.
+ */
+#define SCT_CTRLH_STOP_H(x)                      (((uint16_t)(((uint16_t)(x)) << SCT_CTRLH_STOP_H_SHIFT)) & SCT_CTRLH_STOP_H_MASK)
+#define SCT_CTRLH_HALT_H_MASK                    (0x4U)
+#define SCT_CTRLH_HALT_H_SHIFT                   (2U)
+/*! HALT_H - When this bit is 1, the H counter does not run and no events can occur. A reset sets
+ *    this bit. When the HALT_H bit is one, the STOP_H bit is cleared. It is possible to remove the
+ *    halt condition while keeping the SCT in the stop condition (not running) with a single write to
+ *    this register to simultaneously clear the HALT bit and set the STOP bit. Once set, this bit
+ *    can only be cleared by software to restore counter operation. This bit is set on reset.
+ */
+#define SCT_CTRLH_HALT_H(x)                      (((uint16_t)(((uint16_t)(x)) << SCT_CTRLH_HALT_H_SHIFT)) & SCT_CTRLH_HALT_H_MASK)
+#define SCT_CTRLH_CLRCTR_H_MASK                  (0x8U)
+#define SCT_CTRLH_CLRCTR_H_SHIFT                 (3U)
+/*! CLRCTR_H - Writing a 1 to this bit clears the H counter. This bit always reads as 0.
+ */
+#define SCT_CTRLH_CLRCTR_H(x)                    (((uint16_t)(((uint16_t)(x)) << SCT_CTRLH_CLRCTR_H_SHIFT)) & SCT_CTRLH_CLRCTR_H_MASK)
+#define SCT_CTRLH_BIDIR_H_MASK                   (0x10U)
+#define SCT_CTRLH_BIDIR_H_SHIFT                  (4U)
+/*! BIDIR_H - Direction select
+ *  0b0..The H counter counts up to its limit condition, then is cleared to zero.
+ *  0b1..The H counter counts up to its limit, then counts down to a limit condition or to 0.
+ */
+#define SCT_CTRLH_BIDIR_H(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_CTRLH_BIDIR_H_SHIFT)) & SCT_CTRLH_BIDIR_H_MASK)
+#define SCT_CTRLH_PRE_H_MASK                     (0x1FE0U)
+#define SCT_CTRLH_PRE_H_SHIFT                    (5U)
+/*! PRE_H - Specifies the factor by which the SCT clock is prescaled to produce the H counter clock.
+ *    The counter clock is clocked at the rate of the SCT clock divided by PRELH+1. Clear the
+ *    counter (by writing a 1 to the CLRCTR bit) whenever changing the PRE value.
+ */
+#define SCT_CTRLH_PRE_H(x)                       (((uint16_t)(((uint16_t)(x)) << SCT_CTRLH_PRE_H_SHIFT)) & SCT_CTRLH_PRE_H_MASK)
+/*! @} */
+
+/*! @name CTRL - SCT control register */
+/*! @{ */
+#define SCT_CTRL_DOWN_L_MASK                     (0x1U)
+#define SCT_CTRL_DOWN_L_SHIFT                    (0U)
+/*! DOWN_L - This bit is 1 when the L or unified counter is counting down. Hardware sets this bit
+ *    when the counter is counting up, counter limit occurs, and BIDIR = 1.Hardware clears this bit
+ *    when the counter is counting down and a limit condition occurs or when the counter reaches 0.
+ */
+#define SCT_CTRL_DOWN_L(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_DOWN_L_SHIFT)) & SCT_CTRL_DOWN_L_MASK)
+#define SCT_CTRL_STOP_L_MASK                     (0x2U)
+#define SCT_CTRL_STOP_L_SHIFT                    (1U)
+/*! STOP_L - When this bit is 1 and HALT is 0, the L or unified counter does not run, but I/O events
+ *    related to the counter can occur. If a designated start event occurs, this bit is cleared and
+ *    counting resumes.
+ */
+#define SCT_CTRL_STOP_L(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_STOP_L_SHIFT)) & SCT_CTRL_STOP_L_MASK)
+#define SCT_CTRL_HALT_L_MASK                     (0x4U)
+#define SCT_CTRL_HALT_L_SHIFT                    (2U)
+/*! HALT_L - When this bit is 1, the L or unified counter does not run and no events can occur. A
+ *    reset sets this bit. When the HALT_L bit is one, the STOP_L bit is cleared. It is possible to
+ *    remove the halt condition while keeping the SCT in the stop condition (not running) with a
+ *    single write to this register to simultaneously clear the HALT bit and set the STOP bit. Once set,
+ *    only software can clear this bit to restore counter operation. This bit is set on reset.
+ */
+#define SCT_CTRL_HALT_L(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_HALT_L_SHIFT)) & SCT_CTRL_HALT_L_MASK)
+#define SCT_CTRL_CLRCTR_L_MASK                   (0x8U)
+#define SCT_CTRL_CLRCTR_L_SHIFT                  (3U)
+/*! CLRCTR_L - Writing a 1 to this bit clears the L or unified counter. This bit always reads as 0.
+ */
+#define SCT_CTRL_CLRCTR_L(x)                     (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_CLRCTR_L_SHIFT)) & SCT_CTRL_CLRCTR_L_MASK)
+#define SCT_CTRL_BIDIR_L_MASK                    (0x10U)
+#define SCT_CTRL_BIDIR_L_SHIFT                   (4U)
+/*! BIDIR_L - L or unified counter direction select
+ *  0b0..Up. The counter counts up to a limit condition, then is cleared to zero.
+ *  0b1..Up-down. The counter counts up to a limit, then counts down to a limit condition or to 0.
+ */
+#define SCT_CTRL_BIDIR_L(x)                      (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_BIDIR_L_SHIFT)) & SCT_CTRL_BIDIR_L_MASK)
+#define SCT_CTRL_PRE_L_MASK                      (0x1FE0U)
+#define SCT_CTRL_PRE_L_SHIFT                     (5U)
+/*! PRE_L - Specifies the factor by which the SCT clock is prescaled to produce the L or unified
+ *    counter clock. The counter clock is clocked at the rate of the SCT clock divided by PRE_L+1.
+ *    Clear the counter (by writing a 1 to the CLRCTR bit) whenever changing the PRE value.
+ */
+#define SCT_CTRL_PRE_L(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_PRE_L_SHIFT)) & SCT_CTRL_PRE_L_MASK)
+#define SCT_CTRL_DOWN_H_MASK                     (0x10000U)
+#define SCT_CTRL_DOWN_H_SHIFT                    (16U)
+/*! DOWN_H - This bit is 1 when the H counter is counting down. Hardware sets this bit when the
+ *    counter is counting, a counter limit condition occurs, and BIDIR is 1. Hardware clears this bit
+ *    when the counter is counting down and a limit condition occurs or when the counter reaches 0.
+ */
+#define SCT_CTRL_DOWN_H(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_DOWN_H_SHIFT)) & SCT_CTRL_DOWN_H_MASK)
+#define SCT_CTRL_STOP_H_MASK                     (0x20000U)
+#define SCT_CTRL_STOP_H_SHIFT                    (17U)
+/*! STOP_H - When this bit is 1 and HALT is 0, the H counter does not, run but I/O events related to
+ *    the counter can occur. If such an event matches the mask in the Start register, this bit is
+ *    cleared and counting resumes.
+ */
+#define SCT_CTRL_STOP_H(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_STOP_H_SHIFT)) & SCT_CTRL_STOP_H_MASK)
+#define SCT_CTRL_HALT_H_MASK                     (0x40000U)
+#define SCT_CTRL_HALT_H_SHIFT                    (18U)
+/*! HALT_H - When this bit is 1, the H counter does not run and no events can occur. A reset sets
+ *    this bit. When the HALT_H bit is one, the STOP_H bit is cleared. It is possible to remove the
+ *    halt condition while keeping the SCT in the stop condition (not running) with a single write to
+ *    this register to simultaneously clear the HALT bit and set the STOP bit. Once set, this bit
+ *    can only be cleared by software to restore counter operation. This bit is set on reset.
+ */
+#define SCT_CTRL_HALT_H(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_HALT_H_SHIFT)) & SCT_CTRL_HALT_H_MASK)
+#define SCT_CTRL_CLRCTR_H_MASK                   (0x80000U)
+#define SCT_CTRL_CLRCTR_H_SHIFT                  (19U)
+/*! CLRCTR_H - Writing a 1 to this bit clears the H counter. This bit always reads as 0.
+ */
+#define SCT_CTRL_CLRCTR_H(x)                     (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_CLRCTR_H_SHIFT)) & SCT_CTRL_CLRCTR_H_MASK)
+#define SCT_CTRL_BIDIR_H_MASK                    (0x100000U)
+#define SCT_CTRL_BIDIR_H_SHIFT                   (20U)
+/*! BIDIR_H - Direction select
+ *  0b0..The H counter counts up to its limit condition, then is cleared to zero.
+ *  0b1..The H counter counts up to its limit, then counts down to a limit condition or to 0.
+ */
+#define SCT_CTRL_BIDIR_H(x)                      (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_BIDIR_H_SHIFT)) & SCT_CTRL_BIDIR_H_MASK)
+#define SCT_CTRL_PRE_H_MASK                      (0x1FE00000U)
+#define SCT_CTRL_PRE_H_SHIFT                     (21U)
+/*! PRE_H - Specifies the factor by which the SCT clock is prescaled to produce the H counter clock.
+ *    The counter clock is clocked at the rate of the SCT clock divided by PRELH+1. Clear the
+ *    counter (by writing a 1 to the CLRCTR bit) whenever changing the PRE value.
+ */
+#define SCT_CTRL_PRE_H(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_CTRL_PRE_H_SHIFT)) & SCT_CTRL_PRE_H_MASK)
+/*! @} */
+
+/*! @name LIMITL - SCT_LIMITL register */
+/*! @{ */
+#define SCT_LIMITL_LIMITL_MASK                   (0xFFFFU)
+#define SCT_LIMITL_LIMITL_SHIFT                  (0U)
+#define SCT_LIMITL_LIMITL(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_LIMITL_LIMITL_SHIFT)) & SCT_LIMITL_LIMITL_MASK)
+/*! @} */
+
+/*! @name LIMITH - SCT_LIMITH register */
+/*! @{ */
+#define SCT_LIMITH_LIMITH_MASK                   (0xFFFFU)
+#define SCT_LIMITH_LIMITH_SHIFT                  (0U)
+#define SCT_LIMITH_LIMITH(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_LIMITH_LIMITH_SHIFT)) & SCT_LIMITH_LIMITH_MASK)
+/*! @} */
+
+/*! @name LIMIT - SCT limit event select register */
+/*! @{ */
+#define SCT_LIMIT_LIMMSK_L_MASK                  (0xFFU)
+#define SCT_LIMIT_LIMMSK_L_SHIFT                 (0U)
+/*! LIMMSK_L - If bit n is one, event n is used as a counter limit for the L or unified counter
+ *    (event 0 = bit 0, event 1 = bit 1, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_LIMIT_LIMMSK_L(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_LIMIT_LIMMSK_L_SHIFT)) & SCT_LIMIT_LIMMSK_L_MASK)
+#define SCT_LIMIT_LIMMSK_H_MASK                  (0xFF0000U)
+#define SCT_LIMIT_LIMMSK_H_SHIFT                 (16U)
+/*! LIMMSK_H - If bit n is one, event n is used as a counter limit for the H counter (event 0 = bit
+ *    16, event 1 = bit 17, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_LIMIT_LIMMSK_H(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_LIMIT_LIMMSK_H_SHIFT)) & SCT_LIMIT_LIMMSK_H_MASK)
+/*! @} */
+
+/*! @name HALTL - SCT_HALTL register */
+/*! @{ */
+#define SCT_HALTL_HALTL_MASK                     (0xFFFFU)
+#define SCT_HALTL_HALTL_SHIFT                    (0U)
+#define SCT_HALTL_HALTL(x)                       (((uint16_t)(((uint16_t)(x)) << SCT_HALTL_HALTL_SHIFT)) & SCT_HALTL_HALTL_MASK)
+/*! @} */
+
+/*! @name HALTH - SCT_HALTH register */
+/*! @{ */
+#define SCT_HALTH_HALTH_MASK                     (0xFFFFU)
+#define SCT_HALTH_HALTH_SHIFT                    (0U)
+#define SCT_HALTH_HALTH(x)                       (((uint16_t)(((uint16_t)(x)) << SCT_HALTH_HALTH_SHIFT)) & SCT_HALTH_HALTH_MASK)
+/*! @} */
+
+/*! @name HALT - SCT halt event select register */
+/*! @{ */
+#define SCT_HALT_HALTMSK_L_MASK                  (0xFFU)
+#define SCT_HALT_HALTMSK_L_SHIFT                 (0U)
+/*! HALTMSK_L - If bit n is one, event n sets the HALT_L bit in the CTRL register (event 0 = bit 0,
+ *    event 1 = bit 1, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_HALT_HALTMSK_L(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_HALT_HALTMSK_L_SHIFT)) & SCT_HALT_HALTMSK_L_MASK)
+#define SCT_HALT_HALTMSK_H_MASK                  (0xFF0000U)
+#define SCT_HALT_HALTMSK_H_SHIFT                 (16U)
+/*! HALTMSK_H - If bit n is one, event n sets the HALT_H bit in the CTRL register (event 0 = bit 16,
+ *    event 1 = bit 17, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_HALT_HALTMSK_H(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_HALT_HALTMSK_H_SHIFT)) & SCT_HALT_HALTMSK_H_MASK)
+/*! @} */
+
+/*! @name STOPL - SCT_STOPL register */
+/*! @{ */
+#define SCT_STOPL_STOPL_MASK                     (0xFFFFU)
+#define SCT_STOPL_STOPL_SHIFT                    (0U)
+#define SCT_STOPL_STOPL(x)                       (((uint16_t)(((uint16_t)(x)) << SCT_STOPL_STOPL_SHIFT)) & SCT_STOPL_STOPL_MASK)
+/*! @} */
+
+/*! @name STOPH - SCT_STOPH register */
+/*! @{ */
+#define SCT_STOPH_STOPH_MASK                     (0xFFFFU)
+#define SCT_STOPH_STOPH_SHIFT                    (0U)
+#define SCT_STOPH_STOPH(x)                       (((uint16_t)(((uint16_t)(x)) << SCT_STOPH_STOPH_SHIFT)) & SCT_STOPH_STOPH_MASK)
+/*! @} */
+
+/*! @name STOP - SCT stop event select register */
+/*! @{ */
+#define SCT_STOP_STOPMSK_L_MASK                  (0xFFU)
+#define SCT_STOP_STOPMSK_L_SHIFT                 (0U)
+/*! STOPMSK_L - If bit n is one, event n sets the STOP_L bit in the CTRL register (event 0 = bit 0,
+ *    event 1 = bit 1, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_STOP_STOPMSK_L(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_STOP_STOPMSK_L_SHIFT)) & SCT_STOP_STOPMSK_L_MASK)
+#define SCT_STOP_STOPMSK_H_MASK                  (0xFF0000U)
+#define SCT_STOP_STOPMSK_H_SHIFT                 (16U)
+/*! STOPMSK_H - If bit n is one, event n sets the STOP_H bit in the CTRL register (event 0 = bit 16,
+ *    event 1 = bit 17, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_STOP_STOPMSK_H(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_STOP_STOPMSK_H_SHIFT)) & SCT_STOP_STOPMSK_H_MASK)
+/*! @} */
+
+/*! @name STARTL - SCT_STARTL register */
+/*! @{ */
+#define SCT_STARTL_STARTL_MASK                   (0xFFFFU)
+#define SCT_STARTL_STARTL_SHIFT                  (0U)
+#define SCT_STARTL_STARTL(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_STARTL_STARTL_SHIFT)) & SCT_STARTL_STARTL_MASK)
+/*! @} */
+
+/*! @name STARTH - SCT_STARTH register */
+/*! @{ */
+#define SCT_STARTH_STARTH_MASK                   (0xFFFFU)
+#define SCT_STARTH_STARTH_SHIFT                  (0U)
+#define SCT_STARTH_STARTH(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_STARTH_STARTH_SHIFT)) & SCT_STARTH_STARTH_MASK)
+/*! @} */
+
+/*! @name START - SCT start event select register */
+/*! @{ */
+#define SCT_START_STARTMSK_L_MASK                (0xFFU)
+#define SCT_START_STARTMSK_L_SHIFT               (0U)
+/*! STARTMSK_L - If bit n is one, event n clears the STOP_L bit in the CTRL register (event 0 = bit
+ *    0, event 1 = bit 1, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_START_STARTMSK_L(x)                  (((uint32_t)(((uint32_t)(x)) << SCT_START_STARTMSK_L_SHIFT)) & SCT_START_STARTMSK_L_MASK)
+#define SCT_START_STARTMSK_H_MASK                (0xFF0000U)
+#define SCT_START_STARTMSK_H_SHIFT               (16U)
+/*! STARTMSK_H - If bit n is one, event n clears the STOP_H bit in the CTRL register (event 0 = bit
+ *    16, event 1 = bit 17, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_START_STARTMSK_H(x)                  (((uint32_t)(((uint32_t)(x)) << SCT_START_STARTMSK_H_SHIFT)) & SCT_START_STARTMSK_H_MASK)
+/*! @} */
+
+/*! @name COUNTL - SCT_COUNTL register */
+/*! @{ */
+#define SCT_COUNTL_COUNTL_MASK                   (0xFFFFU)
+#define SCT_COUNTL_COUNTL_SHIFT                  (0U)
+#define SCT_COUNTL_COUNTL(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_COUNTL_COUNTL_SHIFT)) & SCT_COUNTL_COUNTL_MASK)
+/*! @} */
+
+/*! @name COUNTH - SCT_COUNTH register */
+/*! @{ */
+#define SCT_COUNTH_COUNTH_MASK                   (0xFFFFU)
+#define SCT_COUNTH_COUNTH_SHIFT                  (0U)
+#define SCT_COUNTH_COUNTH(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_COUNTH_COUNTH_SHIFT)) & SCT_COUNTH_COUNTH_MASK)
+/*! @} */
+
+/*! @name COUNT - SCT counter register */
+/*! @{ */
+#define SCT_COUNT_CTR_L_MASK                     (0xFFFFU)
+#define SCT_COUNT_CTR_L_SHIFT                    (0U)
+/*! CTR_L - When UNIFY = 0, read or write the 16-bit L counter value. When UNIFY = 1, read or write
+ *    the lower 16 bits of the 32-bit unified counter.
+ */
+#define SCT_COUNT_CTR_L(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_COUNT_CTR_L_SHIFT)) & SCT_COUNT_CTR_L_MASK)
+#define SCT_COUNT_CTR_H_MASK                     (0xFFFF0000U)
+#define SCT_COUNT_CTR_H_SHIFT                    (16U)
+/*! CTR_H - When UNIFY = 0, read or write the 16-bit H counter value. When UNIFY = 1, read or write
+ *    the upper 16 bits of the 32-bit unified counter.
+ */
+#define SCT_COUNT_CTR_H(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_COUNT_CTR_H_SHIFT)) & SCT_COUNT_CTR_H_MASK)
+/*! @} */
+
+/*! @name STATEL - SCT_STATEL register */
+/*! @{ */
+#define SCT_STATEL_STATEL_MASK                   (0xFFFFU)
+#define SCT_STATEL_STATEL_SHIFT                  (0U)
+#define SCT_STATEL_STATEL(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_STATEL_STATEL_SHIFT)) & SCT_STATEL_STATEL_MASK)
+/*! @} */
+
+/*! @name STATEH - SCT_STATEH register */
+/*! @{ */
+#define SCT_STATEH_STATEH_MASK                   (0xFFFFU)
+#define SCT_STATEH_STATEH_SHIFT                  (0U)
+#define SCT_STATEH_STATEH(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_STATEH_STATEH_SHIFT)) & SCT_STATEH_STATEH_MASK)
+/*! @} */
+
+/*! @name STATE - SCT state register */
+/*! @{ */
+#define SCT_STATE_STATE_L_MASK                   (0x1FU)
+#define SCT_STATE_STATE_L_SHIFT                  (0U)
+/*! STATE_L - State variable.
+ */
+#define SCT_STATE_STATE_L(x)                     (((uint32_t)(((uint32_t)(x)) << SCT_STATE_STATE_L_SHIFT)) & SCT_STATE_STATE_L_MASK)
+#define SCT_STATE_STATE_H_MASK                   (0x1F0000U)
+#define SCT_STATE_STATE_H_SHIFT                  (16U)
+/*! STATE_H - State variable.
+ */
+#define SCT_STATE_STATE_H(x)                     (((uint32_t)(((uint32_t)(x)) << SCT_STATE_STATE_H_SHIFT)) & SCT_STATE_STATE_H_MASK)
+/*! @} */
+
+/*! @name INPUT - SCT input register */
+/*! @{ */
+#define SCT_INPUT_AIN0_MASK                      (0x1U)
+#define SCT_INPUT_AIN0_SHIFT                     (0U)
+/*! AIN0 - Input 0 state. Input 0 state on the last SCT clock edge.
+ */
+#define SCT_INPUT_AIN0(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_AIN0_SHIFT)) & SCT_INPUT_AIN0_MASK)
+#define SCT_INPUT_AIN1_MASK                      (0x2U)
+#define SCT_INPUT_AIN1_SHIFT                     (1U)
+/*! AIN1 - Input 1 state. Input 1 state on the last SCT clock edge.
+ */
+#define SCT_INPUT_AIN1(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_AIN1_SHIFT)) & SCT_INPUT_AIN1_MASK)
+#define SCT_INPUT_AIN2_MASK                      (0x4U)
+#define SCT_INPUT_AIN2_SHIFT                     (2U)
+/*! AIN2 - Input 2 state. Input 2 state on the last SCT clock edge.
+ */
+#define SCT_INPUT_AIN2(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_AIN2_SHIFT)) & SCT_INPUT_AIN2_MASK)
+#define SCT_INPUT_AIN3_MASK                      (0x8U)
+#define SCT_INPUT_AIN3_SHIFT                     (3U)
+/*! AIN3 - Input 3 state. Input 3 state on the last SCT clock edge.
+ */
+#define SCT_INPUT_AIN3(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_AIN3_SHIFT)) & SCT_INPUT_AIN3_MASK)
+#define SCT_INPUT_AIN4_MASK                      (0x10U)
+#define SCT_INPUT_AIN4_SHIFT                     (4U)
+/*! AIN4 - Input 4 state. Input 4 state on the last SCT clock edge.
+ */
+#define SCT_INPUT_AIN4(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_AIN4_SHIFT)) & SCT_INPUT_AIN4_MASK)
+#define SCT_INPUT_SIN0_MASK                      (0x10000U)
+#define SCT_INPUT_SIN0_SHIFT                     (16U)
+/*! SIN0 - Input 0 state. Input 0 state following the synchronization specified by INSYNC.
+ */
+#define SCT_INPUT_SIN0(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_SIN0_SHIFT)) & SCT_INPUT_SIN0_MASK)
+#define SCT_INPUT_SIN1_MASK                      (0x20000U)
+#define SCT_INPUT_SIN1_SHIFT                     (17U)
+/*! SIN1 - Input 1 state. Input 1 state following the synchronization specified by INSYNC.
+ */
+#define SCT_INPUT_SIN1(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_SIN1_SHIFT)) & SCT_INPUT_SIN1_MASK)
+#define SCT_INPUT_SIN2_MASK                      (0x40000U)
+#define SCT_INPUT_SIN2_SHIFT                     (18U)
+/*! SIN2 - Input 2 state. Input 2 state following the synchronization specified by INSYNC.
+ */
+#define SCT_INPUT_SIN2(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_SIN2_SHIFT)) & SCT_INPUT_SIN2_MASK)
+#define SCT_INPUT_SIN3_MASK                      (0x80000U)
+#define SCT_INPUT_SIN3_SHIFT                     (19U)
+/*! SIN3 - Input 3 state. Input 3 state following the synchronization specified by INSYNC.
+ */
+#define SCT_INPUT_SIN3(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_SIN3_SHIFT)) & SCT_INPUT_SIN3_MASK)
+#define SCT_INPUT_SIN4_MASK                      (0x100000U)
+#define SCT_INPUT_SIN4_SHIFT                     (20U)
+/*! SIN4 - Input 4 state. Input 4 state following the synchronization specified by INSYNC.
+ */
+#define SCT_INPUT_SIN4(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_INPUT_SIN4_SHIFT)) & SCT_INPUT_SIN4_MASK)
+/*! @} */
+
+/*! @name REGMODEL - SCT_REGMODEL register */
+/*! @{ */
+#define SCT_REGMODEL_REGMODEL_MASK               (0xFFFFU)
+#define SCT_REGMODEL_REGMODEL_SHIFT              (0U)
+#define SCT_REGMODEL_REGMODEL(x)                 (((uint16_t)(((uint16_t)(x)) << SCT_REGMODEL_REGMODEL_SHIFT)) & SCT_REGMODEL_REGMODEL_MASK)
+/*! @} */
+
+/*! @name REGMODEH - SCT_REGMODEH register */
+/*! @{ */
+#define SCT_REGMODEH_REGMODEH_MASK               (0xFFFFU)
+#define SCT_REGMODEH_REGMODEH_SHIFT              (0U)
+#define SCT_REGMODEH_REGMODEH(x)                 (((uint16_t)(((uint16_t)(x)) << SCT_REGMODEH_REGMODEH_SHIFT)) & SCT_REGMODEH_REGMODEH_MASK)
+/*! @} */
+
+/*! @name REGMODE - SCT match/capture mode register */
+/*! @{ */
+#define SCT_REGMODE_REGMOD_L_MASK                (0xFFU)
+#define SCT_REGMODE_REGMOD_L_SHIFT               (0U)
+/*! REGMOD_L - Each bit controls one match/capture register (register 0 = bit 0, register 1 = bit 1,
+ *    etc.). The number of bits = number of match/captures in this SCT. 0 = register operates as
+ *    match register. 1 = register operates as capture register.
+ */
+#define SCT_REGMODE_REGMOD_L(x)                  (((uint32_t)(((uint32_t)(x)) << SCT_REGMODE_REGMOD_L_SHIFT)) & SCT_REGMODE_REGMOD_L_MASK)
+#define SCT_REGMODE_REGMOD_H_MASK                (0xFF0000U)
+#define SCT_REGMODE_REGMOD_H_SHIFT               (16U)
+/*! REGMOD_H - Each bit controls one match/capture register (register 0 = bit 16, register 1 = bit
+ *    17, etc.). The number of bits = number of match/captures in this SCT. 0 = register operates as
+ *    match registers. 1 = register operates as capture registers.
+ */
+#define SCT_REGMODE_REGMOD_H(x)                  (((uint32_t)(((uint32_t)(x)) << SCT_REGMODE_REGMOD_H_SHIFT)) & SCT_REGMODE_REGMOD_H_MASK)
+/*! @} */
+
+/*! @name OUTPUT - SCT output register */
+/*! @{ */
+#define SCT_OUTPUT_OUT_MASK                      (0x7FU)
+#define SCT_OUTPUT_OUT_SHIFT                     (0U)
+/*! OUT - Writing a 1 to bit n forces the corresponding output HIGH. Writing a 0 forces the
+ *    corresponding output LOW (output 0 = bit 0, output 1 = bit 1, etc.). The number of bits = number of
+ *    outputs in this SCT.
+ */
+#define SCT_OUTPUT_OUT(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_OUTPUT_OUT_SHIFT)) & SCT_OUTPUT_OUT_MASK)
+/*! @} */
+
+/*! @name OUTPUTDIRCTRL - SCT output counter direction control register */
+/*! @{ */
+#define SCT_OUTPUTDIRCTRL_SETCLR0_MASK           (0x3U)
+#define SCT_OUTPUTDIRCTRL_SETCLR0_SHIFT          (0U)
+/*! SETCLR0 - Set/clear operation on output 0. Value 0x3 is reserved. Do not program this value.
+ *  0b00..Set and clear do not depend on the direction of any counter.
+ *  0b01..Set and clear are reversed when counter L or the unified counter is counting down.
+ *  0b10..Set and clear are reversed when counter H is counting down. Do not use if UNIFY = 1.
+ */
+#define SCT_OUTPUTDIRCTRL_SETCLR0(x)             (((uint32_t)(((uint32_t)(x)) << SCT_OUTPUTDIRCTRL_SETCLR0_SHIFT)) & SCT_OUTPUTDIRCTRL_SETCLR0_MASK)
+#define SCT_OUTPUTDIRCTRL_SETCLR1_MASK           (0xCU)
+#define SCT_OUTPUTDIRCTRL_SETCLR1_SHIFT          (2U)
+/*! SETCLR1 - Set/clear operation on output 1. Value 0x3 is reserved. Do not program this value.
+ *  0b00..Set and clear do not depend on the direction of any counter.
+ *  0b01..Set and clear are reversed when counter L or the unified counter is counting down.
+ *  0b10..Set and clear are reversed when counter H is counting down. Do not use if UNIFY = 1.
+ */
+#define SCT_OUTPUTDIRCTRL_SETCLR1(x)             (((uint32_t)(((uint32_t)(x)) << SCT_OUTPUTDIRCTRL_SETCLR1_SHIFT)) & SCT_OUTPUTDIRCTRL_SETCLR1_MASK)
+#define SCT_OUTPUTDIRCTRL_SETCLR2_MASK           (0x30U)
+#define SCT_OUTPUTDIRCTRL_SETCLR2_SHIFT          (4U)
+/*! SETCLR2 - Set/clear operation on output 2. Value 0x3 is reserved. Do not program this value.
+ *  0b00..Set and clear do not depend on the direction of any counter.
+ *  0b01..Set and clear are reversed when counter L or the unified counter is counting down.
+ *  0b10..Set and clear are reversed when counter H is counting down. Do not use if UNIFY = 1.
+ */
+#define SCT_OUTPUTDIRCTRL_SETCLR2(x)             (((uint32_t)(((uint32_t)(x)) << SCT_OUTPUTDIRCTRL_SETCLR2_SHIFT)) & SCT_OUTPUTDIRCTRL_SETCLR2_MASK)
+#define SCT_OUTPUTDIRCTRL_SETCLR3_MASK           (0xC0U)
+#define SCT_OUTPUTDIRCTRL_SETCLR3_SHIFT          (6U)
+/*! SETCLR3 - Set/clear operation on output 3. Value 0x3 is reserved. Do not program this value.
+ *  0b00..Set and clear do not depend on the direction of any counter.
+ *  0b01..Set and clear are reversed when counter L or the unified counter is counting down.
+ *  0b10..Set and clear are reversed when counter H is counting down. Do not use if UNIFY = 1.
+ */
+#define SCT_OUTPUTDIRCTRL_SETCLR3(x)             (((uint32_t)(((uint32_t)(x)) << SCT_OUTPUTDIRCTRL_SETCLR3_SHIFT)) & SCT_OUTPUTDIRCTRL_SETCLR3_MASK)
+#define SCT_OUTPUTDIRCTRL_SETCLR4_MASK           (0x300U)
+#define SCT_OUTPUTDIRCTRL_SETCLR4_SHIFT          (8U)
+/*! SETCLR4 - Set/clear operation on output 4. Value 0x3 is reserved. Do not program this value.
+ *  0b00..Set and clear do not depend on the direction of any counter.
+ *  0b01..Set and clear are reversed when counter L or the unified counter is counting down.
+ *  0b10..Set and clear are reversed when counter H is counting down. Do not use if UNIFY = 1.
+ */
+#define SCT_OUTPUTDIRCTRL_SETCLR4(x)             (((uint32_t)(((uint32_t)(x)) << SCT_OUTPUTDIRCTRL_SETCLR4_SHIFT)) & SCT_OUTPUTDIRCTRL_SETCLR4_MASK)
+#define SCT_OUTPUTDIRCTRL_SETCLR5_MASK           (0xC00U)
+#define SCT_OUTPUTDIRCTRL_SETCLR5_SHIFT          (10U)
+/*! SETCLR5 - Set/clear operation on output 5. Value 0x3 is reserved. Do not program this value.
+ *  0b00..Set and clear do not depend on the direction of any counter.
+ *  0b01..Set and clear are reversed when counter L or the unified counter is counting down.
+ *  0b10..Set and clear are reversed when counter H is counting down. Do not use if UNIFY = 1.
+ */
+#define SCT_OUTPUTDIRCTRL_SETCLR5(x)             (((uint32_t)(((uint32_t)(x)) << SCT_OUTPUTDIRCTRL_SETCLR5_SHIFT)) & SCT_OUTPUTDIRCTRL_SETCLR5_MASK)
+#define SCT_OUTPUTDIRCTRL_SETCLR6_MASK           (0x3000U)
+#define SCT_OUTPUTDIRCTRL_SETCLR6_SHIFT          (12U)
+/*! SETCLR6 - Set/clear operation on output 6. Value 0x3 is reserved. Do not program this value.
+ *  0b00..Set and clear do not depend on the direction of any counter.
+ *  0b01..Set and clear are reversed when counter L or the unified counter is counting down.
+ *  0b10..Set and clear are reversed when counter H is counting down. Do not use if UNIFY = 1.
+ */
+#define SCT_OUTPUTDIRCTRL_SETCLR6(x)             (((uint32_t)(((uint32_t)(x)) << SCT_OUTPUTDIRCTRL_SETCLR6_SHIFT)) & SCT_OUTPUTDIRCTRL_SETCLR6_MASK)
+/*! @} */
+
+/*! @name RES - SCT conflict resolution register */
+/*! @{ */
+#define SCT_RES_O0RES_MASK                       (0x3U)
+#define SCT_RES_O0RES_SHIFT                      (0U)
+/*! O0RES - Effect of simultaneous set and clear on output 0.
+ *  0b00..No change.
+ *  0b01..Set output (or clear based on the SETCLR0 field in the OUTPUTDIRCTRL register).
+ *  0b10..Clear output (or set based on the SETCLR0 field).
+ *  0b11..Toggle output.
+ */
+#define SCT_RES_O0RES(x)                         (((uint32_t)(((uint32_t)(x)) << SCT_RES_O0RES_SHIFT)) & SCT_RES_O0RES_MASK)
+#define SCT_RES_O1RES_MASK                       (0xCU)
+#define SCT_RES_O1RES_SHIFT                      (2U)
+/*! O1RES - Effect of simultaneous set and clear on output 1.
+ *  0b00..No change.
+ *  0b01..Set output (or clear based on the SETCLR1 field in the OUTPUTDIRCTRL register).
+ *  0b10..Clear output (or set based on the SETCLR1 field).
+ *  0b11..Toggle output.
+ */
+#define SCT_RES_O1RES(x)                         (((uint32_t)(((uint32_t)(x)) << SCT_RES_O1RES_SHIFT)) & SCT_RES_O1RES_MASK)
+#define SCT_RES_O2RES_MASK                       (0x30U)
+#define SCT_RES_O2RES_SHIFT                      (4U)
+/*! O2RES - Effect of simultaneous set and clear on output 2.
+ *  0b00..No change.
+ *  0b01..Set output (or clear based on the SETCLR2 field in the OUTPUTDIRCTRL register).
+ *  0b10..Clear output n (or set based on the SETCLR2 field).
+ *  0b11..Toggle output.
+ */
+#define SCT_RES_O2RES(x)                         (((uint32_t)(((uint32_t)(x)) << SCT_RES_O2RES_SHIFT)) & SCT_RES_O2RES_MASK)
+#define SCT_RES_O3RES_MASK                       (0xC0U)
+#define SCT_RES_O3RES_SHIFT                      (6U)
+/*! O3RES - Effect of simultaneous set and clear on output 3.
+ *  0b00..No change.
+ *  0b01..Set output (or clear based on the SETCLR3 field in the OUTPUTDIRCTRL register).
+ *  0b10..Clear output (or set based on the SETCLR3 field).
+ *  0b11..Toggle output.
+ */
+#define SCT_RES_O3RES(x)                         (((uint32_t)(((uint32_t)(x)) << SCT_RES_O3RES_SHIFT)) & SCT_RES_O3RES_MASK)
+#define SCT_RES_O4RES_MASK                       (0x300U)
+#define SCT_RES_O4RES_SHIFT                      (8U)
+/*! O4RES - Effect of simultaneous set and clear on output 4.
+ *  0b00..No change.
+ *  0b01..Set output (or clear based on the SETCLR4 field in the OUTPUTDIRCTRL register).
+ *  0b10..Clear output (or set based on the SETCLR4 field).
+ *  0b11..Toggle output.
+ */
+#define SCT_RES_O4RES(x)                         (((uint32_t)(((uint32_t)(x)) << SCT_RES_O4RES_SHIFT)) & SCT_RES_O4RES_MASK)
+#define SCT_RES_O5RES_MASK                       (0xC00U)
+#define SCT_RES_O5RES_SHIFT                      (10U)
+/*! O5RES - Effect of simultaneous set and clear on output 5.
+ *  0b00..No change.
+ *  0b01..Set output (or clear based on the SETCLR5 field in the OUTPUTDIRCTRL register).
+ *  0b10..Clear output (or set based on the SETCLR5 field).
+ *  0b11..Toggle output.
+ */
+#define SCT_RES_O5RES(x)                         (((uint32_t)(((uint32_t)(x)) << SCT_RES_O5RES_SHIFT)) & SCT_RES_O5RES_MASK)
+#define SCT_RES_O6RES_MASK                       (0x3000U)
+#define SCT_RES_O6RES_SHIFT                      (12U)
+/*! O6RES - Effect of simultaneous set and clear on output 6.
+ *  0b00..No change.
+ *  0b01..Set output (or clear based on the SETCLR6 field in the OUTPUTDIRCTRL register).
+ *  0b10..Clear output (or set based on the SETCLR6 field).
+ *  0b11..Toggle output.
+ */
+#define SCT_RES_O6RES(x)                         (((uint32_t)(((uint32_t)(x)) << SCT_RES_O6RES_SHIFT)) & SCT_RES_O6RES_MASK)
+/*! @} */
+
+/*! @name DMAREQ0 - SCT DMA request 0 register */
+/*! @{ */
+#define SCT_DMAREQ0_DEV_0_MASK                   (0x3FU)
+#define SCT_DMAREQ0_DEV_0_SHIFT                  (0U)
+/*! DEV_0 - If bit n is one, event n triggers DMA request 0 (event 0 = bit 0, event 1 = bit 1,
+ *    etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_DMAREQ0_DEV_0(x)                     (((uint32_t)(((uint32_t)(x)) << SCT_DMAREQ0_DEV_0_SHIFT)) & SCT_DMAREQ0_DEV_0_MASK)
+#define SCT_DMAREQ0_DRL0_MASK                    (0x40000000U)
+#define SCT_DMAREQ0_DRL0_SHIFT                   (30U)
+/*! DRL0 - A 1 in this bit triggers DMA request 0 when it loads the MATCH_L/Unified registers from the RELOAD_L/Unified registers.
+ */
+#define SCT_DMAREQ0_DRL0(x)                      (((uint32_t)(((uint32_t)(x)) << SCT_DMAREQ0_DRL0_SHIFT)) & SCT_DMAREQ0_DRL0_MASK)
+#define SCT_DMAREQ0_DRQ0_MASK                    (0x80000000U)
+#define SCT_DMAREQ0_DRQ0_SHIFT                   (31U)
+/*! DRQ0 - This read-only bit indicates the state of DMA Request 0. Note that if the related DMA
+ *    channel is enabled and properly set up, it is unlikely that software will see this flag, it will
+ *    be cleared rapidly by the DMA service. The flag remaining set could point to an issue with DMA
+ *    setup.
+ */
+#define SCT_DMAREQ0_DRQ0(x)                      (((uint32_t)(((uint32_t)(x)) << SCT_DMAREQ0_DRQ0_SHIFT)) & SCT_DMAREQ0_DRQ0_MASK)
+/*! @} */
+
+/*! @name DMAREQ1 - SCT DMA request 1 register */
+/*! @{ */
+#define SCT_DMAREQ1_DEV_1_MASK                   (0x3FU)
+#define SCT_DMAREQ1_DEV_1_SHIFT                  (0U)
+/*! DEV_1 - If bit n is one, event n triggers DMA request 1 (event 0 = bit 0, event 1 = bit 1,
+ *    etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_DMAREQ1_DEV_1(x)                     (((uint32_t)(((uint32_t)(x)) << SCT_DMAREQ1_DEV_1_SHIFT)) & SCT_DMAREQ1_DEV_1_MASK)
+#define SCT_DMAREQ1_DRL1_MASK                    (0x40000000U)
+#define SCT_DMAREQ1_DRL1_SHIFT                   (30U)
+/*! DRL1 - A 1 in this bit triggers DMA request 1 when it loads the Match L/Unified registers from the Reload L/Unified registers.
+ */
+#define SCT_DMAREQ1_DRL1(x)                      (((uint32_t)(((uint32_t)(x)) << SCT_DMAREQ1_DRL1_SHIFT)) & SCT_DMAREQ1_DRL1_MASK)
+#define SCT_DMAREQ1_DRQ1_MASK                    (0x80000000U)
+#define SCT_DMAREQ1_DRQ1_SHIFT                   (31U)
+/*! DRQ1 - This read-only bit indicates the state of DMA Request 1. Note that if the related DMA
+ *    channel is enabled and properly set up, it is unlikely that software will see this flag, it will
+ *    be cleared rapidly by the DMA service. The flag remaining set could point to an issue with DMA
+ *    setup.
+ */
+#define SCT_DMAREQ1_DRQ1(x)                      (((uint32_t)(((uint32_t)(x)) << SCT_DMAREQ1_DRQ1_SHIFT)) & SCT_DMAREQ1_DRQ1_MASK)
+/*! @} */
+
+/*! @name EVEN - SCT event interrupt enable register */
+/*! @{ */
+#define SCT_EVEN_IEN_MASK                        (0xFFU)
+#define SCT_EVEN_IEN_SHIFT                       (0U)
+/*! IEN - The SCT requests an interrupt when bit n of this register and the event flag register are
+ *    both one (event 0 = bit 0, event 1 = bit 1, etc.). The number of bits = number of events in
+ *    this SCT.
+ */
+#define SCT_EVEN_IEN(x)                          (((uint32_t)(((uint32_t)(x)) << SCT_EVEN_IEN_SHIFT)) & SCT_EVEN_IEN_MASK)
+/*! @} */
+
+/*! @name EVFLAG - SCT event flag register */
+/*! @{ */
+#define SCT_EVFLAG_FLAG_MASK                     (0xFFU)
+#define SCT_EVFLAG_FLAG_SHIFT                    (0U)
+/*! FLAG - Bit n is one if event n has occurred since reset or a 1 was last written to this bit
+ *    (event 0 = bit 0, event 1 = bit 1, etc.). The number of bits = number of events in this SCT.
+ */
+#define SCT_EVFLAG_FLAG(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_EVFLAG_FLAG_SHIFT)) & SCT_EVFLAG_FLAG_MASK)
+/*! @} */
+
+/*! @name CONEN - SCT conflict interrupt enable register */
+/*! @{ */
+#define SCT_CONEN_NCEN_MASK                      (0x3FU)
+#define SCT_CONEN_NCEN_SHIFT                     (0U)
+/*! NCEN - The SCT requests an interrupt when bit n of this register and the SCT conflict flag
+ *    register are both one (output 0 = bit 0, output 1 = bit 1, etc.). The number of bits = number of
+ *    outputs in this SCT.
+ */
+#define SCT_CONEN_NCEN(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_CONEN_NCEN_SHIFT)) & SCT_CONEN_NCEN_MASK)
+/*! @} */
+
+/*! @name CONFLAG - SCT conflict flag register */
+/*! @{ */
+#define SCT_CONFLAG_NCFLAG_MASK                  (0x3FU)
+#define SCT_CONFLAG_NCFLAG_SHIFT                 (0U)
+/*! NCFLAG - Bit n is one if a no-change conflict event occurred on output n since reset or a 1 was
+ *    last written to this bit (output 0 = bit 0, output 1 = bit 1, etc.). The number of bits =
+ *    number of outputs in this SCT.
+ */
+#define SCT_CONFLAG_NCFLAG(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_CONFLAG_NCFLAG_SHIFT)) & SCT_CONFLAG_NCFLAG_MASK)
+#define SCT_CONFLAG_BUSERRL_MASK                 (0x40000000U)
+#define SCT_CONFLAG_BUSERRL_SHIFT                (30U)
+/*! BUSERRL - The most recent bus error from this SCT involved writing CTR L/Unified, STATE
+ *    L/Unified, MATCH L/Unified, or the Output register when the L/U counter was not halted. A word write
+ *    to certain L and H registers can be half successful and half unsuccessful.
+ */
+#define SCT_CONFLAG_BUSERRL(x)                   (((uint32_t)(((uint32_t)(x)) << SCT_CONFLAG_BUSERRL_SHIFT)) & SCT_CONFLAG_BUSERRL_MASK)
+#define SCT_CONFLAG_BUSERRH_MASK                 (0x80000000U)
+#define SCT_CONFLAG_BUSERRH_SHIFT                (31U)
+/*! BUSERRH - The most recent bus error from this SCT involved writing CTR H, STATE H, MATCH H, or
+ *    the Output register when the H counter was not halted.
+ */
+#define SCT_CONFLAG_BUSERRH(x)                   (((uint32_t)(((uint32_t)(x)) << SCT_CONFLAG_BUSERRH_SHIFT)) & SCT_CONFLAG_BUSERRH_MASK)
+/*! @} */
+
+/*! @name CAPL - SCT_CAPL register */
+/*! @{ */
+#define SCT_CAPL_CAPL_MASK                       (0xFFFFU)
+#define SCT_CAPL_CAPL_SHIFT                      (0U)
+#define SCT_CAPL_CAPL(x)                         (((uint16_t)(((uint16_t)(x)) << SCT_CAPL_CAPL_SHIFT)) & SCT_CAPL_CAPL_MASK)
+/*! @} */
+
+/* The count of SCT_CAPL */
+#define SCT_CAPL_COUNT                           (8U)
+
+/*! @name CAPH - SCT_CAPH register */
+/*! @{ */
+#define SCT_CAPH_CAPH_MASK                       (0xFFFFU)
+#define SCT_CAPH_CAPH_SHIFT                      (0U)
+#define SCT_CAPH_CAPH(x)                         (((uint16_t)(((uint16_t)(x)) << SCT_CAPH_CAPH_SHIFT)) & SCT_CAPH_CAPH_MASK)
+/*! @} */
+
+/* The count of SCT_CAPH */
+#define SCT_CAPH_COUNT                           (8U)
+
+/*! @name CAP - SCT capture register of capture channel */
+/*! @{ */
+#define SCT_CAP_CAPn_L_MASK                      (0xFFFFU)
+#define SCT_CAP_CAPn_L_SHIFT                     (0U)
+/*! CAPn_L - When UNIFY = 0, read the 16-bit counter value at which this register was last captured.
+ *    When UNIFY = 1, read the lower 16 bits of the 32-bit value at which this register was last
+ *    captured.
+ */
+#define SCT_CAP_CAPn_L(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_CAP_CAPn_L_SHIFT)) & SCT_CAP_CAPn_L_MASK)
+#define SCT_CAP_CAPn_H_MASK                      (0xFFFF0000U)
+#define SCT_CAP_CAPn_H_SHIFT                     (16U)
+/*! CAPn_H - When UNIFY = 0, read the 16-bit counter value at which this register was last captured.
+ *    When UNIFY = 1, read the upper 16 bits of the 32-bit value at which this register was last
+ *    captured.
+ */
+#define SCT_CAP_CAPn_H(x)                        (((uint32_t)(((uint32_t)(x)) << SCT_CAP_CAPn_H_SHIFT)) & SCT_CAP_CAPn_H_MASK)
+/*! @} */
+
+/* The count of SCT_CAP */
+#define SCT_CAP_COUNT                            (8U)
+
+/*! @name MATCHL - SCT_MATCHL register */
+/*! @{ */
+#define SCT_MATCHL_MATCHL_MASK                   (0xFFFFU)
+#define SCT_MATCHL_MATCHL_SHIFT                  (0U)
+#define SCT_MATCHL_MATCHL(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_MATCHL_MATCHL_SHIFT)) & SCT_MATCHL_MATCHL_MASK)
+/*! @} */
+
+/* The count of SCT_MATCHL */
+#define SCT_MATCHL_COUNT                         (8U)
+
+/*! @name MATCHH - SCT_MATCHH register */
+/*! @{ */
+#define SCT_MATCHH_MATCHH_MASK                   (0xFFFFU)
+#define SCT_MATCHH_MATCHH_SHIFT                  (0U)
+#define SCT_MATCHH_MATCHH(x)                     (((uint16_t)(((uint16_t)(x)) << SCT_MATCHH_MATCHH_SHIFT)) & SCT_MATCHH_MATCHH_MASK)
+/*! @} */
+
+/* The count of SCT_MATCHH */
+#define SCT_MATCHH_COUNT                         (8U)
+
+/*! @name MATCH - SCT match value register of match channels */
+/*! @{ */
+#define SCT_MATCH_MATCHn_L_MASK                  (0xFFFFU)
+#define SCT_MATCH_MATCHn_L_SHIFT                 (0U)
+/*! MATCHn_L - When UNIFY = 0, read or write the 16-bit value to be compared to the L counter. When
+ *    UNIFY = 1, read or write the lower 16 bits of the 32-bit value to be compared to the unified
+ *    counter.
+ */
+#define SCT_MATCH_MATCHn_L(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_MATCH_MATCHn_L_SHIFT)) & SCT_MATCH_MATCHn_L_MASK)
+#define SCT_MATCH_MATCHn_H_MASK                  (0xFFFF0000U)
+#define SCT_MATCH_MATCHn_H_SHIFT                 (16U)
+/*! MATCHn_H - When UNIFY = 0, read or write the 16-bit value to be compared to the H counter. When
+ *    UNIFY = 1, read or write the upper 16 bits of the 32-bit value to be compared to the unified
+ *    counter.
+ */
+#define SCT_MATCH_MATCHn_H(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_MATCH_MATCHn_H_SHIFT)) & SCT_MATCH_MATCHn_H_MASK)
+/*! @} */
+
+/* The count of SCT_MATCH */
+#define SCT_MATCH_COUNT                          (8U)
+
+/*! @name CAPCTRLL - SCT_CAPCTRLL register */
+/*! @{ */
+#define SCT_CAPCTRLL_CAPCTRLL_MASK               (0xFFFFU)
+#define SCT_CAPCTRLL_CAPCTRLL_SHIFT              (0U)
+#define SCT_CAPCTRLL_CAPCTRLL(x)                 (((uint16_t)(((uint16_t)(x)) << SCT_CAPCTRLL_CAPCTRLL_SHIFT)) & SCT_CAPCTRLL_CAPCTRLL_MASK)
+/*! @} */
+
+/* The count of SCT_CAPCTRLL */
+#define SCT_CAPCTRLL_COUNT                       (8U)
+
+/*! @name CAPCTRLH - SCT_CAPCTRLH register */
+/*! @{ */
+#define SCT_CAPCTRLH_CAPCTRLH_MASK               (0xFFFFU)
+#define SCT_CAPCTRLH_CAPCTRLH_SHIFT              (0U)
+#define SCT_CAPCTRLH_CAPCTRLH(x)                 (((uint16_t)(((uint16_t)(x)) << SCT_CAPCTRLH_CAPCTRLH_SHIFT)) & SCT_CAPCTRLH_CAPCTRLH_MASK)
+/*! @} */
+
+/* The count of SCT_CAPCTRLH */
+#define SCT_CAPCTRLH_COUNT                       (8U)
+
+/*! @name CAPCTRL - SCT capture control register */
+/*! @{ */
+#define SCT_CAPCTRL_CAPCONn_L_MASK               (0xFFU)
+#define SCT_CAPCTRL_CAPCONn_L_SHIFT              (0U)
+/*! CAPCONn_L - If bit m is one, event m causes the CAPn_L (UNIFY = 0) or the CAPn (UNIFY = 1)
+ *    register to be loaded (event 0 = bit 0, event 1 = bit 1, etc.). The number of bits = number of
+ *    match/captures in this SCT.
+ */
+#define SCT_CAPCTRL_CAPCONn_L(x)                 (((uint32_t)(((uint32_t)(x)) << SCT_CAPCTRL_CAPCONn_L_SHIFT)) & SCT_CAPCTRL_CAPCONn_L_MASK)
+#define SCT_CAPCTRL_CAPCONn_H_MASK               (0xFF0000U)
+#define SCT_CAPCTRL_CAPCONn_H_SHIFT              (16U)
+/*! CAPCONn_H - If bit m is one, event m causes the CAPn_H (UNIFY = 0) register to be loaded (event
+ *    0 = bit 16, event 1 = bit 17, etc.). The number of bits = number of match/captures in this SCT.
+ */
+#define SCT_CAPCTRL_CAPCONn_H(x)                 (((uint32_t)(((uint32_t)(x)) << SCT_CAPCTRL_CAPCONn_H_SHIFT)) & SCT_CAPCTRL_CAPCONn_H_MASK)
+/*! @} */
+
+/* The count of SCT_CAPCTRL */
+#define SCT_CAPCTRL_COUNT                        (8U)
+
+/*! @name MATCHRELL - SCT_MATCHRELL register */
+/*! @{ */
+#define SCT_MATCHRELL_MATCHRELL_MASK             (0xFFFFU)
+#define SCT_MATCHRELL_MATCHRELL_SHIFT            (0U)
+#define SCT_MATCHRELL_MATCHRELL(x)               (((uint16_t)(((uint16_t)(x)) << SCT_MATCHRELL_MATCHRELL_SHIFT)) & SCT_MATCHRELL_MATCHRELL_MASK)
+/*! @} */
+
+/* The count of SCT_MATCHRELL */
+#define SCT_MATCHRELL_COUNT                      (8U)
+
+/*! @name MATCHRELH - SCT_MATCHRELH register */
+/*! @{ */
+#define SCT_MATCHRELH_MATCHRELH_MASK             (0xFFFFU)
+#define SCT_MATCHRELH_MATCHRELH_SHIFT            (0U)
+#define SCT_MATCHRELH_MATCHRELH(x)               (((uint16_t)(((uint16_t)(x)) << SCT_MATCHRELH_MATCHRELH_SHIFT)) & SCT_MATCHRELH_MATCHRELH_MASK)
+/*! @} */
+
+/* The count of SCT_MATCHRELH */
+#define SCT_MATCHRELH_COUNT                      (8U)
+
+/*! @name MATCHREL - SCT match reload value register */
+/*! @{ */
+#define SCT_MATCHREL_RELOADn_L_MASK              (0xFFFFU)
+#define SCT_MATCHREL_RELOADn_L_SHIFT             (0U)
+/*! RELOADn_L - When UNIFY = 0, specifies the 16-bit value to be loaded into the MATCHn_L register.
+ *    When UNIFY = 1, specifies the lower 16 bits of the 32-bit value to be loaded into the MATCHn
+ *    register.
+ */
+#define SCT_MATCHREL_RELOADn_L(x)                (((uint32_t)(((uint32_t)(x)) << SCT_MATCHREL_RELOADn_L_SHIFT)) & SCT_MATCHREL_RELOADn_L_MASK)
+#define SCT_MATCHREL_RELOADn_H_MASK              (0xFFFF0000U)
+#define SCT_MATCHREL_RELOADn_H_SHIFT             (16U)
+/*! RELOADn_H - When UNIFY = 0, specifies the 16-bit to be loaded into the MATCHn_H register. When
+ *    UNIFY = 1, specifies the upper 16 bits of the 32-bit value to be loaded into the MATCHn
+ *    register.
+ */
+#define SCT_MATCHREL_RELOADn_H(x)                (((uint32_t)(((uint32_t)(x)) << SCT_MATCHREL_RELOADn_H_SHIFT)) & SCT_MATCHREL_RELOADn_H_MASK)
+/*! @} */
+
+/* The count of SCT_MATCHREL */
+#define SCT_MATCHREL_COUNT                       (8U)
+
+/*! @name EV_STATE - SCT event state register 0 */
+/*! @{ */
+#define SCT_EV_STATE_STATEMSKn_MASK              (0xFFU)
+#define SCT_EV_STATE_STATEMSKn_SHIFT             (0U)
+/*! STATEMSKn - If bit m is one, event n happens in state m of the counter selected by the HEVENT
+ *    bit (n = event number, m = state number; state 0 = bit 0, state 1= bit 1, etc.). The number of
+ *    bits = number of states in this SCT.
+ */
+#define SCT_EV_STATE_STATEMSKn(x)                (((uint32_t)(((uint32_t)(x)) << SCT_EV_STATE_STATEMSKn_SHIFT)) & SCT_EV_STATE_STATEMSKn_MASK)
+/*! @} */
+
+/* The count of SCT_EV_STATE */
+#define SCT_EV_STATE_COUNT                       (8U)
+
+/*! @name EV_CTRL - SCT event control register 0 */
+/*! @{ */
+#define SCT_EV_CTRL_MATCHSEL_MASK                (0xFU)
+#define SCT_EV_CTRL_MATCHSEL_SHIFT               (0U)
+/*! MATCHSEL - Selects the Match register associated with this event (if any). A match can occur
+ *    only when the counter selected by the HEVENT bit is running.
+ */
+#define SCT_EV_CTRL_MATCHSEL(x)                  (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_MATCHSEL_SHIFT)) & SCT_EV_CTRL_MATCHSEL_MASK)
+#define SCT_EV_CTRL_HEVENT_MASK                  (0x10U)
+#define SCT_EV_CTRL_HEVENT_SHIFT                 (4U)
+/*! HEVENT - Select L/H counter. Do not set this bit if UNIFY = 1.
+ *  0b0..Selects the L state and the L match register selected by MATCHSEL.
+ *  0b1..Selects the H state and the H match register selected by MATCHSEL.
+ */
+#define SCT_EV_CTRL_HEVENT(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_HEVENT_SHIFT)) & SCT_EV_CTRL_HEVENT_MASK)
+#define SCT_EV_CTRL_OUTSEL_MASK                  (0x20U)
+#define SCT_EV_CTRL_OUTSEL_SHIFT                 (5U)
+/*! OUTSEL - Input/output select
+ *  0b0..Selects the inputs selected by IOSEL.
+ *  0b1..Selects the outputs selected by IOSEL.
+ */
+#define SCT_EV_CTRL_OUTSEL(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_OUTSEL_SHIFT)) & SCT_EV_CTRL_OUTSEL_MASK)
+#define SCT_EV_CTRL_IOSEL_MASK                   (0x3C0U)
+#define SCT_EV_CTRL_IOSEL_SHIFT                  (6U)
+/*! IOSEL - Selects the input or output signal number associated with this event (if any). Do not
+ *    select an input in this register if CKMODE is 1x. In this case the clock input is an implicit
+ *    ingredient of every event.
+ */
+#define SCT_EV_CTRL_IOSEL(x)                     (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_IOSEL_SHIFT)) & SCT_EV_CTRL_IOSEL_MASK)
+#define SCT_EV_CTRL_IOCOND_MASK                  (0xC00U)
+#define SCT_EV_CTRL_IOCOND_SHIFT                 (10U)
+/*! IOCOND - Selects the I/O condition for event n. (The detection of edges on outputs lag the
+ *    conditions that switch the outputs by one SCT clock). In order to guarantee proper edge/state
+ *    detection, an input must have a minimum pulse width of at least one SCT clock period .
+ *  0b00..LOW
+ *  0b01..Rise
+ *  0b10..Fall
+ *  0b11..HIGH
+ */
+#define SCT_EV_CTRL_IOCOND(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_IOCOND_SHIFT)) & SCT_EV_CTRL_IOCOND_MASK)
+#define SCT_EV_CTRL_COMBMODE_MASK                (0x3000U)
+#define SCT_EV_CTRL_COMBMODE_SHIFT               (12U)
+/*! COMBMODE - Selects how the specified match and I/O condition are used and combined.
+ *  0b00..OR. The event occurs when either the specified match or I/O condition occurs.
+ *  0b01..MATCH. Uses the specified match only.
+ *  0b10..IO. Uses the specified I/O condition only.
+ *  0b11..AND. The event occurs when the specified match and I/O condition occur simultaneously.
+ */
+#define SCT_EV_CTRL_COMBMODE(x)                  (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_COMBMODE_SHIFT)) & SCT_EV_CTRL_COMBMODE_MASK)
+#define SCT_EV_CTRL_STATELD_MASK                 (0x4000U)
+#define SCT_EV_CTRL_STATELD_SHIFT                (14U)
+/*! STATELD - This bit controls how the STATEV value modifies the state selected by HEVENT when this
+ *    event is the highest-numbered event occurring for that state.
+ *  0b0..STATEV value is added into STATE (the carry-out is ignored).
+ *  0b1..STATEV value is loaded into STATE.
+ */
+#define SCT_EV_CTRL_STATELD(x)                   (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_STATELD_SHIFT)) & SCT_EV_CTRL_STATELD_MASK)
+#define SCT_EV_CTRL_STATEV_MASK                  (0xF8000U)
+#define SCT_EV_CTRL_STATEV_SHIFT                 (15U)
+/*! STATEV - This value is loaded into or added to the state selected by HEVENT, depending on
+ *    STATELD, when this event is the highest-numbered event occurring for that state. If STATELD and
+ *    STATEV are both zero, there is no change to the STATE value.
+ */
+#define SCT_EV_CTRL_STATEV(x)                    (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_STATEV_SHIFT)) & SCT_EV_CTRL_STATEV_MASK)
+#define SCT_EV_CTRL_MATCHMEM_MASK                (0x100000U)
+#define SCT_EV_CTRL_MATCHMEM_SHIFT               (20U)
+/*! MATCHMEM - If this bit is one and the COMBMODE field specifies a match component to the
+ *    triggering of this event, then a match is considered to be active whenever the counter value is
+ *    GREATER THAN OR EQUAL TO the value specified in the match register when counting up, LESS THEN OR
+ *    EQUAL TO the match value when counting down. If this bit is zero, a match is only be active
+ *    during the cycle when the counter is equal to the match value.
+ */
+#define SCT_EV_CTRL_MATCHMEM(x)                  (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_MATCHMEM_SHIFT)) & SCT_EV_CTRL_MATCHMEM_MASK)
+#define SCT_EV_CTRL_DIRECTION_MASK               (0x600000U)
+#define SCT_EV_CTRL_DIRECTION_SHIFT              (21U)
+/*! DIRECTION - Direction qualifier for event generation. This field only applies when the counters
+ *    are operating in BIDIR mode. If BIDIR = 0, the SCT ignores this field. Value 0x3 is reserved.
+ *  0b00..Direction independent. This event is triggered regardless of the count direction.
+ *  0b01..Counting up. This event is triggered only during up-counting when BIDIR = 1.
+ *  0b10..Counting down. This event is triggered only during down-counting when BIDIR = 1.
+ */
+#define SCT_EV_CTRL_DIRECTION(x)                 (((uint32_t)(((uint32_t)(x)) << SCT_EV_CTRL_DIRECTION_SHIFT)) & SCT_EV_CTRL_DIRECTION_MASK)
+/*! @} */
+
+/* The count of SCT_EV_CTRL */
+#define SCT_EV_CTRL_COUNT                        (8U)
+
+/*! @name OUT_SET - SCT output 0 set register */
+/*! @{ */
+#define SCT_OUT_SET_SET_MASK                     (0xFFU)
+#define SCT_OUT_SET_SET_SHIFT                    (0U)
+/*! SET - A 1 in bit m selects event m to set output n (or clear it if SETCLRn = 0x1 or 0x2) output
+ *    0 = bit 0, output 1 = bit 1, etc. The number of bits = number of events in this SCT. When the
+ *    counter is used in bi-directional mode, it is possible to reverse the action specified by the
+ *    output set and clear registers when counting down, See the OUTPUTCTRL register.
+ */
+#define SCT_OUT_SET_SET(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_OUT_SET_SET_SHIFT)) & SCT_OUT_SET_SET_MASK)
+/*! @} */
+
+/* The count of SCT_OUT_SET */
+#define SCT_OUT_SET_COUNT                        (7U)
+
+/*! @name OUT_CLR - SCT output 0 clear register */
+/*! @{ */
+#define SCT_OUT_CLR_CLR_MASK                     (0xFFU)
+#define SCT_OUT_CLR_CLR_SHIFT                    (0U)
+/*! CLR - A 1 in bit m selects event m to clear output n (or set it if SETCLRn = 0x1 or 0x2) event 0
+ *    = bit 0, event 1 = bit 1, etc. The number of bits = number of events in this SCT. When the
+ *    counter is used in bi-directional mode, it is possible to reverse the action specified by the
+ *    output set and clear registers when counting down, See the OUTPUTCTRL register.
+ */
+#define SCT_OUT_CLR_CLR(x)                       (((uint32_t)(((uint32_t)(x)) << SCT_OUT_CLR_CLR_SHIFT)) & SCT_OUT_CLR_CLR_MASK)
+/*! @} */
+
+/* The count of SCT_OUT_CLR */
+#define SCT_OUT_CLR_COUNT                        (7U)
+
+
+/*!
+ * @}
+ */ /* end of group SCT_Register_Masks */
+
+
+/* SCT - Peripheral instance base addresses */
+/** Peripheral SCT0 base address */
+#define SCT0_BASE                                (0x50004000u)
+/** Peripheral SCT0 base pointer */
+#define SCT0                                     ((SCT_Type *)SCT0_BASE)
+/** Array initializer of SCT peripheral base addresses */
+#define SCT_BASE_ADDRS                           { SCT0_BASE }
+/** Array initializer of SCT peripheral base pointers */
+#define SCT_BASE_PTRS                            { SCT0 }
+/** Interrupt vectors for the SCT peripheral type */
+#define SCT_IRQS                                 { SCT0_IRQn }
+
+/*!
+ * @}
+ */ /* end of group SCT_Peripheral_Access_Layer */
 
 /**
   \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
@@ -2162,6 +5639,11 @@ typedef struct {
    -- I2C Peripheral Access Layer
    ---------------------------------------------------------------------------- */
 
+/*!
+ * @addtogroup I2C_Peripheral_Access_Layer I2C Peripheral Access Layer
+ * @{
+ */
+
 /** I2C - Register Layout Typedef */
 typedef struct {
   __IO uint32_t CFG;                               /**< Configuration for shared functions., offset: 0x0 */
@@ -2184,6 +5666,17 @@ typedef struct {
   __I  uint32_t MONRXDAT;                          /**< Monitor receiver data register., offset: 0x80 */
 } I2C_Type;
 
+/* ----------------------------------------------------------------------------
+   -- I2C Register Masks
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup I2C_Register_Masks I2C Register Masks
+ * @{
+ */
+
+/*! @name CFG - Configuration for shared functions. */
+/*! @{ */
 #define I2C_CFG_MSTEN_MASK                       (0x1U)
 #define I2C_CFG_MSTEN_SHIFT                      (0U)
 /*! MSTEN - Master Enable. When disabled, configurations settings for the Master function are not
@@ -2226,7 +5719,10 @@ typedef struct {
  *       read all incoming data supplied by the Monitor function.
  */
 #define I2C_CFG_MONCLKSTR(x)                     (((uint32_t)(((uint32_t)(x)) << I2C_CFG_MONCLKSTR_SHIFT)) & I2C_CFG_MONCLKSTR_MASK)
+/*! @} */
 
+/*! @name STAT - Status register for Master, Slave, and Monitor functions. */
+/*! @{ */
 #define I2C_STAT_MSTPENDING_MASK                 (0x1U)
 #define I2C_STAT_MSTPENDING_SHIFT                (0U)
 /*! MSTPENDING - Master Pending. Indicates that the Master is waiting to continue communication on
@@ -2397,7 +5893,10 @@ typedef struct {
  *  0b1..Time-out. SCL low time has caused a time-out.
  */
 #define I2C_STAT_SCLTIMEOUT(x)                   (((uint32_t)(((uint32_t)(x)) << I2C_STAT_SCLTIMEOUT_SHIFT)) & I2C_STAT_SCLTIMEOUT_MASK)
+/*! @} */
 
+/*! @name INTENSET - Interrupt Enable Set and read register. */
+/*! @{ */
 #define I2C_INTENSET_MSTPENDINGEN_MASK           (0x1U)
 #define I2C_INTENSET_MSTPENDINGEN_SHIFT          (0U)
 /*! MSTPENDINGEN - Master Pending interrupt Enable.
@@ -2475,7 +5974,10 @@ typedef struct {
  *  0b1..Enabled. The SCL time-out interrupt is enabled.
  */
 #define I2C_INTENSET_SCLTIMEOUTEN(x)             (((uint32_t)(((uint32_t)(x)) << I2C_INTENSET_SCLTIMEOUTEN_SHIFT)) & I2C_INTENSET_SCLTIMEOUTEN_MASK)
+/*! @} */
 
+/*! @name INTENCLR - Interrupt Enable Clear register. */
+/*! @{ */
 #define I2C_INTENCLR_MSTPENDINGCLR_MASK          (0x1U)
 #define I2C_INTENCLR_MSTPENDINGCLR_SHIFT         (0U)
 /*! MSTPENDINGCLR - Master Pending interrupt clear. Writing 1 to this bit clears the corresponding
@@ -2532,7 +6034,10 @@ typedef struct {
 /*! SCLTIMEOUTCLR - SCL time-out interrupt clear.
  */
 #define I2C_INTENCLR_SCLTIMEOUTCLR(x)            (((uint32_t)(((uint32_t)(x)) << I2C_INTENCLR_SCLTIMEOUTCLR_SHIFT)) & I2C_INTENCLR_SCLTIMEOUTCLR_MASK)
+/*! @} */
 
+/*! @name TIMEOUT - Time-out value register. */
+/*! @{ */
 #define I2C_TIMEOUT_TOMIN_MASK                   (0xFU)
 #define I2C_TIMEOUT_TOMIN_SHIFT                  (0U)
 /*! TOMIN - Time-out time value, bottom four bits. These are hard-wired to 0xF. This gives a minimum
@@ -2549,7 +6054,10 @@ typedef struct {
  *    I2C function clock.
  */
 #define I2C_TIMEOUT_TO(x)                        (((uint32_t)(((uint32_t)(x)) << I2C_TIMEOUT_TO_SHIFT)) & I2C_TIMEOUT_TO_MASK)
+/*! @} */
 
+/*! @name CLKDIV - Clock pre-divider for the entire I2C interface. This determines what time increments are used for the MSTTIME register, and controls some timing of the Slave function. */
+/*! @{ */
 #define I2C_CLKDIV_DIVVAL_MASK                   (0xFFFFU)
 #define I2C_CLKDIV_DIVVAL_SHIFT                  (0U)
 /*! DIVVAL - This field controls how the Flexcomm clock (FCLK) is used by the I2C functions that
@@ -2558,7 +6066,10 @@ typedef struct {
  *    divided by 65,536 before use.
  */
 #define I2C_CLKDIV_DIVVAL(x)                     (((uint32_t)(((uint32_t)(x)) << I2C_CLKDIV_DIVVAL_SHIFT)) & I2C_CLKDIV_DIVVAL_MASK)
+/*! @} */
 
+/*! @name INTSTAT - Interrupt Status register for Master, Slave, and Monitor functions. */
+/*! @{ */
 #define I2C_INTSTAT_MSTPENDING_MASK              (0x1U)
 #define I2C_INTSTAT_MSTPENDING_SHIFT             (0U)
 /*! MSTPENDING - Master Pending.
@@ -2614,7 +6125,10 @@ typedef struct {
 /*! SCLTIMEOUT - SCL time-out Interrupt flag.
  */
 #define I2C_INTSTAT_SCLTIMEOUT(x)                (((uint32_t)(((uint32_t)(x)) << I2C_INTSTAT_SCLTIMEOUT_SHIFT)) & I2C_INTSTAT_SCLTIMEOUT_MASK)
+/*! @} */
 
+/*! @name MSTCTL - Master control register. */
+/*! @{ */
 #define I2C_MSTCTL_MSTCONTINUE_MASK              (0x1U)
 #define I2C_MSTCTL_MSTCONTINUE_SHIFT             (0U)
 /*! MSTCONTINUE - Master Continue.
@@ -2651,7 +6165,10 @@ typedef struct {
  *       Acknowledge bits in Master Receiver mode, the acknowledge is generated automatically.
  */
 #define I2C_MSTCTL_MSTDMA(x)                     (((uint32_t)(((uint32_t)(x)) << I2C_MSTCTL_MSTDMA_SHIFT)) & I2C_MSTCTL_MSTDMA_MASK)
+/*! @} */
 
+/*! @name MSTTIME - Master timing configuration. */
+/*! @{ */
 #define I2C_MSTTIME_MSTSCLLOW_MASK               (0x7U)
 #define I2C_MSTTIME_MSTSCLLOW_SHIFT              (0U)
 /*! MSTSCLLOW - Master SCL Low time. Specifies the minimum low time that will be asserted by this
@@ -2684,14 +6201,20 @@ typedef struct {
  *  0b111..9 clocks. Minimum SCL high time is 9 clocks of the I2C clock pre-divider.
  */
 #define I2C_MSTTIME_MSTSCLHIGH(x)                (((uint32_t)(((uint32_t)(x)) << I2C_MSTTIME_MSTSCLHIGH_SHIFT)) & I2C_MSTTIME_MSTSCLHIGH_MASK)
+/*! @} */
 
+/*! @name MSTDAT - Combined Master receiver and transmitter data register. */
+/*! @{ */
 #define I2C_MSTDAT_DATA_MASK                     (0xFFU)
 #define I2C_MSTDAT_DATA_SHIFT                    (0U)
 /*! DATA - Master function data register. Read: read the most recently received data for the Master
  *    function. Write: transmit data using the Master function.
  */
 #define I2C_MSTDAT_DATA(x)                       (((uint32_t)(((uint32_t)(x)) << I2C_MSTDAT_DATA_SHIFT)) & I2C_MSTDAT_DATA_MASK)
+/*! @} */
 
+/*! @name SLVCTL - Slave control register. */
+/*! @{ */
 #define I2C_SLVCTL_SLVCONTINUE_MASK              (0x1U)
 #define I2C_SLVCTL_SLVCONTINUE_SHIFT             (0U)
 /*! SLVCONTINUE - Slave Continue.
@@ -2713,14 +6236,20 @@ typedef struct {
  *  0b1..Enabled. DMA requests are issued for I2C slave data transmission and reception.
  */
 #define I2C_SLVCTL_SLVDMA(x)                     (((uint32_t)(((uint32_t)(x)) << I2C_SLVCTL_SLVDMA_SHIFT)) & I2C_SLVCTL_SLVDMA_MASK)
+/*! @} */
 
+/*! @name SLVDAT - Combined Slave receiver and transmitter data register. */
+/*! @{ */
 #define I2C_SLVDAT_DATA_MASK                     (0xFFU)
 #define I2C_SLVDAT_DATA_SHIFT                    (0U)
 /*! DATA - Slave function data register. Read: read the most recently received data for the Slave
  *    function. Write: transmit data using the Slave function.
  */
 #define I2C_SLVDAT_DATA(x)                       (((uint32_t)(((uint32_t)(x)) << I2C_SLVDAT_DATA_SHIFT)) & I2C_SLVDAT_DATA_MASK)
+/*! @} */
 
+/*! @name SLVADR - Slave address register. */
+/*! @{ */
 #define I2C_SLVADR_SADISABLE_MASK                (0x1U)
 #define I2C_SLVADR_SADISABLE_SHIFT               (0U)
 /*! SADISABLE - Slave Address n Disable.
@@ -2733,10 +6262,13 @@ typedef struct {
 /*! SLVADR - Slave Address. Seven bit slave address that is compared to received addresses if enabled.
  */
 #define I2C_SLVADR_SLVADR(x)                     (((uint32_t)(((uint32_t)(x)) << I2C_SLVADR_SLVADR_SHIFT)) & I2C_SLVADR_SLVADR_MASK)
+/*! @} */
 
 /* The count of I2C_SLVADR */
 #define I2C_SLVADR_COUNT                         (4U)
 
+/*! @name SLVQUAL0 - Slave Qualification for address 0. */
+/*! @{ */
 #define I2C_SLVQUAL0_QUALMODE0_MASK              (0x1U)
 #define I2C_SLVQUAL0_QUALMODE0_SHIFT             (0U)
 /*! QUALMODE0 - Qualify mode for slave address 0.
@@ -2754,7 +6286,10 @@ typedef struct {
  *    (address matches when SLVADR0[7:1] <= received address <= SLVQUAL0[7:1]).
  */
 #define I2C_SLVQUAL0_SLVQUAL0(x)                 (((uint32_t)(((uint32_t)(x)) << I2C_SLVQUAL0_SLVQUAL0_SHIFT)) & I2C_SLVQUAL0_SLVQUAL0_MASK)
+/*! @} */
 
+/*! @name MONRXDAT - Monitor receiver data register. */
+/*! @{ */
 #define I2C_MONRXDAT_MONRXDAT_MASK               (0xFFU)
 #define I2C_MONRXDAT_MONRXDAT_SHIFT              (0U)
 /*! MONRXDAT - Monitor function Receiver Data. This reflects every data byte that passes on the I2C pins.
@@ -2781,6 +6316,13 @@ typedef struct {
  *  0b1..Not acknowledged. The data currently being provided by the Monitor function was not acknowledged by any receiver.
  */
 #define I2C_MONRXDAT_MONNACK(x)                  (((uint32_t)(((uint32_t)(x)) << I2C_MONRXDAT_MONNACK_SHIFT)) & I2C_MONRXDAT_MONNACK_MASK)
+/*! @} */
+
+
+/*!
+ * @}
+ */ /* end of group I2C_Register_Masks */
+
 
 /* I2C - Peripheral instance base addresses */
 /** Peripheral I2C0 base address */
@@ -2805,6 +6347,10 @@ typedef struct {
 #define I2C_BASE_PTRS                            { I2C0, I2C1, I2C2, I2C3 }
 /** Interrupt vectors for the I2C peripheral type */
 #define I2C_IRQS                                 { I2C0_IRQn, I2C1_IRQn, I2C2_IRQn, I2C3_IRQn }
+
+/*!
+ * @}
+ */ /* end of group I2C_Peripheral_Access_Layer */
 
 /* ----------------------------------------------------------------------------
    -- SPI Peripheral Access Layer
@@ -3374,6 +6920,309 @@ typedef struct {
 #define SPI_BASE_PTRS                            { SPI0, SPI1 }
 /** Interrupt vectors for the SPI peripheral type */
 #define SPI_IRQS                                 { SPI0_IRQn, SPI1_IRQn }
+
+/* ----------------------------------------------------------------------------
+   -- WKT Peripheral Access Layer
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup WKT_Peripheral_Access_Layer WKT Peripheral Access Layer
+ * @{
+ */
+
+/** WKT - Register Layout Typedef */
+typedef struct {
+  __IO uint32_t CTRL;                              /**< Self wake-up timer control register., offset: 0x0 */
+       uint8_t RESERVED_0[8];
+  __IO uint32_t COUNT;                             /**< Counter register., offset: 0xC */
+} WKT_Type;
+
+/* ----------------------------------------------------------------------------
+   -- WKT Register Masks
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup WKT_Register_Masks WKT Register Masks
+ * @{
+ */
+
+/*! @name CTRL - Self wake-up timer control register. */
+/*! @{ */
+#define WKT_CTRL_CLKSEL_MASK                     (0x1U)
+#define WKT_CTRL_CLKSEL_SHIFT                    (0U)
+/*! CLKSEL - Select the self wake-up timer clock source. Remark: This bit only has an effect if the SEL_EXTCLK bit is not set.
+ *  0b0..Divided FRO clock. This clock runs at 750 kHz and provides time-out periods of up to approximately 95
+ *       minutes in 1.33 us increments. Remark: This clock is not available in not available in Deep-sleep,
+ *       power-down, deep power-down modes. Do not select this option if the timer is to be used to wake up from one of these
+ *       modes.
+ *  0b1..This is the (nominally) 10 kHz clock and provides time-out periods of up to approximately 119 hours in
+ *       100 us increments. The accuracy of this clock is limited to +/- 40 % over temperature and processing.
+ *       Remark: This clock is available in all power modes. Prior to use, the low-power oscillator must be enabled. The
+ *       oscillator must also be set to remain active in Deep power-down if needed.
+ */
+#define WKT_CTRL_CLKSEL(x)                       (((uint32_t)(((uint32_t)(x)) << WKT_CTRL_CLKSEL_SHIFT)) & WKT_CTRL_CLKSEL_MASK)
+#define WKT_CTRL_ALARMFLAG_MASK                  (0x2U)
+#define WKT_CTRL_ALARMFLAG_SHIFT                 (1U)
+/*! ALARMFLAG - Wake-up or alarm timer flag.
+ *  0b0..No time-out. The self wake-up timer has not timed out. Writing a 0 to has no effect.
+ *  0b1..Time-out. The self wake-up timer has timed out. This flag generates an interrupt request which can wake
+ *       up the part from any reduced power mode including Deep power-down if the clock source is the low power
+ *       oscillator. Writing a 1 clears this status bit.
+ */
+#define WKT_CTRL_ALARMFLAG(x)                    (((uint32_t)(((uint32_t)(x)) << WKT_CTRL_ALARMFLAG_SHIFT)) & WKT_CTRL_ALARMFLAG_MASK)
+#define WKT_CTRL_CLEARCTR_MASK                   (0x4U)
+#define WKT_CTRL_CLEARCTR_SHIFT                  (2U)
+/*! CLEARCTR - Clears the self wake-up timer.
+ *  0b0..No effect. Reading this bit always returns 0.
+ *  0b1..Clear the counter. Counting is halted until a new count value is loaded.
+ */
+#define WKT_CTRL_CLEARCTR(x)                     (((uint32_t)(((uint32_t)(x)) << WKT_CTRL_CLEARCTR_SHIFT)) & WKT_CTRL_CLEARCTR_MASK)
+#define WKT_CTRL_SEL_EXTCLK_MASK                 (0x8U)
+#define WKT_CTRL_SEL_EXTCLK_SHIFT                (3U)
+/*! SEL_EXTCLK - Select external or internal clock source for the self wake-up timer. The internal
+ *    clock source is selected by the CLKSEL bit in this register if SET_EXTCLK is set to internal.
+ *  0b0..Internal. The clock source is the internal clock selected by the CLKSEL bit.
+ *  0b1..External. The self wake-up timer uses the external WKTCLKIN pin.
+ */
+#define WKT_CTRL_SEL_EXTCLK(x)                   (((uint32_t)(((uint32_t)(x)) << WKT_CTRL_SEL_EXTCLK_SHIFT)) & WKT_CTRL_SEL_EXTCLK_MASK)
+/*! @} */
+
+/*! @name COUNT - Counter register. */
+/*! @{ */
+#define WKT_COUNT_VALUE_MASK                     (0xFFFFFFFFU)
+#define WKT_COUNT_VALUE_SHIFT                    (0U)
+/*! VALUE - A write to this register pre-loads start count value into the timer and starts the
+ *    count-down sequence. A read reflects the current value of the timer.
+ */
+#define WKT_COUNT_VALUE(x)                       (((uint32_t)(((uint32_t)(x)) << WKT_COUNT_VALUE_SHIFT)) & WKT_COUNT_VALUE_MASK)
+/*! @} */
+
+
+/*!
+ * @}
+ */ /* end of group WKT_Register_Masks */
+
+
+/* WKT - Peripheral instance base addresses */
+/** Peripheral WKT base address */
+#define WKT_BASE                                 (0x40008000u)
+/** Peripheral WKT base pointer */
+#define WKT                                      ((WKT_Type *)WKT_BASE)
+/** Array initializer of WKT peripheral base addresses */
+#define WKT_BASE_ADDRS                           { WKT_BASE }
+/** Array initializer of WKT peripheral base pointers */
+#define WKT_BASE_PTRS                            { WKT }
+/** Interrupt vectors for the WKT peripheral type */
+#define WKT_IRQS                                 { WKT_IRQn }
+
+/*!
+ * @}
+ */ /* end of group WKT_Peripheral_Access_Layer */
+
+
+/* ----------------------------------------------------------------------------
+   -- WWDT Peripheral Access Layer
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup WWDT_Peripheral_Access_Layer WWDT Peripheral Access Layer
+ * @{
+ */
+
+/** WWDT - Register Layout Typedef */
+typedef struct {
+  __IO uint32_t MOD;                               /**< Watchdog mode register. This register contains the basic mode and status of the Watchdog Timer., offset: 0x0 */
+  __IO uint32_t TC;                                /**< Watchdog timer constant register. This 24-bit register determines the time-out value., offset: 0x4 */
+  __O  uint32_t FEED;                              /**< Watchdog feed sequence register. Writing 0xAA followed by 0x55 to this register reloads the Watchdog timer with the value contained in TC., offset: 0x8 */
+  __I  uint32_t TV;                                /**< Watchdog timer value register. This 24-bit register reads out the current value of the Watchdog timer., offset: 0xC */
+       uint8_t RESERVED_0[4];
+  __IO uint32_t WARNINT;                           /**< Watchdog Warning Interrupt compare value., offset: 0x14 */
+  __IO uint32_t WINDOW;                            /**< Watchdog Window compare value., offset: 0x18 */
+} WWDT_Type;
+
+/* ----------------------------------------------------------------------------
+   -- WWDT Register Masks
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup WWDT_Register_Masks WWDT Register Masks
+ * @{
+ */
+
+/*! @name MOD - Watchdog mode register. This register contains the basic mode and status of the Watchdog Timer. */
+/*! @{ */
+#define WWDT_MOD_WDEN_MASK                       (0x1U)
+#define WWDT_MOD_WDEN_SHIFT                      (0U)
+/*! WDEN - Watchdog enable bit. Once this bit is set to one and a watchdog feed is performed, the
+ *    watchdog timer will run permanently.
+ *  0b0..Stop. The watchdog timer is stopped.
+ *  0b1..Run. The watchdog timer is running.
+ */
+#define WWDT_MOD_WDEN(x)                         (((uint32_t)(((uint32_t)(x)) << WWDT_MOD_WDEN_SHIFT)) & WWDT_MOD_WDEN_MASK)
+#define WWDT_MOD_WDRESET_MASK                    (0x2U)
+#define WWDT_MOD_WDRESET_SHIFT                   (1U)
+/*! WDRESET - Watchdog reset enable bit. Once this bit has been written with a 1 it cannot be re-written with a 0.
+ *  0b0..Interrupt. A watchdog time-out will not cause a chip reset.
+ *  0b1..Reset. A watchdog time-out will cause a chip reset.
+ */
+#define WWDT_MOD_WDRESET(x)                      (((uint32_t)(((uint32_t)(x)) << WWDT_MOD_WDRESET_SHIFT)) & WWDT_MOD_WDRESET_MASK)
+#define WWDT_MOD_WDTOF_MASK                      (0x4U)
+#define WWDT_MOD_WDTOF_SHIFT                     (2U)
+/*! WDTOF - Watchdog time-out flag. Set when the watchdog timer times out, by a feed error, or by
+ *    events associated with WDPROTECT. Cleared by software writing a 0 to this bit position. Causes a
+ *    chip reset if WDRESET = 1.
+ */
+#define WWDT_MOD_WDTOF(x)                        (((uint32_t)(((uint32_t)(x)) << WWDT_MOD_WDTOF_SHIFT)) & WWDT_MOD_WDTOF_MASK)
+#define WWDT_MOD_WDINT_MASK                      (0x8U)
+#define WWDT_MOD_WDINT_SHIFT                     (3U)
+/*! WDINT - Warning interrupt flag. Set when the timer is at or below the value in WDWARNINT.
+ *    Cleared by software writing a 1 to this bit position. Note that this bit cannot be cleared while the
+ *    WARNINT value is equal to the value of the TV register. This can occur if the value of
+ *    WARNINT is 0 and the WDRESET bit is 0 when TV decrements to 0.
+ */
+#define WWDT_MOD_WDINT(x)                        (((uint32_t)(((uint32_t)(x)) << WWDT_MOD_WDINT_SHIFT)) & WWDT_MOD_WDINT_MASK)
+#define WWDT_MOD_WDPROTECT_MASK                  (0x10U)
+#define WWDT_MOD_WDPROTECT_SHIFT                 (4U)
+/*! WDPROTECT - Watchdog update mode. This bit can be set once by software and is only cleared by a reset.
+ *  0b0..Flexible. The watchdog time-out value (TC) can be changed at any time.
+ *  0b1..Threshold. The watchdog time-out value (TC) can be changed only after the counter is below the value of WDWARNINT and WDWINDOW.
+ */
+#define WWDT_MOD_WDPROTECT(x)                    (((uint32_t)(((uint32_t)(x)) << WWDT_MOD_WDPROTECT_SHIFT)) & WWDT_MOD_WDPROTECT_MASK)
+#define WWDT_MOD_LOCK_MASK                       (0x20U)
+#define WWDT_MOD_LOCK_SHIFT                      (5U)
+/*! LOCK - Once this bit is set to one and a watchdog feed is performed, disabling or powering down
+ *    the watchdog oscillator is prevented by hardware. This bit can be set once by software and is
+ *    only cleared by any reset.
+ */
+#define WWDT_MOD_LOCK(x)                         (((uint32_t)(((uint32_t)(x)) << WWDT_MOD_LOCK_SHIFT)) & WWDT_MOD_LOCK_MASK)
+/*! @} */
+
+/*! @name TC - Watchdog timer constant register. This 24-bit register determines the time-out value. */
+/*! @{ */
+#define WWDT_TC_COUNT_MASK                       (0xFFFFFFU)
+#define WWDT_TC_COUNT_SHIFT                      (0U)
+/*! COUNT - Watchdog time-out value.
+ */
+#define WWDT_TC_COUNT(x)                         (((uint32_t)(((uint32_t)(x)) << WWDT_TC_COUNT_SHIFT)) & WWDT_TC_COUNT_MASK)
+/*! @} */
+
+/*! @name FEED - Watchdog feed sequence register. Writing 0xAA followed by 0x55 to this register reloads the Watchdog timer with the value contained in TC. */
+/*! @{ */
+#define WWDT_FEED_FEED_MASK                      (0xFFU)
+#define WWDT_FEED_FEED_SHIFT                     (0U)
+/*! FEED - Feed value should be 0xAA followed by 0x55.
+ */
+#define WWDT_FEED_FEED(x)                        (((uint32_t)(((uint32_t)(x)) << WWDT_FEED_FEED_SHIFT)) & WWDT_FEED_FEED_MASK)
+/*! @} */
+
+/*! @name TV - Watchdog timer value register. This 24-bit register reads out the current value of the Watchdog timer. */
+/*! @{ */
+#define WWDT_TV_COUNT_MASK                       (0xFFFFFFU)
+#define WWDT_TV_COUNT_SHIFT                      (0U)
+/*! COUNT - Counter timer value.
+ */
+#define WWDT_TV_COUNT(x)                         (((uint32_t)(((uint32_t)(x)) << WWDT_TV_COUNT_SHIFT)) & WWDT_TV_COUNT_MASK)
+/*! @} */
+
+/*! @name WARNINT - Watchdog Warning Interrupt compare value. */
+/*! @{ */
+#define WWDT_WARNINT_WARNINT_MASK                (0x3FFU)
+#define WWDT_WARNINT_WARNINT_SHIFT               (0U)
+/*! WARNINT - Watchdog warning interrupt compare value.
+ */
+#define WWDT_WARNINT_WARNINT(x)                  (((uint32_t)(((uint32_t)(x)) << WWDT_WARNINT_WARNINT_SHIFT)) & WWDT_WARNINT_WARNINT_MASK)
+/*! @} */
+
+/*! @name WINDOW - Watchdog Window compare value. */
+/*! @{ */
+#define WWDT_WINDOW_WINDOW_MASK                  (0xFFFFFFU)
+#define WWDT_WINDOW_WINDOW_SHIFT                 (0U)
+/*! WINDOW - Watchdog window value.
+ */
+#define WWDT_WINDOW_WINDOW(x)                    (((uint32_t)(((uint32_t)(x)) << WWDT_WINDOW_WINDOW_SHIFT)) & WWDT_WINDOW_WINDOW_MASK)
+/*! @} */
+
+
+/*!
+ * @}
+ */ /* end of group WWDT_Register_Masks */
+
+
+/* WWDT - Peripheral instance base addresses */
+/** Peripheral WWDT base address */
+#define WWDT_BASE                                (0x40000000u)
+/** Peripheral WWDT base pointer */
+#define WWDT                                     ((WWDT_Type *)WWDT_BASE)
+/** Array initializer of WWDT peripheral base addresses */
+#define WWDT_BASE_ADDRS                          { WWDT_BASE }
+/** Array initializer of WWDT peripheral base pointers */
+#define WWDT_BASE_PTRS                           { WWDT }
+/** Interrupt vectors for the WWDT peripheral type */
+#define WWDT_IRQS                                { WDT_IRQn }
+
+/*!
+ * @}
+ */ /* end of group WWDT_Peripheral_Access_Layer */
+
+
+/*
+** End of section using anonymous unions
+*/
+
+#if defined(__ARMCC_VERSION)
+  #if (__ARMCC_VERSION >= 6010050)
+    #pragma clang diagnostic pop
+  #else
+    #pragma pop
+  #endif
+#elif defined(__GNUC__)
+  /* leave anonymous unions enabled */
+#elif defined(__IAR_SYSTEMS_ICC__)
+  #pragma language=default
+#else
+  #error Not supported compiler type
+#endif
+
+/*!
+ * @}
+ */ /* end of group Peripheral_access_layer */
+
+
+/* ----------------------------------------------------------------------------
+   -- Macros for use with bit field definitions (xxx_SHIFT, xxx_MASK).
+   ---------------------------------------------------------------------------- */
+
+/*!
+ * @addtogroup Bit_Field_Generic_Macros Macros for use with bit field definitions (xxx_SHIFT, xxx_MASK).
+ * @{
+ */
+
+#if defined(__ARMCC_VERSION)
+  #if (__ARMCC_VERSION >= 6010050)
+    #pragma clang system_header
+  #endif
+#elif defined(__IAR_SYSTEMS_ICC__)
+  #pragma system_include
+#endif
+
+/**
+ * @brief Mask and left-shift a bit field value for use in a register bit range.
+ * @param field Name of the register bit field.
+ * @param value Value of the bit field.
+ * @return Masked and shifted value.
+ */
+#define NXP_VAL2FLD(field, value)    (((value) << (field ## _SHIFT)) & (field ## _MASK))
+/**
+ * @brief Mask and right-shift a register value to extract a bit field value.
+ * @param field Name of the register bit field.
+ * @param value Value of the register.
+ * @return Masked and shifted bit field value.
+ */
+#define NXP_FLD2VAL(field, value)    (((value) & (field ## _MASK)) >> (field ## _SHIFT))
+
+/*!
+ * @}
+ */ /* end of group Bit_Field_Generic_Macros */
 
 #endif /* LPC845_H_ */
 

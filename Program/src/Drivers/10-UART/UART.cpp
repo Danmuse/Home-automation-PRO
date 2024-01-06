@@ -147,19 +147,19 @@ void UART::setBaudRate(uint32_t baudrate) {
 void UART::enableClock(void) {
 	if (this->m_usart == USART0) {
 		g_usart[UART0] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 14);
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_UART0_MASK;
 	} else if (this->m_usart == USART1) {
 		g_usart[UART1] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 15);
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_UART1_MASK;
 	} else if (this->m_usart == USART2) {
 		g_usart[UART2] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 16);
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_UART2_MASK;
 	} else if (this->m_usart == USART3) {
 		g_usart[UART3] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 30);
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_UART3_MASK;
 	} else if (this->m_usart == USART4) {
 		g_usart[UART4] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 31);
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_UART4_MASK;
 	}
 
 	// Select Clock PPAL.: FCLKSEL
@@ -171,11 +171,11 @@ void UART::enableClock(void) {
 }
 
 void UART::UART_IRQHandler(void) {
-	if (this->m_usart->STAT & (1 << 0)) {
+	if (this->m_usart->STAT & USART_STAT_RXRDY_MASK) {
 		uint8_t data = this->m_usart->RXDAT;
 		this->pushRX(data);
 	}
-	if (this->m_usart->STAT & (1 << 2)) {
+	if (this->m_usart->STAT & USART_STAT_TXRDY_MASK) {
 		uint8_t data;
 		if (this->popTX(&data)) this->m_usart->TXDAT = data;
 		else {

@@ -11,19 +11,17 @@
 
 #include "LPC845.h"
 
-#define CLK_SWM 7
-#define CLK_SCT 8
-
 class SCTimer {
-public:
-	SCTimer();
+protected:
 	void setTime(uint32_t time, uint32_t channel);
 	void setUnify(bool status);
 	void setAutoLimit(bool status);
-	void setSwitchMatrixSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number);
+	void bindSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number);
 	void startTimer(void);
-	void StopTimer(void);
-
+	void stopTimer(void);
+public:
+	SCTimer() = delete;
+	SCTimer(uint8_t period);
 	virtual ~SCTimer();
 };
 

@@ -197,9 +197,9 @@ void I2C::enableClock(void) {
 
 	if (this->m_TWI == I2C0) {
 		g_TWI[TWI0] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 5);
-		SYSCON->PRESETCTRL0 &= ~(1 << 5); // Assert the I2C0 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 5); // Clear the I2C0 reset. Default register value.
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_I2C0_MASK;
+		SYSCON->PRESETCTRL0 &= ~SYSCON_PRESETCTRL0_I2C0_RST_N_MASK; // Assert the I2C0 reset.
+		SYSCON->PRESETCTRL0 |= SYSCON_PRESETCTRL0_I2C0_RST_N_MASK; // Clear the I2C0 reset. Default register value.
 		if (!(this->m_frequency == FAST_FREQUENCY)) {
 		// Standard GPIO functionality. Requires external pull-up for GPIO output function.
 		// IOCON->PIO[IOCON_INDEX_PIO0[10]] = 0x80; // PIO0_10/I2C0_SCL. This is the pin configuration for the true open-drain pin.
@@ -211,19 +211,19 @@ void I2C::enableClock(void) {
 		}
 	} else if (this->m_TWI == I2C1) {
 		g_TWI[TWI1] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 21);
-		SYSCON->PRESETCTRL0 &= ~(1 << 21); // Assert the I2C1 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 21); // Clear the I2C1 reset. Default register value.
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_I2C1_MASK;
+		SYSCON->PRESETCTRL0 &= ~SYSCON_PRESETCTRL0_I2C1_RST_N_MASK; // Assert the I2C1 reset.
+		SYSCON->PRESETCTRL0 |= SYSCON_PRESETCTRL0_I2C1_RST_N_MASK; // Clear the I2C1 reset. Default register value.
 	} else if (this->m_TWI == I2C2) {
 		g_TWI[TWI2] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 22);
-		SYSCON->PRESETCTRL0 &= ~(1 << 22); // Assert the I2C2 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 22); // Clear the I2C2 reset. Default register value.
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_I2C2_MASK;
+		SYSCON->PRESETCTRL0 &= ~SYSCON_PRESETCTRL0_I2C2_RST_N_MASK; // Assert the I2C2 reset.
+		SYSCON->PRESETCTRL0 |= SYSCON_PRESETCTRL0_I2C2_RST_N_MASK; // Clear the I2C2 reset. Default register value.
 	} else if (this->m_TWI == I2C3) {
 		g_TWI[TWI3] = this;
-		SYSCON->SYSAHBCLKCTRL0 |= (1 << 23);
-		SYSCON->PRESETCTRL0 &= ~(1 << 23); // Assert the I2C3 reset.
-		SYSCON->PRESETCTRL0 |= (1 << 23); // Clear the I2C3 reset. Default register value.
+		SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_I2C3_MASK;
+		SYSCON->PRESETCTRL0 &= ~SYSCON_PRESETCTRL0_I2C3_RST_N_MASK; // Assert the I2C3 reset.
+		SYSCON->PRESETCTRL0 |= SYSCON_PRESETCTRL0_I2C3_RST_N_MASK; // Clear the I2C3 reset. Default register value.
 	}
 
     for (uint32_t MSTSCL_IDX = 9; MSTSCL_IDX > 1; MSTSCL_IDX--) {
@@ -273,12 +273,12 @@ void I2C::I2C_IRQHandler(void) {
 	// in the STAT register shouldn't be written after the last bus operation.
 
 	// Checks if Master Pending interruption occurred.
-	if (this->m_TWI->STAT & (1 << 0)) {
+	if (this->m_TWI->STAT & I2C_STAT_MSTPENDING_MASK) {
 		// ...
 	}
 
 	// Checks if SCL time-out interruption occurred.
-	if (this->m_TWI->STAT & (1 << 25)) {
+	if (this->m_TWI->STAT & I2C_STAT_SCLTIMEOUT_MASK) {
 		// ...
 	}
 }

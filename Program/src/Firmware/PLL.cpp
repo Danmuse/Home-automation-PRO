@@ -20,10 +20,16 @@ void initPhaseLockedLoop(void) {
 	SYSCON->SYSPLLCLKUEN |= 0x1;     // Write a one to SYSPLLUEN register (sec. 3.5.10), necessary for SYSPLLCLKSEL to update
 
 	SYSCON->PDRUNCFG |= (1 << 7);    // Power down the PLL before changing divider values (sec 3.5.35)
-	SYSCON->SYSPLLCTRL = 0x23;       // P_result = 2 * 1 and M_result = 3 + 1
+
+	#if FREQ_CLOCK_MCU == 24000000UL
+	SYSCON->SYSPLLCTRL = 0x21;       // P_result = 2 * P and M_result = M + 1
+	#elif FREQ_CLOCK_MCU == 48000000UL
+	SYSCON->SYSPLLCTRL = 0x23;       // P_result = 2 * P and M_result = M + 1
+	#endif
 
 	// FCLKOUT = M_result * FCLKIN = FCCO / (2 * P_result), FCLKIN = 12 MHz
-	// If SYSCON->SYSPLLCTRL = 0x23 then FCLKOUT = 48 MHz and FCCO = 192 MHz
+	// If SYSCON->SYSPLLCTRL = 0x21 then FCLKOUT = 24 MHz and FCCO = 192 MHz
+	// If SYSCON->SYSPLLCTRL = 0x13 then FCLKOUT = 48 MHz and FCCO = 192 MHz
 
 	SYSCON->PDRUNCFG &= ~(1 << 7);   // Power up PLL after divider values changed (sec. 3.5.35)
 	while ((SYSCON->SYSPLLSTAT & 1) == 0); // Wait for PLL to lock

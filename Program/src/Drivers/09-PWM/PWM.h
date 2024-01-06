@@ -17,6 +17,12 @@
 
 #define MAX_PWM_CHANNELS 7
 
+// TODO (Medium priority): Evaluate the use of the "m_channel" member every time any of the pins are detached.
+// In the long term, inconsistencies will occur when bind or unbind SCTOUT channels.
+// TODO (Minor priority): Protectedly inherit from the SCTImer class and previously,
+// correct the implementations in each of the methods according to the operation of this class.
+// TODO (Minor priority): Generate an enumeration to differentiate each of the SCTOUT channels.
+
 class PWM : protected Gpio {
 protected:
 	const uint8_t m_channel;
@@ -24,9 +30,9 @@ protected:
 	static uint32_t m_period;
 	float m_duty;
 private:
-	void enableSwm(void) const;
-	void disableSwm(void) const;
-	void initPWM(void) const;
+	void enableSWM(void) const;
+	void disableSWM(void) const;
+	void initSCTimer(void) const;
 public:
 	PWM() = delete;
 	PWM(const Gpio &output, float duty, uint32_t period = 1000);

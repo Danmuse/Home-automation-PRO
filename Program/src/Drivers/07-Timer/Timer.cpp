@@ -50,7 +50,7 @@ void Timer::timerStart(uint32_t counter, const TimerHandler handler, const bases
 	}
 
 	if (counter) {
-		this->m_TmrRun = counter;
+		this->m_TmrRun = counter * (g_systick_freq / 1000);
 		this->m_TmrEvent = false;
 	} else {
 		this->m_TmrRun = 0;
@@ -86,7 +86,7 @@ void Timer::TimerStart(uint32_t counter) {
 	}
 
 	if (counter) {
-		this->m_TmrRun = counter;
+		this->m_TmrRun = counter * (g_systick_freq / 1000);
 		this->m_TmrEvent = false;
 	} else {
 		this->m_TmrRun = 0;
@@ -119,7 +119,7 @@ void Timer::setTimer(uint32_t time) {
 	}
 
 	if (!time) this->m_TmrEvent = true;
-	this->m_TmrRun = time;
+	this->m_TmrRun = time * (g_systick_freq / 1000);
 }
 
 uint32_t Timer::getTimer(void) const {

@@ -7,38 +7,49 @@
 
 #include "SCTimer.h"
 
-SCTimer::SCTimer() {
-	SYSCON->SYSAHBCLKCTRL0 |= (1 << CLK_SCT);
+SCTimer::SCTimer(uint8_t period) {
+	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SCT_MASK;
+	SCT0->CONFIG |= (1 << 0) | (1 << 17);
+	SCT0->MATCH[0] = FREQ_CLOCK_MCU / period;
+	SCT0->MATCHREL[0] = FREQ_CLOCK_MCU / period;
+
+	SCT0->EV[0].STATE = 1; // Other than '0'
+	SCT0->EV[0].CTRL = 0 | (1 << 12);
+	SCT0->OUTPUT = 0xC;
+	SCT0->RES = 0b01010101;
+	SCT0->EVEN = 1;
+
+	SCT0->CTRL &= ~(1 << 2);
 }
 
 void SCTimer::setTime(uint32_t time, uint32_t channel) {
-	SCT->MATCH[channel] = time;
-	SCT->MATCHREL[channel] = time;
+	SCT0->MATCH[channel] = time;
+	SCT0->MATCHREL[channel] = time;
 
-	SCT->EV[channel].STATE = 0xFFFFFFFF;
-	SCT->EV[channel].CTRL = (channel << 0) | (1 << 12);
+	SCT0->EV[channel].STATE = 0xFFFFFFFF;
+	SCT0->EV[channel].CTRL = (channel << 0) | (1 << 12);
 }
 
 void SCTimer::startTimer(void) {
-	SCT->CTRL &= ~(1 << 2);
+	SCT0->CTRL &= ~(1 << 2);
 }
 
-void SCTimer::StopTimer(void) {
-	SCT->CTRL |= (1 << 2);
+void SCTimer::stopTimer(void) {
+	SCT0->CTRL |= (1 << 2);
 }
 
 void SCTimer::setUnify(bool status) {
-	if (status) SCT->CONFIG |= (1 << 0);
-	else SCT->CONFIG &= ~(1 << 0);
+	if (status) SCT0->CONFIG |= (1 << 0);
+	else SCT0->CONFIG &= ~(1 << 0);
 }
 
 void SCTimer::setAutoLimit(bool status) {
-	if (status) SCT->CONFIG |= (1 << 17);
-	else SCT->CONFIG &= ~(1 << 17);
+	if (status) SCT0->CONFIG |= (1 << 17);
+	else SCT0->CONFIG &= ~(1 << 17);
 }
 
-void SCTimer::setSwitchMatrixSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number) {
-	SYSCON->SYSAHBCLKCTRL0 |= (1 << CLK_SWM);
+void SCTimer::bindSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number) {
+	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	uint8_t aux = ~(bit + port * 0x20); // Default: 0xFF
 
 	switch (out_number) {
@@ -65,8 +76,8 @@ void SCTimer::setSwitchMatrixSCTOUT(uint8_t bit, uint8_t port, uint8_t out_numbe
 		break;
 	}
 
-	SYSCON->PRESETCTRL0 |= (1 << CLK_SCT);
-	SYSCON->SYSAHBCLKCTRL0 &= ~(1 << CLK_SWM);
+	SYSCON->PRESETCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SCT_MASK;
+	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
 SCTimer::~SCTimer() { }

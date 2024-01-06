@@ -15,10 +15,9 @@ m_mode{s_eigth_bits},
 m_rows{rows},
 m_columns{columns},
 m_ticks{(uint8_t)(100 * (g_systick_freq / 1000))},
-m_sweep(0),
+m_sweep{0},
 m_position{0} {
 	g_callback_list.push_back(this);
-	if (g_systick_freq < 200) while (1);
     this->initialize();
 }
 

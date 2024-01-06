@@ -29,13 +29,13 @@ void ADC::initialize(void) {
 	else if (this->m_sequence == ADC_SEQB) this->configSEQB();
 }
 
-void ADC::enableSwm(void) {
+void ADC::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	SWM->PINENABLE0 &= ~(1 << (this->m_channel + 14)); // Bits 14 to 25 for each channel.
 	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
-void ADC::disableSwm(void) {
+void ADC::disableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	SWM->PINENABLE0 |= (1 << (this->m_channel + 14)); // Bits 14 to 25 for each channel.
 	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
@@ -72,7 +72,7 @@ void ADC::DisableNVIC_IRQ(irq_source_nvic_t source) {
 	NVIC->ICER[0] |= (1 << source);
 }
 
-void ADC::calibrateAdc(void) {
+void ADC::calibrateADC(void) {
 	uint32_t original_ctrl = ADC0->CTRL;
 	uint32_t new_ctrl = (original_ctrl) & ~(ADC_CTRL_CLKDIV_MASK | (1 << ADC_CTRL_LPWRMODE_SHIFT) | (1 << ADC_SEQ_CTRL_MODE_SHIFT)); // CLKDIV = 0, LP = 0, CALMODE = 0
 	new_ctrl |= (this->calculateDivisor() | (1 << ADC_SEQ_CTRL_MODE_SHIFT)); // CALMODE = 1
@@ -180,7 +180,7 @@ void ADC::disableIRQ(irq_source_inten_t irq) {
 void ADC::initADC(void) {
     this->enablePower();
     this->enableClock();
-    this->calibrateAdc();
+    this->calibrateADC();
     this->configVoltage(HIGH_VOLTAGE);
     this->config();
 }
@@ -214,13 +214,13 @@ void ADC::configSEQB(void) {
 }
 
 void ADC::bindChannel(void) {
-    this->enableSwm();
+    this->enableSWM();
 	if (this->m_sequence == ADC_SEQA) this->bindSEQA();
 	else if (this->m_sequence == ADC_SEQB) this->bindSEQB();
 }
 
 void ADC::unbindChannel(void) {
-    this->disableSwm();
+    this->disableSWM();
 	if (this->m_sequence == ADC_SEQA) this->unbindSEQA();
 	else if (this->m_sequence == ADC_SEQB) this->unbindSEQB();
 }

@@ -55,9 +55,9 @@ private:
 	void configVoltage(trm_voltage_config_t config);
 	void enablePower(void);
 	void enableClock(void);
-	void enableSwm(void);
-	void disableSwm(void);
-	void calibrateAdc(void);
+	void enableSWM(void);
+	void disableSWM(void);
+	void calibrateADC(void);
 	void config(void);
 	void setSampleRate(void);
 	void bindSEQA(void);

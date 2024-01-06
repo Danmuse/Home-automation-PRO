@@ -221,14 +221,14 @@ bool SPI::receive(uint8_t *address, char *message) {
 void SPI::enableClock(void) {
     if (this->m_SPI == SPI0) {
     	g_SPI[SPI_CHANNEL0] = this;
-        SYSCON->SYSAHBCLKCTRL0 |= (1 << 11); // Enable SPI channels
-        SYSCON->PRESETCTRL0 &= ~(1 << 11);
-        SYSCON->PRESETCTRL0 |= (1 << 11);
+        SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SPI0_MASK; // Enable SPI channels
+        SYSCON->PRESETCTRL0 &= ~SYSCON_PRESETCTRL0_SPI0_RST_N_MASK;
+        SYSCON->PRESETCTRL0 |= SYSCON_PRESETCTRL0_SPI0_RST_N_MASK;
     } else if (this->m_SPI == SPI1) {
     	g_SPI[SPI_CHANNEL1] = this;
-        SYSCON->SYSAHBCLKCTRL0 |= (1 << 12); // Enable SPI channels
-        SYSCON->PRESETCTRL0 &= ~(1 << 12);
-        SYSCON->PRESETCTRL0 |= (1 << 12);
+        SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SPI1_MASK; // Enable SPI channels
+        SYSCON->PRESETCTRL0 &= ~SYSCON_PRESETCTRL0_SPI1_RST_N_MASK;
+        SYSCON->PRESETCTRL0 |= SYSCON_PRESETCTRL0_SPI1_RST_N_MASK;
     }
 
 	// Select Clock PPAL.: FCLKSEL

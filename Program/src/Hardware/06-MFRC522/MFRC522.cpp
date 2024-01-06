@@ -909,6 +909,7 @@ char *MFRC522::printUID(void) {
 }
 
 void MFRC522::callbackMethod(void) {
+	LED_GREEN.togglePin();
     if (this->m_timeOut && this->m_statusRFID != RFID_SSEL_ERR) this->m_timeOut--;
 }
 
