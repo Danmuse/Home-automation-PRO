@@ -61,7 +61,7 @@ void Timer::timerStart(uint32_t counter, const TimerHandler handler, const bases
 	this->m_TmrBase = base;
 }
 
-void Timer::TimerStart(uint32_t counter) {
+void Timer::timerStart(uint32_t counter) {
 	switch (this->m_TmrBase) {
 	case MILLI:
 			counter *= MILLIS;
