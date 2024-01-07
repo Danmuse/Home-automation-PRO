@@ -32,6 +32,17 @@ int main(void) {
 
 	if (g_rfid->getStatus()) LED_RED.setPin();
 
+    int exampleVariable = 0;
+    int keyPressed=0;
+
+    QTConnection connection(*g_usb);
+
+    IotManager iotManager(&connection);
+
+    iotManager.addVariableToUpload("example1",exampleVariable,1000);
+    iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
+
+
     while (1) {
 		g_rfid->getUID(&UID); // Debug instruction
     	result[0] = (char)(g_rfid->getStatus()) + '0';
@@ -40,6 +51,10 @@ int main(void) {
 //		delay(100);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
+
+
+        keyPressed=g_keyboard->get();
+        exampleVariable++;
     }
 }
 
