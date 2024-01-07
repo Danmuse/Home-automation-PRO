@@ -7,20 +7,20 @@
 
 
 #include "utils.h"
-#include "IotVariable.h"
-#include "IotListener.h"
+#include "IoTVariable.h"
+#include "IoTListener.h"
 
-class IotConnection {
+class IoTConnection {
     public:
-        IotConnection() = default;
+        IoTConnection() = default;
 
         virtual char *receiveMessage() = 0;
 
-        virtual void uploadVariable(IotVariable variable) = 0;
+        virtual void uploadVariable(IoTVariable variable) = 0;
 
-        virtual void suscribeListener(IotListener *listener) = 0;
+        virtual void suscribeListener(IoTListener *listener) = 0;
 
-        ~IotConnection() = default;
+        ~IoTConnection() = default;
 };
 
 

@@ -4,24 +4,25 @@
 
 #include <cstdio>
 #include "QTConnection.h"
-#include "IotListener.h"
+#include "IoTListener.h"
 
 QTConnection::QTConnection(UART &uart) : uart{uart}, recMessagePos{0}, timoutCounter{SERIAL_TIMOUT} {
 
+    g_callback_list.push_back(this);
 }
 
 char* QTConnection::receiveMessage() {
 
     this->recMessage[recMessagePos] = '\0';
 
-    for (IotListener* listener: listeners) {
-        listener->processIotMessage(recMessage + 1);
+    for (IoTListener* listener: listeners) {
+        listener->processIoTMessage(recMessage + 1);
     }
 
 
 }
 
-void QTConnection::uploadVariable(IotVariable variable) {
+void QTConnection::uploadVariable(IoTVariable variable) {
 
     char message[MAX_MESSAGE_SIZE];
     sprintf(message, "%c%s,%d%c", SERIAL_HEADER, variable.name, variable.variable, SERIAL_FOOTER);
@@ -29,7 +30,7 @@ void QTConnection::uploadVariable(IotVariable variable) {
     uart.transmit(message, strlen(message));
 }
 
-void QTConnection::suscribeListener(IotListener* listener) {
+void QTConnection::suscribeListener(IoTListener* listener) {
     this->listeners.push_back(listener);
 }
 

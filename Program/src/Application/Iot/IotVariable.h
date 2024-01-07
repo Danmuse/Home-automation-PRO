@@ -6,7 +6,7 @@
 #define IOTVARIABLE_H
 
 
-struct IotVariable {
+struct IoTVariable {
     char *name;
     //TODO: MAYBE NOT INTEGER
     int &variable;

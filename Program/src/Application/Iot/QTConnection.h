@@ -2,11 +2,11 @@
 // Created by Usuario on 06/01/2024.
 //
 
-#ifndef UARTIOT_H
-#define UARTIOT_H
+#ifndef QT_CONNECTION_H
+#define QT_CONNECTION_H
 
 
-#include "IotConnection.h"
+#include "IoTConnection.h"
 #include "UART.h"
 #include "Callback.h"
 //#include "Timer.h"
@@ -17,7 +17,7 @@
 
 #define MAX_MESSAGE_SIZE 50
 
-class QTConnection : public IotConnection, public Callback {
+class QTConnection : public IoTConnection, public Callback {
     private:
         enum class SerialState {
                 WAITING_HEADER,
@@ -26,23 +26,23 @@ class QTConnection : public IotConnection, public Callback {
         SerialState serialState = SerialState::WAITING_HEADER;
 //        Timer timoutComunicacion;
 
-        UART &uart;
+        UART& uart;
         char recMessage[MAX_MESSAGE_SIZE];
         uint8_t recMessagePos;
         uint16_t timoutCounter;
 
-        std::vector<IotListener*> listeners;
+        std::vector<IoTListener*> listeners;
 
         void communicationTimeout();
 
     public:
-        QTConnection(UART &uart);
+        QTConnection(UART& uart);
 
         char* receiveMessage() override;
 
-        void uploadVariable(IotVariable variable) override;
+        void uploadVariable(IoTVariable variable) override;
 
-        void suscribeListener(IotListener* listener) override;
+        void suscribeListener(IoTListener* listener) override;
 
         void callbackMethod() override;
 
@@ -50,4 +50,4 @@ class QTConnection : public IotConnection, public Callback {
 };
 
 
-#endif //UARTIOT_H
+#endif //QT_CONNECTION_H

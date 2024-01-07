@@ -6,10 +6,10 @@
 #define LPC845ESQUELETO_IOTLISTENER_H
 
 
-class IotListener {
+class IoTListener {
     public:
-        IotListener() = default;
-        virtual void processIotMessage(char* message)=0;
+        IoTListener() = default;
+        virtual void processIoTMessage(char* message)=0;
 };
 
 

@@ -4,32 +4,34 @@
 
 #include <cstring>
 #include <cstdlib>
-#include "IotManager.h"
+#include "IoTManager.h"
 
-IotManager::IotManager(IotConnection* iotConection) : iotConection(iotConection) {
+IoTManager::IoTManager(IoTConnection* ioTConnection) : ioTConection(ioTConnection) {
 
-    iotConection->suscribeListener(this);
+    ioTConnection->suscribeListener(this);
+
+    g_callback_list.push_back(this);
 }
 
 
-void IotManager::addVariableToUpload(char* name, int &variable, int uploadPeriod) {
-    IotVariable iotVariable = {name, variable, uploadPeriod, 0};
+void IoTManager::addVariableToUpload(char* name, int& variable, int uploadPeriod) {
+    IoTVariable iotVariable = {name, variable, uploadPeriod, 0};
 
-    variablesToUpload.insert(std::pair<char*, IotVariable>(name, iotVariable));
+    variablesToUpload.insert(std::pair<char*, IoTVariable>(name, iotVariable));
 }
 
-void IotManager::callbackMethod() {
-    for (auto &[name, iotVariable]: variablesToUpload) {
-        if (iotVariable.uploadCounter == iotVariable.uploadPeriod) {
-            iotConection->uploadVariable(iotVariable);
-            iotVariable.uploadCounter = 0;
+void IoTManager::callbackMethod() {
+    for (auto& [name, ioTVariable]: variablesToUpload) {
+        if (ioTVariable.uploadCounter == ioTVariable.uploadPeriod) {
+            ioTConection->uploadVariable(ioTVariable);
+            ioTVariable.uploadCounter = 0;
         }
-        iotVariable.uploadCounter++;
+        ioTVariable.uploadCounter++;
     }
 }
 
 //Super lazy implementation
-void IotManager::processIotMessage(char* message) {
+void IoTManager::processIoTMessage(char* message) {
 
     char* token = strtok(message, ",");
 

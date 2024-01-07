@@ -6,24 +6,24 @@
 #define LPC845ESQUELETO_IOTMANAGER_H
 
 #include <map>
-#include "IotConnection.h"
+#include "IoTConnection.h"
 #include "Callback.h"
-#include "IotVariable.h"
-#include "IotListener.h"
+#include "IoTVariable.h"
+#include "IoTListener.h"
 
-class IotManager : public Callback, public IotListener {
+class IoTManager : public Callback, public IoTListener {
 
     private:
-        std::map<char*, IotVariable> variablesToUpload;
+        std::map<char*, IoTVariable> variablesToUpload;
 
-        IotConnection* iotConection;
+        IoTConnection* ioTConection;
 
     public:
-        IotManager(IotConnection* iotConection);
+        IoTManager(IoTConnection* ioTConnection);
 
         void addVariableToUpload(char* name, int &variable, int uploadPeriod);
 
-        void processIotMessage(char* message) override;
+        void processIoTMessage(char* message) override;
 
         void callbackMethod() override;
 
