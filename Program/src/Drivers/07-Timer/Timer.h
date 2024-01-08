@@ -29,7 +29,7 @@ public:
 	Timer();
 	Timer(const TimerHandler handler, const bases_t base);
 	void timerStart(uint32_t counter, const TimerHandler handler, const bases_t base);
-	void TimerStart(uint32_t counter);
+	void timerStart(uint32_t counter);
 	void setTimer(uint32_t time);
 	uint32_t getTimer(void) const;
 	uint32_t getTicks(void) const;
