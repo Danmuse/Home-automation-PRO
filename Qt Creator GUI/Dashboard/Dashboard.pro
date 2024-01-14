@@ -1,8 +1,7 @@
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-QT += serialport
-QT += widgets serialport
+QT += widgets serialport sql
 TARGET = SERIAL_2023
 TEMPLATE = app
 CONFIG += c++17
@@ -13,10 +12,12 @@ CONFIG += c++17
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    database.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    database.h \
     mainwindow.h
 
 FORMS += \
