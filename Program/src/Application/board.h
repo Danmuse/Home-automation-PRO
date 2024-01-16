@@ -26,6 +26,9 @@
 
 #include "Semaphore.h"
 
+#include "IoTManager.h"
+#include "QTConnection.h"
+
 /////////////////////////////////
 /// HARDWARE GLOBAL VARIABLES ///
 /////////////////////////////////

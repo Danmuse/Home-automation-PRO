@@ -1,6 +1,0 @@
-../CTIMER/ctimer.c:12:6:CTIMER0_IRQHandler	16	static
-../CTIMER/ctimer.c:93:6:Inicializar_CTimer0	8	static
-../CTIMER/ctimer.c:102:6:ConfigMatch	8	static
-../CTIMER/ctimer.c:113:9:GetFlagProcesarPulso	8	static
-../CTIMER/ctimer.c:118:6:SetFlagProcesarPulso	16	static
-../CTIMER/ctimer.c:123:10:GetTiempoPulso	8	static

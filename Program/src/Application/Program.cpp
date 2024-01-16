@@ -23,37 +23,24 @@ int main(void) {
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
-	MFRC522::UID_st UID;
-
-	char result[3];
-	result[0] = '0';
-	result[1] = '\n';
-	result[2] = '\0';
-
-	if (g_rfid->getStatus()) LED_RED.setPin();
-
     int exampleVariable = 0;
-    int keyPressed=0;
+    int keyPressed = 0;
 
     QTConnection connection(*g_usb);
 
-    IotManager iotManager(&connection);
+    IoTManager iotManager(&connection);
 
-    iotManager.addVariableToUpload("example1",exampleVariable,1000);
-    iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
-
+//    iotManager.addVariableToUpload("example1", exampleVariable, 1000);
+//    iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
 
     while (1) {
-		g_rfid->getUID(&UID); // Debug instruction
-    	result[0] = (char)(g_rfid->getStatus()) + '0';
-    	if (g_rfid->getStatus() == RFID_OK) g_usb->transmit("OK\n");
-    	else g_usb->transmit(result); // g_rfid->printUID());
-//		delay(100);
+    	g_rfid->getUID();
+    	if (g_rfid->getStatus() == RFID_OK && *(g_rfid->printUID()) != 0)
+    		g_usb->transmit(g_rfid->printUID());
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
 
-
-        keyPressed=g_keyboard->get();
+        keyPressed = g_keyboard->get();
         exampleVariable++;
     }
 }

@@ -61,10 +61,10 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         void setBaudRate(frequencyComm_t frequency);
         void enableSSEL(uint8_t SSEL);
         void disableSSEL(uint8_t SSEL);
-        void transmit(const char *message) override;
         void transmitBytes(uint8_t *message, uint8_t length = 1) override;
+        void transmit(const char *message) override;
+        bool receiveBytes(uint8_t *address, uint8_t *message, uint8_t length, bool transmitStopByte = true) override;
         bool receive(uint8_t *address, uint8_t &message) override;
-        bool receive(uint8_t *address, uint8_t *message, uint8_t length) override;
         bool receive(uint8_t *address, char *message) override;
         ~SPI();
     private:

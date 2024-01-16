@@ -1,5 +1,0 @@
-../Teclado/teclado.c:78:6:Inicializar_Teclado	16	static
-../Teclado/teclado.c:120:6:TECLADO_Barrido	24	static
-../Teclado/teclado.c:136:6:TECLADO_Barrido_SW	16	static
-../Teclado/teclado.c:186:9:TECLADO_Barrido_HW	8	static
-../Teclado/teclado.c:237:9:GetKey	16	static

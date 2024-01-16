@@ -9,12 +9,13 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
   <summary><strong><span>&#160;</span>Electronic components</strong></summary>
   <ul>
   <span>&#10038;</span> LPC845-BRK.<br>
-  <span>&#10038;</span> ESP8266 WiFi Serial ESP-01 module.<br>
-  <span>&#10038;</span> Voice recognition module.<br>
-  <span>&#10038;</span> Display OLED SSH1106.<br>
-  <span>&#10038;</span> RGB LEDs with PWM control.<br>
+  <span>&#10038;</span> ESP8266 WiFi Serial ESP-01 module. (Optional)<br>
+  <span>&#10038;</span> Voice recognition module. (Optional)<br>
+  <span>&#10038;</span> Display OLED SSH1106. (Optional)<br>
+  <span>&#10038;</span> Control of RGB LEDs with NEC protocol.<br>
+  <span>&#10038;</span> LDR (Light-Dependent Resistor) sensor.<br>
   <span>&#10038;</span> Flame sensor KY-026.<br>
-  <span>&#10038;</span> Infrared sensor KY-032 or HW-201.<br>
+  <span>&#10038;</span> Infrared sensor KY-032 or HW-201. (Optional)<br>
   <span>&#10038;</span> EEPROM Memory FM24C16U 16KB.<br>
   <span>&#10038;</span> RTC module DS3231SN.<br>
   <span>&#10038;</span> RFID RC-522 reader.<br>
@@ -33,7 +34,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 - [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 5` `AO ~ 2`
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 164` `AO ~ 42` `LC ~ 6` `CY ~ 4`
+`DDM ~ 173` `AO ~ 42` `LC ~ 10` `CY ~ 4`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7)
 - [ ] Micro SD card adaptation for data handling and ".mp3" files using DFPlayer module.
 

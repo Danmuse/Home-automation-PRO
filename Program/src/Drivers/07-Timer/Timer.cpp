@@ -177,7 +177,7 @@ Timer::error_t Timer::timerEvent(void) {
 }
 
 Timer& Timer::operator=(uint32_t counter) {
-	this->TimerStart(counter);
+	this->timerStart(counter);
 	return *this;
 }
 

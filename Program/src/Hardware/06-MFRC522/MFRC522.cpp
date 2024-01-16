@@ -13,14 +13,11 @@ int main(void) {
 	initUSB0();
 	initRFID();
 
-	MFRC522::UID_st UID;
-
-	if (g_rfid->getStatus()) LED_RED.setPin();
-
 	while (1) {
-		g_rfid->getUID(&UID);
-    	g_usb->transmit(g_rfid->printUID());
-		g_timers_list.timerEvents();
+		g_rfid->getUID();
+    	if (g_rfid->getStatus() == RFID_OK && *(g_rfid->printUID()) != 0)
+    		g_usb->transmit(g_rfid->printUID());
+    	g_timers_list.timerEvents();
 	}
 }
 ******************** RFID Testing END *******************/
@@ -66,7 +63,7 @@ uint8_t MFRC522::readRegisterPCD(uint8_t reg) {
     uint8_t value, address = (0x80 | reg);
     this->enableSSEL(this->m_slaveSelected);
     // MSB == 1 is for reading. LSB is not used in address. Datasheet section 8.1.2.3.
-    this->receive(&address, &value, sizeof(value)); // Read the value back.
+    this->receiveBytes(&address, &value, sizeof(value)); // Read the value back.
     this->disableSSEL(this->m_slaveSelected);
     return value;
 }
@@ -85,15 +82,18 @@ void MFRC522::readRegisterPCD(uint8_t reg, uint8_t count, uint8_t *values, uint8
 		uint8_t mask = (0xFF << rxAlign) & 0xFF;
 		// MSB == 1 is for reading. LSB is not used in address. Datasheet section 8.1.2.3.
 		uint8_t value; // Read value and tell that we want to read the same address again.
-		this->receive(&address, &value, sizeof(value)); // Read the value back.
+		this->receiveBytes(&address, &value, sizeof(value)); // Read the value back.
 		// Apply mask to both current value of values[0] and the new data in value.
 		values[0] = (values[0] & ~mask) | (value & mask);
 		index++;
 	}
 	// MSB == 1 is for reading. LSB is not used in address. Datasheet section 8.1.2.3.
 	// Read value and tell that we want to read the same address again.
-	while (index < count) this->receive(&address, &values[index++], 1);
-	this->receive(&address, &values[index], 1);
+	while (index < count) {
+//		if (!index) continue;
+		this->receiveBytes(&address, &values[index++], 1);
+	}
+	this->receiveBytes(&address, &values[index], 1);
 	this->disableSSEL(this->m_slaveSelected);
 }
 
@@ -127,6 +127,7 @@ RFID_result_t MFRC522::PCD_CalculateCRC(uint8_t *data, uint8_t length, uint8_t *
 		this->writeRegisterPCD(RC522_COMMAND_REG, PCD_IDLE);			// Stop any active command
 		this->writeRegisterPCD(RC522_DIV_IRQ_REG, 0x04);				// Clear the CRCIRq interrupt request bit
 		this->writeRegisterPCD(RC522_FIFO_LEVEL_REG, 0x80);				// FlushBuffer = 1, FIFO initialization
+		// HERE ITS BREAKS!! //
 		this->writeRegisterPCD(RC522_FIFO_DATA_REG, length, data);		// Write data to the FIFO
 		this->writeRegisterPCD(RC522_COMMAND_REG, PCD_CALCULATE_CRC);	// Start the calculation
 
@@ -206,6 +207,7 @@ RFID_result_t MFRC522::PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq,
 		return this->getStatus();
     } else if (this->m_operationCompleted && this->m_operation == COMMUNICATION_PICC) {
 		this->m_operationCompleted = false;
+		this->m_statusRFID = RFID_OK;
 
 		// ErrorReg[7...0] bits are: WrErr TempErr reserved BufferOvfl CollErr CRCErr ParityErr ProtocolErr
 		uint8_t errorRegValue = this->readRegisterPCD(RC522_ERROR_REG);
@@ -226,6 +228,9 @@ RFID_result_t MFRC522::PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq,
 			this->readRegisterPCD(RC522_FIFO_DATA_REG, n, backData, rxAlign); // Get received data from FIFO
 			_validBits = this->readRegisterPCD(RC522_CONTROL_REG) & 0x07; // RxLastBits[2:0] indicates the number of valid bits in the last received byte. If this value is 000b, the whole byte is valid.
 			if (validBits) *validBits = _validBits;
+
+			local_backData = &backData[0];
+			local_backLen = *backLen;
 		}
 
 		if (errorRegValue & 0x08) { // Tell about collisions
@@ -233,6 +238,8 @@ RFID_result_t MFRC522::PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq,
 			return this->getStatus();
 		}
 
+		// The buffer must be at least 18 bytes because a CRC_A is also returned.
+		// Checks the CRC_A before returning RFID_OK.
 		if (backData && backLen && checkCRC) {
 			// In this case a MIFARE Classic NAK is not OK.
 			if (*backLen == 1 && _validBits == 4) {
@@ -244,8 +251,6 @@ RFID_result_t MFRC522::PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq,
 				this->m_statusRFID = RFID_CRC_WRONG;
 				return this->getStatus();
 			}
-			local_backData = &backData[0];
-			local_backLen = *backLen;
 			// Verify CRC_A - do our own calculation and store the control in controlBuffer.
 			uint8_t controlBuffer[RFID_CRC_SIZE];
 			this->PCD_CalculateCRC(&backData[0], *backLen - 2, &controlBuffer[0]);
@@ -318,16 +323,17 @@ RFID_result_t MFRC522::PICC_REQA(uint8_t *bufferATQA, uint8_t *bufferSize) {
  * @return RFID_OK on success.
  */
 RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
-    bool uidComplete = false, selectDone = false, useCascadeTag;
-    uint8_t cascadeLevel = 1, count, checkBit, index;
-    uint8_t uidIndex;				// The first index in uid->uidByte[] that is used in the current Cascade Level.
-    int8_t currentLevelKnownBits;	// The number of known UID bits in the current Cascade Level.
-    uint8_t buffer[9];				// The SELECT/ANTICOLLISION commands uses a 7 byte standard frame + 2 bytes CRC_A
-    uint8_t bufferUsed;				// The number of bytes used in the buffer, ie the number of bytes to transfer to the FIFO.
-    uint8_t rxAlign;				// Used in BitFramingReg. Defines the bit position for the first bit received.
-    uint8_t txLastBits;				// Used in BitFramingReg. The number of valid bits in the last transmitted byte.
-    uint8_t *responseBuffer;
-    uint8_t responseLength;
+    bool uidComplete = false, selectDone = false, loopBack = false;
+    static bool useCascadeTag;
+    static uint8_t cascadeLevel = 1, count, checkBit, index;
+    static uint8_t uidIndex;				// The first index in uid->uidByte[] that is used in the current Cascade Level.
+    static int8_t currentLevelKnownBits;	// The number of known UID bits in the current Cascade Level.
+    static uint8_t buffer[9];				// The SELECT/ANTICOLLISION commands uses a 7 byte standard frame + 2 bytes CRC_A
+    static uint8_t bufferUsed;				// The number of bytes used in the buffer, ie the number of bytes to transfer to the FIFO.
+    static uint8_t rxAlign;				    // Used in BitFramingReg. Defines the bit position for the first bit received.
+    static uint8_t txLastBits;				// Used in BitFramingReg. The number of valid bits in the last transmitted byte.
+    static uint8_t *responseBuffer;
+    static uint8_t responseLength;
 
     // Description of buffer structure:
     //		Byte 0: SEL 				Indicates the Cascade Level: PICC_CMD_SEL_CL1, PICC_CMD_SEL_CL2 or PICC_CMD_SEL_CL3
@@ -358,25 +364,26 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
     static bool followingSectionFRD = false;
 
     static bool local_selectDone = false;
-    static uint8_t local_cascadeLevel = 1;
-    static uint8_t *local_backData;
 
-    if ((this->m_timeOut && calculatingCRC && !local_selectDone) || (this->m_operationCompleted && calculatingCRC && !local_selectDone)) followingSectionFST = true;
-    else if ((this->m_timeOut && !calculatingCRC && !local_selectDone) || (this->m_operationCompleted && !calculatingCRC && !local_selectDone)) followingSectionSND = true;
-    else if ((this->m_timeOut && !calculatingCRC && local_selectDone) || (this->m_operationCompleted && !calculatingCRC && local_selectDone)) followingSectionTRD = true;
+    if ((this->m_timeOut || this->m_operationCompleted) && calculatingCRC && !local_selectDone) followingSectionFST = true;
+    else if ((this->m_timeOut || this->m_operationCompleted) && !calculatingCRC && !local_selectDone) followingSectionSND = true;
+    else if ((this->m_timeOut || this->m_operationCompleted) && !calculatingCRC && local_selectDone) followingSectionTRD = true;
 
     ////////////////////////////////////////////////////
     // Check debugging the following fragment of code //
     ////////////////////////////////////////////////////
-    while (this->m_timeOut && (followingSectionFST || followingSectionSND || followingSectionTRD)) {
-    	cascadeLevel = local_cascadeLevel;
+    while ((this->m_timeOut || this->m_operationCompleted || loopBack) && (followingSectionFST || followingSectionSND || followingSectionTRD)) {
+    	loopBack = false;
     	if (followingSectionFST) {
 			followingSectionFST = false;
-			for (size_t index = 0; index < 9; index++) buffer[index] = local_backData[index];
+			calculatingCRC = true;
+
+			buffer[1] = 0x70; // NVB - Number of Valid Bits: Seven whole bytes
+			// Calculate BCC - Block Check Character
+			buffer[6] = buffer[2] ^ buffer[3] ^ buffer[4] ^ buffer[5];
 			// Calculate CRC_A
 			this->PCD_CalculateCRC(buffer, 7, &buffer[7]);
 			if (this->m_statusRFID != RFID_OK) return this->getStatus();
-			local_backData = &buffer[0];
 			calculatingCRC = false;
 			txLastBits = 0; // 0 => All 8 bits are valid.
 			bufferUsed = 9;
@@ -384,14 +391,17 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
 			// local_responseBufferData = &buffer[6];
 			responseBuffer = &buffer[6];
 			responseLength = 3;
-
 			// Set bit adjustments
 			rxAlign = txLastBits; // Having a separate variable is overkill. But it makes the next line easier to read.
 			this->writeRegisterPCD(RC522_BIT_FRAMING_REG, (rxAlign << 4) + txLastBits);    // RxAlign = BitFramingReg[6..4]. TxLastBits = BitFramingReg[2..0]
+
 			followingSectionSND = true;
     	}
     	if (followingSectionSND) {
 			followingSectionSND = false;
+			calculatingCRC = false;
+
+			this->m_operation = COMMUNICATION_PICC; // WARNING: Force action. Avoid enter to the CRC calculation.
 			// Transmit the buffer and receive the response.
 			this->PCD_CommunicateWithPICC(PCD_TRANSCEIVE, RFID_WAIT_IRQ, buffer, bufferUsed, responseBuffer, &responseLength, &txLastBits, rxAlign);
 			if (this->m_statusRFID == RFID_COLLISION_ERR) { // More than one PICC in the field => collision.
@@ -413,7 +423,26 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
 				checkBit = (currentLevelKnownBits - 1) % 8;
 				index = 1 + (currentLevelKnownBits / 8) + (count ? 1 : 0); // First byte is index 0.
 				buffer[index] |= (1 << checkBit);
-				return this->getStatus();
+
+				if (currentLevelKnownBits >= 32) { // All UID bits in this Cascade Level are known. This is a SELECT.
+					followingSectionFST = true;
+					loopBack = true;
+				} else { // This is an ANTICOLLISION.
+					txLastBits = currentLevelKnownBits % 8;
+					count = currentLevelKnownBits / 8;    // Number of whole bytes in the UID part.
+					index = 2 + count;                    // Number of whole bytes: SEL + NVB + UIDs
+					buffer[1] = (index << 4) + txLastBits;    // NVB - Number of Valid Bits
+					bufferUsed = index + (txLastBits ? 1 : 0);
+					// Store response in the unused part of buffer
+					responseBuffer = &buffer[index];
+					responseLength = sizeof(buffer) - index;
+					// Set bit adjustments
+					rxAlign = txLastBits; // Having a separate variable is overkill. But it makes the next line easier to read.
+					this->writeRegisterPCD(RC522_BIT_FRAMING_REG, (rxAlign << 4) + txLastBits);    // RxAlign = BitFramingReg[6..4]. TxLastBits = BitFramingReg[2..0]
+
+					followingSectionSND = true;
+					loopBack = true;
+				}
 			} else if (this->m_statusRFID != RFID_OK) return this->getStatus();
 			else {
 				if (currentLevelKnownBits >= 32) { // This was a SELECT.
@@ -423,12 +452,10 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
 					followingSectionTRD = true;
 				} else { // This was an ANTICOLLISION.
 					// We now have all 32 bits of the UID in this Cascade Level
-					buffer[1] = 0x70; // NVB - Number of Valid Bits: Seven whole bytes
-					// Calculate BCC - Block Check Character
-					buffer[6] = buffer[2] ^ buffer[3] ^ buffer[4] ^ buffer[5];
-					local_backData = &buffer[0];
+					currentLevelKnownBits = 32;
 					// Run loop again to do the SELECT.
 					followingSectionFST = true;
+					loopBack = true;
 				}
 			}
 		}
@@ -446,18 +473,18 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
 	            this->m_statusRFID = RFID_CRC_WRONG;
 	            return this->getStatus();
 	        }
-	        if (responseBuffer[0] & 0x04) local_cascadeLevel++;
+	        if (responseBuffer[0] & 0x04) cascadeLevel++;
 	        else {
 	            uidComplete = true;
 	            this->m_UID.sak = responseBuffer[0];
-	            this->m_UID.size = 3 * local_cascadeLevel + 1;
+	            this->m_UID.size = 3 * cascadeLevel + 1;
 				return this->getStatus();
 	        }
     	}
     	if (followingSectionFRD) {
 			followingSectionFRD = false;
 			// Set the Cascade Level in the SEL byte, find out if we need to use the Cascade Tag in byte 2.
-			switch (local_cascadeLevel) {
+			switch (cascadeLevel) {
 				case 1:
 					buffer[0] = PICC_CMD_SEL_CL1;
 					uidIndex = 0;
@@ -486,7 +513,7 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
 			currentLevelKnownBits = validBits - (8 * uidIndex);
 			if (currentLevelKnownBits < 0) currentLevelKnownBits = 0;
 			// Copy the known bits from uid->uidByte[] to buffer[]
-			index = 2; // destination index in buffer[]
+			index = 2; // Destination index in buffer[]
 			if (useCascadeTag) buffer[index++] = PICC_CMD_CT;
 			uint8_t bytesToCopy = currentLevelKnownBits / 8 + (currentLevelKnownBits % 8 ? 1 : 0); // The number of bytes needed to represent the known bits for this level.
 			if (bytesToCopy) {
@@ -501,14 +528,9 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
 			local_selectDone = false;
 			// Find out how many bits and bytes to send and receive.
 			if (currentLevelKnownBits >= 32) { // All UID bits in this Cascade Level are known. This is a SELECT.
-				// Serial.print(F("SELECT: currentLevelKnownBits=")); Serial.println(currentLevelKnownBits, DEC);
-				buffer[1] = 0x70; // NVB - Number of Valid Bits: Seven whole bytes
-				// Calculate BCC - Block Check Character
-				buffer[6] = buffer[2] ^ buffer[3] ^ buffer[4] ^ buffer[5];
-				local_backData = &buffer[0];
 				followingSectionFST = true;
+				loopBack = true;
 			} else { // This is an ANTICOLLISION.
-				// Serial.print(F("ANTICOLLISION: currentLevelKnownBits=")); Serial.println(currentLevelKnownBits, DEC);
 				txLastBits = currentLevelKnownBits % 8;
 				count = currentLevelKnownBits / 8;    // Number of whole bytes in the UID part.
 				index = 2 + count;                    // Number of whole bytes: SEL + NVB + UIDs
@@ -520,12 +542,12 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
 				// Set bit adjustments
 				rxAlign = txLastBits; // Having a separate variable is overkill. But it makes the next line easier to read.
 				this->writeRegisterPCD(RC522_BIT_FRAMING_REG, (rxAlign << 4) + txLastBits);    // RxAlign = BitFramingReg[6..4]. TxLastBits = BitFramingReg[2..0]
+
 				followingSectionSND = true;
+				loopBack = true;
 			}
     	}
     }
-
-	calculatingCRC = true;
 
     if (validBits > 80) { // Sanity checks
     	this->m_statusRFID = RFID_INVALID;
@@ -564,7 +586,6 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
                 break;
         }
 
-        local_cascadeLevel = cascadeLevel;
         // How many UID bits are known in this Cascade Level?
         currentLevelKnownBits = validBits - (8 * uidIndex);
         if (currentLevelKnownBits < 0) currentLevelKnownBits = 0;
@@ -580,21 +601,20 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
         // Now that the data has been copied we need to include the 8 bits in CT in currentLevelKnownBits
         if (useCascadeTag) currentLevelKnownBits += 8;
 
+    	calculatingCRC = true;
         // Repeat anti collision loop until we can transmit all UID bits + BCC and receive a SAK - max 32 iterations.
         local_selectDone = false;
         selectDone = false;
         while (!selectDone) {
             // Find out how many bits and bytes to send and receive.
             if (currentLevelKnownBits >= 32) { // All UID bits in this Cascade Level are known. This is a SELECT.
-                // Serial.print(F("SELECT: currentLevelKnownBits=")); Serial.println(currentLevelKnownBits, DEC);
+                calculatingCRC = true;
                 buffer[1] = 0x70; // NVB - Number of Valid Bits: Seven whole bytes
                 // Calculate BCC - Block Check Character
                 buffer[6] = buffer[2] ^ buffer[3] ^ buffer[4] ^ buffer[5];
-                local_backData = &buffer[0];
                 // Calculate CRC_A
                 this->PCD_CalculateCRC(buffer, 7, &buffer[7]);
                 if (this->m_statusRFID != RFID_OK) return this->getStatus();
-                local_backData = &buffer[0];
                 calculatingCRC = false;
                 txLastBits = 0; // 0 => All 8 bits are valid.
                 bufferUsed = 9;
@@ -603,7 +623,6 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
                 responseBuffer = &buffer[6];
                 responseLength = 3;
             } else { // This is an ANTICOLLISION.
-                // Serial.print(F("ANTICOLLISION: currentLevelKnownBits=")); Serial.println(currentLevelKnownBits, DEC);
                 txLastBits = currentLevelKnownBits % 8;
                 count = currentLevelKnownBits / 8;    // Number of whole bytes in the UID part.
                 index = 2 + count;                    // Number of whole bytes: SEL + NVB + UIDs
@@ -617,7 +636,9 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
             // Set bit adjustments
             rxAlign = txLastBits; // Having a separate variable is overkill. But it makes the next line easier to read.
             this->writeRegisterPCD(RC522_BIT_FRAMING_REG, (rxAlign << 4) + txLastBits);    // RxAlign = BitFramingReg[6..4]. TxLastBits = BitFramingReg[2..0]
+            calculatingCRC = false;
 
+            this->m_operation = COMMUNICATION_PICC; // WARNING: Force action. Avoid enter to the CRC calculation.
             // Transmit the buffer and receive the response.
             this->PCD_CommunicateWithPICC(PCD_TRANSCEIVE, RFID_WAIT_IRQ, buffer, bufferUsed, responseBuffer, &responseLength, &txLastBits, rxAlign);
             if (this->m_statusRFID == RFID_COLLISION_ERR) { // More than one PICC in the field => collision.
@@ -661,8 +682,6 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
         // Check response SAK (Select Acknowledge)
         // SAK must be exactly 24 bits (1 byte + CRC_A).
         if (responseLength != 3 || txLastBits != 0) return RFID_UPDATE_ERR;
-        // local_responseBufferData = responseBuffer;
-        // local_backData = buffer;
 
         // Verify CRC_A - do our own calculation and store the control in buffer[2...3] - those bytes are not needed anymore.
         this->PCD_CalculateCRC(responseBuffer, 1, &buffer[2]);
@@ -800,6 +819,10 @@ bool MFRC522::readCardPICC(void) {
     return this->PICC_Select() == RFID_OK ? true : false;
 }
 
+/*!
+ * @brief Instructs a PICC in state ACTIVE(*) to go to state HALT.
+ * @return RFID_OK on success.
+ */
 RFID_result_t MFRC522::haltPICC(void) {
 	uint8_t buffer[4];
 
@@ -856,12 +879,12 @@ RFID_result_t MFRC522::getUID(UID_st *UID) {
 				if (!(this->isCardPICC())) return this->getStatus();
 				readingCard = true;
 			}
-//			return this->getStatus(); // WARNING: DEBUG!!
 			if (!(this->readCardPICC())) return this->getStatus();
-			*UID = this->m_UID;
+			if (UID != nullptr) *UID = this->m_UID;
 			releasingPCD = true;
 		}
-		if (!(this->haltPICC())) return this->getStatus();
+		// The following instruction will be useful depending on the implementation of the program.
+		// if (!(this->haltPICC())) return this->getStatus();
 	}
 
     return this->getStatus();
@@ -872,14 +895,37 @@ void MFRC522::dumpVersion(void) {
 	// TODO (Minor priority): Not implemented yet
 }
 
-void MFRC522::dumpUID(UID_st *UID) {
+void MFRC522::dumpUID(UID_st* UID) {
 	if (this->m_statusRFID == RFID_SSEL_ERR) return;
 	// TODO (Minor priority): Not implemented yet
 }
 
-void MFRC522::dumpDetails(UID_st *UID) {
+void MFRC522::dumpDetails(UID_st* UID) {
 	if (this->m_statusRFID == RFID_SSEL_ERR) return;
 	// TODO (Minor priority): Not implemented yet
+}
+
+char* MFRC522::strreverse(char* cstring) {
+	size_t lenght = strlen(cstring);
+	uint8_t left, right;
+	for (left = 0, right = lenght - 1; left < (lenght / 2); left++, right--) {
+		char aux = cstring[left];
+		cstring[left] = cstring[right];
+		cstring[right] = aux;
+	}
+	return cstring;
+}
+
+char* MFRC522::byteToHEX(char* cstring, uint8_t value) {
+    size_t index = 0;
+	for (index = 0; value > 0; index++) {
+        if (value % 16 < 10) cstring[index] = (value % 16) + '0';
+        else cstring[index] = (value % 16) - 10 + 'A';
+        value /= 16;
+    }
+	cstring[index] = '\0';
+    if (strlen(cstring) == 0) strcpy(cstring, "0");
+    return this->strreverse(cstring);
 }
 
 char *MFRC522::printUID(void) {
@@ -889,27 +935,19 @@ char *MFRC522::printUID(void) {
     RFIDstr[2] = 'D';
     RFIDstr[3] = ':';
     RFIDstr[4] = ' ';
-    RFIDstr[5] = this->m_UID.uidByte[0] + '0';
-    RFIDstr[6] = this->m_UID.uidByte[1] + '0';
+    this->byteToHEX(&RFIDstr[5], this->m_UID.uidByte[0]);
     RFIDstr[7] = ' ';
-    RFIDstr[8] = this->m_UID.uidByte[2] + '0';
-    RFIDstr[9] = this->m_UID.uidByte[3] + '0';
+    this->byteToHEX(&RFIDstr[8], this->m_UID.uidByte[1]);
     RFIDstr[10] = ' ';
-    RFIDstr[11] = this->m_UID.uidByte[4] + '0';
-    RFIDstr[12] = this->m_UID.uidByte[5] + '0';
+    this->byteToHEX(&RFIDstr[11], this->m_UID.uidByte[2]);
     RFIDstr[13] = ' ';
-    RFIDstr[14] = this->m_UID.uidByte[6] + '0';
-    RFIDstr[15] = this->m_UID.uidByte[7] + '0';
-    RFIDstr[16] = ' ';
-    RFIDstr[17] = this->m_UID.uidByte[8] + '0';
-    RFIDstr[18] = this->m_UID.uidByte[9] + '0';
-    RFIDstr[19] = '\n';
-    RFIDstr[20] = '\0';
+    this->byteToHEX(&RFIDstr[14], this->m_UID.uidByte[3]);
+    RFIDstr[16] = '\n';
+    RFIDstr[17] = '\0';
     return RFIDstr;
 }
 
 void MFRC522::callbackMethod(void) {
-	LED_GREEN.togglePin();
     if (this->m_timeOut && this->m_statusRFID != RFID_SSEL_ERR) this->m_timeOut--;
 }
 
