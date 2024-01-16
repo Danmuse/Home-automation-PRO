@@ -2,7 +2,6 @@
 // Created by Usuario on 06/01/2024.
 //
 
-#include <cstdio>
 #include "QTConnection.h"
 
 QTConnection::QTConnection(UART &uart) : uart{uart}, recMessagePos{0}, timoutCounter{SERIAL_TIMOUT} {
@@ -23,7 +22,14 @@ char* QTConnection::receiveMessage() {
 void QTConnection::uploadVariable(IoTVariable variable) {
 
     char message[MAX_MESSAGE_SIZE];
-    sprintf(message, "%c%s,%d%c", SERIAL_HEADER, variable.name, variable.variable, SERIAL_FOOTER);
+//    sprintf(message, "%c%s,%d%c", SERIAL_HEADER, variable.name, variable.variable, SERIAL_FOOTER);
+
+    message[0] = SERIAL_HEADER;
+    strcpy(message + 1, variable.name);
+    strcat(message, ",");
+
+    itoa(variable.variable, message + strlen(message), 10);
+    message[strlen(message)] = SERIAL_FOOTER;
 
     uart.transmit(message, strlen(message));
 }

@@ -9,6 +9,7 @@
 #include "Callback.h"
 #include "UART.h"
 #include "IoTConnection.h"
+#include <cstdlib>
 
 #define SERIAL_HEADER '$'
 #define SERIAL_FOOTER '%'
