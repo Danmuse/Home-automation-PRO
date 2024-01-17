@@ -1,51 +1,49 @@
-//
-// Created by Usuario on 06/01/2024.
-//
+/*!
+ * @file QTConnection.h
+ * @authors
+ * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@@frba.utn.edu.ar</a>
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @par Doxygen Editor
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @date 06/01/2024 16:49:27
+ * @brief Qt Connection Class API (Application Programming Interface).
+ */
 
-#ifndef QT_CONNECTION_H
-#define QT_CONNECTION_H
+#ifndef QT_CONNECTION_H_
+#define QT_CONNECTION_H_
 
-
-#include "Callback.h"
+#include <cstdlib>
+#include "systick.h"
 #include "UART.h"
 #include "IoTConnection.h"
-#include <cstdlib>
 
 #define SERIAL_HEADER '$'
 #define SERIAL_FOOTER '%'
-#define SERIAL_TIMOUT 1000
+#define SERIAL_TIMEOUT 1000
 
 #define MAX_MESSAGE_SIZE 50
 
-class QTConnection : public IoTConnection, public Callback {
-    private:
-        enum class SerialState {
-                WAITING_HEADER,
-                DECODING,
-        };
-        SerialState serialState = SerialState::WAITING_HEADER;
-//      Timer timoutComunicacion;
+class QTConnection : public IoTConnection, Callback {
+private:
+	enum serialState_t { WAITING_HEADER, DECODING };
+	serialState_t m_serialState = WAITING_HEADER;
+//  Timer m_timeoutComunicacion;
 
-        UART& uart;
-        char recMessage[MAX_MESSAGE_SIZE];
-        uint8_t recMessagePos;
-        uint16_t timoutCounter;
+	UART& m_uart;
+	char m_recMessage[MAX_MESSAGE_SIZE];
+	uint8_t m_recMessagePos;
+	uint16_t m_timeoutCounter; // WARNING: Using this member as a "uint16_t" type could cause instabilities in the configured time period
+	std::vector<IoTListener*> m_listeners;
 
-        std::vector<IoTListener*> listeners;
-
-        void communicationTimeout();
-
-    public:
-        QTConnection(UART& uart);
-
-        char* receiveMessage() override;
-
-        void uploadVariable(IoTVariable variable) override;
-
-        void suscribeListener(IoTListener* listener) override;
-
-        void callbackMethod() override;
+	void communicationTimeout(void);
+public:
+	QTConnection() = delete;
+	QTConnection(UART& uart);
+	char* receiveMessage(void) override;
+	void uploadVariable(IoTVariable_st variable) override;
+	void suscribeListener(IoTListener* listener) override;
+	void callbackMethod(void) override;
+	~QTConnection();
 };
 
-
-#endif //QT_CONNECTION_H
+#endif // QT_CONNECTION_H_

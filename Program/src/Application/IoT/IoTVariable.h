@@ -1,19 +1,25 @@
-//
-// Created by Usuario on 05/01/2024.
-//
+/*!
+ * @file IoTVariable.h
+ * @authors
+ * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@@frba.utn.edu.ar</a>
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @par Doxygen Editor
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @date 05/01/2024 12:23:56
+ * @brief IoT Variable Structure API (Application Programming Interface).
+ */
 
-#ifndef IOTVARIABLE_H
-#define IOTVARIABLE_H
+#ifndef IOT_VARIABLE_H_
+#define IOT_VARIABLE_H_
 
 #include "utils.h"
 
-struct IoTVariable {
+typedef struct {
     char *name;
-    //TODO: MAYBE NOT INTEGRER
+    // TODO: MAYBE NOT INTEGRER
     int &variable;
     int uploadPeriod;
     int uploadCounter;
-};
+} IoTVariable_st;
 
-
-#endif //IOTVARIABLE_H
+#endif // IOT_VARIABLE_H_

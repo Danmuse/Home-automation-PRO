@@ -1,28 +1,29 @@
-//
-// Created by Usuario on 06/01/2024.
-//
+/*/*!
+ * @file QTConnection.cpp
+ * @authors
+ * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@@frba.utn.edu.ar</a>
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @par Doxygen Editor
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @date 06/01/2024 16:49:27
+ */
 
 #include "QTConnection.h"
 
-QTConnection::QTConnection(UART &uart) : uart{uart}, recMessagePos{0}, timoutCounter{SERIAL_TIMOUT} {
-
+QTConnection::QTConnection(UART &uart) : IoTConnection(), Callback(),
+m_uart{uart}, m_recMessagePos{0}, m_timeoutCounter{(uint16_t)(SERIAL_TIMEOUT * (g_systick_freq / 1000))} {
     g_callback_list.push_back(this);
 }
 
-char* QTConnection::receiveMessage() {
+char* QTConnection::receiveMessage(void) {
+    this->m_recMessage[this->m_recMessagePos] = '\0';
 
-    this->recMessage[recMessagePos] = '\0';
-
-    for (IoTListener* listener: listeners) {
-        listener->processIoTMessage(recMessage + 1);
-    }
+    for (IoTListener* listener: this->m_listeners) listener->processIoTMessage(this->m_recMessage + 1);
     return nullptr;
 }
 
-void QTConnection::uploadVariable(IoTVariable variable) {
-
+void QTConnection::uploadVariable(IoTVariable_st variable) {
     char message[MAX_MESSAGE_SIZE];
-//    sprintf(message, "%c%s,%d%c", SERIAL_HEADER, variable.name, variable.variable, SERIAL_FOOTER);
 
     message[0] = SERIAL_HEADER;
     strcpy(message + 1, variable.name);
@@ -31,57 +32,56 @@ void QTConnection::uploadVariable(IoTVariable variable) {
     itoa(variable.variable, message + strlen(message), 10);
     message[strlen(message)] = SERIAL_FOOTER;
 
-    uart.transmit(message, strlen(message));
+    this->m_uart.transmit(message, strlen(message));
 }
 
 void QTConnection::suscribeListener(IoTListener* listener) {
-    this->listeners.push_back(listener);
+	this->m_listeners.push_back(listener);
 }
 
-void QTConnection::callbackMethod() {
-
-    bool newChar = uart.receive(this->recMessage + recMessagePos, 1);
+void QTConnection::callbackMethod(void) {
+    bool newChar = this->m_uart.receive(this->m_recMessage + this->m_recMessagePos, 1);
 
     if (!newChar) {
-        timoutCounter = SERIAL_TIMOUT;
-        switch (serialState) {
-            case SerialState::WAITING_HEADER:
+    	this->m_timeoutCounter = SERIAL_TIMEOUT * (g_systick_freq / 1000);
+        switch (this->m_serialState) {
+            case WAITING_HEADER:
                 // Pos should always be 0
-                if (recMessage[recMessagePos] == SERIAL_HEADER) {
-                    recMessagePos++;
-                    serialState = SerialState::DECODING;
-                    //TODO: Add timout
-//                timoutComunicacion.timerStart(1);
+                if (this->m_recMessage[this->m_recMessagePos] == SERIAL_HEADER) {
+                	this->m_recMessagePos++;
+                    this->m_serialState = DECODING;
+                    // TODO: Add timeout
+//                this->timeoutComunicacion.timerStart(1);
                 }
 
                 break;
-            case SerialState::DECODING:
-                if (recMessage[recMessagePos] == SERIAL_FOOTER) {
-//                timoutComunicacion.timerStop();
-                    serialState = SerialState::WAITING_HEADER;
-                    receiveMessage();
+            case DECODING:
+                if (this->m_recMessage[this->m_recMessagePos] == SERIAL_FOOTER) {
+//                this->timeoutComunicacion.timerStop();
+                    this->m_serialState = WAITING_HEADER;
+                    this->receiveMessage();
 
-                    recMessagePos = 255; //Para que al sumar sea todo 0
+                    this->m_recMessagePos = 255; // So that when adding everything is equivalent to 0
                 }
 
-                recMessagePos++;
-                recMessagePos %= MAX_MESSAGE_SIZE;//Overflow overlaps the message
+                this->m_recMessagePos++;
+                this->m_recMessagePos %= MAX_MESSAGE_SIZE; // Overflow overlaps the message
 
                 break;
         }
 
     }
 
-    if (--timoutCounter == 0) {
-        communicationTimeout();
-        timoutCounter = SERIAL_TIMOUT;
+    if (--this->m_timeoutCounter == 0) {
+        this->communicationTimeout();
+        this->m_timeoutCounter = SERIAL_TIMEOUT * (g_systick_freq / 1000);
     }
 }
 
-void QTConnection::communicationTimeout() {
-    this->serialState = SerialState::WAITING_HEADER;
-    memset(this->recMessage, 0, this->recMessagePos);
-    this->recMessagePos = 0;
+void QTConnection::communicationTimeout(void) {
+	this->m_serialState = WAITING_HEADER;
+    memset(this->m_recMessage, 0, this->m_recMessagePos);
+    this->m_recMessagePos = 0;
 }
 
-
+QTConnection::~QTConnection() { }

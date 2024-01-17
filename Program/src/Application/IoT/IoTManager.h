@@ -1,31 +1,35 @@
-//
-// Created by Usuario on 05/01/2024.
-//
+/*!
+ * @file IoTManager.h
+ * @authors
+ * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@@frba.utn.edu.ar</a>
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @par Doxygen Editor
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @date 05/01/2024 12:23:56
+ * @brief IoT Manager Class API (Application Programming Interface).
+ */
 
-#ifndef LPC845ESQUELETO_IOTMANAGER_H
-#define LPC845ESQUELETO_IOTMANAGER_H
+#ifndef IOT_MANAGER_H_
+#define IOT_MANAGER_H_
 
 #include <map>
+#include <cstring>
+#include <cstdlib>
 #include "Callback.h"
 #include "IoTConnection.h"
 
-class IoTManager : public Callback, public IoTListener {
+class IoTManager : public IoTListener, Callback {
+private:
+	std::map<char*, IoTVariable_st> m_variablesToUpload;
+	IoTConnection* m_ioTConnection;
 
-    private:
-        std::map<char*, IoTVariable> variablesToUpload;
-
-        IoTConnection* ioTConection;
-
-    public:
-        IoTManager(IoTConnection* ioTConnection);
-
-        void addVariableToUpload(char* name, int &variable, int uploadPeriod);
-
-        void processIoTMessage(char* message) override;
-
-        void callbackMethod() override;
-
+public:
+	IoTManager() = delete;
+	IoTManager(IoTConnection* ioTConnection);
+	void addVariableToUpload(char* name, int &variable, int uploadPeriod);
+	void processIoTMessage(char* message) override;
+	void callbackMethod(void) override;
+	~IoTManager();
 };
 
-
-#endif //LPC845ESQUELETO_IOTMANAGER_H
+#endif // IOT_MANAGER_H_

@@ -11,9 +11,23 @@
 
 #include "LPC845.h"
 
+#if defined (__cplusplus)
+extern "C" {
+	void CTIMER0_IRQHandler(void);
+}
+#endif
+
 class CTimer {
+private:
+	uint8_t m_pulse;
+	uint32_t m_pulses[2];
 protected:
 	void bindCTOUT(void);
+
+	void configMatch(void);
+	uint8_t getPulseState(void);
+	void setPulse(uint8_t value);
+	uint32_t getPulseTime(void);
 public:
 	CTimer();
 	virtual ~CTimer();
