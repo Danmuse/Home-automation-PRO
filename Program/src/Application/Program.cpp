@@ -23,25 +23,29 @@ int main(void) {
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
-    int exampleVariable = 0;
-    int keyPressed = 0;
+//  int exampleVariable = 0;
+//  int keyPressed = 0;
 
-    QTConnection connection(*g_usb);
+//  QTConnection connection(*g_usb);
 
-    IoTManager iotManager(&connection);
+//  IoTManager iotManager(&connection);
 
-//    iotManager.addVariableToUpload("example1", exampleVariable, 1000);
-//    iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
+//  iotManager.addVariableToUpload("example1", exampleVariable, 1000);
+//  iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
+
+	CTimer ctimer(LED_GREEN, CTimer::CTIMER_MATCH);
+	ctimer.configMatch(480, CTimer::MAT0INT);
 
     while (1) {
     	g_rfid->getUID();
-    	if (g_rfid->getStatus() == RFID_OK && *(g_rfid->printUID()) != 0)
-    		g_usb->transmit(g_rfid->printUID());
+    	if (g_rfid->getStatus() == RFID_OK && *(g_rfid->printUID()) != 0) g_usb->transmit(g_rfid->printUID());
+
+//    	ctimer.configMatch(480, CTimer::MAT1INT);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
 
-        keyPressed = g_keyboard->get();
-        exampleVariable++;
+//      keyPressed = g_keyboard->get();
+//      exampleVariable++;
     }
 }
 

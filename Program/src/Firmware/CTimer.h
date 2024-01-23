@@ -9,7 +9,10 @@
 #ifndef CTIMER_H_
 #define CTIMER_H_
 
-#include "LPC845.h"
+#include "GPIO.h"
+
+#define MAX_CTIMER0_MATCH_CHANNELS 4
+#define MAX_CTIMER0_CAPTURE_CHANNELS 3
 
 #if defined (__cplusplus)
 extern "C" {
@@ -17,19 +20,30 @@ extern "C" {
 }
 #endif
 
-class CTimer {
-private:
-	uint8_t m_pulse;
-	uint32_t m_pulses[2];
-protected:
-	void bindCTOUT(void);
-
-	void configMatch(void);
-	uint8_t getPulseState(void);
-	void setPulse(uint8_t value);
-	uint32_t getPulseTime(void);
+class CTimer : protected Gpio {
 public:
-	CTimer();
+	enum channelFunction_t { CTIMER_MATCH, CTIMER_CAPTURE };
+	enum matchInterruption_t { MAT0INT, MAT1INT, MAT2INT, MAT3INT };
+	enum captureInterruption_t { CAP0INT, CAP1INT, CAP2INT, CAP3INT };
+private:
+	const channelFunction_t m_channelFunction;
+	const uint8_t m_match_channel;
+	const uint8_t m_capture_channel;
+	static uint8_t m_match_quantity;
+	static uint8_t m_capture_quantity;
+
+	void initCTimer(void) const;
+	void enableSWM(void) const;
+	void disableSWM(void) const;
+protected:
+//	uint8_t getPulseState(void);
+//	void setPulse(uint8_t value);
+//	uint32_t getPulseTime(void);
+public:
+	CTimer() = delete;
+	CTimer(const Gpio &output, channelFunction_t channelFunction);
+	void configMatch(uint32_t timeMillis, matchInterruption_t matchInterruption = MAT0INT); // NOTE: IT IS PROTECTED!!
+	void CTIMER_IRQHandler(void); // NOTE: IT IS PRIVATE!!
 	virtual ~CTimer();
 };
 

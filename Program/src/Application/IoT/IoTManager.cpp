@@ -17,16 +17,14 @@ m_ioTConnection{ioTConnection} {
 }
 
 void IoTManager::addVariableToUpload(char* name, int& variable, int uploadPeriod) {
-    IoTVariable_st iotVariable = {name, variable, uploadPeriod, 0};
-
+    IoTVariable_st iotVariable = { name, variable, uploadPeriod, 0 };
     this->m_variablesToUpload.insert(std::pair<char*, IoTVariable_st>(name, iotVariable));
 }
 
 void IoTManager::callbackMethod(void) {
 	for (auto& variablePair : this->m_variablesToUpload) {
-		auto& name = variablePair.first;
+		// auto& name = variablePair.first;
 		auto& ioTVariable = variablePair.second;
-
 		if (ioTVariable.uploadCounter == ioTVariable.uploadPeriod) {
 			this->m_ioTConnection->uploadVariable(ioTVariable);
 			ioTVariable.uploadCounter = 0;

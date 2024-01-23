@@ -328,7 +328,7 @@ SPI::~SPI() {
 		if (!(this->m_SPI0_SSELs)) {
 			this->disableReceiveInterrupt();
 			this->disableSendInterrupt();
-			NVIC->ISER[0] &= ~(1 << 0); // Disable SPI0_IRQ
+			NVIC->ICER[0] |= (1 << 0); // Disable SPI0_IRQ
 		}
 	} else if (this->m_SPI == SPI1) {
 		// Remember to execute the unbindSSEL function on primitive classes where they are protected or publicly inherited from SPI.
@@ -336,7 +336,7 @@ SPI::~SPI() {
 		if (!(this->m_SPI1_SSELs)) {
 			this->disableReceiveInterrupt();
 			this->disableSendInterrupt();
-			NVIC->ISER[0] &= ~(1 << 1); // Disable SPI1_IRQ
+			NVIC->ICER[0] |= (1 << 1); // Disable SPI1_IRQ
 		}
 	}
 }
