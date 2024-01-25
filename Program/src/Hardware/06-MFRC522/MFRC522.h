@@ -9,6 +9,7 @@
 #ifndef MFRC522_H_
 #define MFRC522_H_
 
+#include <cstring>
 #include "systick.h"
 #include "SPI.h"
 #include "Semaphore.h"
@@ -93,7 +94,7 @@
 #define RFID_CRC_SIZE	2	//!< <pre><strong>Value:</strong> 2
 
 //! @hideinitializer Number of characters to store the UID captured by the PCD (<tt>Proximity Coupling Device</tt>).
-#define RFID_STR_SIZE	21	//!< <pre><strong>Value:</strong> 21
+#define RFID_STR_SIZE	18	//!< <pre><strong>Value:</strong> 18
 
 //! @brief <b>RFID_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the RFID reader operations can be found.
 typedef enum {
@@ -183,6 +184,10 @@ private:
 	RFID_result_t PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq, uint8_t *sendData, uint8_t sendLen, uint8_t *backData = nullptr, uint8_t *backLen = nullptr, uint8_t *validBits = nullptr, uint8_t rxAlign = 0, bool checkCRC = false);
 	RFID_result_t PICC_REQA(uint8_t *bufferATQA, uint8_t *bufferSize);
 	virtual RFID_result_t PICC_Select(uint8_t validBits = 0);
+
+	// Support functions for debugging
+	char* strreverse(char* cstring);
+	char* byteToHEX(char* cstring, uint8_t value);
 public:
 	MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL, const Gpio& hardRST);
 
@@ -197,12 +202,12 @@ public:
 	virtual bool isCardPICC(void);
 	virtual bool readCardPICC(void);
 	RFID_result_t haltPICC(void);
-	RFID_result_t getUID(UID_st *UID);
+	RFID_result_t getUID(UID_st *UID = nullptr);
 
 	// Support functions for debugging
 	void dumpVersion(void);
-	void dumpUID(UID_st *UID);
-	void dumpDetails(UID_st *UID);
+	void dumpUID(UID_st* UID);
+	void dumpDetails(UID_st* UID);
 	char* printUID(void);
 
 	void callbackMethod(void) override;

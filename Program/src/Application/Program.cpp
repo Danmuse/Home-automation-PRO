@@ -18,43 +18,33 @@ int main(void) {
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
-	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
+//	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
-	MFRC522::UID_st UID;
+//  int exampleVariable = 0;
+//  int keyPressed = 0;
 
-	char result[3];
-	result[0] = '0';
-	result[1] = '\n';
-	result[2] = '\0';
+//  QTConnection connection(*g_usb);
 
-	if (g_rfid->getStatus()) LED_RED.setPin();
+//  IoTManager iotManager(&connection);
 
-    int exampleVariable = 0;
-    int keyPressed=0;
+//  iotManager.addVariableToUpload("example1", exampleVariable, 1000);
+//  iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
 
-    QTConnection connection(*g_usb);
+	CTimer ctimer(LED_BLUE, CTimer::CTIMER_MATCH);
 
-    IotManager iotManager(&connection);
+	while (1) {
+//    	g_rfid->getUID();
+//    	if (g_rfid->getStatus() == RFID_OK && *(g_rfid->printUID()) != 0) g_usb->transmit(g_rfid->printUID());
 
-    iotManager.addVariableToUpload("example1",exampleVariable,1000);
-    iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
-
-
-    while (1) {
-		g_rfid->getUID(&UID); // Debug instruction
-    	result[0] = (char)(g_rfid->getStatus()) + '0';
-    	if (g_rfid->getStatus() == RFID_OK) g_usb->transmit("OK\n");
-    	else g_usb->transmit(result); // g_rfid->printUID());
-//		delay(100);
+//    	ctimer.configMatch(480, CTimer::MAT1INT);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
 
-
-        keyPressed=g_keyboard->get();
-        exampleVariable++;
+//      keyPressed = g_keyboard->get();
+//      exampleVariable++;
     }
 }
 

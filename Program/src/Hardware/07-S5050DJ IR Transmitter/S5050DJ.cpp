@@ -7,8 +7,7 @@
 
 #include "S5050DJ.h"
 
-S5050DJ::S5050DJ(const Gpio &output) : Gpio(output), CTimer() {
-	if (this->m_direction != Gpio::OUTPUT) this->toggleDir();
+S5050DJ::S5050DJ(const Gpio &output) : CTimer(output, CTIMER_MATCH) {
 
 }
 

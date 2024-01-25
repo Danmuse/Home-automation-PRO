@@ -30,9 +30,9 @@ protected:
 	static uint32_t m_period;
 	float m_duty;
 private:
+	void initSCTimer(void) const;
 	void enableSWM(void) const;
 	void disableSWM(void) const;
-	void initSCTimer(void) const;
 public:
 	PWM() = delete;
 	PWM(const Gpio &output, float duty, uint32_t period = 1000);

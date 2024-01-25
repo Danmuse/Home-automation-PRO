@@ -285,10 +285,10 @@ void I2C::I2C_IRQHandler(void) {
 
 I2C::~I2C() {
 	this->disableInterrupt();
-	if (this->m_TWI == I2C0) NVIC->ISER[0] &= ~(1 << 8);       // Disable I2C0_IRQ
-	else if (this->m_TWI == I2C1) NVIC->ISER[0] &= ~(1 << 7);  // Disable I2C1_IRQ
-	else if (this->m_TWI == I2C2) NVIC->ISER[0] &= ~(1 << 21); // Disable I2C2_IRQ
-	else if (this->m_TWI == I2C3) NVIC->ISER[0] &= ~(1 << 22); // Disable I2C3_IRQ
+	if (this->m_TWI == I2C0) NVIC->ICER[0] |= (1 << 8);       // Disable I2C0_IRQ
+	else if (this->m_TWI == I2C1) NVIC->ICER[0] |= (1 << 7);  // Disable I2C1_IRQ
+	else if (this->m_TWI == I2C2) NVIC->ICER[0] |= (1 << 21); // Disable I2C2_IRQ
+	else if (this->m_TWI == I2C3) NVIC->ICER[0] |= (1 << 22); // Disable I2C3_IRQ
 }
 
 void I2C0_IRQHandler(void) {

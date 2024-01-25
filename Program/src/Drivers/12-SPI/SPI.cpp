@@ -177,21 +177,29 @@ void SPI::transmitBytes(uint8_t *message, uint8_t length) {
 }
 
 bool SPI::receive(uint8_t *address, uint8_t &message) {
-    this->enableReceiveInterrupt();
+    bool resultCommunication = false;
+	this->enableReceiveInterrupt();
 	this->transmitBytes(address);
-    return this->popReceive(&message);
+	resultCommunication = this->popReceive(&message);
     this->disableReceiveInterrupt();
+    return resultCommunication;
 }
 
-bool SPI::receive(uint8_t *address, uint8_t *message, uint8_t length) {
-    uint8_t data;
-    static uint32_t cont = 0;
+bool SPI::receiveBytes(uint8_t *address, uint8_t *message, uint8_t length, bool transmitStopByte) {
+    uint8_t data, stopByte = 0x00;
+    bool stopByteTransmitted = false;
+    static uint8_t counter = 0;
     this->enableReceiveInterrupt();
 	this->transmitBytes(address);
-    while (this->popReceive(&data)) {
-        message[cont++] = data;
-        if (cont >= length) {
-            cont = 0;
+    while (this->popReceive(&data) && length) {
+    	if (!stopByteTransmitted && transmitStopByte && counter == length - 1) {
+			this->transmitBytes(&stopByte);
+			stopByteTransmitted = true;
+			continue;
+		}
+        message[counter++] = data;
+        if (counter >= length) {
+        	counter = 0;
             this->disableReceiveInterrupt();
             return true;
         }
@@ -202,14 +210,14 @@ bool SPI::receive(uint8_t *address, uint8_t *message, uint8_t length) {
 
 bool SPI::receive(uint8_t *address, char *message) {
     uint8_t data;
-    static uint32_t cont = 0;
+    static uint32_t counter = 0;
     this->enableReceiveInterrupt();
 	this->transmitBytes(address);
     while (this->popReceive(&data)) {
-    	message[cont++] = data;
+    	message[counter++] = data;
         if (data == '\r' || data == '\n') {
-        	message[cont] = '\0';
-            cont = 0;
+        	message[counter] = '\0';
+        	counter = 0;
             this->disableReceiveInterrupt();
             return true;
         }
@@ -320,7 +328,7 @@ SPI::~SPI() {
 		if (!(this->m_SPI0_SSELs)) {
 			this->disableReceiveInterrupt();
 			this->disableSendInterrupt();
-			NVIC->ISER[0] &= ~(1 << 0); // Disable SPI0_IRQ
+			NVIC->ICER[0] |= (1 << 0); // Disable SPI0_IRQ
 		}
 	} else if (this->m_SPI == SPI1) {
 		// Remember to execute the unbindSSEL function on primitive classes where they are protected or publicly inherited from SPI.
@@ -328,7 +336,7 @@ SPI::~SPI() {
 		if (!(this->m_SPI1_SSELs)) {
 			this->disableReceiveInterrupt();
 			this->disableSendInterrupt();
-			NVIC->ISER[0] &= ~(1 << 1); // Disable SPI1_IRQ
+			NVIC->ICER[0] |= (1 << 1); // Disable SPI1_IRQ
 		}
 	}
 }

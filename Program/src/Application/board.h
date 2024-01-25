@@ -24,7 +24,11 @@
 #include "ADC.h"
 #include "DAC.h"
 
+#include "CTimer.h"
 #include "Semaphore.h"
+
+#include "IoTManager.h"
+#include "QTConnection.h"
 
 /////////////////////////////////
 /// HARDWARE GLOBAL VARIABLES ///
