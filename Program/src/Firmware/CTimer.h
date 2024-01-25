@@ -25,6 +25,7 @@ public:
 	enum channelFunction_t { CTIMER_MATCH, CTIMER_CAPTURE };
 	enum matchInterruption_t { MAT0INT, MAT1INT, MAT2INT, MAT3INT };
 	enum captureInterruption_t { CAP0INT, CAP1INT, CAP2INT, CAP3INT };
+	enum actionInterruption_t { INACTIVE, CLEAR, SET, TOGGLE };
 private:
 	const channelFunction_t m_channelFunction;
 	const uint8_t m_match_channel;
@@ -39,10 +40,11 @@ protected:
 //	uint8_t getPulseState(void);
 //	void setPulse(uint8_t value);
 //	uint32_t getPulseTime(void);
+	void changePrescaler(uint32_t value);
+	void configMatch(uint32_t timeTicks, actionInterruption_t actionInterruption, matchInterruption_t matchInterruption = MAT0INT);
 public:
 	CTimer() = delete;
 	CTimer(const Gpio &output, channelFunction_t channelFunction);
-	void configMatch(uint32_t timeMillis, matchInterruption_t matchInterruption = MAT0INT); // NOTE: IT IS PROTECTED!!
 	void CTIMER_IRQHandler(void); // NOTE: IT IS PRIVATE!!
 	virtual ~CTimer();
 };
