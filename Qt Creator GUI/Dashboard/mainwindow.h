@@ -5,7 +5,8 @@
 #include <QtSerialPort/QtSerialPort>
 #include <QSerialPort>
 #include "qcombobox.h"
-#include "qserialport.h"
+#include "programconfig.h"
+#include "dialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,14 +20,14 @@ public:
     ~MainWindow();
 
 private slots:
+
+    void on_pushButton_login_clicked();
+
+
     void on_pushButton_clicked();
-    void on_pushButton_CONECTAR_clicked();
-    void on_pushButton_ENVIAR_clicked();
-    void onDatosRecibidos();
 
 private:
     Ui::MainWindow *ui;
-    QSerialPort *puerto;
 };
 
 #endif // MAINWINDOW_H
