@@ -24,6 +24,7 @@ Dialog::~Dialog()
 void Dialog::on_pushButton_closeSession_clicked()
 {
     miTemporizador->stop();
+    Puerto.ClosePort();
     this->close();
 
 }
