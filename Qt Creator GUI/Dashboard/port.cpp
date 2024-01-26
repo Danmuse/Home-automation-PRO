@@ -10,7 +10,7 @@ port::port() {
 }
 
 port::port(QString PortNew): m_PortName{PortNew}{
-    m_Puerto = new QSerialPort();
+    m_Puerto = new QSerialPort(this);
     m_Puerto->setPortName(PortNew);
     m_Puerto->setBaudRate(QSerialPort::Baud9600);
     m_Puerto->setDataBits(QSerialPort::Data8);
@@ -117,9 +117,9 @@ SerialParams port::GetDato()
         m_Flag = false;
         int index = datoStr.indexOf(':');
 
-        if (index != -1) {
+        if (index != -1 && datoStr.at(0) == '$' && datoStr.at(datoStr.length() - 1) == '%') {
             // Separa el dato antes y después de ':'
-            Valor.Param = datoStr.left(index); //sacar el $
+            Valor.Param = datoStr.mid(1, index - 1);
             Valor.Info = datoStr.mid(index + 1).chopped(1);
         }
     }
