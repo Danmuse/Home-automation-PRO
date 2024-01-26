@@ -9,7 +9,7 @@
 
 
 
-class database
+class database: public QObject
 {
 public:
     database(QString Host, QString User, QString Type, int Port, QString Password, QString Schema);

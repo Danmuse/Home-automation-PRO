@@ -13,14 +13,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     database.cpp \
+    dialog.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    port.cpp \
+    programconfig.cpp
 
 HEADERS += \
     database.h \
-    mainwindow.h
+    dialog.h \
+    mainwindow.h \
+    port.h \
+    programconfig.h
 
 FORMS += \
+    dialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.

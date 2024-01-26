@@ -117,6 +117,7 @@ bool database::LoginUser(QString Username, QString Password)
             return 0;
         }
     }
+    return 0;
 }
 
 bool database::CreateUser(QString Username, QString Password)
@@ -160,6 +161,7 @@ bool database::RemoveUser(QString Username)
     }else{
         return 0;
     }
+    return 0;
 }
 
 bool database::VerificateUser(QString NameDat)
