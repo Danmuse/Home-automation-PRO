@@ -10,16 +10,20 @@
 
 #include "QTConnection.h"
 
-QTConnection::QTConnection(UART &uart) : IoTConnection(), Callback(),
-m_uart{uart}, m_recMessagePos{0}, m_timeoutCounter{(uint16_t)(SERIAL_TIMEOUT * (g_systick_freq / 1000))} {
+QTConnection::QTConnection(UART& uart) : IoTConnection(), Callback(),
+                                         m_uart{uart}, m_recMessagePos{0},
+                                         m_timeoutCounter{(uint16_t) (SERIAL_TIMEOUT * (g_systick_freq / 1000))} {
     g_callback_list.push_back(this);
 }
 
-char* QTConnection::receiveMessage(void) {
+void QTConnection::receiveMessage() {
     this->m_recMessage[this->m_recMessagePos] = '\0';
 
-    for (IoTListener* listener: this->m_listeners) listener->processIoTMessage(this->m_recMessage + 1);
-    return nullptr;
+    for (IoTListener* listener: this->m_listeners) {
+        listener->processIoTMessage(this->m_recMessage + 1);
+        //+1 to skip the header
+    }
+
 }
 
 void QTConnection::uploadVariable(IoTVariable_st variable) {
@@ -27,7 +31,7 @@ void QTConnection::uploadVariable(IoTVariable_st variable) {
 
     message[0] = SERIAL_HEADER;
     strcpy(message + 1, variable.name);
-    strcat(message, ",");
+    strcat(message, ":");
 
     itoa(variable.variable, message + strlen(message), 10);
     message[strlen(message)] = SERIAL_FOOTER;
@@ -36,21 +40,21 @@ void QTConnection::uploadVariable(IoTVariable_st variable) {
 }
 
 void QTConnection::suscribeListener(IoTListener* listener) {
-	this->m_listeners.push_back(listener);
+    this->m_listeners.push_back(listener);
 }
 
-void QTConnection::callbackMethod(void) {
+void QTConnection::callbackMethod() {
     bool newChar = this->m_uart.receive(this->m_recMessage + this->m_recMessagePos, 1);
 
     if (!newChar) {
-    	this->m_timeoutCounter = SERIAL_TIMEOUT * (g_systick_freq / 1000);
+        this->m_timeoutCounter = SERIAL_TIMEOUT * (g_systick_freq / 1000);
         switch (this->m_serialState) {
             case WAITING_HEADER:
                 // Pos should always be 0
                 if (this->m_recMessage[this->m_recMessagePos] == SERIAL_HEADER) {
-                	this->m_recMessagePos++;
+                    this->m_recMessagePos++;
                     this->m_serialState = DECODING;
-                    // TODO: Add timeout
+                    // timeout
 //                this->timeoutComunicacion.timerStart(1);
                 }
 
@@ -60,6 +64,8 @@ void QTConnection::callbackMethod(void) {
 //                this->timeoutComunicacion.timerStop();
                     this->m_serialState = WAITING_HEADER;
                     this->receiveMessage();
+                    //Not needed, but just in case
+                    memset(this->m_recMessage, 0, this->m_recMessagePos);
 
                     this->m_recMessagePos = 255; // So that when adding everything is equivalent to 0
                 }
@@ -78,10 +84,10 @@ void QTConnection::callbackMethod(void) {
     }
 }
 
-void QTConnection::communicationTimeout(void) {
-	this->m_serialState = WAITING_HEADER;
+void QTConnection::communicationTimeout() {
+    this->m_serialState = WAITING_HEADER;
     memset(this->m_recMessage, 0, this->m_recMessagePos);
     this->m_recMessagePos = 0;
 }
 
-QTConnection::~QTConnection() { }
+QTConnection::~QTConnection() {}

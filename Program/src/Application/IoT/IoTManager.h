@@ -28,7 +28,7 @@ public:
 	IoTManager(IoTConnection* ioTConnection);
 	void addVariableToUpload(char* name, int &variable, int uploadPeriod);
 	void processIoTMessage(char* message) override;
-	void callbackMethod(void) override;
+	void callbackMethod() override;
 	~IoTManager();
 };
 
