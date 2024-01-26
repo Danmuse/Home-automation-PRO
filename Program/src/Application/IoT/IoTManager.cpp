@@ -22,7 +22,7 @@ void IoTManager::addVariableToUpload(char* name, int& variable, int uploadPeriod
     this->m_variablesToUpload.insert(std::pair<char*, IoTVariable_st>(name, iotVariable));
 }
 
-void IoTManager::callbackMethod(void) {
+void IoTManager::callbackMethod() {
 	for (auto& variablePair : this->m_variablesToUpload) {
 		auto& name = variablePair.first;
 		auto& ioTVariable = variablePair.second;
@@ -37,11 +37,11 @@ void IoTManager::callbackMethod(void) {
 
 // Super lazy implementation
 void IoTManager::processIoTMessage(char* message) {
-    char* token = strtok(message, ",");
+    char* token = strtok(message, ":");
 
-    if (strcmp(token, "setBright") == 0) {
+    if (strcmp(token, "luz") == 0) {
         token = strtok(nullptr, ",");
-        int bright = atoi(token);
+        int brightness = atoi(token);
         // TODO: Implement this
     }
 }
