@@ -10,9 +10,8 @@
 #define S5050DJ_H_
 
 #include "CTimer.h"
-#include "GPIO.h"
 
-class S5050DJ : protected Gpio, CTimer {
+class S5050DJ : protected CTimer {
 public:
 	S5050DJ() = delete;
 	S5050DJ(const Gpio &output);

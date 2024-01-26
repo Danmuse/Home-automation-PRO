@@ -187,11 +187,11 @@ void UART::UART_IRQHandler(void) {
 
 UART::~UART() {
 	this->disableInterrupt();
-	if (this->m_usart == USART0) NVIC->ISER[0] &= ~(1 << 3);       // Disable UART0_IRQ
-	else if (this->m_usart == USART1) NVIC->ISER[0] &= ~(1 << 4);  // Disable UART1_IRQ
-	else if (this->m_usart == USART2) NVIC->ISER[0] &= ~(1 << 5);  // Disable UART2_IRQ
-	else if (this->m_usart == USART3) NVIC->ISER[0] &= ~(1 << 30); // Disable UART3_IRQ
-	else if (this->m_usart == USART4) NVIC->ISER[0] &= ~(1 << 31); // Disable UART4_IRQ
+	if (this->m_usart == USART0) NVIC->ICER[0] |= (1 << 3);       // Disable UART0_IRQ
+	else if (this->m_usart == USART1) NVIC->ICER[0] |= (1 << 4);  // Disable UART1_IRQ
+	else if (this->m_usart == USART2) NVIC->ICER[0] |= (1 << 5);  // Disable UART2_IRQ
+	else if (this->m_usart == USART3) NVIC->ICER[0] |= (1 << 30); // Disable UART3_IRQ
+	else if (this->m_usart == USART4) NVIC->ICER[0] |= (1 << 31); // Disable UART4_IRQ
 	delete[] this->m_bufferRX;
 	delete[] this->m_bufferTX;
 }
