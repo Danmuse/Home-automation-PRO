@@ -27,7 +27,7 @@ class PWM : protected Gpio {
 protected:
 	const uint8_t m_channel;
 	static uint8_t m_quantity;
-	static uint32_t m_period;
+	static uint32_t m_frequency;
 	float m_duty;
 private:
 	void initSCTimer(void) const;
@@ -35,7 +35,7 @@ private:
 	void disableSWM(void) const;
 public:
 	PWM() = delete;
-	PWM(const Gpio &output, float duty, uint32_t period = 1000);
+	PWM(const Gpio &output, float duty, uint32_t frequency = 1000);
 	float getDuty(void) const;
 	void setDuty(float duty);
 	void bindChannel(void);
