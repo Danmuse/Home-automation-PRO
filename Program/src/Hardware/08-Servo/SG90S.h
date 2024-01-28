@@ -8,16 +8,16 @@
 #define MIN_DUTY 5
 #define PULSE_MAX_INCREMENT 5
 
-class ServoSG90S {
+class SG90S {
     private:
         PWM m_pwm;
 
     public:
-        ServoSG90S(Gpio& controlPin);
+        SG90S(Gpio& controlPin);
 
         void setAngle(int angle);
 
-        ~ServoSG90S() = default;
+        ~SG90S() = default;
 
 };
 

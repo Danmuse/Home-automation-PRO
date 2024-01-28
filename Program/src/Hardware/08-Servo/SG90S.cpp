@@ -1,9 +1,9 @@
-#include "ServoSG90S.h"
+#include "SG90S.h"
 
-ServoSG90S::ServoSG90S(Gpio& controlPin) : m_pwm(controlPin, MIN_DUTY, 50) {
+SG90S::SG90S(Gpio& controlPin) : m_pwm(controlPin, MIN_DUTY, 50) {
 }
 
-void ServoSG90S::setAngle(int angle) {
+void SG90S::setAngle(int angle) {
     if (angle > MAX_ANGLE) {
         angle = MAX_ANGLE;
     } else if (angle < 0) {

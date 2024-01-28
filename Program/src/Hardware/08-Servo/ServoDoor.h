@@ -1,14 +1,14 @@
 #ifndef SERVODOOR_H
 #define SERVODOOR_H
 
-#include "ServoSG90S.h"
+#include "SG90S.h"
 
 #define OPEN_POS 0 //Could use enumn and also open/close with set(OPEN) or smth, but ugly API
 #define CLOSE_POS 90
 
 class ServoDoor {
     private:
-        ServoSG90S m_servo;
+        SG90S m_servo;
         int m_currentPos;
 
     public:
