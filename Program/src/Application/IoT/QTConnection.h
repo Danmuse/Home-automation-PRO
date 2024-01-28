@@ -35,14 +35,14 @@ private:
 	uint16_t m_timeoutCounter; // WARNING: Using this member as a "uint16_t" type could cause instabilities in the configured time period
 	std::vector<IoTListener*> m_listeners;
 
-	void communicationTimeout(void);
+	void communicationTimeout();
 public:
 	QTConnection() = delete;
 	QTConnection(UART& uart);
-	char* receiveMessage(void) override;
+	void receiveMessage() override;
 	void uploadVariable(IoTVariable_st variable) override;
 	void suscribeListener(IoTListener* listener) override;
-	void callbackMethod(void) override;
+	void callbackMethod() override;
 	~QTConnection();
 };
 
