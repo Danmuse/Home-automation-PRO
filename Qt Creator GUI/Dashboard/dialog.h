@@ -26,6 +26,24 @@ private slots:
 
     void on_LuzLevel_actionTriggered(int action);
 
+    void on_checkBox_stateChanged(int arg1);
+
+    void on_PauseMusic_clicked();
+
+    void on_VolumeMusic_actionTriggered(int action);
+
+    void on_PlayMusic_clicked();
+
+    void on_ComboMusic_currentIndexChanged(int index);
+
+    void on_Red_clicked();
+
+    void on_White_clicked();
+
+    void on_Blue_clicked();
+
+    void on_Green_clicked();
+
 private:
     Ui::Dialog *ui;
     QTimer *miTemporizador;

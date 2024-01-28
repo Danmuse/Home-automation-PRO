@@ -17,20 +17,30 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     port.cpp \
-    programconfig.cpp
+    programconfig.cpp \
+    validatormodal.cpp
 
 HEADERS += \
     database.h \
     dialog.h \
     mainwindow.h \
     port.h \
-    programconfig.h
+    programconfig.h \
+    validatormodal.h
 
 FORMS += \
     dialog.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    validatormodal.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += / 568288.png \
+    pause.png
+
+RESOURCES += \
+    pause.png
+

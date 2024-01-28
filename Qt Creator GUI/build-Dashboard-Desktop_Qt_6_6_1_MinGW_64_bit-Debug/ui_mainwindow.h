@@ -13,10 +13,13 @@
 #include <QtGui/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -26,16 +29,25 @@ class Ui_MainWindow
 public:
     QAction *action;
     QWidget *centralwidget;
-    QLabel *label_user;
     QLabel *label_titulo;
-    QLabel *label_confirmLogin;
-    QLineEdit *lineEdit_user;
-    QLabel *label_password;
-    QPushButton *pushButton_login;
     QLabel *label_2;
+    QWidget *gridLayoutWidget;
+    QGridLayout *gridLayout;
+    QLabel *label_password;
+    QLabel *label_user;
+    QLineEdit *lineEdit_user;
     QLineEdit *lineEdit_password;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *label_confirmLogin;
+    QHBoxLayout *horizontalLayout;
+    QPushButton *CreateUser;
+    QPushButton *Login;
+    QWidget *layoutWidget;
+    QVBoxLayout *verticalLayout;
     QComboBox *comboBox;
     QPushButton *pushButton;
+    QLabel *PortConfirm;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -46,51 +58,108 @@ public:
         action->setObjectName("action");
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
-        label_user = new QLabel(centralwidget);
-        label_user->setObjectName("label_user");
-        label_user->setGeometry(QRect(160, 230, 131, 41));
-        QFont font;
-        font.setPointSize(14);
-        label_user->setFont(font);
-        label_user->setFrameShape(QFrame::Box);
         label_titulo = new QLabel(centralwidget);
         label_titulo->setObjectName("label_titulo");
-        label_titulo->setGeometry(QRect(340, 40, 211, 61));
-        QFont font1;
-        font1.setPointSize(20);
-        label_titulo->setFont(font1);
+        label_titulo->setGeometry(QRect(300, 70, 211, 61));
+        QFont font;
+        font.setPointSize(20);
+        label_titulo->setFont(font);
         label_titulo->setFrameShape(QFrame::Box);
-        label_confirmLogin = new QLabel(centralwidget);
-        label_confirmLogin->setObjectName("label_confirmLogin");
-        label_confirmLogin->setGeometry(QRect(360, 420, 281, 31));
-        label_confirmLogin->setFrameShape(QFrame::Box);
-        lineEdit_user = new QLineEdit(centralwidget);
-        lineEdit_user->setObjectName("lineEdit_user");
-        lineEdit_user->setGeometry(QRect(370, 230, 271, 41));
-        label_password = new QLabel(centralwidget);
-        label_password->setObjectName("label_password");
-        label_password->setGeometry(QRect(160, 320, 131, 51));
-        label_password->setFont(font);
-        label_password->setFrameShape(QFrame::Box);
-        pushButton_login = new QPushButton(centralwidget);
-        pushButton_login->setObjectName("pushButton_login");
-        pushButton_login->setGeometry(QRect(370, 480, 191, 61));
-        pushButton_login->setStyleSheet(QString::fromUtf8("color: black;"));
         label_2 = new QLabel(centralwidget);
         label_2->setObjectName("label_2");
         label_2->setGeometry(QRect(240, 150, 421, 31));
+        QFont font1;
+        font1.setPointSize(12);
+        label_2->setFont(font1);
+        gridLayoutWidget = new QWidget(centralwidget);
+        gridLayoutWidget->setObjectName("gridLayoutWidget");
+        gridLayoutWidget->setGeometry(QRect(230, 190, 451, 101));
+        gridLayout = new QGridLayout(gridLayoutWidget);
+        gridLayout->setObjectName("gridLayout");
+        gridLayout->setContentsMargins(15, 0, 0, 0);
+        label_password = new QLabel(gridLayoutWidget);
+        label_password->setObjectName("label_password");
         QFont font2;
-        font2.setPointSize(12);
-        label_2->setFont(font2);
-        lineEdit_password = new QLineEdit(centralwidget);
+        font2.setPointSize(14);
+        label_password->setFont(font2);
+        label_password->setFrameShape(QFrame::NoFrame);
+
+        gridLayout->addWidget(label_password, 1, 0, 1, 1);
+
+        label_user = new QLabel(gridLayoutWidget);
+        label_user->setObjectName("label_user");
+        label_user->setFont(font2);
+        label_user->setFrameShape(QFrame::NoFrame);
+
+        gridLayout->addWidget(label_user, 0, 0, 1, 1);
+
+        lineEdit_user = new QLineEdit(gridLayoutWidget);
+        lineEdit_user->setObjectName("lineEdit_user");
+
+        gridLayout->addWidget(lineEdit_user, 0, 1, 1, 1);
+
+        lineEdit_password = new QLineEdit(gridLayoutWidget);
         lineEdit_password->setObjectName("lineEdit_password");
-        lineEdit_password->setGeometry(QRect(370, 330, 271, 41));
-        comboBox = new QComboBox(centralwidget);
+
+        gridLayout->addWidget(lineEdit_password, 1, 1, 1, 1);
+
+        verticalLayoutWidget = new QWidget(centralwidget);
+        verticalLayoutWidget->setObjectName("verticalLayoutWidget");
+        verticalLayoutWidget->setGeometry(QRect(360, 300, 261, 80));
+        verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget);
+        verticalLayout_2->setSpacing(0);
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        verticalLayout_2->setSizeConstraint(QLayout::SetDefaultConstraint);
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        label_confirmLogin = new QLabel(verticalLayoutWidget);
+        label_confirmLogin->setObjectName("label_confirmLogin");
+        label_confirmLogin->setAutoFillBackground(false);
+        label_confirmLogin->setFrameShape(QFrame::NoFrame);
+
+        verticalLayout_2->addWidget(label_confirmLogin);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName("horizontalLayout");
+        horizontalLayout->setContentsMargins(0, 0, -1, 0);
+        CreateUser = new QPushButton(verticalLayoutWidget);
+        CreateUser->setObjectName("CreateUser");
+        CreateUser->setStyleSheet(QString::fromUtf8("color: black;"));
+
+        horizontalLayout->addWidget(CreateUser);
+
+        Login = new QPushButton(verticalLayoutWidget);
+        Login->setObjectName("Login");
+        Login->setBaseSize(QSize(0, 0));
+        Login->setStyleSheet(QString::fromUtf8("color: black;"));
+
+        horizontalLayout->addWidget(Login);
+
+
+        verticalLayout_2->addLayout(horizontalLayout);
+
+        layoutWidget = new QWidget(centralwidget);
+        layoutWidget->setObjectName("layoutWidget");
+        layoutWidget->setGeometry(QRect(120, 70, 106, 85));
+        verticalLayout = new QVBoxLayout(layoutWidget);
+        verticalLayout->setObjectName("verticalLayout");
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        comboBox = new QComboBox(layoutWidget);
         comboBox->setObjectName("comboBox");
-        comboBox->setGeometry(QRect(100, 40, 71, 31));
-        pushButton = new QPushButton(centralwidget);
+
+        verticalLayout->addWidget(comboBox);
+
+        pushButton = new QPushButton(layoutWidget);
         pushButton->setObjectName("pushButton");
-        pushButton->setGeometry(QRect(100, 80, 80, 24));
+
+        verticalLayout->addWidget(pushButton);
+
+        PortConfirm = new QLabel(layoutWidget);
+        PortConfirm->setObjectName("PortConfirm");
+        PortConfirm->setFont(font1);
+        PortConfirm->setFrameShape(QFrame::Box);
+
+        verticalLayout->addWidget(PortConfirm);
+
         MainWindow->setCentralWidget(centralwidget);
 
         retranslateUi(MainWindow);
@@ -102,13 +171,15 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         action->setText(QString());
-        label_user->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#000000;\">Usuario</span></p></body></html>", nullptr));
-        label_titulo->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; color:#000000;\">Bienvenido a casa</span></p></body></html>", nullptr));
-        label_confirmLogin->setText(QString());
-        label_password->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#000000;\">Contrase\303\261a</span></p></body></html>", nullptr));
-        pushButton_login->setText(QCoreApplication::translate("MainWindow", "Login", nullptr));
+        label_titulo->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; color:#000000;\">Bienvenido a casa</span></p></body></html>", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#000000;\">Por favor ingrese su usuario y contrase\303\261a</span></p></body></html>", nullptr));
+        label_password->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#000000;\">Contrase\303\261a</span></p></body></html>", nullptr));
+        label_user->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#000000;\">Usuario</span></p></body></html>", nullptr));
+        label_confirmLogin->setText(QString());
+        CreateUser->setText(QCoreApplication::translate("MainWindow", "Crear un usuario", nullptr));
+        Login->setText(QCoreApplication::translate("MainWindow", "Login", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "Conectar", nullptr));
+        PortConfirm->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">desconectado</p></body></html>", nullptr));
     } // retranslateUi
 
 };

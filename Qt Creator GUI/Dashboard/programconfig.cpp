@@ -1,7 +1,6 @@
 #include "programconfig.h"
 
 
-
 database Database("brb0vzvtpbxxloikqzji-mysql.services.clever-cloud.com",
               "uaujnwpmnmd9mwxh",
               "QMYSQL",
@@ -10,4 +9,6 @@ database Database("brb0vzvtpbxxloikqzji-mysql.services.clever-cloud.com",
               "brb0vzvtpbxxloikqzji");
 port Puerto;
 
+QStringList Canciones = {"Opening", "Eclipse", "Everlasting", "No Time To Waste", "Diamond", "Lost For Life", "Parasite Eve"};
 
+QString Codigo = "5542";
