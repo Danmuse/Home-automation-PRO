@@ -32,6 +32,7 @@ bool port::OpenPort()
         // Si el puerto se abrió correctamente, conectar la señal readyRead al slot onReadyRead
         connect(m_Puerto, &QSerialPort::readyRead, this, &port::onReadyRead);
         qDebug() << "Puerto serie abierto:" << m_PortName;
+        return true;
     } else {
         // Si hubo un error al abrir el puerto, mostrar un mensaje de error y limpiar la instancia de QSerialPort
         qDebug() << "Error al abrir el puerto serie:" << m_PortName;
@@ -67,8 +68,6 @@ void port::ClosePort() {
         QObject::disconnect(m_Puerto, &QSerialPort::readyRead, this, &port::onReadyRead);
         qDebug() << "Puerto serie cerrado.";
     }
-    delete m_Puerto;
-    m_Puerto = nullptr;
 }
 
 

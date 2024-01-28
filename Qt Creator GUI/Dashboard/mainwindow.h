@@ -7,6 +7,7 @@
 #include "qcombobox.h"
 #include "programconfig.h"
 #include "dialog.h"
+#include "validatormodal.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,13 +22,17 @@ public:
 
 private slots:
 
-    void on_pushButton_login_clicked();
 
+    void on_Login_clicked();
 
     void on_pushButton_clicked();
 
+    void on_CreateUser_clicked();
+
 private:
     Ui::MainWindow *ui;
+    Dialog *Dial;
+    ValidatorModal *Validator;
 };
 
 #endif // MAINWINDOW_H

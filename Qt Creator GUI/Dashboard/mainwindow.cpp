@@ -9,6 +9,13 @@ ui(new Ui::MainWindow) {
     for (int index = 0; index < Puertos.size(); index++) {
         ui->comboBox->addItem(Puertos.at(index).portName());
     }
+    if(ui->pushButton->text() == "Conectar"){
+        ui->Login->setEnabled(false);
+    }else{
+        ui->Login->setEnabled(true);
+    }
+    ui->PortConfirm->setStyleSheet("background-color: red;");
+
 
     //if(Puertos.size() > 0){
     //    Puerto.SetPort(Puertos.at(0).portName());
@@ -21,7 +28,9 @@ ui(new Ui::MainWindow) {
 MainWindow::~MainWindow() {
     Puerto.ClosePort();
     //delete Puerto;
+    delete Dial;
     delete ui;
+
 
     /*
     puerto->close();
@@ -111,24 +120,46 @@ void MainWindow::on_sendBTN_clicked()
 
 
 
-
-void MainWindow::on_pushButton_login_clicked()
+void MainWindow::on_pushButton_clicked()
 {
-    Dialog *Dial = new Dialog(this);
+    if(ui->pushButton->text() == "Conectar"){
+        Puerto.SetPort(ui->comboBox->currentText());
+        Puerto.OpenPort();
+        ui->pushButton->setText("Desconectar");
+        ui->comboBox->setEnabled(false);
+        ui->Login->setEnabled(true);
+        ui->PortConfirm->setStyleSheet("background-color: green;");
+        ui->PortConfirm->setText("Conectado");
+    }else if(ui->pushButton->text() == "Desconectar"){
+        Puerto.ClosePort();
+        ui->pushButton->setText("Conectar");
+        ui->comboBox->setEnabled(true);
+        ui->Login->setEnabled(false);
+        ui->PortConfirm->setStyleSheet("background-color: red;");
+        ui->PortConfirm->setText("Desconectado");
+    }
+}
+
+
+void MainWindow::on_Login_clicked()
+{
 
     QString Usuario = ui->lineEdit_user->text();
     QString Contraseña = ui->lineEdit_password->text();
     if(Database.LoginUser(Usuario, Contraseña)){
         ui->lineEdit_password->clear();
         ui->lineEdit_user->clear();
+        Dial = new Dialog(this);
         Dial->show();
     }else{
         ui->label_confirmLogin->setText("Usuario o Contraseña incorrectos");
     }
 }
 
-void MainWindow::on_pushButton_clicked()
+
+void MainWindow::on_CreateUser_clicked()
 {
-    Puerto.SetPort(ui->comboBox->currentText());
+    Validator = new ValidatorModal(this, QString(ui->lineEdit_user->text()), QString(ui->lineEdit_password->text()));
+    Validator->show();
 }
 

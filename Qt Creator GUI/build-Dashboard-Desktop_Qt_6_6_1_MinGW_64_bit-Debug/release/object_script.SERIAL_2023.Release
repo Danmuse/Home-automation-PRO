@@ -1,0 +1,11 @@
+release/database.o
+release/dialog.o
+release/main.o
+release/mainwindow.o
+release/port.o
+release/programconfig.o
+release/validatormodal.o
+release/qrc_qmake_qmake_immediate.o
+release/moc_dialog.o
+release/moc_mainwindow.o
+release/moc_validatormodal.o
