@@ -75,6 +75,10 @@ Gpio DIG_OUT1(Gpio::PORT1, 1, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio DIG_OUT2(Gpio::PORT1, 2, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN19_PINS
 
+#ifdef LED_TRIP_PIN
+Gpio LED_TRIP(Gpio::PORT0, 29, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
+#endif // LED_TRIP_PIN
+
 #ifdef USB0_PINS
 Gpio RX1_IN(Gpio::PORT0, 24, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
 Gpio TX1_OUT(Gpio::PORT0, 25, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
