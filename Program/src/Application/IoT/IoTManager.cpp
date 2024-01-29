@@ -43,27 +43,6 @@ void IoTManager::processIoTMessage(char* message) {
             return;
         }
     }
-
-    if (strcmp(token, "luz") == 0) {
-        token = strtok(nullptr, ",");
-        int brightness = atoi(token);
-    }
-    else if (strcmp(token, "red")) {
-        //TODO: Lights on red
-    }
-    else if (strcmp(token, "white")) {
-        //TODO: Lights on white
-    }
-    else if (strcmp(token, "green")) {
-        //TODO: Lights on green
-    }
-    else if (strcmp(token, "blue")) {
-        //TODO: Lights on blue
-    }
-    else if (strcmp(token, "volume")) {
-        //TODO: change music volume
-    }
-
 }
 
 IoTManager::~IoTManager() {}
