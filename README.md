@@ -25,16 +25,16 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 
 - [ ] [Restorations of the house model.](https://github.com/Danmuse/Home-automation/issues/1) `DDM ~ 17`
 - [ ] Development board (Schematic and PCB).
-- [ ] Project setup with wireless connections.
+- [ ] Hardware installations on the house model.
 - [x] 1:18 scale house model.
 
 ### 👨‍💻️ __Software & GUI APP__
 
-- [ ] [Desktop and mobile graphical application for controlling automation created in **Qt Creator**.](https://github.com/Danmuse/Home-automation-PRO/issues/12) `DDM ~ 2`
-- [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 5` `AO ~ 2`
+- [ ] [Desktop and mobile graphical application for controlling automation created in **Qt Creator**.](https://github.com/Danmuse/Home-automation-PRO/issues/12) `LC ~ 17` `CY ~ 4` `DDM ~ 2`
+- [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 15` `AO ~ 13`
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 184` `AO ~ 49` `LC ~ 12` `CY ~ 6`
+`DDM ~ 200` `AO ~ 61` `LC ~ 12` `CY ~ 6`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7)
 - [ ] Micro SD card adaptation for data handling and ".mp3" files using DFPlayer module.
 
@@ -42,9 +42,9 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 
 - [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2) `DDM ~ 10`
 - [x] [Presentation of the project idea.](https://github.com/Danmuse/Home-automation/issues/4) `DDM ~ 8`
-- [ ] [Comprehensive and extensive project report.](https://github.com/Danmuse/Home-automation/issues/8)
+- [ ] [Comprehensive and extensive project report.](https://github.com/Danmuse/Home-automation/issues/8) `CY ~ 6`
 - [ ] Illustrations of the experience and trials.
-- [ ] [Load component datasheet.](https://github.com/Danmuse/Home-automation/issues/5) `DDM ~ 1`
+- [ ] [Load component datasheet.](https://github.com/Danmuse/Home-automation/issues/5) `DDM ~ 1.5`
 
 ---
 

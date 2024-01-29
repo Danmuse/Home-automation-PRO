@@ -12,25 +12,19 @@
 #if !DEBUG_MODE
 
 int main(void) {
-    initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
+	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-    initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-    initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
-    initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
-    initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
+	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
+	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
+	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
-    initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
+	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
-
-//  int exampleVariable = 0;
-//	uint8_t keyPressed = 0;
-
-//  QTConnection connection(*g_usb);
-
-//  IoTManager iotManager(&connection);
 
 //  iotManager.addVariableToUpload("example1", exampleVariable, 1000);
 //  iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
@@ -44,38 +38,41 @@ int main(void) {
     iotManager.registerAction("song", musicFlowControl);
     iotManager.registerAction("volume", musicVolumeControl);
 
-    g_lcd1602->clear();
-    g_lcd1602->write("The Home", 0, 4);
-    g_lcd1602->write("Automation PRO", 1, 1);
-    delay(1000);
-    g_lcd1602->clear();
+	g_lcd1602->clear();
+	g_lcd1602->write("The Home", 0, 4);
+	g_lcd1602->write("Automation PRO", 1, 1);
+	delay(1000);
+	g_lcd1602->clear();
 
-    g_leds->turnOn();
-    delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
-    g_leds->setMode(S5050DJ::STROBE);
-    delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+	g_leds->turnOn();
+	delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+	g_leds->setColor(S5050DJ::WHITE);
+	delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
 
     while (1) {
-        /// External preset acquisition
-        if (g_adcExternal != nullptr) {
-            uint16_t val = (g_adcExternal->analogRead() / 40); // Range: 0 to 100 (Percentage)
-            g_lcd1602->write("A0 ", 0, 0);
-            g_lcd1602->write(val, 0, 3);
-            g_leds->setSequenceSpeed(val);
-        }
+		/// External preset acquisition
+//		if (g_adcExternal != nullptr) {
+//			uint16_t val = (g_adcExternal->analogRead() / 40); // Range: 0 to 100 (Percentage)
+//			g_lcd1602->write("A0 ", 0, 0);
+//			g_lcd1602->write(val, 0, 3);
+//			g_leds->setSequenceSpeed(val);
+//		}
 
-        delay(100);
-        g_lcd1602->write("   ", 0, 4);
-        g_lcd1602->write("   ", 1, 4);
-        g_lcd1602->write("   ", 0, 12);
-        g_lcd1602->write("   ", 1, 12);
+		g_servo->setAngle(0);
+    	delay(1000);
+		g_servo->setAngle(MG90S_MAX_ANGLE / 2);
+		delay(1000);
+		g_servo->setAngle(MG90S_MAX_ANGLE);
+		delay(1000);
+
+//    	g_lcd1602->write("   ", 0, 4);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 
-    g_leds->turnOff();
-    delay((S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+	g_leds->turnOff();
+	delay((S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
 
-    return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }
 
 #else // DEBUG_MODE
@@ -93,6 +90,7 @@ int main(void) {
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+//	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 //	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 //	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
@@ -159,6 +157,7 @@ int main(void) {
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+//	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 //	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 //	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
@@ -216,7 +215,7 @@ int main(void) {
 		externPWM_FST.setDuty(0);
 		g_lcd1602->clear();
 		counterCycles = 0;
-    		g_timers_list.TimerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
+    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
 	}
 }
 
@@ -276,6 +275,7 @@ int main(void) {
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+//	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 //	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 //	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
@@ -292,7 +292,7 @@ int main(void) {
 		g_display->set(value, 0);
 		g_display->set(currentValue, 1);
 		value++; position++; // These are may overflow...
-    	g_timers_list.TimerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
+    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
 		delay(100);
 	}
 }
@@ -311,6 +311,7 @@ int main(void) {
 	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+//	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 //	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
@@ -337,7 +338,7 @@ int main(void) {
 		g_display->set(rtc.TIME.MIN, 0);
 		g_display->set(rtc.TIME.SEC, 1);
 		g_usb->transmit(g_ds3231->print());
-    	g_timers_list.TimerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
+    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
 		delay(1000);
 	}
 }
@@ -356,6 +357,7 @@ int main(void) {
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+//	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 //	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 //	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
@@ -407,20 +409,60 @@ int main(void) {
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-//	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+//	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
-//	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
+	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
+//  int exampleVariable = 0;
+//	uint8_t keyPressed = 0;
+
+//  QTConnection connection(*g_usb);
+
+//  IoTManager iotManager(&connection);
+
+//  iotManager.addVariableToUpload("example1", exampleVariable, 1000);
+//  iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
+
+	g_lcd1602->clear();
+	g_lcd1602->write("The Home", 0, 4);
+	g_lcd1602->write("Automation PRO", 1, 1);
+	delay(1000);
+	g_lcd1602->clear();
+
+	g_leds->turnOn();
+	delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+	g_leds->setMode(S5050DJ::STROBE);
+	delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+
     while (1) {
+		/// External preset acquisition
+		if (g_adcExternal != nullptr) {
+			uint16_t val = (g_adcExternal->analogRead() / 40); // Range: 0 to 100 (Percentage)
+			g_lcd1602->write("A0 ", 0, 0);
+			g_lcd1602->write(val, 0, 3);
+			g_leds->setSequenceSpeed(val);
+		}
+
+		delay(100);
+    	g_lcd1602->write("   ", 0, 4);
+    	g_lcd1602->write("   ", 1, 4);
+    	g_lcd1602->write("   ", 0, 12);
+    	g_lcd1602->write("   ", 1, 12);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
+
+	g_leds->turnOff();
+	delay((S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+
+	return EXIT_SUCCESS;
 }
 
 #endif // DEBUG_MODE macro definition in precompile stage

@@ -27,7 +27,7 @@ public:
 	void setDigit(void) override;
 	void setReset(void);
 	void setClock(void);
-	virtual ~CD4017();
+	virtual ~CD4017() = default;
 };
 
 #endif /* CD4017_H_ */

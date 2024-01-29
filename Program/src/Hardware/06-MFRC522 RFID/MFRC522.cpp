@@ -960,13 +960,12 @@ MFRC522::~MFRC522() {
 //////////////////////////////
 
 void initRFID(void) {
-	#if defined(SPI_DEBUG_PINS)
+	#if defined(SPI0_DEBUG_PINS)
 
-	static Gpio deb(Gpio::PORT0, 13, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
-    static Gpio HARDWARE_RST(SPI_DEBUG_SSEL1);
-    static MFRC522 rfid(SPI_DEBUG_SCK, deb, SPI_DEBUG_MISO, SPI_DEBUG_SSEL0, HARDWARE_RST);
+    static Gpio HARDWARE_RST(SPI0_DEBUG_SSEL1);
+    static MFRC522 rfid(SPI0_DEBUG_SCK, SPI0_DEBUG_MOSI, SPI0_DEBUG_MISO, SPI0_DEBUG_SSEL0, HARDWARE_RST);
 
     g_rfid = &rfid;
 
-	#endif // defined(SPI_DEBUG_PINS)
+	#endif // defined(SPI0_DEBUG_PINS)
 }

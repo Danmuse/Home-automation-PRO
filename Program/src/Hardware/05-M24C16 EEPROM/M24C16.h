@@ -54,7 +54,7 @@ public:
 	template <typename T> EEPROM_result_t write(T data, uint8_t position, pageBlock_t pageBlock = FIRST_PAGE_BLOCK, middleByte_t middleByte = FST_QUARTER_BYTE);
 
 	EEPROM_result_t getStatus(void) const;
-	virtual ~M24C16();
+	virtual ~M24C16() = default;
 };
 
 extern M24C16 *g_eeprom;

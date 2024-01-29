@@ -277,8 +277,6 @@ void ADC::handler(adc_isr_t isr) {
 	}
 }
 
-ADC::~ADC() { }
-
 void ADC_SEQA_IRQHandler(void) {
 	for (uint8_t index = 0; index < MAX_ADC_CHANNELS; index++) {
 		if (g_adc[index] != nullptr) g_adc[index]->handler(ADC::SEQA_ISR);

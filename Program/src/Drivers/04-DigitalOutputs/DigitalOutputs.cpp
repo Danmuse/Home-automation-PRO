@@ -32,5 +32,3 @@ void DigitalOutput::callbackMethod(void) {
 	if (this->getPin()) this->setPin();
 	else this->clearPin();
 }
-
-DigitalOutput::~DigitalOutput() { }

@@ -50,7 +50,7 @@ public:
 	void write(const int32_t value, const uint8_t row = 0, const uint8_t column = 0);
 	void clear(void);
 	void callbackMethod(void) override;
-	virtual ~LCD1602();
+	virtual ~LCD1602() = default;
 };
 
 extern LCD1602 *g_lcd1602;

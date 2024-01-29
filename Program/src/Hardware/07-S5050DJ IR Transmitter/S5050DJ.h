@@ -64,7 +64,7 @@ public:
 	bool setSequenceSpeed(uint8_t percentage);
 	bool turnOn(void);
 	bool turnOff(void);
-	virtual ~S5050DJ();
+	virtual ~S5050DJ() = default;
 };
 
 extern S5050DJ *g_leds;

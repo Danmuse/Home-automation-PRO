@@ -18,7 +18,7 @@ class IoTListener {
 public:
 	IoTListener() = default;
 	virtual void processIoTMessage(char* message) = 0;
-	~IoTListener() = default;
+	virtual ~IoTListener() = default;
 };
 
 #endif // IOT_LISTENER_H_

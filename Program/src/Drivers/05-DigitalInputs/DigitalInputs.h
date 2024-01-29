@@ -30,7 +30,7 @@ public:
 	explicit operator bool(void);
 	bool operator!(void);
 	void callbackMethod(void) override;
-	virtual ~DigitalInput();
+	virtual ~DigitalInput() = default;
 };
 
 #endif /* DIGITAL_INPUTS_H_ */

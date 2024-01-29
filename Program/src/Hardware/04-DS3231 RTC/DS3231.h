@@ -127,7 +127,7 @@ public:
 
 	void changeHoursMode(hoursMode_t hoursMode);
 	char* printTimestamp(void);
-	virtual ~DS3231();
+	virtual ~DS3231() = default;
 };
 
 extern DS3231 *g_ds3231;

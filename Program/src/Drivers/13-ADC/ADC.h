@@ -91,7 +91,7 @@ public:
 	void handler(adc_isr_t isr);
 	bool checkResult(void);
 	uint16_t analogRead(void);
-	virtual ~ADC();
+	virtual ~ADC() = default;
 };
 
 extern ADC *g_preset;

@@ -79,5 +79,3 @@ void SCTimer::bindSCTOUT(uint8_t bit, uint8_t port, uint8_t out_number) {
 	SYSCON->PRESETCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SCT_MASK;
 	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
-
-SCTimer::~SCTimer() { }

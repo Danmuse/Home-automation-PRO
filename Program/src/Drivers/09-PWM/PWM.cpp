@@ -14,7 +14,7 @@ uint8_t PWM::m_quantity = 0;
 uint32_t PWM::m_frequency = 1000;
 
 PWM::PWM(const Gpio &output, float duty, uint32_t frequency) : Gpio(output),
-                                                               m_channel{m_quantity++} {
+m_channel{m_quantity++} {
 	if (this->m_direction != Gpio::OUTPUT) this->toggleDir();
 	this->m_frequency = frequency;
 	// The frequency that the PWM-controlled outputs will have in common begins.

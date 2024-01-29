@@ -25,7 +25,7 @@ public:
 	CD4511B() = delete;
 	CD4511B(const std::vector<Gpio*> &BCD);
 	void setSegments(uint16_t value) override;
-	virtual ~CD4511B();
+	virtual ~CD4511B() = default;
 };
 
 #endif /* CD4511B_H_ */

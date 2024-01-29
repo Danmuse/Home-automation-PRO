@@ -18,7 +18,7 @@ struct DigitsGroup {
 public:
 	DigitsGroup() = delete;
 	DigitsGroup(uint8_t	begin, uint8_t quantity) : m_begin{begin}, m_quantity{quantity} { }
-	virtual ~DigitsGroup() { }
+	virtual ~DigitsGroup() = default;
 };
 
 #endif /* DIGITS_GROUP_H_ */

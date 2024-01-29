@@ -17,5 +17,3 @@ m_callback{function} {
 void Callback::callbackMethod(void) {
 	if (m_callback) m_callback();
 }
-
-Callback::~Callback() { }

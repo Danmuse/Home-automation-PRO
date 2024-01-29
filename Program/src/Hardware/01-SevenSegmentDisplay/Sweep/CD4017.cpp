@@ -30,5 +30,3 @@ void CD4017::setClock(void) {
     this->m_pins4017[CLK_INDEX]->setPin();
     this->m_pins4017[CLK_INDEX]->clearPin();
 }
-
-CD4017::~CD4017() { }

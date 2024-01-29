@@ -42,7 +42,7 @@ public:
 	friend bool operator==(bool checkEvent, Timer& timer);
 	explicit operator bool(void);
 	void callbackMethod(void) override;
-	virtual ~Timer();
+	virtual ~Timer() = default;
 };
 
 #endif /* TIMER_H_ */
