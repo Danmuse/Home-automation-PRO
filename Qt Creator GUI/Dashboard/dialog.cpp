@@ -98,7 +98,7 @@ void Dialog::on_PauseMusic_clicked()
 {
     ui->PauseMusic->setEnabled(false);
     ui->PlayMusic->setEnabled(true);
-    Puerto.SendData(QString("$pause:on%"));
+    Puerto.SendData(QString("$song:pause%"));
 }
 
 
@@ -107,7 +107,7 @@ void Dialog::on_PauseMusic_clicked()
 void Dialog::on_VolumeMusic_actionTriggered(int action)
 {
     if(action != 7){
-        Puerto.SendData(QString("$volume:%1%").arg(action));
+        Puerto.SendData(QString("$song:%1%").arg(action));
     }
 }
 
@@ -129,27 +129,27 @@ void Dialog::on_ComboMusic_currentIndexChanged(int index)
 
 void Dialog::on_Red_clicked()
 {
-    Puerto.SendData(QString("$red:on%"));
+    Puerto.SendData(QString("$luz:red%"));
 }
 
 
 void Dialog::on_White_clicked()
 {
-    Puerto.SendData(QString("$white:on%"));
+    Puerto.SendData(QString("$luz:white%"));
 
 }
 
 
 void Dialog::on_Blue_clicked()
 {
-    Puerto.SendData(QString("$blue:on%"));
+    Puerto.SendData(QString("$luz:blue%"));
 
 }
 
 
 void Dialog::on_Green_clicked()
 {
-    Puerto.SendData(QString("$green:on%"));
+    Puerto.SendData(QString("$luz:green%"));
 
 }
 
