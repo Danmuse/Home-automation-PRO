@@ -24,7 +24,7 @@
 //#define CN9_PINS	// SWDIO [PIN 2] - SWCLK [PIN 3] - DIG_IN [PIN 4] - KEY_RESET [PIN 5]
 #define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 //#define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
-//#define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
+#define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
 #define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 #define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
@@ -57,8 +57,8 @@
 //#define ANALOG_ELE_CHANNEL_ENABLED	// ANALOG10_PIN {P0.13}
 //#define ANALOG_TWE_CHANNEL_ENABLED	// ANALOG11_PIN {P0.04}
 
-#define DAC_FST_CHANNEL_ENABLED 	// DAC0_PIN {P0.17}
-//#define DAC_SND_CHANNEL_ENABLED		// DAC1_PIN {P0.29}
+//#define DAC_FST_CHANNEL_ENABLED 	// DAC0_PIN {P0.17}
+//#define DAC_SND_CHANNEL_ENABLED	// DAC1_PIN {P0.29}
 
 /////////////////////////////////////
 /// Errors during the compilation ///

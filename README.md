@@ -24,8 +24,8 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 </details>
 
 - [ ] [Restorations of the house model.](https://github.com/Danmuse/Home-automation/issues/1) `DDM ~ 17`
+- [ ] [Hardware installations on the house model.](https://github.com/Danmuse/Home-automation-PRO/issues/28)
 - [ ] Development board (Schematic and PCB).
-- [ ] Hardware installations on the house model.
 - [x] 1:18 scale house model.
 
 ### 👨‍💻️ __Software & GUI APP__
@@ -35,8 +35,8 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
 `DDM ~ 200` `AO ~ 61` `LC ~ 12` `CY ~ 6`
-- [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7)
-- [ ] Micro SD card adaptation for data handling and ".mp3" files using DFPlayer module.
+- [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7) `LC ~ 6`
+- [ ] [Micro SD card adaptation for data handling and ".mp3" files using DFPlayer module.](https://github.com/Danmuse/Home-automation-PRO/issues/27) `DDM ~ 6`
 
 ### 📚️ __Documentation & Doxygen__
 
