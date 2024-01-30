@@ -29,6 +29,8 @@ private slots:
 
     void on_CreateUser_clicked();
 
+    void CreateUserEnable();
+
 private:
     Ui::MainWindow *ui;
     Dialog *Dial;
