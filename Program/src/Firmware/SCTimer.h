@@ -22,7 +22,7 @@ protected:
 public:
 	SCTimer() = delete;
 	SCTimer(uint8_t period);
-	virtual ~SCTimer();
+	virtual ~SCTimer() = default;
 };
 
 #endif /* SCTIMER_H_ */

@@ -20,7 +20,7 @@ public:
 	void clear(void);
 	DigitalOutput& operator=(Gpio::activity_t state);
 	void callbackMethod(void) override;
-	virtual ~DigitalOutput();
+	virtual ~DigitalOutput() = default;
 };
 
 #endif /* DIGITAL_OUTPUTS_H_ */

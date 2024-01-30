@@ -20,11 +20,12 @@
 #include "DS3231.h"
 #include "M24C16.h"
 #include "MFRC522.h"
+#include "S5050DJ.h"
+#include "MG90S.h"
 #include "UART.h"
 #include "ADC.h"
 #include "DAC.h"
 
-#include "CTimer.h"
 #include "Semaphore.h"
 
 #include "IoTManager.h"
@@ -39,9 +40,11 @@
 /// --- "SevenSegmentDisplay *g_display" located in "Hardware/01-SevenSegmentDisplay/Display/SevenSegmentDisplay.h"
 /// --- "Keyboard *g_keyboard" located in "Hardware/02-MatrixKeyboard/Keyboard.h"
 /// --- "LCD1602 *g_lcd1602" located in "Hardware/03-LCD1602/LCD1602.h"
-/// --- "DS3231 *g_ds3231" located in "Hardware/04-DS3231/DS3231.h"
-/// --- "FM24C16U *g_eeprom" located in "Hardware/05-M24C16/M24C16.h"
-/// --- "MFRC522 *g_rfid" located in "Hardware/06-MFRC522/MFRC522.h"
+/// --- "DS3231 *g_ds3231" located in "Hardware/04-DS3231\ RTC/DS3231.h"
+/// --- "FM24C16U *g_eeprom" located in "Hardware/05-M24C16\ EEPROM/M24C16.h"
+/// --- "MFRC522 *g_rfid" located in "Hardware/06-MFRC522\ RFID/MFRC522.h"
+/// --- "S5050DJ *g_leds" located in "Hardware/07-S5050DJ\ IR\ Transmitter/S5050DJ.h"
+/// --- "SG90S *g_servo" located in "Hardware/08-MG90S\ Servo/MG90S.h"
 /// --- "UART *g_usb" located in "Drivers/10-UART/UART.h"
 /// --- "ADC *g_preset" located in "Drivers/13-ADC/ADC.h"
 /// --- "ADC *g_adcExternal" located in "Drivers/13-ADC/ADC.h"
@@ -79,6 +82,8 @@
 /// --- "MAX_SPI_CHANNELS" located in "Drivers/12-SPI/SPI.h"
 /// --- "MAX_PWM_CHANNELS" located in "Drivers/09-PWM/PWM.h"
 /// --- "MAX_PIN_INTERRUPTS" located in "Drivers/06-PinInterrupt/PinInterrupt.h"
+/// --- "MAX_CTIMER0_MATCH_CHANNELS" located in "Firmware/CTimer.h"
+/// --- "MAX_CTIMER0_CAPTURE_CHANNELS" located in "Firmware/CTimer.h"
 
 void initDevice(void);
 

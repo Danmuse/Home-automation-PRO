@@ -18,7 +18,7 @@ private:
 public:
 	Callback(void (*function)(void) = nullptr);
 	virtual void callbackMethod(void);
-	virtual ~Callback();
+	virtual ~Callback() = default;
 };
 
 extern std::list<Callback*> g_callback_list;

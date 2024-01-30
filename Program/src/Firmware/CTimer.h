@@ -20,6 +20,8 @@ extern "C" {
 }
 #endif
 
+typedef void (*CTimerHandler)(void);
+
 class CTimer : protected Gpio {
 public:
 	enum channelFunction_t { CTIMER_MATCH, CTIMER_CAPTURE };
@@ -32,20 +34,21 @@ private:
 	const uint8_t m_capture_channel;
 	static uint8_t m_match_quantity;
 	static uint8_t m_capture_quantity;
+	CTimerHandler m_handlerFunction;
 
 	void initCTimer(void) const;
 	void enableSWM(void) const;
 	void disableSWM(void) const;
 protected:
-//	uint8_t getPulseState(void);
-//	void setPulse(uint8_t value);
-//	uint32_t getPulseTime(void);
-	void changePrescaler(uint32_t value);
-	void configMatch(uint32_t timeTicks, actionInterruption_t actionInterruption, matchInterruption_t matchInterruption = MAT0INT);
+	enum countUnit_t { MICROS, MILLIS };
+	void adjustTimeCount(uint32_t value, countUnit_t countUnit);
 public:
 	CTimer() = delete;
-	CTimer(const Gpio &output, channelFunction_t channelFunction);
-	void CTIMER_IRQHandler(void); // NOTE: IT IS PRIVATE!!
+	CTimer(const Gpio &output, channelFunction_t channelFunction, const CTimerHandler handlerFunction = nullptr);
+	void configMatch(uint32_t timeTicks, actionInterruption_t actionInterruption, matchInterruption_t matchInterruption = MAT0INT);
+	void bindHandler(const CTimerHandler handlerFunction);
+	void unbindHandler(void);
+	void CTIMER_IRQHandler(void);
 	virtual ~CTimer();
 };
 

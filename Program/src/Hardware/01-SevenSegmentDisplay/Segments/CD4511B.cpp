@@ -23,5 +23,3 @@ void CD4511B::setSegments(uint16_t value) {
 	if (!((value >> 3) & 1)) this->m_BCD[BCDD_INDEX]->clearPin();
 	else this->m_BCD[3]->setPin();
 }
-
-CD4511B::~CD4511B() { }

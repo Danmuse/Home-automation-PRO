@@ -43,7 +43,7 @@ public:
 	void uploadVariable(IoTVariable_st variable) override;
 	void suscribeListener(IoTListener* listener) override;
 	void callbackMethod() override;
-	~QTConnection();
+	virtual ~QTConnection() = default;
 };
 
 #endif // QT_CONNECTION_H_

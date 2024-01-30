@@ -176,8 +176,6 @@ uint32_t LCD1602::pow(uint32_t base, uint32_t exponent) {
 	return auxiliar;
 }
 
-LCD1602::~LCD1602() { }
-
 //////////////////////////////
 /// LCD1602 initialization ///
 //////////////////////////////

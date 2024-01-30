@@ -54,7 +54,7 @@ public:
 	// The following methods are used in synchronous or asynchronous communications
 	port_t getPort(void) const { return this->m_port; }
 	uint8_t getBit(void) const { return this->m_bit; }
-	virtual ~Gpio();
+	virtual ~Gpio() = default;
 };
 
 #endif /* GPIO_H_ */

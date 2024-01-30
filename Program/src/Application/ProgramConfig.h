@@ -19,15 +19,19 @@
 
 #define CN5_PINS	// SENSOR_IN {Sensor}
 #define CN6_PINS	// DIG_OUT0 {O0} - DIG_OUT1 {O1} - DIG_OUT2 {O2} - DIG_OUT3 {A0} - DIG_OUT4 {A1}
-#define CN7_PINS	// ANALOG_OUT ~ DAC1_PIN {AOUT}
+//#define CN7_PINS	// ANALOG_OUT ~ DAC1_PIN {AOUT}
 #define CN8_PINS	// ANALOG_IN ~ ANALOG1_PIN {AIN}
 //#define CN9_PINS	// SWDIO [PIN 2] - SWCLK [PIN 3] - DIG_IN [PIN 4] - KEY_RESET [PIN 5]
 #define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
-#define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
+//#define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
 //#define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
-//#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
+#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 #define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
+
+#define LED_TRIP_PIN	// LED_TRIP_PIN {P0.29}
+
+#define MG90S_SERVO_PIN	// MG90S_SERVO_PIN {P0.23}
 
 #define USB0_PINS	// RX1_IN {RX} - TX1_OUT {TX}
 
@@ -37,7 +41,8 @@
 //#define SPI0_PINS	// SPI0_SCK - SPI0_MOSI - SPI0_MISO - SPI0_SSEL0
 //#define SPI1_PINS	// SPI1_SCK - SPI1_MOSI - SPI1_MISO - SPI1_SSEL0
 
-#define SPI_DEBUG_PINS	// SPI_DEBUG_SCK - SPI_DEBUG_MOSI - SPI_DEBUG_MISO - SPI_DEBUG_SSEL0 - SPI_DEBUG_SSEL1
+//#define SPI0_DEBUG_PINS	// SPI0_DEBUG_SCK - SPI0_DEBUG_MOSI - SPI0_DEBUG_MISO - SPI0_DEBUG_SSEL0 - SPI0_DEBUG_SSEL1
+//#define SPI1_DEBUG_PINS	// SPI1_DEBUG_SCK - SPI1_DEBUG_MOSI - SPI1_DEBUG_MISO - SPI1_DEBUG_SSEL0 - SPI1_DEBUG_SSEL1
 
 #define ANALOG_FST_CHANNEL_ENABLED	// POTENCIOMETER - ANALOG1_PIN {P0.07}
 #define ANALOG_SND_CHANNEL_ENABLED	// ANALOG1_PIN {P0.06}
@@ -53,7 +58,7 @@
 //#define ANALOG_TWE_CHANNEL_ENABLED	// ANALOG11_PIN {P0.04}
 
 #define DAC_FST_CHANNEL_ENABLED 	// DAC0_PIN {P0.17}
-#define DAC_SND_CHANNEL_ENABLED		// DAC1_PIN {P0.29}
+//#define DAC_SND_CHANNEL_ENABLED		// DAC1_PIN {P0.29}
 
 /////////////////////////////////////
 /// Errors during the compilation ///
@@ -83,12 +88,24 @@
 #error "Macros I2C1_PINS and DAC_FST_CHANNEL_ENABLED cannot be defined simultaneously"
 #endif
 
+#if defined(LED_TRIP_PIN) && (defined(DAC_SND_CHANNEL_ENABLED) || defined(CN7_PINS))
+#error "Macros LED_TRIP_PIN and DAC_SND_CHANNEL_ENABLED or CN7_PINS cannot be defined simultaneously"
+#endif
+
 #if defined(CN12_PINS) && defined(SPI0_PINS)
 #error "Macros CN12_PINS and SPI0_PINS cannot be defined simultaneously"
 #endif
 
 #if defined(USB0_PINS) && defined(SPI0_PINS)
 #error "Macros USB0_PINS and SPI0_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(MG90S_SERVO_PIN) && defined(CN12_PINS)
+#error "Macros MG90S_SERVO_PIN and CN12_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(SPI1_DEBUG_PINS) && defined(CN12_PINS)
+#error "Macros SPI1_DEBUG_PINS and CN12_PINS cannot be defined simultaneously"
 #endif
 
 #if defined(ANALOG_FST_CHANNEL_ENABLED) && defined(SPI1_PINS)
@@ -131,12 +148,12 @@
 #error "Macros ANALOG_ELE_CHANNEL_ENABLED and CN15_PINS cannot be defined simultaneously"
 #endif
 
-#if defined(SPI_DEBUG_PINS) && defined(CN15_PINS)
-#error "Macros SPI_DEBUG_PINS and CN15_PINS cannot be defined simultaneously"
+#if defined(SPI0_DEBUG_PINS) && defined(CN15_PINS)
+#error "Macros SPI0_DEBUG_PINS and CN15_PINS cannot be defined simultaneously"
 #endif
 
-#if defined(ANALOG_ELE_CHANNEL_ENABLED) && defined(SPI_DEBUG_PINS)
-#error "Macros ANALOG_ELE_CHANNEL_ENABLED and SPI_DEBUG_PINS cannot be defined simultaneously"
+#if defined(ANALOG_ELE_CHANNEL_ENABLED) && defined(SPI0_DEBUG_PINS)
+#error "Macros ANALOG_ELE_CHANNEL_ENABLED and SPI0_DEBUG_PINS cannot be defined simultaneously"
 #endif
 
 #if defined(ANALOG_TWE_CHANNEL_ENABLED) && defined(CN10_PINS)
@@ -147,8 +164,16 @@
 /// Warnings during the compilation ///
 ///////////////////////////////////////
 
-#if !defined(CN12_PINS)
+#if !defined(CN12_PINS) && !defined(MG90S_SERVO_PIN) && !defined(SPI1_DEBUG_PINS)
 #warning "Macro CN12_PINS is not defined and Seven Segment Display module initialization will have no effect"
+#endif
+
+#if !defined(MG90S_SERVO_PIN) && !defined(CN12_PINS) && !defined(SPI1_DEBUG_PINS)
+#warning "Macro MG90S_SERVO_PIN is not defined and Servo initialization will have no effect"
+#endif
+
+#if !defined(SPI1_DEBUG_PINS) && !defined(MG90S_SERVO_PIN) && !defined(CN12_PINS)
+#warning "Macro SPI1_DEBUG_PINS is not defined and the initialization of the SPI modules will have no effect"
 #endif
 
 #if !defined(CN13_PINS) && !defined(DAC_FST_CHANNEL_ENABLED)
@@ -157,10 +182,6 @@
 
 #if !defined(DAC_FST_CHANNEL_ENABLED) && !defined(CN13_PINS)
 #warning "Macro DAC_FST_CHANNEL_ENABLED is not defined and DAC pin will have no effect"
-#endif
-
-#if !(defined(CN7_PINS) && defined(DAC_SND_CHANNEL_ENABLED))
-#warning "Macros CN7_PINS and DAC_SND_CHANNEL_ENABLED are not defined and external DAC initialization will have no effect"
 #endif
 
 #if !(defined(CN8_PINS) && defined(ANALOG_SND_CHANNEL_ENABLED))
@@ -175,16 +196,24 @@
 #warning "Macro CN16_PINS is not defined and Matrix Keyboard module initialization will have no effect"
 #endif
 
-#if !defined(CN15_PINS) && !defined(I2C0_PINS) && !defined(SPI_DEBUG_PINS)
+#if !defined(LED_TRIP_PIN) && !(defined(CN7_PINS) && defined(DAC_SND_CHANNEL_ENABLED))
+#warning "Macros LED_TRIP_PIN and CN7_PINS or DAC_SND_CHANNEL_ENABLED are not defined and external RGB LEDs initialization will have no effect"
+#endif
+
+#if !(defined(CN7_PINS) && defined(DAC_SND_CHANNEL_ENABLED)) && !defined(LED_TRIP_PIN)
+#warning "Macros CN7_PINS or DAC_SND_CHANNEL_ENABLED or LED_TRIP_PIN are not defined and external DAC initialization will have no effect"
+#endif
+
+#if !defined(CN15_PINS) && !defined(I2C0_PINS) && !defined(SPI0_DEBUG_PINS)
 #warning "Macro CN15_PINS is not defined and LCD1602 module initialization will have no effect"
 #endif
 
-#if !defined(I2C0_PINS) && !defined(CN15_PINS) && !defined(SPI_DEBUG_PINS)
+#if !defined(I2C0_PINS) && !defined(CN15_PINS) && !defined(SPI0_DEBUG_PINS)
 #warning "Macro I2C0_PINS is not defined and the initialization of the TWI modules will have no effect"
 #endif
 
-#if !defined(I2C0_PINS) && !defined(CN15_PINS) && !defined(SPI_DEBUG_PINS)
-#warning "Macro SPI_DEBUG_PINS is not defined and the initialization of the SPI modules will have no effect"
+#if !defined(SPI0_DEBUG_PINS) && !defined(I2C0_PINS) && !defined(CN15_PINS)
+#warning "Macro SPI0_DEBUG_PINS is not defined and the initialization of the SPI modules will have no effect"
 #endif
 
 //////////////////////////////////////////////////
@@ -266,6 +295,14 @@ extern Gpio DIG_OUT1;
 extern Gpio DIG_OUT2;
 #endif // CN19_PINS
 
+#ifdef LED_TRIP_PIN
+extern Gpio LED_TRIP;
+#endif // LED_TRIP_PIN
+
+#ifdef MG90S_SERVO_PIN
+extern Gpio MG90S_SERVO;
+#endif // MG90S_SERVO_PIN
+
 #ifdef USB0_PINS
 extern Gpio RX1_IN;
 extern Gpio TX1_OUT;
@@ -295,13 +332,21 @@ extern Gpio SPI1_MISO;
 extern Gpio SPI1_SSEL0;
 #endif // SPI1_PINS
 
-#ifdef SPI_DEBUG_PINS
-extern Gpio SPI_DEBUG_SCK;
-extern Gpio SPI_DEBUG_MOSI;
-extern Gpio SPI_DEBUG_MISO;
-extern Gpio SPI_DEBUG_SSEL0;
-extern Gpio SPI_DEBUG_SSEL1;
-#endif // SPI_DEBUG_PINS
+#ifdef SPI0_DEBUG_PINS
+extern Gpio SPI0_DEBUG_SCK;
+extern Gpio SPI0_DEBUG_MOSI;
+extern Gpio SPI0_DEBUG_MISO;
+extern Gpio SPI0_DEBUG_SSEL0;
+extern Gpio SPI0_DEBUG_SSEL1;
+#endif // SPI0_DEBUG_PINS
+
+#ifdef SPI1_DEBUG_PINS
+extern Gpio SPI1_DEBUG_SCK;
+extern Gpio SPI1_DEBUG_MOSI;
+extern Gpio SPI1_DEBUG_MISO;
+extern Gpio SPI1_DEBUG_SSEL0;
+extern Gpio SPI1_DEBUG_SSEL1;
+#endif // SPI1_DEBUG_PINS
 
 #endif /* PROGRAM_CONFIG_H_ */
 

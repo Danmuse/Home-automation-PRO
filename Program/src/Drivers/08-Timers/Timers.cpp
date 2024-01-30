@@ -30,5 +30,3 @@ void Timers::timerStops(void) {
 void Timers::timerEvents(void) {
 	for (Timer* q : this->m_timers) q->timerEvent();
 }
-
-Timers::~Timers() { }

@@ -18,18 +18,29 @@
 #include "Callback.h"
 #include "IoTConnection.h"
 
-class IoTManager : public IoTListener, Callback {
-private:
-	std::map<char*, IoTVariable_st> m_variablesToUpload;
-	IoTConnection* m_ioTConnection;
+typedef void(* ActionListener)(char* message);
 
-public:
-	IoTManager() = delete;
-	IoTManager(IoTConnection* ioTConnection);
-	void addVariableToUpload(char* name, int &variable, int uploadPeriod);
-	void processIoTMessage(char* message) override;
-	void callbackMethod() override;
-	~IoTManager();
+class IoTManager : public IoTListener, Callback {
+    private:
+        std::map<char*, IoTVariable_st> m_variablesToUpload;
+        IoTConnection* m_ioTConnection;
+        std::map<const char*, ActionListener> m_actions;
+
+    public:
+
+        IoTManager() = delete;
+
+        IoTManager(IoTConnection* ioTConnection);
+
+        void addVariableToUpload(char* name, int& variable, int uploadPeriod);
+
+        void processIoTMessage(char* message) override;
+
+        void registerAction(const char* topic, ActionListener actionListener);
+
+        void callbackMethod() override;
+
+        virtual ~IoTManager() = default;
 };
 
 #endif // IOT_MANAGER_H_

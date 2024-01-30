@@ -11,13 +11,13 @@
 #include "PWM.h"
 
 uint8_t PWM::m_quantity = 0;
-uint32_t PWM::m_period = 1000;
+uint32_t PWM::m_frequency = 1000;
 
-PWM::PWM(const Gpio &output, float duty, uint32_t period) : Gpio(output),
+PWM::PWM(const Gpio &output, float duty, uint32_t frequency) : Gpio(output),
 m_channel{m_quantity++} {
 	if (this->m_direction != Gpio::OUTPUT) this->toggleDir();
-	this->m_period = period;
-	// The period that the PWM-controlled outputs will have in common begins.
+	this->m_frequency = frequency;
+	// The frequency that the PWM-controlled outputs will have in common begins.
 	// The following line of code must be executed only once,
 	// otherwise the SCT0->MATCH register would overflow
 	if (this->m_quantity == 1) this->initSCTimer();
@@ -28,8 +28,8 @@ m_channel{m_quantity++} {
 void PWM::initSCTimer(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 8);
 	SCT0->CONFIG |= (1 << 0) | (1 << 17);
-	SCT0->MATCH[0] = FREQ_CLOCK_MCU / this->m_period;
-	SCT0->MATCHREL[0] = FREQ_CLOCK_MCU / this->m_period;
+	SCT0->MATCH[0] = FREQ_CLOCK_MCU / this->m_frequency;
+	SCT0->MATCHREL[0] = FREQ_CLOCK_MCU / this->m_frequency;
 
 	SCT0->EV[0].STATE = 1; // Other than '0'
 	SCT0->EV[0].CTRL = 0 | (1 << 12);
@@ -68,7 +68,7 @@ void PWM::setDuty(float duty) {
     if (this->m_activity == Gpio::HIGH) duty /= 100;
     else duty = (100 - duty) / 100;
 
-    SCT0->MATCHREL[this->m_channel + 1] = FREQ_CLOCK_MCU / (this->m_period) * duty;
+    SCT0->MATCHREL[this->m_channel + 1] = FREQ_CLOCK_MCU / (this->m_frequency) * duty;
 }
 
 void PWM::bindChannel(void) {

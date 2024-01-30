@@ -11,37 +11,61 @@
 #include "IoTManager.h"
 
 IoTManager::IoTManager(IoTConnection* ioTConnection) : IoTListener(), Callback(),
-m_ioTConnection{ioTConnection} {
+                                                       m_ioTConnection{ioTConnection} {
     ioTConnection->suscribeListener(this);
     g_callback_list.push_back(this);
 }
 
 void IoTManager::addVariableToUpload(char* name, int& variable, int uploadPeriod) {
-    IoTVariable_st iotVariable = { name, variable, uploadPeriod, 0 };
+    IoTVariable_st iotVariable = {name, variable, uploadPeriod, 0};
     this->m_variablesToUpload.insert(std::pair<char*, IoTVariable_st>(name, iotVariable));
 }
 
 void IoTManager::callbackMethod() {
-	for (auto& variablePair : this->m_variablesToUpload) {
-		// auto& name = variablePair.first;
-		auto& ioTVariable = variablePair.second;
-		if (ioTVariable.uploadCounter == ioTVariable.uploadPeriod) {
-			this->m_ioTConnection->uploadVariable(ioTVariable);
-			ioTVariable.uploadCounter = 0;
-		}
-		ioTVariable.uploadCounter++;
-	}
+    for (auto& variablePair: this->m_variablesToUpload) {
+        // auto& name = variablePair.first;
+        auto& ioTVariable = variablePair.second;
+        if (ioTVariable.uploadCounter == ioTVariable.uploadPeriod) {
+            this->m_ioTConnection->uploadVariable(ioTVariable);
+            ioTVariable.uploadCounter = 0;
+        }
+        ioTVariable.uploadCounter++;
+    }
 }
 
 // Super lazy implementation
 void IoTManager::processIoTMessage(char* message) {
     char* token = strtok(message, ":");
 
+    for (auto& actionPair: this->m_actions) {
+        if (strcmp(actionPair.first, token) == 0) {
+            actionPair.second(strtok(nullptr, ":"));
+            return;
+        }
+    }
+
     if (strcmp(token, "luz") == 0) {
         token = strtok(nullptr, ",");
         int brightness = atoi(token);
-        // TODO: Implement this
     }
+    else if (strcmp(token, "red")) {
+        //TODO: Lights on red
+    }
+    else if (strcmp(token, "white")) {
+        //TODO: Lights on white
+    }
+    else if (strcmp(token, "green")) {
+        //TODO: Lights on green
+    }
+    else if (strcmp(token, "blue")) {
+        //TODO: Lights on blue
+    }
+    else if (strcmp(token, "volume")) {
+        //TODO: change music volume
+    }
+
 }
 
-IoTManager::~IoTManager() { }
+void IoTManager::registerAction(const char* topic, ActionListener actionListener) {
+    this->m_actions.insert(std::pair<const char*, ActionListener>(topic, actionListener));
+}
