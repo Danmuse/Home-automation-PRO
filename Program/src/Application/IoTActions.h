@@ -13,6 +13,7 @@
 #define IOT_ACTIONS_H_
 
 #include "utils.h"
+#include "S5050DJ.h"
 
 void manualLightControl(char* message);
 
