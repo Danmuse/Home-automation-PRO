@@ -65,6 +65,8 @@ public:
 	bool turnOn(void);
 	bool turnOff(void);
 	virtual ~S5050DJ() = default;
+
+        int getBrightness();
 };
 
 extern S5050DJ *g_leds;

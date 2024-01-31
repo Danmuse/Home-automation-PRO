@@ -31,12 +31,12 @@ void LCD1602::initialize(void) {
 	for (uint8_t index = 0; index < this->m_rows * this->m_columns; index++) this->m_buffer[index] = ' ';
 }
 
-LCD1602& LCD1602::operator=(const int8_t *ptr_str) {
+LCD1602& LCD1602::operator=(const char *ptr_str) {
     this->_write(ptr_str);
 	return *this;
 }
 
-void LCD1602::_write(const int8_t *ptr_str) {
+void LCD1602::_write(const char* ptr_str) {
 	uint8_t index = 0;
 	for (index = this->m_position; (index < this->m_rows * this->m_columns) && (ptr_str[index - this->m_position] != '\0'); index++)
 		this->m_buffer[index] = ptr_str[index - this->m_position];
@@ -46,7 +46,7 @@ void LCD1602::_write(const int8_t *ptr_str) {
 
 void LCD1602::_write(const int32_t value) {
 	int32_t auxiliar;
-	int8_t *ptr_number = new int8_t[12];
+	char *ptr_number = new char[12];
 	uint8_t position = 0;
 
 	if (value < 0) {
@@ -70,7 +70,7 @@ void LCD1602::_write(const int32_t value) {
 	delete [] ptr_number;
 }
 
-void LCD1602::write(const int8_t *ptr_str, uint8_t row, uint8_t column) {
+void LCD1602::write(const char* ptr_str, const uint8_t row, const uint8_t column) {
 	if ((this->m_columns * row) + column <= this->m_columns * this->m_rows) {
 		this->m_position = (this->m_columns * row) + column;
         this->_write(ptr_str);
