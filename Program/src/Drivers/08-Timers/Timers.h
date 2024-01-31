@@ -21,7 +21,7 @@ public:
 	void allStandBy(Timer::standby_t action);
 	void timerStops(void);
 	void timerEvents(void);
-	virtual ~Timers();
+	virtual ~Timers() = default;
 };
 
 #endif /* TIMERS_H_ */

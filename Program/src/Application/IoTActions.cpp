@@ -1,3 +1,13 @@
+/*/*!
+ * @file IoTActions.cpp
+ * @authors
+ * 	Agustin Ordoñez ~ <a href = "mailto: aordonez@frba.utn.edu.ar">aordonez@@frba.utn.edu.ar</a>
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @par Doxygen Editor
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @date 29/91/2024 02:36:05
+ */
+
 #include <cstdlib>
 #include <cstring>
 #include "IoTActions.h"

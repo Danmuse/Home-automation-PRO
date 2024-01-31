@@ -22,7 +22,7 @@ public:
 	virtual void receiveMessage() = 0; //TODO: This returned char*, maybe I'll need it
 	virtual void uploadVariable(IoTVariable_st variable) = 0;
 	virtual void suscribeListener(IoTListener *listener) = 0;
-	~IoTConnection() = default;
+	virtual ~IoTConnection() = default;
 };
 
 #endif // IOT_CONNECTION_H_

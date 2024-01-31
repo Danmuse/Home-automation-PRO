@@ -40,7 +40,7 @@ class IoTManager : public IoTListener, Callback {
 
         void callbackMethod() override;
 
-        ~IoTManager();
+        virtual ~IoTManager() = default;
 };
 
 #endif // IOT_MANAGER_H_

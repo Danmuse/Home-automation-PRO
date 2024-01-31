@@ -57,5 +57,3 @@ DigitalInput::operator bool(void) {
 bool DigitalInput::operator!(void) {
 	return !this->get();
 }
-
-DigitalInput::~DigitalInput() { }

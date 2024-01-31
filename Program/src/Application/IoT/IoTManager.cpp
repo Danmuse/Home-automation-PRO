@@ -45,8 +45,6 @@ void IoTManager::processIoTMessage(char* message) {
     }
 }
 
-IoTManager::~IoTManager() {}
-
 void IoTManager::registerAction(const char* topic, ActionListener actionListener) {
     this->m_actions.insert(std::pair<const char*, ActionListener>(topic, actionListener));
 }

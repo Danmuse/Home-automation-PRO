@@ -148,8 +148,6 @@ EEPROM_result_t M24C16::getStatus(void) const {
 	return this->m_statusEEPROM;
 }
 
-M24C16::~M24C16() { }
-
 ///////////////////////////////
 /// FM24C16U initialization ///
 ///////////////////////////////

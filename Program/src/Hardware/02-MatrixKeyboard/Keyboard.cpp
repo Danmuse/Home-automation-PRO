@@ -61,8 +61,6 @@ void Keyboard::keyboardSW(uint8_t keyStatus) {
 	}
 }
 
-Keyboard::~Keyboard() { }
-
 //////////////////////////////////////
 /// Matrix Keyboard initialization ///
 //////////////////////////////////////

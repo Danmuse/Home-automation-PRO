@@ -15,7 +15,9 @@ ui(new Ui::MainWindow) {
         ui->Login->setEnabled(true);
     }
     ui->PortConfirm->setStyleSheet("background-color: red;");
-
+    connect(ui->lineEdit_user, &QLineEdit::textChanged, this, &MainWindow::CreateUserEnable);
+    connect(ui->lineEdit_password, &QLineEdit::textChanged, this, &MainWindow::CreateUserEnable);
+    ui->CreateUser->setEnabled(false);
 
     //if(Puertos.size() > 0){
     //    Puerto.SetPort(Puertos.at(0).portName());
@@ -161,5 +163,14 @@ void MainWindow::on_CreateUser_clicked()
 {
     Validator = new ValidatorModal(this, QString(ui->lineEdit_user->text()), QString(ui->lineEdit_password->text()));
     Validator->show();
+}
+
+void MainWindow::CreateUserEnable()
+{
+    if(ui->lineEdit_user->text().length() > 0 && ui->lineEdit_password->text().length() > 0){
+        ui->CreateUser->setEnabled(true);
+    }else{
+        ui->CreateUser->setEnabled(false);
+    }
 }
 

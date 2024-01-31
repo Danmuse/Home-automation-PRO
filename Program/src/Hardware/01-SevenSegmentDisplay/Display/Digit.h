@@ -43,7 +43,7 @@ public:
 	void blinkBind(void);
 	void blinkUnbind(void);
 	mode_t getMode(void) const;
-	virtual ~Digit();
+	virtual ~Digit() = default;
 };
 
 #endif /* DIGIT_H_ */

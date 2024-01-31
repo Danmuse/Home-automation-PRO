@@ -58,5 +58,3 @@ void Digit::blinkUnbind(void) {
 Digit::mode_t Digit::getMode(void) const {
 	return this->m_action;
 }
-
-Digit::~Digit() { }

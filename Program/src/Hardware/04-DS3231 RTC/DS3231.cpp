@@ -206,8 +206,6 @@ char* DS3231::printTimestamp(void) {
 	return RTCstr;
 }
 
-DS3231::~DS3231() { }
-
 /////////////////////////////
 /// DS3231 initialization ///
 /////////////////////////////

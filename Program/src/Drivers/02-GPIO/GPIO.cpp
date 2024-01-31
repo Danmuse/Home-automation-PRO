@@ -97,5 +97,3 @@ Gpio::error_t Gpio::toggleDir(void) {
 	else if (this->m_direction == INPUT) this->m_direction = OUTPUT;
 	return this->setDir();
 }
-
-Gpio::~Gpio() { }

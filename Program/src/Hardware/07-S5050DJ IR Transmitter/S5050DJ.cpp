@@ -131,7 +131,8 @@ bool S5050DJ::setBrightness(uint8_t percentage) {
 //	if (!((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
 	if (g_ctimer_instance == nullptr) {
 		if (result > 100 / S5050DJ_MAX_BRIGHTNESS_SPEED_POINT) {
-			result /= (100 / S5050DJ_MAX_BRIGHTNESS_SPEED_POINT);
+			// WARNING: Converting this result to float is expressed as 0 and produces instabilities in the program.
+			result /= (100 / S5050DJ_MAX_BRIGHTNESS_SPEED_POINT); // TODO: Check the result!!
 			if (this->m_brightnessSpeedPoint < result && !(this->m_brightnessSpeedPoint)) {
 				this->m_brightnessSpeedPoint++;
 				this->turnOn();
@@ -166,7 +167,8 @@ bool S5050DJ::setSequenceSpeed(uint8_t percentage) {
 	uint8_t result = percentage > 100 ? 100 : percentage;
 //	if (((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
 	if (g_ctimer_instance == nullptr) {
-		result /= (100 / S5050DJ_MAX_BRIGHTNESS_SPEED_POINT);
+		// WARNING: Converting this result to float is expressed as 0 and produces instabilities in the program.
+		result /= (100 / S5050DJ_MAX_BRIGHTNESS_SPEED_POINT); // TODO: Check the result!!
 		if (this->m_brightnessSpeedPoint < result) {
 //			repeatCommand_instance = true;
 //			repeatCounts_instance = result - this->m_brightnessSpeedPoint;
@@ -208,5 +210,3 @@ void initLEDs(void) {
 
 	#endif // defined(LED_TRIP_PIN)
 }
-
-S5050DJ::~S5050DJ() { }

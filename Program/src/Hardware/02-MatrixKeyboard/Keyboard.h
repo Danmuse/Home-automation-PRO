@@ -30,7 +30,7 @@ public:
 	Keyboard(std::vector<Gpio*> &columns, std::vector<Gpio*> &rows);
 	void callbackMethod(void) override;
 	uint8_t	get(void);
-	virtual ~Keyboard();
+	virtual ~Keyboard() = default;
 private:
 	uint8_t keyboardHW(void);
 	void keyboardSW(uint8_t keyStatus);

@@ -213,5 +213,3 @@ void Timer::callbackMethod(void) {
 		}
 	}
 }
-
-Timer::~Timer() { }
