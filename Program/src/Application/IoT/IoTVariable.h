@@ -15,7 +15,7 @@
 #include "utils.h"
 
 typedef struct {
-    char *name;
+    const char *name;
     // TODO: MAYBE NOT INTEGRER
     int &variable;
     int uploadPeriod;

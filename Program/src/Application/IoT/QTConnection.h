@@ -40,6 +40,7 @@ public:
 	QTConnection() = delete;
 	QTConnection(UART& uart);
 	void receiveMessage() override;
+    void establishConnection() override;
 	void uploadVariable(IoTVariable_st variable) override;
 	void suscribeListener(IoTListener* listener) override;
 	void callbackMethod() override;

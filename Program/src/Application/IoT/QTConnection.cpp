@@ -26,6 +26,22 @@ void QTConnection::receiveMessage() {
 
 }
 
+void QTConnection::establishConnection() {
+    bool confirm = true;
+
+    for (IoTListener* listener: this->m_listeners) {
+        confirm &= listener->initializeConnection();
+        //Make sure all of then return true
+    }
+    if (confirm) {
+        char message[MAX_MESSAGE_SIZE];
+
+        message[0] = SERIAL_HEADER;
+        strcpy(message + 1, "connected:ok");
+        this->m_uart.transmit(message, strlen(message));
+    }
+}
+
 void QTConnection::uploadVariable(IoTVariable_st variable) {
     char message[MAX_MESSAGE_SIZE];
 
@@ -89,3 +105,5 @@ void QTConnection::communicationTimeout() {
     memset(this->m_recMessage, 0, this->m_recMessagePos);
     this->m_recMessagePos = 0;
 }
+
+

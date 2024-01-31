@@ -16,9 +16,9 @@ IoTManager::IoTManager(IoTConnection* ioTConnection) : IoTListener(), Callback()
     g_callback_list.push_back(this);
 }
 
-void IoTManager::addVariableToUpload(char* name, int& variable, int uploadPeriod) {
+void IoTManager::addVariableToUpload(const char* name, int& variable, int uploadPeriod) {
     IoTVariable_st iotVariable = {name, variable, uploadPeriod, 0};
-    this->m_variablesToUpload.insert(std::pair<char*, IoTVariable_st>(name, iotVariable));
+    this->m_variablesToUpload.insert(std::pair<const char*, IoTVariable_st>(name, iotVariable));
 }
 
 void IoTManager::callbackMethod() {
@@ -37,14 +37,40 @@ void IoTManager::callbackMethod() {
 void IoTManager::processIoTMessage(char* message) {
     char* token = strtok(message, ":");
 
+    if (strcmp(token, "connect")) {
+        initConectionState();
+    }
+
     for (auto& actionPair: this->m_actions) {
         if (strcmp(actionPair.first, token) == 0) {
             actionPair.second(strtok(nullptr, ":"));
-            return;
+            return;//Only one function per action TODO: Maybe change?
         }
     }
 }
 
 void IoTManager::registerAction(const char* topic, ActionListener actionListener) {
     this->m_actions.insert(std::pair<const char*, ActionListener>(topic, actionListener));
+}
+
+void IoTManager::initConectionState() {
+    for (auto& variablePair: this->m_variablesToUpload) {
+        auto& ioTVariable = variablePair.second;
+        ioTVariable.uploadCounter = 0;
+    }
+
+}
+
+void IoTManager::registerState(const char* string, bool& variable, std::initializer_list<const char*> strings) {
+
+
+}
+
+void IoTManager::registerState(const char* string, int &variable) {
+
+}
+
+bool IoTManager::initializeConnection() {
+
+    return false;
 }
