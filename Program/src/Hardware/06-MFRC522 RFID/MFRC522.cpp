@@ -401,7 +401,7 @@ RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
 			followingSectionSND = false;
 			calculatingCRC = false;
 
-			this->m_operation = COMMUNICATION_PICC; // WARNING: Force action. Avoid enter to the CRC calculation.relativenumber
+			this->m_operation = COMMUNICATION_PICC; // WARNING: Force action. Avoid enter to the CRC calculation.
 			// Transmit the buffer and receive the response.
 			this->PCD_CommunicateWithPICC(PCD_TRANSCEIVE, RFID_WAIT_IRQ, buffer, bufferUsed, responseBuffer, &responseLength, &txLastBits, rxAlign);
 			if (this->m_statusRFID == RFID_COLLISION_ERR) { // More than one PICC in the field => collision.

@@ -22,6 +22,11 @@
 #define SET_CGRAM				0b01000000 //!< Set CGRAM register
 #define SET_DDRAM				0b10000000 //!< Set DDRAM register
 
+#define DDRAM_FIRST_ROW_ADDR	(0x00U)
+#define DDRAM_SECOND_ROW_ADDR	(0x40U)
+#define DDRAM_THIRD_ROW_ADDR	(0x14U)
+#define DDRAM_FOURTH_ROW_ADDR	(0x54U)
+
 class LCD1602 : public Callback {
 private:
 	enum mode_LCD1602_t { s_eigth_bits, s_four_bits, s_config_display, s_config_cursor, s_clear, s_print, s_row };
@@ -38,19 +43,19 @@ private:
 	void initialize(void);
 	void writeInstruction(const uint8_t data, const Gpio::activity_t mode);
 	uint32_t pow(uint32_t base, uint32_t exponent);
-	void _write(const char* ptr_str);
+	void _write(const int8_t *ptr_str);
 	void _write(const int32_t value);
 public:
 	enum { D7, D6, D5, D4, RS, ENABLE };
 
 	LCD1602() = delete;
 	LCD1602(std::vector<Gpio*> &outputs, const uint8_t rows, const uint8_t columns);
-	LCD1602& operator=(const char *ptr_str);
-	void write(const char* ptr_str, const uint8_t row = 0, const uint8_t column = 0);
+	LCD1602& operator=(const int8_t *ptr_str);
+	void write(const int8_t *ptr_str, const uint8_t row = 0, const uint8_t column = 0);
 	void write(const int32_t value, const uint8_t row = 0, const uint8_t column = 0);
 	void clear(void);
 	void callbackMethod(void) override;
-	virtual ~LCD1602() = default;
+	virtual ~LCD1602();
 };
 
 extern LCD1602 *g_lcd1602;

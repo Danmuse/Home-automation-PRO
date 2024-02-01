@@ -31,12 +31,12 @@ void LCD1602::initialize(void) {
 	for (uint8_t index = 0; index < this->m_rows * this->m_columns; index++) this->m_buffer[index] = ' ';
 }
 
-LCD1602& LCD1602::operator=(const char *ptr_str) {
+LCD1602& LCD1602::operator=(const int8_t *ptr_str) {
     this->_write(ptr_str);
 	return *this;
 }
 
-void LCD1602::_write(const char* ptr_str) {
+void LCD1602::_write(const int8_t *ptr_str) {
 	uint8_t index = 0;
 	for (index = this->m_position; (index < this->m_rows * this->m_columns) && (ptr_str[index - this->m_position] != '\0'); index++)
 		this->m_buffer[index] = ptr_str[index - this->m_position];
@@ -46,7 +46,7 @@ void LCD1602::_write(const char* ptr_str) {
 
 void LCD1602::_write(const int32_t value) {
 	int32_t auxiliar;
-	char *ptr_number = new char[12];
+	int8_t *ptr_number = new int8_t[12];
 	uint8_t position = 0;
 
 	if (value < 0) {
@@ -70,7 +70,7 @@ void LCD1602::_write(const int32_t value) {
 	delete [] ptr_number;
 }
 
-void LCD1602::write(const char* ptr_str, const uint8_t row, const uint8_t column) {
+void LCD1602::write(const int8_t *ptr_str, uint8_t row, uint8_t column) {
 	if ((this->m_columns * row) + column <= this->m_columns * this->m_rows) {
 		this->m_position = (this->m_columns * row) + column;
         this->_write(ptr_str);
@@ -97,20 +97,25 @@ void LCD1602::callbackMethod(void) {
             this->writeInstruction(this->m_buffer[this->m_sweep], Gpio::HIGH);
 			this->m_ticks = 1 * (g_systick_freq / 1000);
 			this->m_sweep++;
-			if ((this->m_sweep == this->m_columns) || (this->m_sweep == (this->m_rows * this->m_columns))) this->m_mode = s_row;
+			if ((this->m_sweep == this->m_columns) ||
+				(this->m_sweep == 2 * this->m_columns && this->m_columns == 20) ||
+				(this->m_sweep == 3 * this->m_columns && this->m_columns == 20) ||
+				(this->m_sweep == (this->m_rows * this->m_columns))) this->m_mode = s_row;
 			break;
 		case s_row:
 			if (this->m_sweep == (this->m_rows * this->m_columns)) {
-                this->writeInstruction(SET_DDRAM, Gpio::LOW);
+                this->writeInstruction(SET_DDRAM | DDRAM_FIRST_ROW_ADDR, Gpio::LOW);
 				this->m_sweep = 0;
-			} else this->writeInstruction(SET_DDRAM | 0x40, Gpio::LOW);
+			} else if (this->m_sweep == this->m_columns) this->writeInstruction(SET_DDRAM | DDRAM_SECOND_ROW_ADDR, Gpio::LOW);
+			else if (this->m_sweep == 2 * this->m_columns && this->m_columns == 20) this->writeInstruction(SET_DDRAM | DDRAM_THIRD_ROW_ADDR, Gpio::LOW);
+			else if (this->m_sweep == 3 * this->m_columns && this->m_columns == 20) this->writeInstruction(SET_DDRAM | DDRAM_FOURTH_ROW_ADDR, Gpio::LOW);
 			this->m_ticks = 1 * (g_systick_freq / 1000);
 			this->m_mode = s_print;
 			break;
 		default:
 		case s_eigth_bits:
             this->m_outputs[ENABLE]->setPin();
-                this->m_outputs[ENABLE]->clearPin();
+            this->m_outputs[ENABLE]->clearPin();
 			this->m_ticks = 5 * (g_systick_freq / 1000);
 			this->m_mode = s_four_bits;
 			break;
@@ -176,6 +181,10 @@ uint32_t LCD1602::pow(uint32_t base, uint32_t exponent) {
 	return auxiliar;
 }
 
+LCD1602::~LCD1602() {
+	delete [] this->m_buffer;
+}
+
 //////////////////////////////
 /// LCD1602 initialization ///
 //////////////////////////////
@@ -191,7 +200,7 @@ void initLCD1602(void) {
 	LCD1602_GPIOs_list.push_back(&LCD_RS);
 	LCD1602_GPIOs_list.push_back(&LCD_EN);
 
-	static LCD1602 lcd1602(LCD1602_GPIOs_list, 2, 16);
+	static LCD1602 lcd1602(LCD1602_GPIOs_list, 4, 20);
 
 	g_lcd1602 = &lcd1602;
 

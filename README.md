@@ -11,10 +11,11 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
   <span>&#10038;</span> LPC845-BRK.<br>
   <span>&#10038;</span> ESP8266 WiFi Serial ESP-01 module. (Optional)<br>
   <span>&#10038;</span> Voice recognition module. (Optional)<br>
-  <span>&#10038;</span> Display OLED SSH1106. (Optional)<br>
+  <span>&#10038;</span> Display LCD2004A with HD44780U controller.<br>
   <span>&#10038;</span> Control of RGB LEDs with NEC protocol.<br>
   <span>&#10038;</span> LDR (Light-Dependent Resistor) sensor.<br>
-  <span>&#10038;</span> Flame sensor KY-026.<br>
+  <span>&#10038;</span> Servo MG90S controlled by PWM.<br>
+  <span>&#10038;</span> Flame sensor KY-026. (Optional)<br>
   <span>&#10038;</span> Infrared sensor KY-032 or HW-201. (Optional)<br>
   <span>&#10038;</span> EEPROM Memory FM24C16U 16KB.<br>
   <span>&#10038;</span> RTC module DS3231SN.<br>
@@ -31,10 +32,10 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 ### 👨‍💻️ __Software & GUI APP__
 
 - [ ] [Desktop and mobile graphical application for controlling automation created in **Qt Creator**.](https://github.com/Danmuse/Home-automation-PRO/issues/12) `LC ~ 17` `CY ~ 4` `DDM ~ 2`
-- [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 15` `AO ~ 13`
+- [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 17.5` `AO ~ 13`
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 200` `AO ~ 61` `LC ~ 12` `CY ~ 6`
+`DDM ~ 203` `AO ~ 65` `LC ~ 12` `CY ~ 6`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7) `LC ~ 6`
 - [ ] [Micro SD card adaptation for data handling and ".mp3" files using DFPlayer module.](https://github.com/Danmuse/Home-automation-PRO/issues/27) `DDM ~ 6`
 
