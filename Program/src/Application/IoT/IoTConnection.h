@@ -22,8 +22,13 @@ class IoTConnection {
 
         virtual void receiveMessage() = 0; //TODO: This returned char*, maybe I'll need it
         virtual void establishConnection() = 0;
+
         virtual void uploadVariable(IoTVariable_st variable) = 0;
+
+        virtual void uploadLiteral(const char* literal) = 0;
+
         virtual void suscribeListener(IoTListener* listener) = 0;
+
         virtual ~IoTConnection() = default;
 };
 

@@ -43,7 +43,6 @@ int main(void) {
 
 
 //    int ledBrightness = g_leds->getBrightness();
-//    iotManager.registerState("automatic", automaticOn,{"on","off"} );
 //    iotManager.registerState("song", idCancion);
 //    iotManager.registerState("song",isSongPlaying, {"play", "pause"});
 //    iotManager.registerState("luz", ledBrightness);

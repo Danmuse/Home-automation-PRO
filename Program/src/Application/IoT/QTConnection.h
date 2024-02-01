@@ -24,27 +24,39 @@
 #define MAX_MESSAGE_SIZE 50
 
 class QTConnection : public IoTConnection, Callback {
-private:
-	enum serialState_t { WAITING_HEADER, DECODING };
-	serialState_t m_serialState = WAITING_HEADER;
+    private:
+        enum serialState_t {
+                WAITING_HEADER, DECODING
+        };
+        serialState_t m_serialState = WAITING_HEADER;
 //  Timer m_timeoutComunicacion;
 
-	UART& m_uart;
-	char m_recMessage[MAX_MESSAGE_SIZE];
-	uint8_t m_recMessagePos;
-	uint16_t m_timeoutCounter; // WARNING: Using this member as a "uint16_t" type could cause instabilities in the configured time period
-	std::vector<IoTListener*> m_listeners;
+        UART& m_uart;
+        char m_recMessage[MAX_MESSAGE_SIZE];
+        uint8_t m_recMessagePos;
+        uint16_t m_timeoutCounter; // WARNING: Using this member as a "uint16_t" type could cause instabilities in the configured time period
+        std::vector<IoTListener*> m_listeners;
 
-	void communicationTimeout();
-public:
-	QTConnection() = delete;
-	QTConnection(UART& uart);
-	void receiveMessage() override;
-    void establishConnection() override;
-	void uploadVariable(IoTVariable_st variable) override;
-	void suscribeListener(IoTListener* listener) override;
-	void callbackMethod() override;
-	virtual ~QTConnection() = default;
+        void communicationTimeout();
+
+    public:
+        QTConnection() = delete;
+
+        QTConnection(UART& uart);
+
+        void receiveMessage() override;
+
+        void establishConnection() override;
+
+        void uploadVariable(IoTVariable_st variable) override;
+
+        void uploadLiteral(const char* literal) override;
+
+        void suscribeListener(IoTListener* listener) override;
+
+        void callbackMethod() override;
+
+        virtual ~QTConnection() = default;
 };
 
 #endif // QT_CONNECTION_H_

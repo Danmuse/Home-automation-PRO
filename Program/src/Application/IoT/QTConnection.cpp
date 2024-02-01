@@ -37,7 +37,7 @@ void QTConnection::establishConnection() {
         char message[MAX_MESSAGE_SIZE];
 
         message[0] = SERIAL_HEADER;
-        strcpy(message + 1, "connected:ok");
+        strcpy(message + 1, "connect:ok");
         this->m_uart.transmit(message, strlen(message));
     }
 }
@@ -50,6 +50,16 @@ void QTConnection::uploadVariable(IoTVariable_st variable) {
     strcat(message, ":");
 
     itoa(variable.variable, message + strlen(message), 10);
+    message[strlen(message)] = SERIAL_FOOTER;
+
+    this->m_uart.transmit(message, strlen(message));
+}
+
+void QTConnection::uploadLiteral(const char* literal) {
+    char message[MAX_MESSAGE_SIZE];
+
+    message[0] = SERIAL_HEADER;
+    strcpy(message + 1, literal);
     message[strlen(message)] = SERIAL_FOOTER;
 
     this->m_uart.transmit(message, strlen(message));
@@ -105,5 +115,7 @@ void QTConnection::communicationTimeout() {
     memset(this->m_recMessage, 0, this->m_recMessagePos);
     this->m_recMessagePos = 0;
 }
+
+
 
 

@@ -37,10 +37,6 @@ void IoTManager::callbackMethod() {
 void IoTManager::processIoTMessage(char* message) {
     char* token = strtok(message, ":");
 
-    if (strcmp(token, "connect")) {
-        initConectionState();
-    }
-
     for (auto& actionPair: this->m_actions) {
         if (strcmp(actionPair.first, token) == 0) {
             actionPair.second(strtok(nullptr, ":"));
@@ -53,24 +49,37 @@ void IoTManager::registerAction(const char* topic, ActionListener actionListener
     this->m_actions.insert(std::pair<const char*, ActionListener>(topic, actionListener));
 }
 
-void IoTManager::initConectionState() {
-    for (auto& variablePair: this->m_variablesToUpload) {
-        auto& ioTVariable = variablePair.second;
-        ioTVariable.uploadCounter = 0;
+bool IoTManager::initializeConnection() {
+    char message[40] = {};
+
+    for (auto& state: states) {
+        memset(message, 0, sizeof(message));
+        strcpy(message, state.name);
+        strcat(message, ":");//Pinchadísimo
+
+        char value[10];
+        memset(value, 0, sizeof(value));
+
+        if (state.stringsRepr.empty()) {
+            itoa(*((int*) state.data), value, 10);
+        }
+        else {
+            strcpy(value, state.stringsRepr[*((int*) state.data)]);
+        }
+
+        this->m_ioTConnection->uploadLiteral(message);
     }
+
+    return true;
 
 }
 
 void IoTManager::registerState(const char* string, bool& variable, std::initializer_list<const char*> strings) {
-
-
-}
-
-void IoTManager::registerState(const char* string, int &variable) {
+    states.push_back({string, &variable, strings});
 
 }
 
-bool IoTManager::initializeConnection() {
+void IoTManager::registerState(const char* string, int& variable) {
+    states.push_back({string, &variable, {}});
 
-    return false;
 }
