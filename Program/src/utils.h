@@ -9,12 +9,12 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 #include <stddef.h>
-#include <stdint.h>
+
 #define __I    				volatile const  //!< Defines 'read only' permission
 #define __O    				volatile        //!< Defines 'write only' permission
 #define __IO   				volatile        //!< Defines 'read / write' permission
 
-/*
+
 typedef	unsigned char 		uint8_t;
 typedef	char 				int8_t;
 typedef	short unsigned int 	uint16_t;
@@ -34,7 +34,7 @@ typedef	int 				int32_t;
 #define	INT8_MAX			(127)			//!< Maximum value of the INT8 variable type.
 #define	INT8_MIN			(-128)			//!< Minimum value of the INT8 variable type.
 #define	UINT8_MAX			(255)			//!< Maximum value of the UINT8 variable type.
-*/
+
 #define BYTE_SIZE			8
 #define REG_BYTES_SIZE		32 // BYTE_SIZE * 4
 
