@@ -38,15 +38,15 @@ private:
 	void initialize(void);
 	void writeInstruction(const uint8_t data, const Gpio::activity_t mode);
 	uint32_t pow(uint32_t base, uint32_t exponent);
-	void _write(const int8_t *ptr_str);
+	void _write(const char* ptr_str);
 	void _write(const int32_t value);
 public:
 	enum { D7, D6, D5, D4, RS, ENABLE };
 
 	LCD1602() = delete;
 	LCD1602(std::vector<Gpio*> &outputs, const uint8_t rows, const uint8_t columns);
-	LCD1602& operator=(const int8_t *ptr_str);
-	void write(const int8_t *ptr_str, const uint8_t row = 0, const uint8_t column = 0);
+	LCD1602& operator=(const char *ptr_str);
+	void write(const char* ptr_str, const uint8_t row = 0, const uint8_t column = 0);
 	void write(const int32_t value, const uint8_t row = 0, const uint8_t column = 0);
 	void clear(void);
 	void callbackMethod(void) override;

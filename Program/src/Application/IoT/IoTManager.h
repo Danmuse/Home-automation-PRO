@@ -14,17 +14,22 @@
 
 #include <map>
 #include <cstring>
+#include <initializer_list>
 #include <cstdlib>
+#include <vector>
 #include "Callback.h"
 #include "IoTConnection.h"
+#include "IoTState.h"
 
 typedef void(* ActionListener)(char* message);
 
 class IoTManager : public IoTListener, Callback {
     private:
-        std::map<char*, IoTVariable_st> m_variablesToUpload;
+        std::map<const char*, IoTVariable_st> m_variablesToUpload;
         IoTConnection* m_ioTConnection;
         std::map<const char*, ActionListener> m_actions;
+        std::vector<IoTState> states;
+
 
     public:
 
@@ -32,7 +37,9 @@ class IoTManager : public IoTListener, Callback {
 
         IoTManager(IoTConnection* ioTConnection);
 
-        void addVariableToUpload(char* name, int& variable, int uploadPeriod);
+        void addVariableToUpload(const char* name, int& variable, int uploadPeriod);
+
+        bool initializeConnection() override;
 
         void processIoTMessage(char* message) override;
 
@@ -41,6 +48,10 @@ class IoTManager : public IoTListener, Callback {
         void callbackMethod() override;
 
         virtual ~IoTManager() = default;
+
+        void registerState(const char* string, bool& variable, std::initializer_list<const char*> strings);
+
+        void registerState(const char* string, int& vairable);
 };
 
 #endif // IOT_MANAGER_H_

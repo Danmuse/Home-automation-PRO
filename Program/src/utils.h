@@ -14,12 +14,14 @@
 #define __O    				volatile        //!< Defines 'write only' permission
 #define __IO   				volatile        //!< Defines 'read / write' permission
 
+
 typedef	unsigned char 		uint8_t;
 typedef	char 				int8_t;
 typedef	short unsigned int 	uint16_t;
 typedef	short int 			int16_t;
 typedef	unsigned int 		uint32_t;
 typedef	int 				int32_t;
+
 
 #define	INT32_MAX			(2147483647) 	//!< Maximum value of the INT32 variable type.
 #define	INT32_MIN			(-2147483648) 	//!< Minimum value of the INT32 variable type.

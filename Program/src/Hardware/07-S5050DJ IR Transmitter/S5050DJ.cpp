@@ -196,6 +196,10 @@ bool S5050DJ::turnOff(void) {
 	return this->setAction(TURNOFF_LEDS);
 }
 
+int S5050DJ::getBrightness() {
+    return 0;//TODO: Implement
+}
+
 ///////////////////////////////
 /// RGB LEDs initialization ///
 ///////////////////////////////

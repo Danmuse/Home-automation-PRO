@@ -11,42 +11,31 @@
 #include <cstdlib>
 #include <cstring>
 #include "IoTActions.h"
-
-static uint8_t brightnessLevel = 0;
+#include "DFRobotDFPlayerMini.h"
 
 void manualLightControl(char* message) {
     int brightness = atoi(message);
 
     if (brightness > 0) {
-        if (brightnessLevel < brightness) {
-            for (uint8_t i = brightnessLevel; i < brightness; i++) {
-                //TODO: Increase brightness
-            }
-        }
-        else {
-            for (uint8_t i = brightnessLevel; i > brightness; i--) {
-                //TODO: Decrase brightness
-            }
-        }
-        brightnessLevel = brightness;
+        g_leds->setBrightness(brightness*10);
     }
     else {
         if (strcmp(message, "red") == 0) {
-            //TODO: Lights on red
+            g_leds->setColor(S5050DJ::RED);
         }
         else if (strcmp(message, "white") == 0) {
-            //TODO: Lights on white
+            g_leds->setColor(S5050DJ::WHITE);
         }
         else if (strcmp(message, "green") == 0) {
-            //TODO: Lights on green
+            g_leds->setColor(S5050DJ::GREEN);
         }
         else if (strcmp(message, "blue") == 0) {
-            //TODO: Lights on blue
+            g_leds->setColor(S5050DJ::BLUE);
         }
     }
 }
 
-void modeSelection(char* message) {
+void modeSelection(char* message) {//Automatic/manual
     if (strcmp(message, "on") == 0) {
         //TODO: ENABLE Light Automatic mode
     }
@@ -61,6 +50,7 @@ void musicFlowControl(char* message) {
 
     if (songId != 0) {
         //TODO: Select Music
+
 
     }
     else if (strcmp(message, "pause") == 0) {
