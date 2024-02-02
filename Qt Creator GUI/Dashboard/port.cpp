@@ -116,7 +116,7 @@ SerialParams port::GetDato()
         m_Flag = false;
         int index = datoStr.indexOf(':');
 
-        if (index != -1 && datoStr.at(0) == '$' && datoStr.at(datoStr.length() - 1) == '%') {
+        if (index != -1 && datoStr.at(0) == '%' && datoStr.at(datoStr.length() - 1) == '%') {
             // Separa el dato antes y después de ':'
             Valor.Param = datoStr.mid(1, index - 1);
             Valor.Info = datoStr.mid(index + 1).chopped(1);

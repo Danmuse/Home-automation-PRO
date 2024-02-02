@@ -8,6 +8,8 @@
 #include "programconfig.h"
 #include "dialog.h"
 #include "validatormodal.h"
+#include <QMovie>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -45,6 +47,7 @@ private:
     QTimer* WaitingConnectTimer;
     SerialParams Confirm;
     QMovie *movie;
+    QLabel *label;
 };
 
 #endif // MAINWINDOW_H

@@ -15,9 +15,24 @@ ui(new Ui::MainWindow) {
         ui->Login->setEnabled(true);
     }
 
+    // Cargar el archivo GIF
+    movie = new QMovie(":/loader.gif");
+
+    // Crear un QLabel y configurar el GIF
+    label = new QLabel(this);
+    movie->setScaledSize(QSize(50, 50));
+    label->setMovie(movie);
+
+    // Iniciar la animación del GIF
+
+
+    // Agregar el QLabel a la ventana principal
+    int x = (this->width() - label->width()) / 2;
+    int y = ((this->height() - label->height()) / 2) - 50;
+    label->move(x, y);
+    label->setFixedSize(75, 75); // Establecer un tamaño fijo
+
     inicializateTimer(TimerPort, &MainWindow::PortsAvailable);
-
-
     ui->PortConfirm->setStyleSheet("background-color: red;");
     connect(ui->lineEdit_user, &QLineEdit::textChanged, this, &MainWindow::CreateUserEnable);
     connect(ui->lineEdit_password, &QLineEdit::textChanged, this, &MainWindow::CreateUserEnable);
@@ -148,6 +163,7 @@ void MainWindow::on_sendBTN_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
+
     if(ui->pushButton->text() == "Conectar"){
         Puerto.SetPort(ui->comboBox->currentText());
         Puerto.OpenPort();
@@ -169,14 +185,14 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_Login_clicked()
 {
-
     QString Usuario = ui->lineEdit_user->text();
     QString Contraseña = ui->lineEdit_password->text();
     if(Database.LoginUser(Usuario, Contraseña)){
+        movie->start();
+        label->show();
         inicializateTimer(WaitingConnectTimer, &MainWindow::WaitingConnect);
         ui->lineEdit_password->clear();
         ui->lineEdit_user->clear();
-
     }else{
         ui->label_confirmLogin->setText("Usuario o Contraseña incorrectos");
     }
@@ -204,7 +220,9 @@ void MainWindow::CreateUserEnable()
 void MainWindow::WaitingConnect()
 {
     Confirm = Puerto.GetDato();
-    if(Confirm.Info == "connect" && Confirm.Param == "ok" ){
+    if(Confirm.Info == "ok" && Confirm.Param == "connect" ){
+        label->close();
+        movie->stop();
         Dial = new Dialog(this);
         Dial->show();
     }
