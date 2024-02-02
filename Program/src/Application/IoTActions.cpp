@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include "IoTActions.h"
-#include "DFRobotDFPlayerMini.h"
+#include "DFPlayerMini.h"
 
 void manualLightControl(char* message) {
     int brightness = atoi(message);
