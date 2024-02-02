@@ -38,9 +38,5 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += / 568288.png \
-    pause.png
 
-RESOURCES += \
-    pause.png
 

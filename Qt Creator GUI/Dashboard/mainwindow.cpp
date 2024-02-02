@@ -14,6 +14,10 @@ ui(new Ui::MainWindow) {
     }else{
         ui->Login->setEnabled(true);
     }
+
+    inicializateTimer(TimerPort, &MainWindow::PortsAvailable);
+
+
     ui->PortConfirm->setStyleSheet("background-color: red;");
     connect(ui->lineEdit_user, &QLineEdit::textChanged, this, &MainWindow::CreateUserEnable);
     connect(ui->lineEdit_password, &QLineEdit::textChanged, this, &MainWindow::CreateUserEnable);
@@ -29,6 +33,8 @@ ui(new Ui::MainWindow) {
 
 MainWindow::~MainWindow() {
     Puerto.ClosePort();
+    CancelateTimer(TimerPort);
+    CancelateTimer(WaitingConnectTimer);
     //delete Puerto;
     delete Dial;
     delete ui;
@@ -40,6 +46,24 @@ MainWindow::~MainWindow() {
     delete ui;
     */
 }
+
+
+
+void MainWindow::inicializateTimer(QTimer *timer, void (MainWindow::*func)())
+{
+    timer = new QTimer(this);
+    timer->setInterval(500);
+    connect(timer,  &QTimer::timeout, this, func);
+    timer->start();
+}
+
+
+void MainWindow::CancelateTimer(QTimer *timer)
+{
+    timer->disconnect();
+}
+
+
 
 
 /*
@@ -149,10 +173,10 @@ void MainWindow::on_Login_clicked()
     QString Usuario = ui->lineEdit_user->text();
     QString Contraseña = ui->lineEdit_password->text();
     if(Database.LoginUser(Usuario, Contraseña)){
+        inicializateTimer(WaitingConnectTimer, &MainWindow::WaitingConnect);
         ui->lineEdit_password->clear();
         ui->lineEdit_user->clear();
-        Dial = new Dialog(this);
-        Dial->show();
+
     }else{
         ui->label_confirmLogin->setText("Usuario o Contraseña incorrectos");
     }
@@ -173,4 +197,57 @@ void MainWindow::CreateUserEnable()
         ui->CreateUser->setEnabled(false);
     }
 }
+
+
+
+
+void MainWindow::WaitingConnect()
+{
+    Confirm = Puerto.GetDato();
+    if(Confirm.Info == "connect" && Confirm.Param == "ok" ){
+        Dial = new Dialog(this);
+        Dial->show();
+    }
+}
+
+
+void MainWindow::PortsAvailable(){
+
+    bool change = false;
+    QList<QSerialPortInfo> Puertos = Puerto.GetTotalsPorts();
+    if(ui->comboBox->count() == Puertos.size()){
+        for (int index = 0; index < ui->comboBox->count(); index++) {
+            if (ui->comboBox->itemText(index) != Puertos.at(index).portName()) {
+                change = true;
+                break; // Salir del bucle si se encuentra un cambio
+            }
+        }
+    }else{
+        change = true;
+    }
+
+
+    if(change){
+        qDebug() << "entro";
+        ui->pushButton->setText("Conectar");
+        ui->PortConfirm->setStyleSheet("background-color: red;");
+        ui->PortConfirm->setText("Desconectado");
+        if(Puerto.GetPortStatus()){
+            Puerto.ClosePort();
+        }
+        ui->comboBox->clear();
+        for (int index = 0; index < Puertos.size(); index++) {
+            ui->comboBox->addItem(Puertos.at(index).portName());
+        }
+    }
+    if(ui->comboBox->count() == 0){
+        ui->Login->setEnabled(false);
+        ui->pushButton->setEnabled(false);
+        ui->comboBox->setEnabled(false);
+    }else{
+        ui->pushButton->setEnabled(true);
+        ui->comboBox->setEnabled(true);
+    }
+}
+
 
