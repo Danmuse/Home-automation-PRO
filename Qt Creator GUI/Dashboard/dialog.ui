@@ -238,10 +238,6 @@
           <property name="text">
            <string>Pausar</string>
           </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>pause.png</normaloff>pause.png</iconset>
-          </property>
          </widget>
         </item>
        </layout>

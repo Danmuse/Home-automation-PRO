@@ -42,7 +42,29 @@ void Dialog::manejarTimeOut()
 {
     Information = Puerto.GetDato();
     if(Information.Info != nullptr && Information.Param != nullptr ){
-        Database.PushDato(Information.Param, Information.Info.toInt());
+        bool ok;
+        int valor = Information.Param.toInt(&ok);
+        if(ok){
+            if(Information.Info == "luz"){
+                ui->LuzLevel->setValue(valor);
+            }else if(Information.Info == "song" && Information.Param.length() == 4){
+                ui->ComboMusic->setCurrentIndex(valor);
+            }else if(Information.Info == "song" && Information.Param.length() != 4){
+                ui->VolumeMusic->setValue(valor);
+                ui->PlayMusic->setEnabled(false);
+                ui->PauseMusic->setEnabled(true);
+            }
+        }else{
+            if(Information.Info == "automatic" && Information.Param == "on"){
+                ui->Automatic->setChecked(true);
+            }else if(Information.Info == "automatic" && Information.Param == "off"){
+                ui->Automatic->setChecked(false);
+            }else if(Information.Info == "song" && Information.Param == "pause"){
+                ui->PlayMusic->setEnabled(false);
+                ui->PauseMusic->setEnabled(true);
+            }
+        }
+        //Database.PushDato(Information.Param, Information.Info.toInt());
     }
 }
 

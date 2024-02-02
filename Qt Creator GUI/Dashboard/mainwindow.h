@@ -8,6 +8,8 @@
 #include "programconfig.h"
 #include "dialog.h"
 #include "validatormodal.h"
+#include <QMovie>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,9 +21,13 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void inicializateTimer(QTimer *timer, void (MainWindow::*func)());
+    void CancelateTimer(QTimer *timer);
+
 
 private slots:
 
+    void PortsAvailable();
 
     void on_Login_clicked();
 
@@ -31,10 +37,17 @@ private slots:
 
     void CreateUserEnable();
 
+    void WaitingConnect();
+
 private:
     Ui::MainWindow *ui;
     Dialog *Dial;
     ValidatorModal *Validator;
+    QTimer* TimerPort;
+    QTimer* WaitingConnectTimer;
+    SerialParams Confirm;
+    QMovie *movie;
+    QLabel *label;
 };
 
 #endif // MAINWINDOW_H
