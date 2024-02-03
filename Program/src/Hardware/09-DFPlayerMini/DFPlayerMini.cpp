@@ -18,14 +18,14 @@ void DFPlayer::setTimeOut(unsigned long timeOutDuration) {
 }
 
 void DFPlayer::uint16ToArray(uint16_t value, uint8_t *array) {
-	*array = (uint8_t)(value>>8);
+	*array = (uint8_t)(value >> 8);
 	*(array + 1) = (uint8_t)(value);
 }
 
 uint16_t DFPlayer::arrayToUint16(uint8_t *array) {
 	uint16_t value = *array;
 	value <<= 8;
-	value += *(array+1);
+	value += *(array + 1);
 	return value;
 }
 
@@ -37,7 +37,7 @@ uint16_t DFPlayer::calculateCheckSum(uint8_t *buffer) {
 
 void DFPlayer::parseStack(void) {
 	uint8_t handleCommand = *(this->m_received + Stack_Command);
-	if (handleCommand == 0x41) { // Handle the 0x41 ack feedback as a spcecial case, in case the pollusion of _handleCommand, _handleParameter, and _handleType.
+	if (handleCommand == 0x41) { // Handle the 0x41 ACK feedback as a special case, in case the pollusion of _handleCommand, _handleParameter, and _handleType.
 		this->m_isSending = false;
 		return;
 	}
@@ -139,16 +139,14 @@ void DFPlayer::disableACK(void) {
 }
 
 bool DFPlayer::available(void) {
-
-	/*
-
-	while (_serial->available()) {
+	char bufferReceived[DFPLAYER_RECEIVED_LENGTH];
+	if (this->receive(bufferReceived, DFPLAYER_RECEIVED_LENGTH)) {
 //  	delay(0);
 		if (this->m_receivedIndex == 0) {
-			this->m_received[Stack_Header] = _serial->read();
+			this->m_received[Stack_Header] = bufferReceived[Stack_Header];
 			if (this->m_received[Stack_Header] == 0x7E) this->m_receivedIndex++;
 		} else {
-			this->m_received[this->m_receivedIndex] = _serial->read();
+			this->m_received[this->m_receivedIndex] = bufferReceived[this->m_receivedIndex];
 			switch (this->m_receivedIndex) {
 				case Stack_Version:
 					if (this->m_received[this->m_receivedIndex] != 0xFF) return this->handleError(WrongStack);
@@ -172,9 +170,6 @@ bool DFPlayer::available(void) {
 			this->m_receivedIndex++;
 		}
 	}
-
-	*/
-
 	return this->m_isAvailable;
 }
 

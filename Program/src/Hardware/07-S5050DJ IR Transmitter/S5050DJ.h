@@ -64,9 +64,9 @@ public:
 	bool setSequenceSpeed(uint8_t percentage);
 	bool turnOn(void);
 	bool turnOff(void);
+    uint8_t getBrightness(void) const;
 	virtual ~S5050DJ() = default;
 
-        int getBrightness();
 };
 
 extern S5050DJ *g_leds;

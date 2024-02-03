@@ -200,7 +200,7 @@ void initLCD1602(void) {
 	LCD1602_GPIOs_list.push_back(&LCD_RS);
 	LCD1602_GPIOs_list.push_back(&LCD_EN);
 
-	static LCD1602 lcd1602(LCD1602_GPIOs_list, 4, 20);
+	static LCD1602 lcd1602(LCD1602_GPIOs_list, 2, 16);
 
 	g_lcd1602 = &lcd1602;
 

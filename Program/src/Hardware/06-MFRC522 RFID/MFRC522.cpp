@@ -127,7 +127,6 @@ RFID_result_t MFRC522::PCD_CalculateCRC(uint8_t *data, uint8_t length, uint8_t *
 		this->writeRegisterPCD(RC522_COMMAND_REG, PCD_IDLE);			// Stop any active command
 		this->writeRegisterPCD(RC522_DIV_IRQ_REG, 0x04);				// Clear the CRCIRq interrupt request bit
 		this->writeRegisterPCD(RC522_FIFO_LEVEL_REG, 0x80);				// FlushBuffer = 1, FIFO initialization
-		// HERE ITS BREAKS!! //
 		this->writeRegisterPCD(RC522_FIFO_DATA_REG, length, data);		// Write data to the FIFO
 		this->writeRegisterPCD(RC522_COMMAND_REG, PCD_CALCULATE_CRC);	// Start the calculation
 
@@ -960,12 +959,12 @@ MFRC522::~MFRC522() {
 //////////////////////////////
 
 void initRFID(void) {
-	#if defined(SPI0_DEBUG_PINS)
+	#if defined(SPI1_DEBUG_PINS)
 
-    static Gpio HARDWARE_RST(SPI0_DEBUG_SSEL1);
-    static MFRC522 rfid(SPI0_DEBUG_SCK, SPI0_DEBUG_MOSI, SPI0_DEBUG_MISO, SPI0_DEBUG_SSEL0, HARDWARE_RST);
+    static Gpio HARDWARE_RST(SPI1_DEBUG_SSEL1);
+    static MFRC522 rfid(SPI1_DEBUG_SCK, SPI1_DEBUG_MOSI, SPI1_DEBUG_MISO, SPI1_DEBUG_SSEL0, HARDWARE_RST);
 
     g_rfid = &rfid;
 
-	#endif // defined(SPI0_DEBUG_PINS)
+	#endif // defined(SPI1_DEBUG_PINS)
 }
