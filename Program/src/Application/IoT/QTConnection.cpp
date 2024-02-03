@@ -19,6 +19,10 @@ QTConnection::QTConnection(UART& uart) : IoTConnection(), Callback(),
 void QTConnection::receiveMessage() {
     this->m_recMessage[this->m_recMessagePos] = '\0';
 
+    if (strcmp(this->m_recMessage + 1, "connect:ok") == 0) {
+        this->establishConnection();
+    }
+
     for (IoTListener* listener: this->m_listeners) {
         listener->processIoTMessage(this->m_recMessage + 1);
         //+1 to skip the header
@@ -72,7 +76,7 @@ void QTConnection::suscribeListener(IoTListener* listener) {
 void QTConnection::callbackMethod() {
     bool newChar = this->m_uart.receive(this->m_recMessage + this->m_recMessagePos, 1);
 
-    if (!newChar) {
+    if (newChar) {
         this->m_timeoutCounter = SERIAL_TIMEOUT * (g_systick_freq / 1000);
         switch (this->m_serialState) {
             case WAITING_HEADER:
