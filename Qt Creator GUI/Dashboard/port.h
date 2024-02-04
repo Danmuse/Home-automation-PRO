@@ -29,7 +29,9 @@ private:
     QSerialPort* m_Puerto;
     QList<QSerialPortInfo> m_Totals_Ports;
     QString m_PortName;
-    QString m_Dato;
+    QString m_Dato[4];
+    int m_IndexRead = 0;
+    int m_IndexWrite = 0;
     bool m_Flag;
 
 private slots:
