@@ -33,6 +33,7 @@ int main(void) {
     QTConnection connection(*g_usb);
 
     IoTManager iotManager(&connection);
+    int ledBrightness=9;
 
 //    iotManager.registerAction("luz", manualLightControl);
 //    iotManager.registerAction("automatic", modeSelection);
@@ -43,7 +44,7 @@ int main(void) {
 //    int ledBrightness = g_leds->getBrightness();
 //    iotManager.registerState("song", idCancion);
 //    iotManager.registerState("song",isSongPlaying, {"play", "pause"});
-//    iotManager.registerState("luz", ledBrightness);
+    iotManager.registerState("luz", ledBrightness);
 
     g_lcd1602->clear();
 	g_lcd1602->write("*------------------*", 0, 0);

@@ -189,6 +189,7 @@ void MainWindow::on_Login_clicked()
     if(Database.LoginUser(Usuario, Contraseña)){
         movie->start();
         label->show();
+        Puerto.SendData("$connect:ok%");
         inicializateTimer(WaitingConnectTimer, &MainWindow::WaitingConnect);
         ui->lineEdit_password->clear();
         ui->lineEdit_user->clear();

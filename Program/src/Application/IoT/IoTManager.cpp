@@ -62,10 +62,12 @@ bool IoTManager::initializeConnection() {
 
         if (state.stringsRepr.empty()) {
             itoa(*((int*) state.data), value, 10);
+            strcat(message,value);
         }
         else {
             strcpy(value, state.stringsRepr[*((int*) state.data)]);
         }
+
 
         this->m_ioTConnection->uploadLiteral(message);
     }
