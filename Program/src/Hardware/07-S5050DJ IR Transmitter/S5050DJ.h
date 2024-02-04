@@ -14,7 +14,7 @@
 
 #define S5050DJ_ADDR (0x00F7U)
 
-#define S5050DJ_MAX_BRIGHTNESS_SPEED_POINT 80
+#define S5050DJ_MAX_BRIGHTNESS_SPEED_POINT 100
 
 #define S5050DJ_COMMAND_LENGTH (BYTE_SIZE * 4)
 
@@ -40,7 +40,8 @@ class S5050DJ : protected CTimer {
 private:
 	enum actionSetting_t { INCREASE_BRIGHTNESS = 0x00FFU, INCREASE_SPEED = 0x00FFU, DECREASE_BRIGHTNESS = 0x807FU, DECREASE_SPEED = 0x807FU, TURNOFF_LEDS = 0x40BFU, TURNON_LEDS = 0xC03FU };
 
-	uint8_t m_brightnessSpeedPoint;
+	uint8_t m_brightnessPoint;
+	uint8_t m_speedPoint;
 	actionInterruption_t m_externalOutput;
 	activity_t m_externalActivity;
 
@@ -65,6 +66,7 @@ public:
 	bool turnOn(void);
 	bool turnOff(void);
     uint8_t getBrightness(void) const;
+    uint8_t getSpeed(void) const;
 	virtual ~S5050DJ() = default;
 
 };

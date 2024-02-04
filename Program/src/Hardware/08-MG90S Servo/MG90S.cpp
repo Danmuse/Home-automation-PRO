@@ -17,9 +17,8 @@ m_currentPosition{0} { }
 
 void MG90S::setAngle(uint8_t angle) {
     angle = angle > MG90S_MAX_ANGLE ? MG90S_MAX_ANGLE : angle;
-    // WARNING: Converting this result to float is expressed as 0 and produces instabilities in the program.
-//  this->setDuty(MG90S_MIN_DUTY + (angle * static_cast<float>(MG90S_PULSE_MAX_INCREMENT / MG90S_MAX_ANGLE)));
-    this->setDuty(MG90S_MIN_DUTY + (angle * 0.0777));
+    // NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
+    this->setDuty(MG90S_MIN_DUTY + (angle * (MG90S_PULSE_MAX_INCREMENT / (float)(MG90S_MAX_ANGLE))));
     this->m_currentPosition = angle;
 }
 

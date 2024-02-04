@@ -89,14 +89,24 @@ Gpio TX1_OUT(Gpio::PORT0, 25, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
 #endif // USB0_PINS
 
 #ifdef I2C0_PINS
-Gpio I2C0_SDA(Gpio::PORT0, 2, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
-Gpio I2C0_SCL(Gpio::PORT0, 3, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C0_SDA(Gpio::PORT0, 11, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C0_SCL(Gpio::PORT0, 10, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
 #endif // I2C0_PINS
 
 #ifdef I2C1_PINS
 Gpio I2C1_SDA(Gpio::PORT0, 17, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
 Gpio I2C1_SCL(Gpio::PORT0, 16, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
 #endif // I2C1_PINS
+
+#ifdef I2C2_PINS
+Gpio I2C2_SDA(Gpio::PORT0, 2, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C2_SCL(Gpio::PORT0, 3, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+#endif // I2C2_PINS
+
+#ifdef I2C3_PINS
+Gpio I2C3_SDA(Gpio::PORT0, 5, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C3_SCL(Gpio::PORT0, 0, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+#endif // I2C3_PINS
 
 #ifdef SPI0_PINS
 Gpio SPI0_SCK(Gpio::PORT0, 20, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);

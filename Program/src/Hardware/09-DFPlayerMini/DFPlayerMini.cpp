@@ -13,7 +13,7 @@ DFPlayer::DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel) : UART
 	this->begin();
 }
 
-void DFPlayer::setTimeOut(unsigned long timeOutDuration) {
+void DFPlayer::setTimeOut(uint32_t timeOutDuration) {
 	this->m_timeOutDuration = timeOutDuration;
 }
 
@@ -141,33 +141,35 @@ void DFPlayer::disableACK(void) {
 bool DFPlayer::available(void) {
 	char bufferReceived[DFPLAYER_RECEIVED_LENGTH];
 	if (this->receive(bufferReceived, DFPLAYER_RECEIVED_LENGTH)) {
-//  	delay(0);
-		if (this->m_receivedIndex == 0) {
-			this->m_received[Stack_Header] = bufferReceived[Stack_Header];
-			if (this->m_received[Stack_Header] == 0x7E) this->m_receivedIndex++;
-		} else {
-			this->m_received[this->m_receivedIndex] = bufferReceived[this->m_receivedIndex];
-			switch (this->m_receivedIndex) {
-				case Stack_Version:
-					if (this->m_received[this->m_receivedIndex] != 0xFF) return this->handleError(WrongStack);
-					break;
-				case Stack_Length:
-					if (this->m_received[this->m_receivedIndex] != 0x06) return this->handleError(WrongStack);
-					break;
-				case Stack_End:
-					if (this->m_received[this->m_receivedIndex] != 0xEF) return this->handleError(WrongStack);
-					else {
-						if (this->validateStack()) {
-							this->m_receivedIndex = 0;
-							this->parseStack();
-							return this->m_isAvailable;
-						} else return this->handleError(WrongStack);
-					}
-					break;
-				default:
-					break;
+		while (this->m_receivedIndex < DFPLAYER_RECEIVED_LENGTH) {
+//  		delay(0);
+			if (this->m_receivedIndex == 0) {
+				this->m_received[Stack_Header] = bufferReceived[Stack_Header];
+				if (this->m_received[Stack_Header] == 0x7E) this->m_receivedIndex++;
+			} else {
+				this->m_received[this->m_receivedIndex] = bufferReceived[this->m_receivedIndex];
+				switch (this->m_receivedIndex) {
+					case Stack_Version:
+						if (this->m_received[this->m_receivedIndex] != 0xFF) return this->handleError(WrongStack);
+						break;
+					case Stack_Length:
+						if (this->m_received[this->m_receivedIndex] != 0x06) return this->handleError(WrongStack);
+						break;
+					case Stack_End:
+						if (this->m_received[this->m_receivedIndex] != 0xEF) return this->handleError(WrongStack);
+						else {
+							if (this->validateStack()) {
+								this->m_receivedIndex = 0; // TODO: Check this code instruction!!
+								this->parseStack();
+								return this->m_isAvailable;
+							} else return this->handleError(WrongStack);
+						}
+						break;
+					default:
+						break;
+				}
+				this->m_receivedIndex++;
 			}
-			this->m_receivedIndex++;
 		}
 	}
 	return this->m_isAvailable;
