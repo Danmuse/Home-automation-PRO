@@ -64,7 +64,7 @@ template <typename T> EEPROM_result_t M24C16::read(T *data, modifierType_t modif
 		if (this->acquire(valuesFST, sizeof(valuesFST), position, pageBlock)) return this->getStatus();
 		if (this->acquire(valuesSND, sizeof(valuesSND), position + 1, pageBlock)) return this->getStatus();
 		reg.UInt8[0] = valuesFST[0]; reg.UInt8[1] = valuesFST[1];
-		reg.UInt8[0] = valuesSND[2]; reg.UInt8[3] = valuesSND[1];
+		reg.UInt8[2] = valuesSND[0]; reg.UInt8[3] = valuesSND[1];
 		if (modifier == FLOAT) *data = reg.Float;
 		else if (modifier == INT32) *data = (int32_t)reg.UInt32;
 		else if (modifier == UINT32) *data = reg.UInt32;

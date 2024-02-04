@@ -1,15 +1,15 @@
 /*/*!
- * @file LCD1602.cpp
+ * @file LCD.cpp
  * @par Author & Doxygen Editor
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @date 27/08/2023 23:36:45
  */
 
-#include "LCD1602.h"
+#include "LCD.h"
 
-LCD1602 *g_lcd1602 = nullptr;
+LCD *g_lcd = nullptr;
 
-LCD1602::LCD1602(std::vector<Gpio*> &outputs, const uint8_t rows, const uint8_t columns) : Callback(),
+LCD::LCD(std::vector<Gpio*> &outputs, const uint8_t rows, const uint8_t columns) : Callback(),
 m_outputs{outputs},
 m_mode{s_eigth_bits},
 m_rows{rows},
@@ -21,7 +21,7 @@ m_position{0} {
     this->initialize();
 }
 
-void LCD1602::initialize(void) {
+void LCD::initialize(void) {
     this->m_outputs[RS]->clearPin();
     this->m_outputs[D7]->clearPin();
     this->m_outputs[D6]->clearPin();
@@ -31,12 +31,12 @@ void LCD1602::initialize(void) {
 	for (uint8_t index = 0; index < this->m_rows * this->m_columns; index++) this->m_buffer[index] = ' ';
 }
 
-LCD1602& LCD1602::operator=(const int8_t *ptr_str) {
+LCD& LCD::operator=(const int8_t *ptr_str) {
     this->_write(ptr_str);
 	return *this;
 }
 
-void LCD1602::_write(const int8_t *ptr_str) {
+void LCD::_write(const int8_t *ptr_str) {
 	uint8_t index = 0;
 	for (index = this->m_position; (index < this->m_rows * this->m_columns) && (ptr_str[index - this->m_position] != '\0'); index++)
 		this->m_buffer[index] = ptr_str[index - this->m_position];
@@ -44,7 +44,7 @@ void LCD1602::_write(const int8_t *ptr_str) {
 	if (this->m_position >= (this->m_columns * this->m_rows)) this->m_position = 0;
 }
 
-void LCD1602::_write(const int32_t value) {
+void LCD::_write(const int32_t value) {
 	int32_t auxiliar;
 	int8_t *ptr_number = new int8_t[12];
 	uint8_t position = 0;
@@ -70,26 +70,26 @@ void LCD1602::_write(const int32_t value) {
 	delete [] ptr_number;
 }
 
-void LCD1602::write(const int8_t *ptr_str, uint8_t row, uint8_t column) {
+void LCD::write(const int8_t *ptr_str, uint8_t row, uint8_t column) {
 	if ((this->m_columns * row) + column <= this->m_columns * this->m_rows) {
 		this->m_position = (this->m_columns * row) + column;
         this->_write(ptr_str);
 	}
 }
 
-void LCD1602::write(const int32_t value, const uint8_t row, const uint8_t column) {
+void LCD::write(const int32_t value, const uint8_t row, const uint8_t column) {
 	if ((this->m_columns * row) + column <= this->m_columns * this->m_rows) {
 		this->m_position = (this->m_columns * row) + column;
         this->_write(value);
 	}
 }
 
-void LCD1602::clear(void) {
+void LCD::clear(void) {
 	for (uint8_t index = 0; index < (this->m_rows * this->m_columns); index++) this->m_buffer[index] = ' ';
 	this->m_position = 0;
 }
 
-void LCD1602::callbackMethod(void) {
+void LCD::callbackMethod(void) {
 	this->m_ticks--;
 	if (this->m_ticks == 0) {
 		switch (this->m_mode) {
@@ -143,7 +143,7 @@ void LCD1602::callbackMethod(void) {
 	}
 }
 
-void LCD1602::writeInstruction(const uint8_t data, const Gpio::activity_t mode) {
+void LCD::writeInstruction(const uint8_t data, const Gpio::activity_t mode) {
 	if (mode == Gpio::HIGH) this->m_outputs[RS]->setPin();
 	else this->m_outputs[RS]->clearPin();
 
@@ -172,7 +172,7 @@ void LCD1602::writeInstruction(const uint8_t data, const Gpio::activity_t mode) 
     this->m_outputs[ENABLE]->clearPin();
 }
 
-uint32_t LCD1602::pow(uint32_t base, uint32_t exponent) {
+uint32_t LCD::pow(uint32_t base, uint32_t exponent) {
 	int32_t auxiliar = 1;
 	for (uint32_t index = 0; index < exponent && auxiliar != 0; index++) {
 		if (auxiliar >= UINT32_MAX / base) auxiliar = 0;
@@ -181,28 +181,46 @@ uint32_t LCD1602::pow(uint32_t base, uint32_t exponent) {
 	return auxiliar;
 }
 
-LCD1602::~LCD1602() {
+LCD::~LCD() {
 	delete [] this->m_buffer;
 }
 
-//////////////////////////////
-/// LCD1602 initialization ///
-//////////////////////////////
+//////////////////////////////////////////
+/// LCD1602 or LCD2004 initializations ///
+//////////////////////////////////////////
 
 void initLCD1602(void) {
 	#ifdef CN15_PINS
 
-	static std::vector<Gpio*> LCD1602_GPIOs_list;
-	LCD1602_GPIOs_list.push_back(&LCD_D7);
-	LCD1602_GPIOs_list.push_back(&LCD_D6);
-	LCD1602_GPIOs_list.push_back(&LCD_D5);
-	LCD1602_GPIOs_list.push_back(&LCD_D4);
-	LCD1602_GPIOs_list.push_back(&LCD_RS);
-	LCD1602_GPIOs_list.push_back(&LCD_EN);
+	static std::vector<Gpio*> LCD_GPIOs_list;
+	LCD_GPIOs_list.push_back(&LCD_D7);
+	LCD_GPIOs_list.push_back(&LCD_D6);
+	LCD_GPIOs_list.push_back(&LCD_D5);
+	LCD_GPIOs_list.push_back(&LCD_D4);
+	LCD_GPIOs_list.push_back(&LCD_RS);
+	LCD_GPIOs_list.push_back(&LCD_EN);
 
-	static LCD1602 lcd1602(LCD1602_GPIOs_list, 2, 16);
+	static LCD LCD(LCD_GPIOs_list, 2, 16);
 
-	g_lcd1602 = &lcd1602;
+	g_lcd = &LCD;
+
+	#endif // CN15_PINS
+}
+
+void initLCD2004(void) {
+	#ifdef CN15_PINS
+
+	static std::vector<Gpio*> LCD2004_GPIOs_list;
+	LCD2004_GPIOs_list.push_back(&LCD_D7);
+	LCD2004_GPIOs_list.push_back(&LCD_D6);
+	LCD2004_GPIOs_list.push_back(&LCD_D5);
+	LCD2004_GPIOs_list.push_back(&LCD_D4);
+	LCD2004_GPIOs_list.push_back(&LCD_RS);
+	LCD2004_GPIOs_list.push_back(&LCD_EN);
+
+	static LCD lcd2004(LCD2004_GPIOs_list, 4, 20);
+
+	g_lcd = &lcd2004;
 
 	#endif // CN15_PINS
 }

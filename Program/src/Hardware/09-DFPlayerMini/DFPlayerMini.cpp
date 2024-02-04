@@ -300,5 +300,5 @@ void initDFPlayer(void) {
 
 	g_dfplayer = &dfplayer;
 
-	#endif // UART1_PINS
+	#endif // CN13_PINS
 }

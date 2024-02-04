@@ -1,13 +1,13 @@
 /*!
- * @file LCD1602.h
+ * @file LCD.h
  * @par Author & Doxygen Editor
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @date 27/08/2023 23:36:45
- * @brief Liquid Crystal LCD1602 Class API (Application Programming Interface).
+ * @brief Liquid Crystal LCD1602 & LCD2004 Class API (Application Programming Interface).
  */
 
-#ifndef LCD1602_H_
-#define LCD1602_H_
+#ifndef LCD_H_
+#define LCD_H_
 
 #include <vector>
 #include "systick.h"
@@ -27,12 +27,12 @@
 #define DDRAM_THIRD_ROW_ADDR	(0x14U)
 #define DDRAM_FOURTH_ROW_ADDR	(0x54U)
 
-class LCD1602 : public Callback {
+class LCD : public Callback {
 private:
-	enum mode_LCD1602_t { s_eigth_bits, s_four_bits, s_config_display, s_config_cursor, s_clear, s_print, s_row };
+	enum mode_LCD_t { s_eigth_bits, s_four_bits, s_config_display, s_config_cursor, s_clear, s_print, s_row };
 
 	const std::vector<Gpio*> m_outputs;	//!< Vector of GPIO outputs
-	mode_LCD1602_t m_mode;				//!< Current state of the display
+	mode_LCD_t m_mode;					//!< Current state of the display
 	uint8_t *m_buffer;					//!< Display _write buffer
 	const uint8_t m_rows;				//!< Number of display rows
 	const uint8_t m_columns;			//!< Number of display columns
@@ -48,18 +48,19 @@ private:
 public:
 	enum { D7, D6, D5, D4, RS, ENABLE };
 
-	LCD1602() = delete;
-	LCD1602(std::vector<Gpio*> &outputs, const uint8_t rows, const uint8_t columns);
-	LCD1602& operator=(const int8_t *ptr_str);
+	LCD() = delete;
+	LCD(std::vector<Gpio*> &outputs, const uint8_t rows, const uint8_t columns);
+	LCD& operator=(const int8_t *ptr_str);
 	void write(const int8_t *ptr_str, const uint8_t row = 0, const uint8_t column = 0);
 	void write(const int32_t value, const uint8_t row = 0, const uint8_t column = 0);
 	void clear(void);
 	void callbackMethod(void) override;
-	virtual ~LCD1602();
+	virtual ~LCD();
 };
 
-extern LCD1602 *g_lcd1602;
+extern LCD *g_lcd;
 
 void initLCD1602(void);
+void initLCD2004(void);
 
-#endif /* LCD1602_H_ */
+#endif /* LCD_H_ */

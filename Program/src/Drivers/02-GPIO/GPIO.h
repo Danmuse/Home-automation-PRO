@@ -13,10 +13,6 @@
 #include "Outputs.h"
 #include "LPC845.h"
 
-#define CLK_GPIO0 6
-#define CLK_GPIO1 18
-#define CLK_IOCON 20
-
 class Gpio : public Inputs, public Outputs {
 public:
 	enum port_t				{ PORT0, PORT1 };

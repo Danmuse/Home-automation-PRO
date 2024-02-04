@@ -6,18 +6,18 @@
  */
 
 #include <cr_section_macros.h>
-#include "IoTActions.h"
-#include "board.h"
+#include "stateMachines.h"
 
 #if !DEBUG_MODE
 
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
-	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
+	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
 	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0-00}
@@ -31,28 +31,26 @@ int main(void) {
 //  iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
 
     QTConnection connection(*g_usb);
-
     IoTManager iotManager(&connection);
-    int ledBrightness=9;
+    int ledBrightness = 9;
 
 //    iotManager.registerAction("luz", manualLightControl);
 //    iotManager.registerAction("automatic", modeSelection);
 //    iotManager.registerAction("song", musicFlowControl);
 //    iotManager.registerAction("volume", musicVolumeControl);
 
-
 //    int ledBrightness = g_leds->getBrightness();
 //    iotManager.registerState("song", idCancion);
 //    iotManager.registerState("song",isSongPlaying, {"play", "pause"});
     iotManager.registerState("luz", ledBrightness);
 
-    g_lcd1602->clear();
-	g_lcd1602->write("*------------------*", 0, 0);
-    g_lcd1602->write("|     The Home     |", 1, 0);
-	g_lcd1602->write("|  Automation PRO  |", 2, 0);
-	g_lcd1602->write("*------------------*", 3, 0);
+    g_lcd->clear();
+	g_lcd->write("*------------------*", 0, 0);
+    g_lcd->write("|     The Home     |", 1, 0);
+	g_lcd->write("|  Automation PRO  |", 2, 0);
+	g_lcd->write("*------------------*", 3, 0);
 	delay(5000);
-	g_lcd1602->clear();
+	g_lcd->clear();
 
 	g_leds->turnOn();
 	delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
@@ -63,11 +61,11 @@ int main(void) {
 		/// External preset acquisition
 		if (g_adcExternal != nullptr) {
 			uint16_t val = (g_adcExternal->analogRead() / 40); // Range: 0 to 100 (Percentage)
-			g_lcd1602->write("ANALOG: ", 0, 0);
-			g_lcd1602->write(val, 0, 8);
+			g_lcd->write("ANALOG: ", 0, 0);
+			g_lcd->write(val, 0, 8);
 			g_leds->setSequenceSpeed(val);
-			g_lcd1602->write("BRIGHT: ", 1, 0);
-			g_lcd1602->write(g_leds->getBrightness(), 1, 8);
+			g_lcd->write("BRIGHT: ", 1, 0);
+			g_lcd->write(g_leds->getBrightness(), 1, 8);
 		}
 
 		g_servo->setAngle(0);
@@ -75,8 +73,8 @@ int main(void) {
 		g_servo->setAngle(MG90S_MAX_ANGLE / 2);
 		delay(500);
 
-    	g_lcd1602->write("   ", 0, 9);
-    	g_lcd1602->write("   ", 1, 9);
+    	g_lcd->write("   ", 0, 9);
+    	g_lcd->write("   ", 1, 9);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 
@@ -96,10 +94,11 @@ int main(void) {
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-//	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
-//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
+//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
 	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 //	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0-00}
@@ -164,10 +163,11 @@ static void blue_red(PWM &blue, PWM &red);
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
-//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
+//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 //	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0-00}
@@ -183,8 +183,8 @@ int main(void) {
 
 	while (1) {
 		while (counterCycles < 4) {
-			g_lcd1602->write("Cycle counter: ");
-			g_lcd1602->write(counterCycles, 0, 15);
+			g_lcd->write("Cycle counter: ");
+			g_lcd->write(counterCycles, 0, 15);
 			if (!statusFlag) {
 				if (counterCycles % 2) {
 					externPWM_TRD.setDuty(0);
@@ -226,49 +226,49 @@ int main(void) {
 		blue_red(externPWM_TRD, externPWM_FST);
 		externPWM_TRD.setDuty(0);
 		externPWM_FST.setDuty(0);
-		g_lcd1602->clear();
+		g_lcd->clear();
 		counterCycles = 0;
     	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
 	}
 }
 
 static void red_green(PWM &red, PWM &green) {
-	g_lcd1602->clear();
-	g_lcd1602->write("Color: ");
-	g_lcd1602->write("RED", 0, 7);
+	g_lcd->clear();
+	g_lcd->write("Color: ");
+	g_lcd->write("RED", 0, 7);
 	red.setDuty(100);
 	delay(2500);
-	g_lcd1602->clear();
-	g_lcd1602->write("Color: ");
-	g_lcd1602->write("YELLOW", 0, 7);
+	g_lcd->clear();
+	g_lcd->write("Color: ");
+	g_lcd->write("YELLOW", 0, 7);
 	red.setDuty(46);
 	green.setDuty(50);
 	delay(2500);
 }
 
 static void green_blue(PWM &green, PWM &blue) {
-	g_lcd1602->clear();
-	g_lcd1602->write("Color: ");
-	g_lcd1602->write("GREEN", 0, 7);
+	g_lcd->clear();
+	g_lcd->write("Color: ");
+	g_lcd->write("GREEN", 0, 7);
 	green.setDuty(100);
 	delay(2500);
-	g_lcd1602->clear();
-	g_lcd1602->write("Color: ");
-	g_lcd1602->write("SKY BLUE", 0, 7);
+	g_lcd->clear();
+	g_lcd->write("Color: ");
+	g_lcd->write("SKY BLUE", 0, 7);
 	green.setDuty(36);
 	blue.setDuty(50);
 	delay(2500);
 }
 
 static void blue_red(PWM &blue, PWM &red) {
-	g_lcd1602->clear();
-	g_lcd1602->write("Color: ");
-	g_lcd1602->write("BLUE", 0, 7);
+	g_lcd->clear();
+	g_lcd->write("Color: ");
+	g_lcd->write("BLUE", 0, 7);
 	blue.setDuty(100);
 	delay(2500);
-	g_lcd1602->clear();
-	g_lcd1602->write("Color: ");
-	g_lcd1602->write("VIOLET", 0, 7);
+	g_lcd->clear();
+	g_lcd->write("Color: ");
+	g_lcd->write("VIOLET", 0, 7);
 	blue.setDuty(50);
 	red.setDuty(45);
 	delay(2500);
@@ -283,10 +283,11 @@ static void blue_red(PWM &blue, PWM &red) {
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-//	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
-//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
+	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 //	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0-00}
@@ -320,10 +321,11 @@ int main(void) {
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-//	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
-	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
+//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 //	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0-00}
@@ -367,10 +369,11 @@ int main(void) {
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
-//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
+//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 //	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0-00}
@@ -387,32 +390,32 @@ int main(void) {
     	/// Internal preset acquisition
     	if (g_preset != nullptr && g_dacExternal != nullptr) {
     		val = g_preset->analogRead();
-			g_lcd1602->write("A0 ", 0, 0);
-			g_lcd1602->write(val, 0, 3);
+			g_lcd->write("A0 ", 0, 0);
+			g_lcd->write(val, 0, 3);
 
 			aux = val / 4;
 			g_dacExternal->analogWrite(aux); // 12 bits into 10 bits
-			g_lcd1602->write("D0 ", 1, 0);
-			g_lcd1602->write(aux, 1, 3);
+			g_lcd->write("D0 ", 1, 0);
+			g_lcd->write(aux, 1, 3);
     	}
 
 		/// External preset acquisition
 		if (g_adcExternal != nullptr) {
 			val = g_adcExternal->analogRead();
-			g_lcd1602->write("A1 ", 0, 8);
-			g_lcd1602->write(val, 0, 11);
+			g_lcd->write("A1 ", 0, 8);
+			g_lcd->write(val, 0, 11);
 
 			aux = val / 4;
 			dacLocal.analogWrite(aux); // 12 bits into 10 bits
-			g_lcd1602->write("D1 ", 1, 8);
-			g_lcd1602->write(aux, 1, 11);
+			g_lcd->write("D1 ", 1, 8);
+			g_lcd->write(aux, 1, 11);
 		}
 
 		delay(100);
-    	g_lcd1602->write("   ", 0, 4);
-    	g_lcd1602->write("   ", 1, 4);
-    	g_lcd1602->write("   ", 0, 12);
-    	g_lcd1602->write("   ", 1, 12);
+    	g_lcd->write("   ", 0, 4);
+    	g_lcd->write("   ", 1, 4);
+    	g_lcd->write("   ", 0, 12);
+    	g_lcd->write("   ", 1, 12);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 }
@@ -425,10 +428,11 @@ int main(void) {
 int main(void) {
 	initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
-	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
+//	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
-//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
+//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.02 - P0.03}
 	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 //	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0-00}
@@ -448,11 +452,11 @@ int main(void) {
 //  iotManager.addVariableToUpload("example1", exampleVariable, 1000);
 //  iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
 
-	g_lcd1602->clear();
-	g_lcd1602->write("The Home", 0, 4);
-	g_lcd1602->write("Automation PRO", 1, 1);
+	g_lcd->clear();
+	g_lcd->write("The Home", 0, 4);
+	g_lcd->write("Automation PRO", 1, 1);
 	delay(1000);
-	g_lcd1602->clear();
+	g_lcd->clear();
 
 	g_leds->turnOn();
 	delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
@@ -463,16 +467,16 @@ int main(void) {
 		/// External preset acquisition
 		if (g_adcExternal != nullptr) {
 			uint16_t val = (g_adcExternal->analogRead() / 40); // Range: 0 to 100 (Percentage)
-			g_lcd1602->write("A0 ", 0, 0);
-			g_lcd1602->write(val, 0, 3);
+			g_lcd->write("A0 ", 0, 0);
+			g_lcd->write(val, 0, 3);
 			g_leds->setSequenceSpeed(val);
 		}
 
 		delay(100);
-    	g_lcd1602->write("   ", 0, 4);
-    	g_lcd1602->write("   ", 1, 4);
-    	g_lcd1602->write("   ", 0, 12);
-    	g_lcd1602->write("   ", 1, 12);
+    	g_lcd->write("   ", 0, 4);
+    	g_lcd->write("   ", 1, 4);
+    	g_lcd->write("   ", 0, 12);
+    	g_lcd->write("   ", 1, 12);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 

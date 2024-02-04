@@ -1,3 +1,10 @@
+/*/*!
+ * @file utilities.cpp
+ * @par Author & Doxygen Editor
+ * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
+ * @date 03/02/2024 22:15:43
+ */
+
 #include "utilities.h"
 
 Timers g_timers_list;

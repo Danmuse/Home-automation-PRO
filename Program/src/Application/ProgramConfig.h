@@ -17,7 +17,7 @@
 /// Hardware definitions (Infotronic 2023) ///
 //////////////////////////////////////////////
 
-#define CN5_PINS	// SENSOR_IN {Sensor}
+//#define CN5_PINS	// SENSOR_IN {Sensor}
 #define CN6_PINS	// DIG_OUT0 {O0} - DIG_OUT1 {O1} - DIG_OUT2 {O2} - DIG_OUT3 {A0} - DIG_OUT4 {A1}
 //#define CN7_PINS	// ANALOG_OUT ~ DAC1_PIN {AOUT}
 #define CN8_PINS	// ANALOG_IN ~ ANALOG1_PIN {AIN}
@@ -35,7 +35,7 @@
 
 #define USB0_PINS	// RX1_IN {RX} - TX1_OUT {TX}
 
-//#define I2C0_PINS	// I2C0_SCL - I2C0_SDA
+#define I2C0_PINS	// I2C0_SCL - I2C0_SDA
 //#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
 
 //#define SPI0_PINS	// SPI0_SCK - SPI0_MOSI - SPI0_MISO - SPI0_SSEL0
@@ -68,8 +68,16 @@
 #error "Macros CN6_PINS and CN19_PINS cannot be defined simultaneously"
 #endif
 
-#if defined(CN15_PINS) && defined(I2C0_PINS)
-#error "Macros CN15_PINS and I2C0_PINS cannot be defined simultaneously"
+#if defined(CN9_PINS) && defined(I2C0_PINS)
+#error "Macros CN9_PINS and I2C0_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN5_PINS) && defined(I2C0_PINS)
+#error "Macros CN5_PINS and I2C0_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN9_PINS) && defined(CN5_PINS)
+#error "Macros CN9_PINS and CN5_PINS cannot be defined simultaneously"
 #endif
 
 #if defined(CN13_PINS) && defined(I2C1_PINS)
@@ -204,15 +212,15 @@
 #warning "Macros CN7_PINS or DAC_SND_CHANNEL_ENABLED or LED_TRIP_PIN are not defined and external DAC initialization will have no effect"
 #endif
 
-#if !defined(CN15_PINS) && !defined(I2C0_PINS) && !defined(SPI0_DEBUG_PINS)
-#warning "Macro CN15_PINS is not defined and LCD1602 module initialization will have no effect"
-#endif
-
 #if !defined(I2C0_PINS) && !defined(CN15_PINS) && !defined(SPI0_DEBUG_PINS)
 #warning "Macro I2C0_PINS is not defined and the initialization of the TWI modules will have no effect"
 #endif
 
-#if !defined(SPI0_DEBUG_PINS) && !defined(I2C0_PINS) && !defined(CN15_PINS)
+#if !defined(CN15_PINS) && !defined(SPI0_DEBUG_PINS)
+#warning "Macro CN15_PINS is not defined and LCD1602 module initialization will have no effect"
+#endif
+
+#if !defined(SPI0_DEBUG_PINS) && !defined(CN15_PINS)
 #warning "Macro SPI0_DEBUG_PINS is not defined and the initialization of the SPI modules will have no effect"
 #endif
 

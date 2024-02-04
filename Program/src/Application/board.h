@@ -16,7 +16,7 @@
 #include "PinInterrupt.h"
 #include "SevenSegmentDisplay.h"
 #include "Keyboard.h"
-#include "LCD1602.h"
+#include "LCD.h"
 #include "DS3231.h"
 #include "M24C16.h"
 #include "MFRC522.h"
@@ -27,11 +27,6 @@
 #include "ADC.h"
 #include "DAC.h"
 
-#include "utilities.h"
-
-#include "IoTManager.h"
-#include "QTConnection.h"
-
 /////////////////////////////////
 /// HARDWARE GLOBAL VARIABLES ///
 /////////////////////////////////
@@ -40,7 +35,7 @@
 /// To use them you must initialize the peripherals by entering the corresponding initialization function within the main scope of the program.
 /// --- "SevenSegmentDisplay *g_display" located in "Hardware/01-SevenSegmentDisplay/Display/SevenSegmentDisplay.h"
 /// --- "Keyboard *g_keyboard" located in "Hardware/02-MatrixKeyboard/Keyboard.h"
-/// --- "LCD1602 *g_lcd1602" located in "Hardware/03-LCD1602/LCD1602.h"
+/// --- "LCD *g_lcd" located in "Hardware/03-LCD1602\ LCD2004/LCD.h"
 /// --- "DS3231 *g_ds3231" located in "Hardware/04-DS3231\ RTC/DS3231.h"
 /// --- "FM24C16U *g_eeprom" located in "Hardware/05-M24C16\ EEPROM/M24C16.h"
 /// --- "MFRC522 *g_rfid" located in "Hardware/06-MFRC522\ RFID/MFRC522.h"
@@ -87,13 +82,6 @@
 /// --- "MAX_CTIMER0_MATCH_CHANNELS" located in "Firmware/CTimer.h"
 /// --- "MAX_CTIMER0_CAPTURE_CHANNELS" located in "Firmware/CTimer.h"
 
-
-#define RFID_USER_UID_SIZE 4
-#define USERS_INIT_POSITION 2
-
 void initDevice(void);
-
-bool isUserRegistered(const MFRC522::UID_st& uid);
-bool registerNewUser(const MFRC522::UID_st& uid);
 
 #endif /* BOARD_H_ */
