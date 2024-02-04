@@ -36,8 +36,8 @@ typedef union {
 
 class M24C16 : protected I2C {
 public:
-	// FST_QUARTER_BYTE: Indicates a zero bit shift to the left of the 16-bit register. Useful for storing 8-bit values ​​in EEPROM memory.
-	// SND_QUARTER_BYTE: Indicates an 8-bit shift to the left of the 16-bit register. Useful for storing 8-bit values ​​in EEPROM memory.
+	// FST_QUARTER_BYTE: Indicates a zero bit shift to the left of the 16-bit register. Useful for storing 8-bit values in EEPROM memory.
+	// SND_QUARTER_BYTE: Indicates an 8-bit shift to the left of the 16-bit register. Useful for storing 8-bit values in EEPROM memory.
 	enum middleByte_t { FST_QUARTER_BYTE, SND_QUARTER_BYTE };
 	enum modifierType_t { CHAR, UINT8, INT8, UINT16, INT16, UINT32, INT32, FLOAT };
 	enum pageBlock_t { FIRST_PAGE_BLOCK = (0x0U), SECOND_PAGE_BLOCK = (0x4U), THIRD_PAGE_BLOCK = (0x2U),

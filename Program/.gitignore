@@ -1,1 +1,4 @@
 /Debug/
+/Release/
+.settings/
+/Program\ LinkServer\ Debug.launch

@@ -9,10 +9,9 @@
 #ifndef MFRC522_H_
 #define MFRC522_H_
 
-#include <cstring>
 #include "systick.h"
 #include "SPI.h"
-#include "Semaphore.h"
+#include "utilities.h"
 
 //////////////////////////////////////////
 // Page 0: Command and Status Registers //
@@ -184,10 +183,6 @@ private:
 	RFID_result_t PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq, uint8_t *sendData, uint8_t sendLen, uint8_t *backData = nullptr, uint8_t *backLen = nullptr, uint8_t *validBits = nullptr, uint8_t rxAlign = 0, bool checkCRC = false);
 	RFID_result_t PICC_REQA(uint8_t *bufferATQA, uint8_t *bufferSize);
 	virtual RFID_result_t PICC_Select(uint8_t validBits = 0);
-
-	// Support functions for debugging
-	char* strreverse(char* cstring);
-	char* byteToHEX(char* cstring, uint8_t value);
 public:
 	MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL, const Gpio& hardRST);
 

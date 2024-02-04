@@ -24,7 +24,7 @@ m_mode{mode} {
 	if ((this->m_port != PORT0) && (this->m_port != PORT1))	this->m_error = ERROR;
     else if (this->m_port == PORT0 && this->m_bit >= B_PORT0) this->m_error = ERROR;
     else if (this->m_port == PORT1 && this->m_bit >= B_PORT1) this->m_error = ERROR;
-	SYSCON->SYSAHBCLKCTRL0 |= ((1 << CLK_GPIO0) | (1 << CLK_GPIO1) | (1 << CLK_IOCON));
+	SYSCON->SYSAHBCLKCTRL0 |= (SYSCON_SYSAHBCLKCTRL0_GPIO0_MASK | SYSCON_SYSAHBCLKCTRL0_GPIO1_MASK | SYSCON_SYSAHBCLKCTRL0_IOCON_MASK);
 	this->setDir();
 }
 
