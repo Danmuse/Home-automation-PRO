@@ -92,6 +92,4 @@
 
 void initDevice(void);
 
-void isUserRegistered(UID_st& uid);
-
 #endif /* BOARD_H_ */
