@@ -196,8 +196,8 @@ bool S5050DJ::turnOff(void) {
 	return this->setAction(TURNOFF_LEDS);
 }
 
-int S5050DJ::getBrightness() {
-    return 0;//TODO: Implement
+uint8_t S5050DJ::getBrightness(void) const {
+    return (uint8_t)(this->m_brightnessSpeedPoint * ((float)S5050DJ_MAX_BRIGHTNESS_SPEED_POINT / 100));
 }
 
 ///////////////////////////////

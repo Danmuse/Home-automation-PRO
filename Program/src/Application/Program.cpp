@@ -16,8 +16,8 @@ int main(void) {
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
 	initLCD1602();	// Initializes the g_lcd1602     ~ Define the CN15_PINS macro in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
-//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0-00}
@@ -65,18 +65,17 @@ int main(void) {
 			g_lcd1602->write("ANALOG: ", 0, 0);
 			g_lcd1602->write(val, 0, 8);
 			g_leds->setSequenceSpeed(val);
+			g_lcd1602->write("BRIGHT: ", 1, 0);
+			g_lcd1602->write(g_leds->getBrightness(), 1, 8);
 		}
 
 		g_servo->setAngle(0);
     	delay(500);
 		g_servo->setAngle(MG90S_MAX_ANGLE / 2);
 		delay(500);
-		g_servo->setAngle(MG90S_MAX_ANGLE);
-		delay(500);
-		g_servo->setAngle(MG90S_MAX_ANGLE / 2);
-		delay(500);
 
     	g_lcd1602->write("   ", 0, 9);
+    	g_lcd1602->write("   ", 1, 9);
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 

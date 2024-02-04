@@ -12,6 +12,9 @@
 #include "UART.h"
 #include "Semaphore.h"
 
+#define DFPLAYER_MAX_VOLUME_VALUE 30
+#define DFPLAYER_MIN_VOLUME_VALUE 0
+
 #define DFPLAYER_EQ_NORMAL 0
 #define DFPLAYER_EQ_POP 1
 #define DFPLAYER_EQ_ROCK 2
@@ -60,27 +63,58 @@
 
 class DFPlayer : protected UART {
 private:
+	uint32_t m_timeOutTimer;
+	uint32_t m_timeOutDuration = 500;
+
 	uint8_t m_received[DFPLAYER_RECEIVED_LENGTH];
 	uint8_t m_sending[DFPLAYER_SEND_LENGTH] = {0x7E, 0xFF, 06, 00, 01, 00, 00, 00, 00, 0xEF};
 
 	uint8_t m_receivedIndex = 0;
 
-//	uint8_t m_device = DFPLAYER_DEVICE_SD;
+	uint8_t m_device = DFPLAYER_DEVICE_SD;
 	uint8_t m_handleType;
 	uint8_t m_handleCommand;
 	uint16_t m_handleParameter;
 	bool m_isAvailable = false;
 	bool m_isSending = false;
 
+	void setTimeOut(unsigned long timeOutDuration);
+	void uint16ToArray(uint16_t value, uint8_t *array);
+	uint16_t arrayToUint16(uint8_t *array);
+	uint16_t calculateCheckSum(uint8_t *buffer);
+	void parseStack(void);
+	bool validateStack(void);
+	void sendStack(void);
+	void sendStack(uint8_t command);
+	void sendStack(uint8_t command, uint16_t argument);
+	void sendStack(uint8_t command, uint8_t argumentHigh, uint8_t argumentLow);
 	void enableACK(void);
 	void disableACK(void);
-	bool waitAvailable(uint32_t duration);
+	bool available(void);
+	bool waitAvailable(uint32_t duration = 0);
 	bool begin(bool isACK = true, bool doReset = true);
 	uint8_t readType(void);
 	uint16_t read(void);
+	bool handleMessage(uint8_t type, uint16_t parameter = 0);
+	bool handleError(uint8_t type, uint16_t parameter = 0);
 public:
 	DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel = UART0);
-
+	void next(void);
+	void previous(void);
+	void play(uint8_t fileNumber = 1);
+	void volumeUp(void);
+	void volumeDown(void);
+	void volume(uint8_t volume);
+	void equalizer(uint8_t equalizer);
+	void loop(uint8_t fileNumber);
+	void sleep(void);
+	void reset(void);
+	void start(void);
+	void pause(void);
+	void enableLoopAll(void);
+	void disableLoopAll(void);
+	void enableLoop(void);
+	void disableLoop(void);
 	virtual ~DFPlayer() = default;
 };
 
