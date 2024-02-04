@@ -29,6 +29,8 @@ private slots:
 
     void PortsAvailable();
 
+    void verificatePort();
+
     void on_Login_clicked();
 
     void on_pushButton_clicked();
@@ -47,6 +49,7 @@ private:
     SerialParams Confirm;
     QMovie *movie;
     QLabel *label;
+    QTimer* PuertoConnectTimer;
 };
 
 #endif // MAINWINDOW_H
