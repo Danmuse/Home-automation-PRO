@@ -49,7 +49,6 @@ ui(new Ui::MainWindow) {
 MainWindow::~MainWindow() {
     Puerto.ClosePort();
     CancelateTimer(TimerPort);
-    CancelateTimer(WaitingConnectTimer);
     //delete Puerto;
     delete Dial;
     delete ui;
@@ -223,6 +222,8 @@ void MainWindow::WaitingConnect()
     if(Confirm.Info == "ok" && Confirm.Param == "connect" ){
         label->close();
         movie->stop();
+        CancelateTimer(TimerPort);
+        //CancelateTimer(WaitingConnectTimer);
         Dial = new Dialog(this);
         Dial->show();
     }

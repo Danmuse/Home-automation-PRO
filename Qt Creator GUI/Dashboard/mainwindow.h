@@ -44,7 +44,6 @@ private:
     Dialog *Dial;
     ValidatorModal *Validator;
     QTimer* TimerPort;
-    QTimer* WaitingConnectTimer;
     SerialParams Confirm;
     QMovie *movie;
     QLabel *label;

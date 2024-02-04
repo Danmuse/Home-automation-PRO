@@ -7,8 +7,9 @@ Dialog::Dialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Dialog)
 {
+    disconnect(WaitingConnectTimer);
     miTemporizador = new QTimer(this);
-    miTemporizador->setInterval(500);
+    miTemporizador->setInterval(50);
     connect(miTemporizador, SIGNAL(timeout()), this, SLOT(manejarTimeOut()));
     ui->setupUi(this);
     miTemporizador->start();
@@ -41,27 +42,31 @@ void Dialog::on_pushButton_closeSession_clicked()
 void Dialog::manejarTimeOut()
 {
     Information = Puerto.GetDato();
-    if(Information.Info != nullptr && Information.Param != nullptr ){
+
+    QString dato = Information.Param;
+    QString value = Information.Info;
+
+    if(dato != nullptr && value != nullptr ){
         bool ok;
-        int valor = Information.Param.toInt(&ok);
+        int valor = value.toInt(&ok);
         if(ok){
-            if(Information.Info == "luz"){
+            if(dato == "luz"){
                 ui->LuzLevel->setValue(valor);
-            }else if(Information.Info == "song" && Information.Param.length() == 4){
+            }else if(dato == "song" && value.length() == 4){
                 ui->ComboMusic->setCurrentIndex(valor);
-            }else if(Information.Info == "song" && Information.Param.length() != 4){
+            }else if(dato == "song" && value.length() != 4){
                 ui->VolumeMusic->setValue(valor);
                 ui->PlayMusic->setEnabled(false);
                 ui->PauseMusic->setEnabled(true);
             }
         }else{
-            if(Information.Info == "automatic" && Information.Param == "on"){
+            if(dato == "automatic" && value == "on"){
                 ui->Automatic->setChecked(true);
-            }else if(Information.Info == "automatic" && Information.Param == "off"){
+            }else if(dato == "automatic" && value == "off"){
                 ui->Automatic->setChecked(false);
-            }else if(Information.Info == "song" && Information.Param == "pause"){
-                ui->PlayMusic->setEnabled(false);
-                ui->PauseMusic->setEnabled(true);
+            }else if(dato == "song" && value == "pause"){
+                ui->PlayMusic->setEnabled(true);
+                ui->PauseMusic->setEnabled(false);
             }
         }
         //Database.PushDato(Information.Param, Information.Info.toInt());
