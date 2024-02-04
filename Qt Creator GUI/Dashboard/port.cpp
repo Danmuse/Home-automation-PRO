@@ -54,7 +54,41 @@ QList<QSerialPortInfo> port::GetTotalsPorts()
 
 void port::onReadyRead() {
     QString Lectura = QString::fromUtf8(m_Puerto->readAll());
+    int cantLectura = Lectura.length();
+    
     if (m_Puerto && m_Puerto->isOpen()) {
+        
+        for (int i = 0; i < cantLectura; i++)
+        {
+            if(Lectura[i] == '$'){
+                m_IndexRead++;
+                if(m_IndexRead == 4){
+                    m_IndexRead = 0;
+                }
+            }
+            m_Dato[m_IndexRead].append(Lectura[i]);
+        }
+        
+
+
+
+        /* for (int i = 0; i < 3; i++)
+        {
+            if(m_Dato[i].contains('$') && m_Dato[i].contains('%')){
+                continue;
+            }
+
+            if(Lectura.contains('%')){
+                int posicion = Lectura.indexOf('%');
+                m_Dato[i].append(Lectura.left(posicion));
+            }
+            if()
+
+        } 
+        
+
+
+
         if(m_Dato == nullptr){
             m_Dato = "";
         }
@@ -64,6 +98,7 @@ void port::onReadyRead() {
         if(m_Dato.contains('%')){
             m_Flag = true;
         }
+        */
     }
 }
 
@@ -118,10 +153,13 @@ SerialParams port::GetDato()
     Valor.Info = nullptr;
     Valor.Param = nullptr;
 
-    if(m_Flag){
-        QString datoStr = m_Dato;
-        m_Dato = "";
-        m_Flag = false;
+    if(m_IndexRead != m_IndexWrite){
+        QString datoStr = m_Dato[m_IndexWrite];
+        m_Dato[m_IndexWrite] = "";
+        m_IndexWrite++;
+        if(m_IndexWrite == 4){
+            m_IndexWrite = 0;
+        }
         int index = datoStr.indexOf(':');
 
         if (index != -1 && datoStr.at(0) == '$' && datoStr.at(datoStr.length() - 1) == '%') {
