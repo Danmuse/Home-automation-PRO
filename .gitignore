@@ -3,6 +3,6 @@
 .metadata/
 .mcuxpressoide_packages_support/
 Program.zip
-./Program/Debug
-./Program/Release
+./Program/Debug/*
+./Program/Release/*
 ./Program/.settings
