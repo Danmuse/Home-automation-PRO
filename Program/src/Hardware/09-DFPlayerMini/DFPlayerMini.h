@@ -10,7 +10,7 @@
 #define DFPLAYER_MINI_H_
 
 #include "UART.h"
-#include "Semaphore.h"
+#include "utilities.h"
 
 #define DFPLAYER_MAX_VOLUME_VALUE 30
 #define DFPLAYER_MIN_VOLUME_VALUE 0

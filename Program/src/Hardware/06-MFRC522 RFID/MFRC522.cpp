@@ -904,28 +904,6 @@ void MFRC522::dumpDetails(UID_st* UID) {
 	// TODO (Minor priority): Not implemented yet
 }
 
-char* MFRC522::strreverse(char* cstring) {
-	size_t lenght = strlen(cstring);
-	uint8_t left, right;
-	for (left = 0, right = lenght - 1; left < (lenght / 2); left++, right--) {
-		char aux = cstring[left];
-		cstring[left] = cstring[right];
-		cstring[right] = aux;
-	}
-	return cstring;
-}
-
-char* MFRC522::byteToHEX(char* cstring, uint8_t value) {
-    size_t index = 0;
-	for (index = 0; value > 0; index++) {
-        if (value % 16 < 10) cstring[index] = (value % 16) + '0';
-        else cstring[index] = (value % 16) - 10 + 'A';
-        value /= 16;
-    }
-	cstring[index] = '\0';
-    if (strlen(cstring) == 0) strcpy(cstring, "0");
-    return this->strreverse(cstring);
-}
 
 char *MFRC522::printUID(void) {
     static char RFIDstr[RFID_STR_SIZE];
@@ -934,13 +912,13 @@ char *MFRC522::printUID(void) {
     RFIDstr[2] = 'D';
     RFIDstr[3] = ':';
     RFIDstr[4] = ' ';
-    this->byteToHEX(&RFIDstr[5], this->m_UID.uidByte[0]);
+    byteToHEX(&RFIDstr[5], this->m_UID.uidByte[0]);
     RFIDstr[7] = ' ';
-    this->byteToHEX(&RFIDstr[8], this->m_UID.uidByte[1]);
+    byteToHEX(&RFIDstr[8], this->m_UID.uidByte[1]);
     RFIDstr[10] = ' ';
-    this->byteToHEX(&RFIDstr[11], this->m_UID.uidByte[2]);
+    byteToHEX(&RFIDstr[11], this->m_UID.uidByte[2]);
     RFIDstr[13] = ' ';
-    this->byteToHEX(&RFIDstr[14], this->m_UID.uidByte[3]);
+    byteToHEX(&RFIDstr[14], this->m_UID.uidByte[3]);
     RFIDstr[16] = '\n';
     RFIDstr[17] = '\0';
     return RFIDstr;

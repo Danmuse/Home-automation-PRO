@@ -27,7 +27,7 @@
 #include "ADC.h"
 #include "DAC.h"
 
-#include "Semaphore.h"
+#include "utilities.h"
 
 #include "IoTManager.h"
 #include "QTConnection.h"
@@ -87,6 +87,13 @@
 /// --- "MAX_CTIMER0_MATCH_CHANNELS" located in "Firmware/CTimer.h"
 /// --- "MAX_CTIMER0_CAPTURE_CHANNELS" located in "Firmware/CTimer.h"
 
+
+#define RFID_USER_UID_SIZE 4
+#define USERS_INIT_POSITION 2
+
 void initDevice(void);
+
+bool isUserRegistered(const MFRC522::UID_st& uid);
+bool registerNewUser(const MFRC522::UID_st& uid);
 
 #endif /* BOARD_H_ */
