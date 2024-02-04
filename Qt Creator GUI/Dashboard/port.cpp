@@ -53,9 +53,17 @@ QList<QSerialPortInfo> port::GetTotalsPorts()
 }
 
 void port::onReadyRead() {
-    if (m_Puerto && m_Puerto->isOpen() && m_Dato == nullptr) {
-        m_Dato = m_Puerto->readAll();
-        m_Flag = true;
+    QString Lectura = QString::fromUtf8(m_Puerto->readAll());
+    if (m_Puerto && m_Puerto->isOpen()) {
+        if(m_Dato == nullptr){
+            m_Dato = "";
+        }
+        if((m_Dato.contains('$') || Lectura.contains('$') && !(m_Dato.contains('%')) && m_Flag == false)){
+            m_Dato.append(Lectura);
+        }
+        if(m_Dato.contains('%')){
+            m_Flag = true;
+        }
     }
 }
 
@@ -111,12 +119,12 @@ SerialParams port::GetDato()
     Valor.Param = nullptr;
 
     if(m_Flag){
-        QString datoStr = QString::fromUtf8(m_Dato);
-        m_Dato = nullptr;
+        QString datoStr = m_Dato;
+        m_Dato = "";
         m_Flag = false;
         int index = datoStr.indexOf(':');
 
-        if (index != -1 && datoStr.at(0) == '%' && datoStr.at(datoStr.length() - 1) == '%') {
+        if (index != -1 && datoStr.at(0) == '$' && datoStr.at(datoStr.length() - 1) == '%') {
             // Separa el dato antes y después de ':'
             Valor.Param = datoStr.mid(1, index - 1);
             Valor.Info = datoStr.mid(index + 1).chopped(1);
