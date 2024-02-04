@@ -89,7 +89,11 @@
 
 
 #define RFID_USER_UID_SIZE 4
+#define USERS_INIT_POSITION 2
 
 void initDevice(void);
+
+bool isUserRegistered(const MFRC522::UID_st& uid);
+bool registerNewUser(const MFRC522::UID_st& uid);
 
 #endif /* BOARD_H_ */
