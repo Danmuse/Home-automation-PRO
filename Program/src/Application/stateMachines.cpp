@@ -96,11 +96,11 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
 }
 
 Timer doorOpeningTimer(nullptr, Timer::SEC);
+MFRC522::UID_st uuid;
 
 void doorOpeningStateMachine(DoorOpeningState& state) {
     switch (state) {
         case DoorOpeningState::WAITING_FOR_RFID:
-            MFRC522::UID_st uuid;
             RFID_result_t result;
             result = g_rfid->getUID(&uuid);
             if (result == RFID_OK) {
@@ -111,7 +111,7 @@ void doorOpeningStateMachine(DoorOpeningState& state) {
             if (isUserRegistered(uuid)) {
                 g_servo->setAngle(90);
                 state = DoorOpeningState::DOOR_OPEN;
-                doorOpeningTimer.timerStart(10);
+                doorOpeningTimer.timerStart(3);
             }
             else {
                 state = DoorOpeningState::WAITING_FOR_RFID;
