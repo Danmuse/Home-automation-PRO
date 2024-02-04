@@ -4,6 +4,8 @@
 #include <QDialog>
 #include "programconfig.h"
 
+
+
 namespace Ui {
 class ValidatorModal;
 }

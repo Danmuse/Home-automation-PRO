@@ -7,7 +7,6 @@ Dialog::Dialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Dialog)
 {
-    disconnect(WaitingConnectTimer);
     miTemporizador = new QTimer(this);
     miTemporizador->setInterval(50);
     connect(miTemporizador, SIGNAL(timeout()), this, SLOT(manejarTimeOut()));

@@ -1,6 +1,8 @@
 #include "programconfig.h"
 
 
+
+
 database Database("brb0vzvtpbxxloikqzji-mysql.services.clever-cloud.com",
               "uaujnwpmnmd9mwxh",
               "QMYSQL",
@@ -14,3 +16,5 @@ QStringList Canciones = {"Opening", "Eclipse", "Everlasting", "No Time To Waste"
 QString Codigo = "5542";
 
 QTimer* WaitingConnectTimer;
+
+

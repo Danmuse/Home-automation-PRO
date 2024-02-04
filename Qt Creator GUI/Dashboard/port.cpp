@@ -60,15 +60,14 @@ void port::onReadyRead() {
         
         for (int i = 0; i < cantLectura; i++)
         {
-            if(Lectura[i] == '$'){
+            m_Dato[m_IndexRead].append(Lectura[i]);
+            if(Lectura[i] == FOOTER){
                 m_IndexRead++;
                 if(m_IndexRead == 4){
                     m_IndexRead = 0;
                 }
             }
-            m_Dato[m_IndexRead].append(Lectura[i]);
         }
-        
 
 
 
@@ -157,16 +156,20 @@ SerialParams port::GetDato()
         QString datoStr = m_Dato[m_IndexWrite];
         m_Dato[m_IndexWrite] = "";
         m_IndexWrite++;
+        //qDebug() << datoStr;
         if(m_IndexWrite == 4){
             m_IndexWrite = 0;
         }
+
         int index = datoStr.indexOf(':');
 
-        if (index != -1 && datoStr.at(0) == '$' && datoStr.at(datoStr.length() - 1) == '%') {
+        if (index != -1 && datoStr.at(0) == HEADER && datoStr.at(datoStr.length() - 1) == FOOTER) {
             // Separa el dato antes y después de ':'
             Valor.Param = datoStr.mid(1, index - 1);
             Valor.Info = datoStr.mid(index + 1).chopped(1);
         }
+        qDebug() << Valor.Param << "write:" << Valor.Info;
+
     }
     return Valor;
 }
