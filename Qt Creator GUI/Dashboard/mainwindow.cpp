@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent) :
 QMainWindow(parent),
 ui(new Ui::MainWindow) {
+    
     ui->setupUi(this);
     QList<QSerialPortInfo> Puertos = Puerto.GetTotalsPorts();
     for (int index = 0; index < Puertos.size(); index++) {
@@ -32,6 +33,8 @@ ui(new Ui::MainWindow) {
     label->move(x, y);
     label->setFixedSize(75, 75); // Establecer un tamaño fijo
 
+    inicializateTimer(PuertoConnectTimer, &MainWindow::verificatePort);
+
     inicializateTimer(TimerPort, &MainWindow::PortsAvailable);
     ui->PortConfirm->setStyleSheet("background-color: red;");
     connect(ui->lineEdit_user, &QLineEdit::textChanged, this, &MainWindow::CreateUserEnable);
@@ -49,6 +52,7 @@ ui(new Ui::MainWindow) {
 MainWindow::~MainWindow() {
     Puerto.ClosePort();
     CancelateTimer(TimerPort);
+    CancelateTimer(PuertoConnectTimer);
     //delete Puerto;
     delete Dial;
     delete ui;
@@ -169,15 +173,13 @@ void MainWindow::on_pushButton_clicked()
         ui->pushButton->setText("Desconectar");
         ui->comboBox->setEnabled(false);
         ui->Login->setEnabled(true);
-        ui->PortConfirm->setStyleSheet("background-color: green;");
-        ui->PortConfirm->setText("Conectado");
+        
     }else if(ui->pushButton->text() == "Desconectar"){
         Puerto.ClosePort();
         ui->pushButton->setText("Conectar");
         ui->comboBox->setEnabled(true);
         ui->Login->setEnabled(false);
-        ui->PortConfirm->setStyleSheet("background-color: red;");
-        ui->PortConfirm->setText("Desconectado");
+        
     }
 }
 
@@ -270,3 +272,16 @@ void MainWindow::PortsAvailable(){
 }
 
 
+void MainWindow::verificatePort(){
+
+    if(Puerto.GetPortStatus()){
+        ui->PortConfirm->setStyleSheet("background-color: green;");
+        ui->PortConfirm->setText("Conectado");
+    }else{
+        ui->PortConfirm->setStyleSheet("background-color: red;");
+        ui->PortConfirm->setText("Desconectado");
+    }
+
+        
+
+}
