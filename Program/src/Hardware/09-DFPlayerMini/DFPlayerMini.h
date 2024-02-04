@@ -67,7 +67,7 @@ private:
 	uint32_t m_timeOutDuration = 500;
 
 	uint8_t m_received[DFPLAYER_RECEIVED_LENGTH];
-	uint8_t m_sending[DFPLAYER_SEND_LENGTH] = {0x7E, 0xFF, 06, 00, 01, 00, 00, 00, 00, 0xEF};
+	uint8_t m_sending[DFPLAYER_SEND_LENGTH] = { 0x7E, 0xFF, 06, 00, 01, 00, 00, 00, 00, 0xEF };
 
 	uint8_t m_receivedIndex = 0;
 
@@ -78,7 +78,7 @@ private:
 	bool m_isAvailable = false;
 	bool m_isSending = false;
 
-	void setTimeOut(unsigned long timeOutDuration);
+	void setTimeOut(uint32_t timeOutDuration);
 	void uint16ToArray(uint16_t value, uint8_t *array);
 	uint16_t arrayToUint16(uint8_t *array);
 	uint16_t calculateCheckSum(uint8_t *buffer);

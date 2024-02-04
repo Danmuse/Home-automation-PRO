@@ -153,11 +153,11 @@ EEPROM_result_t M24C16::getStatus(void) const {
 ///////////////////////////////
 
 void initM24C16(void) {
-	#if defined(I2C0_PINS)
+	#if defined(I2C3_PINS)
 
-	static M24C16 eeprom(I2C0_SCL, I2C0_SDA, I2C::TWI0);
+	static M24C16 eeprom(I2C3_SCL, I2C3_SDA, I2C::TWI3);
 
 	g_eeprom = &eeprom;
 
-	#endif // defined(I2C0_PINS)
+	#endif // defined(I2C3_PINS)
 }
