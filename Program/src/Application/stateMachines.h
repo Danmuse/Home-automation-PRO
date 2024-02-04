@@ -21,11 +21,18 @@
 #define USERS_INIT_POSITION 2
 
 enum class UserRegistrationState {
-	WAITING_FOR_PASSWORD,
-	WAITING_FOR_USER
+        WAITING_FOR_PASSWORD,
+        WAITING_FOR_USER
+};
+enum class DoorOpeningState {
+        WAITING_FOR_RFID,
+        CHECKING_USER,
+        DOOR_OPEN
 };
 
 void userRegistrationStateMachine(UserRegistrationState& state);
+
+void doorOpeningStateMachine(DoorOpeningState& state);
 
 
 #endif /* STATE_MACHINES_H_ */

@@ -48,7 +48,7 @@ ui(new Ui::MainWindow) {
     //}else{
     //    qDebug() << "No hay un puerto disponible";
     //}
-    Dial.setWindowTitle("Home Controller");
+    Dial->setWindowTitle("Home Controller");
 
 
 }
