@@ -11,6 +11,7 @@
 #include "stateMachines.h"
 
 static bool isUserRegistered(const MFRC522::UID_st& uid);
+
 static bool registerNewUser(const MFRC522::UID_st& uid);
 
 static bool isUserRegistered(const MFRC522::UID_st& uid) {
@@ -30,7 +31,8 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
             if (result != EEPROM_OK) return false;
             if (registeredUID == userId) isRegistered = true;
         }
-    } else {
+    }
+    else {
         for (uint8_t i = 0; i < userCount; i++) {
             uint8_t registeredUID[RFID_USER_UID_SIZE];
             for (uint8_t i = 0; i < RFID_USER_UID_SIZE; i++) {
@@ -59,7 +61,8 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
 
         result = g_eeprom->write(userId, userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
         if (result != EEPROM_OK) return false;
-    } else {
+    }
+    else {
         for (uint8_t i = 0; i < RFID_USER_UID_SIZE; i++) {
             result = g_eeprom->write(uid.uidByte[i], userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
             if (result != EEPROM_OK) return false;
@@ -92,3 +95,33 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
     }
 }
 
+Timer doorOpeningTimer(nullptr, Timer::SEC);
+MFRC522::UID_st uuid;
+
+void doorOpeningStateMachine(DoorOpeningState& state) {
+    switch (state) {
+        case DoorOpeningState::WAITING_FOR_RFID:
+            RFID_result_t result;
+            result = g_rfid->getUID(&uuid);
+            if (result == RFID_OK) {
+                state = DoorOpeningState::CHECKING_USER;
+            }
+            break;
+        case DoorOpeningState::CHECKING_USER:
+            if (isUserRegistered(uuid)) {
+                g_servo->setAngle(90);
+                state = DoorOpeningState::DOOR_OPEN;
+                doorOpeningTimer.timerStart(3);
+            }
+            else {
+                state = DoorOpeningState::WAITING_FOR_RFID;
+            }
+            break;
+        case DoorOpeningState::DOOR_OPEN:
+            if (doorOpeningTimer.getTicks() == 0) {
+                g_servo->setAngle(0);
+                state = DoorOpeningState::WAITING_FOR_RFID;
+            }
+            break;
+    }
+}
