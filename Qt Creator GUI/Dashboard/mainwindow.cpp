@@ -15,6 +15,8 @@ ui(new Ui::MainWindow) {
     }else{
         ui->Login->setEnabled(true);
     }
+    Dial = new Dialog(this);
+
 
     // Cargar el archivo GIF
     movie = new QMovie(":/loader.gif");
@@ -46,6 +48,8 @@ ui(new Ui::MainWindow) {
     //}else{
     //    qDebug() << "No hay un puerto disponible";
     //}
+    Dial.setWindowTitle("Home Controller");
+
 
 }
 
@@ -70,7 +74,7 @@ MainWindow::~MainWindow() {
 void MainWindow::inicializateTimer(QTimer *timer, void (MainWindow::*func)())
 {
     timer = new QTimer(this);
-    timer->setInterval(500);
+    timer->setInterval(50);
     connect(timer,  &QTimer::timeout, this, func);
     timer->start();
 }
@@ -78,7 +82,9 @@ void MainWindow::inicializateTimer(QTimer *timer, void (MainWindow::*func)())
 
 void MainWindow::CancelateTimer(QTimer *timer)
 {
-    timer->disconnect();
+    timer->stop();
+    delete timer;
+    timer = nullptr;
 }
 
 
@@ -221,13 +227,18 @@ void MainWindow::CreateUserEnable()
 
 void MainWindow::WaitingConnect()
 {
-    Confirm = Puerto.GetDato();
+    if(!Dial->isActiveWindow()){
+        Confirm = Puerto.GetDato();
+    }
     if(Confirm.Info == "ok" && Confirm.Param == "connect" ){
-        label->close();
+        qDebug() << "entro";
         movie->stop();
-        CancelateTimer(TimerPort);
+        label->close();
+        Confirm.Info = "";
+        Confirm.Param = "";
+        //CancelateTimer(TimerPort);
         //CancelateTimer(WaitingConnectTimer);
-        Dial = new Dialog(this);
+        //CancelateTimer(WaitingConnectTimer);
         Dial->show();
     }
 }

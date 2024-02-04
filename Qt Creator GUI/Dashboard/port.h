@@ -7,6 +7,10 @@
 #include <QSerialPortInfo>
 #include <QObject>
 
+#define HEADER '$'
+#define FOOTER '%'
+
+
 struct SerialParams{
     QString Param;
     QString Info;
