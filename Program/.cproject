@@ -544,7 +544,9 @@
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
-							<tool id="com.crt.advproject.link.exe.release.376572065" name="MCU Linker" superClass="com.crt.advproject.link.exe.release"/>
+							<tool id="com.crt.advproject.link.exe.release.376572065" name="MCU Linker" superClass="com.crt.advproject.link.exe.release">
+								<option id="com.crt.advproject.link.gcc.hdrlib.812678981" name="Library" superClass="com.crt.advproject.link.gcc.hdrlib"/>
+							</tool>
 							<tool id="com.crt.advproject.tool.debug.release.103670283" name="MCU Debugger" superClass="com.crt.advproject.tool.debug.release">
 								<option id="com.crt.advproject.linkserver.debug.prevent.release.1191604810" name="Prevent Debugging" superClass="com.crt.advproject.linkserver.debug.prevent.release"/>
 								<option id="com.crt.advproject.miscellaneous.end_of_heap.858705333" name="Last used address of the heap" superClass="com.crt.advproject.miscellaneous.end_of_heap"/>

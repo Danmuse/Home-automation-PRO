@@ -32,10 +32,10 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 ### 👨‍💻️ __Software & GUI APP__
 
 - [ ] [Desktop and mobile graphical application for controlling automation created in **Qt Creator**.](https://github.com/Danmuse/Home-automation-PRO/issues/12) `LC ~ 17` `CY ~ 4` `DDM ~ 2`
-- [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 22` `AO ~ 13`
+- [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 25` `AO ~ 15`
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 211` `AO ~ 72` `LC ~ 12` `CY ~ 6`
+`DDM ~ 219` `AO ~ 77` `LC ~ 12` `CY ~ 6`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7) `LC ~ 6`
 - [ ] [Micro SD card adaptation for data handling and ".mp3" files using DFPlayer module.](https://github.com/Danmuse/Home-automation-PRO/issues/27) `DDM ~ 8.5`
 
@@ -43,7 +43,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 
 - [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2) `DDM ~ 10`
 - [x] [Presentation of the project idea.](https://github.com/Danmuse/Home-automation/issues/4) `DDM ~ 8`
-- [ ] [Comprehensive and extensive project report.](https://github.com/Danmuse/Home-automation/issues/8) `CY ~ 15`
+- [ ] [Comprehensive and extensive project report.](https://github.com/Danmuse/Home-automation/issues/8) `CY ~ 17`
 - [ ] Illustrations of the experience and trials.
 - [ ] [Load component datasheet.](https://github.com/Danmuse/Home-automation/issues/5) `DDM ~ 1.5`
 

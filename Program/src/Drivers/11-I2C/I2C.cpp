@@ -23,6 +23,9 @@ m_frequency{frequency} {
 	}
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+
 SyncCommTWI::statusComm_t I2C::awaitACK(void) {
 	uint8_t attempts = 0;
 
@@ -91,6 +94,8 @@ SyncCommTWI::statusComm_t I2C::prepareConditions(const uint8_t address, const ui
 		return TWI_SUCCESS;
 	} else return TWI_FAILURE;
 }
+
+#pragma GCC pop_options
 
 SyncCommTWI::statusComm_t I2C::transmitStopBit(void) {
 	if (!(this->awaitACK())) {
