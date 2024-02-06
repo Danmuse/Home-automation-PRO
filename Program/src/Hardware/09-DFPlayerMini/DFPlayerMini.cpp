@@ -9,13 +9,12 @@
 
 DFPlayer *g_dfplayer = nullptr;
 
-DFPlayer::DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel) : UART(RX, TX, channel) {
-	this->begin();
+DFPlayer::DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel) : UART(RX, TX, channel), Callback(),
+m_timeOutTimer{(uint16_t)(0 * (g_systick_freq / 1000))}, m_receivedIndex{0}, m_isAvailable{false}, m_isSending{false} {
+    g_callback_list.push_back(this);
+	if (!(this->begin())) { /* TODO: Make something */ }
 }
 
-void DFPlayer::setTimeOut(uint32_t timeOutDuration) {
-	this->m_timeOutDuration = timeOutDuration;
-}
 
 void DFPlayer::uint16ToArray(uint16_t value, uint8_t *array) {
 	*array = (uint8_t)(value >> 8);
@@ -93,24 +92,12 @@ bool DFPlayer::validateStack(void) {
 }
 
 void DFPlayer::sendStack(void) {
-
-	/*
-
 	// If the ACK mode is on wait until the last transmition
-	if (this->m_sending[Stack_ACK]) {
-		while (this->m_isSending) {
-//      	delay(0);
-			this->waitAvailable();
-		}
-	}
+	if (this->m_sending[Stack_ACK]) while (this->m_isSending) this->waitAvailable();
 	this->transmit(reinterpret_cast<const char*>(this->m_sending), DFPLAYER_SEND_LENGTH);
-	this->m_timeOutTimer = millis();
 	this->m_isSending = this->m_sending[Stack_ACK];
-
-	// If the ACK mode is off wait 10 ms after one transmition.
+	// If the ACK mode is off wait 10 ms after one transmition
 	if (!(this->m_sending[Stack_ACK])) delay(10);
-
-	*/
 }
 
 void DFPlayer::sendStack(uint8_t command) {
@@ -142,7 +129,6 @@ bool DFPlayer::available(void) {
 	char bufferReceived[DFPLAYER_RECEIVED_LENGTH];
 	if (this->receive(bufferReceived, DFPLAYER_RECEIVED_LENGTH)) {
 		while (this->m_receivedIndex < DFPLAYER_RECEIVED_LENGTH) {
-//  		delay(0);
 			if (this->m_receivedIndex == 0) {
 				this->m_received[Stack_Header] = bufferReceived[Stack_Header];
 				if (this->m_received[Stack_Header] == 0x7E) this->m_receivedIndex++;
@@ -159,7 +145,6 @@ bool DFPlayer::available(void) {
 						if (this->m_received[this->m_receivedIndex] != 0xEF) return this->handleError(WrongStack);
 						else {
 							if (this->validateStack()) {
-								this->m_receivedIndex = 0; // TODO: Check this code instruction!!
 								this->parseStack();
 								return this->m_isAvailable;
 							} else return this->handleError(WrongStack);
@@ -172,34 +157,23 @@ bool DFPlayer::available(void) {
 			}
 		}
 	}
+	this->m_receivedIndex = 0;
 	return this->m_isAvailable;
 }
 
 bool DFPlayer::waitAvailable(uint32_t duration) {
-
-	/*
-
-	unsigned long timer = millis();
-	if (!duration) duration = this->m_timeOutDuration;
-	while (!(this->available())) {
-		if (millis() - timer > duration) return this->handleError(TimeOut);
-//		delay(0);
-	}
-
-	*/
-
+	this->m_timeOutTimer = (uint16_t)(duration * (g_systick_freq / 1000));
+	while (!(this->available())) if (!(this->m_timeOutTimer)) return this->handleError(TimeOut);
 	return true;
 }
 
 bool DFPlayer::begin(bool isACK, bool doReset) {
 	isACK ? this->enableACK() : this->disableACK();
-
 	if (doReset) {
 		this->reset();
 		this->waitAvailable(2000);
 		delay(200);
 	} else this->m_handleType = DFPlayerCardOnline; // Assume same state as with reset(): online
-
 	return (this->readType() == DFPlayerCardOnline) || (this->readType() == DFPlayerUSBOnline) || !isACK;
 }
 
@@ -248,7 +222,9 @@ void DFPlayer::volumeDown(void) {
 }
 
 void DFPlayer::volume(uint8_t volume) {
-	this->sendStack(0x06, volume);
+	uint8_t result = volume > 100 ? 100 : volume;
+	result /= (100 / (float)(DFPLAYER_MAX_VOLUME_VALUE));
+	this->sendStack(0x06, result);
 }
 
 void DFPlayer::equalizer(uint8_t equalizer) {
@@ -289,6 +265,10 @@ void DFPlayer::enableLoop(void) {
 
 void DFPlayer::disableLoop(void) {
 	this->sendStack(0x19, 0x01);
+}
+
+void DFPlayer::callbackMethod(void) {
+	if (this->m_timeOutTimer) this->m_timeOutTimer--;
 }
 
 ///////////////////////////////////
