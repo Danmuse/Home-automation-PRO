@@ -104,8 +104,8 @@ Gpio I2C2_SCL(Gpio::PORT0, 3, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
 #endif // I2C2_PINS
 
 #ifdef I2C3_PINS
-Gpio I2C3_SDA(Gpio::PORT0, 5, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
-Gpio I2C3_SCL(Gpio::PORT0, 0, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C3_SDA(Gpio::PORT0, 8, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
+Gpio I2C3_SCL(Gpio::PORT0, 9, Gpio::OPENCOLECTOR, Gpio::OUTPUT, Gpio::LOW);
 #endif // I2C3_PINS
 
 #ifdef SPI0_PINS

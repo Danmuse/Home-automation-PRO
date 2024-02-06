@@ -50,7 +50,7 @@ private:
 	statusComm_t awaitNACK(void);
 	statusComm_t prepareConditions(const uint8_t address, const uint8_t regOffset, actionComm_t action) override;
 	statusComm_t transmitStopBit(void) override;
-protected:
+public:
 	statusComm_t transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, actionComm_t action = WRITE) override;
 	statusComm_t receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, actionComm_t action = READ) override;
 	statusComm_t transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, actionComm_t action = WRITE) override;

@@ -6,8 +6,7 @@
  */
 
 #include <cr_section_macros.h>
-#include "stateMachines.h"
-
+#include "board.h"
 #if !DEBUG_MODE
 
 int main(void) {
@@ -19,10 +18,10 @@ int main(void) {
 	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.05 - P0.00}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.05 - P0.00}
 	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
-	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
+//	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 //	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
 	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
-	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
+//	initRFID();		// Initializes the g_rfid        ~ Define the SPI_DEBUG_PINS macro in ProgramConfig.h {P0.09 - P0.10 - P0.11 - P0.01}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
 	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
@@ -30,9 +29,9 @@ int main(void) {
 //  iotManager.addVariableToUpload("example1", exampleVariable, 1000);
 //  iotManager.addVariableToUpload("keyPressed", keyPressed, 1000);
 
-    QTConnection connection(*g_usb);
-    IoTManager iotManager(&connection);
-    int ledBrightness = 9;
+//    QTConnection connection(*g_usb);
+//    IoTManager iotManager(&connection);
+//    int ledBrightness = 9;
 
 //    iotManager.registerAction("luz", manualLightControl);
 //    iotManager.registerAction("automatic", modeSelection);
@@ -42,7 +41,7 @@ int main(void) {
 //    int ledBrightness = g_leds->getBrightness();
 //    iotManager.registerState("song", idCancion);
 //    iotManager.registerState("song",isSongPlaying, {"play", "pause"});
-    iotManager.registerState("luz", ledBrightness);
+//    iotManager.registerState("luz", ledBrightness);
 
     g_ds3231->set(0, 38, 20, 4, 2, 2024);
 
@@ -54,11 +53,11 @@ int main(void) {
 	delay(5000);
 	g_lcd->clear();
 
-	delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
-	g_leds->turnOn();
-	delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
-	g_leds->setColor(S5050DJ::WHITE);
-	delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
+//	delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
+//	g_leds->turnOn();
+//	delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
+//	g_leds->setColor(S5050DJ::WHITE);
+//	delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
 
     while (1) {
 		/// External preset acquisition
@@ -68,7 +67,7 @@ int main(void) {
 			g_lcd->write(val, 0, 8);
 			g_lcd->write("%", 0, 11);
 
-			g_leds->setBrightness(val);
+//			g_leds->setBrightness(val);
 			g_lcd->write("BRIGHT: ", 1, 0);
 			g_lcd->write(g_leds->getBrightness(), 1, 8);
 			g_lcd->write("%", 1, 11);
@@ -81,9 +80,9 @@ int main(void) {
 
 		delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000 + 80);
 
-		g_servo->setAngle(0);
+		//g_servo->setAngle(0);
     	delay(500);
-		g_servo->setAngle(MG90S_MAX_ANGLE / 2);
+		//g_servo->setAngle(MG90S_MAX_ANGLE / 2);
     	delay(500);
 
 		g_ds3231->get();
@@ -356,7 +355,10 @@ int main(void) {
 	LED_RED.clearPin();
 	LED_GREEN.clearPin();
 	LED_BLUE.clearPin();
-
+//    while (true) {
+//
+//    }
+//
 	if (g_ds3231->set(0, 1, 1, 31, 12, 2023)) {
 		LED_GREEN.setPin();
 		LED_RED.setPin();
