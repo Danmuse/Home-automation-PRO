@@ -27,6 +27,11 @@
 #include "ADC.h"
 #include "DAC.h"
 
+#include "IoTActions.h"
+#include "IoTManager.h"
+#include "QTConnection.h"
+#include "stateMachines.h"
+
 /////////////////////////////////
 /// HARDWARE GLOBAL VARIABLES ///
 /////////////////////////////////

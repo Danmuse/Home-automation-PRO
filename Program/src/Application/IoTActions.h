@@ -15,6 +15,8 @@
 #include "utils.h"
 #include "S5050DJ.h"
 
+extern bool automaticMode;
+
 void manualLightControl(char* message);
 
 void modeSelection(char* message);

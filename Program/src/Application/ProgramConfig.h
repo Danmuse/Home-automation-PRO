@@ -11,7 +11,7 @@
 
 #include "GPIO.h"
 
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
 //////////////////////////////////////////////
 /// Hardware definitions (Infotronic 2023) ///
@@ -25,7 +25,7 @@
 #define CN10_PINS	// INT0_IN {IN0} - INT1_IN {IN1}
 //#define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
 #define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
-#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
+//#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
 #define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
@@ -35,7 +35,7 @@
 
 #define USB0_PINS	// RX1_IN {RX} - TX1_OUT {TX}
 
-//#define I2C0_PINS	// I2C0_SCL - I2C0_SDA
+#define I2C0_PINS	// I2C0_SCL - I2C0_SDA
 //#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
 //#define I2C2_PINS	// I2C2_SCL - I2C2_SDA
 #define I2C3_PINS	// I2C3_SCL - I2C3_SDA

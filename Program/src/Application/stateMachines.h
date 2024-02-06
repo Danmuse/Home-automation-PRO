@@ -13,9 +13,7 @@
 #define STATE_MACHINES_H_
 
 #include "board.h"
-#include "QTConnection.h"
-#include "IoTManager.h"
-#include "IoTActions.h"
+#include "KeyboardPassword.h"
 
 #define RFID_USER_UID_SIZE 4
 #define USERS_INIT_POSITION 2
