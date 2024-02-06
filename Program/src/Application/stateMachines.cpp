@@ -71,12 +71,14 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
     }
     return true;
 }
+KeyboardPassword keyBoardPassword("5542",g_keyboard);
 
 void userRegistrationStateMachine(UserRegistrationState& state) {
     switch (state) {
         case UserRegistrationState::WAITING_FOR_PASSWORD:
-            //TODO: Password coso
-            state = UserRegistrationState::WAITING_FOR_USER;
+            if(keyBoardPassword.checkPassword()){
+                state = UserRegistrationState::WAITING_FOR_USER;
+            }
             break;
         case UserRegistrationState::WAITING_FOR_USER:
             MFRC522::UID_st uuid;
