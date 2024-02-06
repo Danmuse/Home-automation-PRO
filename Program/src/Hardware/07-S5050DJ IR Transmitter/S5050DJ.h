@@ -68,7 +68,6 @@ public:
     uint8_t getBrightness(void) const;
     uint8_t getSpeed(void) const;
 	virtual ~S5050DJ() = default;
-
 };
 
 extern S5050DJ *g_leds;
