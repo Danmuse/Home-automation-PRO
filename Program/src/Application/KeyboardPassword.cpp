@@ -5,9 +5,10 @@ KeyboardPassword::KeyboardPassword(const char* password, Keyboard* keyboard) : m
     for (uint8_t i = 0; i < strlen(password); i++) {
         char entry = password[i];
         if (entry >= '1' && entry <= '6') { //TODO: change based on implementation
-            m_password.push_back(password[i] - '0' - 1); //-1 if because of offset
+            m_password.push_back(password[i] - '1'); //-1 if because of offset
         }
     }
+    g_callback_list.push_back(this);
 
 }
 
