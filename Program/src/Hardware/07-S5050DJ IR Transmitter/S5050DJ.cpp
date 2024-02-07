@@ -123,7 +123,7 @@ void S5050DJ::setMode(modeSetting_t mode) {
 bool S5050DJ::setBrightness(uint8_t percentage) {
 	uint8_t offsetThresholdPercentage = 10, result = percentage > 100 ? 100 : percentage;
 //	if (!((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
-	if (g_ctimer_instance == nullptr) {
+//	if (g_ctimer_instance == nullptr) {
 		if (result > (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)) + (offsetThresholdPercentage / (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)))) {
 			// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
 			result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
@@ -160,13 +160,13 @@ bool S5050DJ::setBrightness(uint8_t percentage) {
 			this->turnOff();
 		}
 		return true;
-	} else return false;
+//	} else return false;
 }
 
 bool S5050DJ::setSequenceSpeed(uint8_t percentage) {
 	uint8_t result = percentage > 100 ? 100 : percentage;
 //	if (((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
-	if (g_ctimer_instance == nullptr) {
+//	if (g_ctimer_instance == nullptr) {
 		// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
 		result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
 		if (this->m_externalActivity == LOW) this->turnOn();
@@ -190,7 +190,7 @@ bool S5050DJ::setSequenceSpeed(uint8_t percentage) {
 			this->setAction(DECREASE_SPEED);
 		}
 		return true;
-	} else return false;
+//	} else return false;
 }
 
 void S5050DJ::turnOn(void) {
