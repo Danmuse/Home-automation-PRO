@@ -37,9 +37,9 @@ void QTConnection::establishConnection() {
 
     message[0] = SERIAL_HEADER;
     strcpy(message + 1, "connect:ok");
-    uint8_t size=strlen(message);
+    uint8_t size = strlen(message);
     message[size] = SERIAL_FOOTER;
-    message[size+1] = '\0';
+    message[size + 1] = '\0';
 
     this->m_uart.transmit(message, strlen(message));
 
@@ -52,17 +52,30 @@ void QTConnection::establishConnection() {
 
 }
 
-void QTConnection::uploadVariable(IoTVariable_st variable) {
+void QTConnection::uploadVariable(IoTVariable_st ioTVariable) {
     char message[MAX_MESSAGE_SIZE];
 
     message[0] = SERIAL_HEADER;
-    strcpy(message + 1, variable.name);
+    strcpy(message + 1, ioTVariable.name);
     strcat(message, ":");
 
-    itoa(variable.variable, message + strlen(message), 10);
-    uint8_t size=strlen(message);
+    if (ioTVariable.stringRepresent.empty()) {
+        itoa(*((int*) ioTVariable.variable), message + strlen(message), 10);
+    }
+    else {
+        uint8_t value = *((uint8_t*) ioTVariable.variable); //uint8 because if for booleans(if it is an integer :/)
+
+        if (value <= ioTVariable.stringRepresent.size()) {
+            strcat(message, ioTVariable.stringRepresent[value]);
+        }
+        else {
+            strcat(message, ioTVariable.stringRepresent.back());
+        }
+    }
+
+    uint8_t size = strlen(message);
     message[size] = SERIAL_FOOTER;
-    message[size+1] = '\0';
+    message[size + 1] = '\0';
 
     this->m_uart.transmit(message, strlen(message));
 }
@@ -72,9 +85,9 @@ void QTConnection::uploadLiteral(const char* literal) {
 
     message[0] = SERIAL_HEADER;
     strcpy(message + 1, literal);
-    uint8_t size=strlen(message);
+    uint8_t size = strlen(message);
     message[size] = SERIAL_FOOTER;
-    message[size+1] = '\0';
+    message[size + 1] = '\0';
 
     this->m_uart.transmit(message, strlen(message));
 }
