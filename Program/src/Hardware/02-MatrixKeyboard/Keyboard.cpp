@@ -70,8 +70,8 @@ void initKeyboard(void) {
 
 	static std::vector<Gpio*> columns_GPIOs_list;
 	columns_GPIOs_list.push_back(&COL0_IN);
-	columns_GPIOs_list.push_back(&COL1_IN);
-	columns_GPIOs_list.push_back(&COL2_IN);
+//	columns_GPIOs_list.push_back(&COL1_IN);
+//	columns_GPIOs_list.push_back(&COL2_IN);
 
 	static std::vector<Gpio*> rows_GPIOs_list;
 	rows_GPIOs_list.push_back(&ROW0_OUT);

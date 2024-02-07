@@ -61,7 +61,7 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
     }
     return true;
 }
-KeyboardPassword keyBoardPassword("5542", g_keyboard);
+KeyboardPassword keyBoardPassword("1222112", g_keyboard);
 
 void userRegistrationStateMachine(UserRegistrationState& state) {
     switch (state) {
