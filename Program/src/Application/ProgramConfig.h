@@ -11,7 +11,7 @@
 
 #include "GPIO.h"
 
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 //////////////////////////////////////////////
 /// Hardware definitions (Infotronic 2023) ///
@@ -26,19 +26,21 @@
 //#define CN12_PINS	// BCDA {BCDA} - BCDB {BCDB} - BCDC {BCDC} - BCDD {BCDD} - BCD_RST {RST} - BCD_CLK {CK}
 #define CN13_PINS	// RX0_IN {RX} - TX0_OUT {TX} - EN_OUT {EN}
 //#define CN15_PINS	// LCD_D7 {D7} - LCD_D6 {D6} - LCD_D5 {D5} - LCD_D4 {D4} - LCD_RS {RS} - LCD_EN {E}
-#define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
+//#define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
 #define LED_TRIP_PIN	// LED_TRIP_PIN {P0.29}
 
 #define MG90S_SERVO_PIN	// MG90S_SERVO_PIN {P0.23}
 
-#define USB0_PINS	// RX1_IN {RX} - TX1_OUT {TX}
+#define USB0_PINS		// RX1_IN {RX} - TX1_OUT {TX}
+
+#define LCD_DEBUG_PINS	// LCD_D7 {P0.13} - LCD_D6 {P0.15} - LCD_D5 {P0.26} - LCD_D4 {P0.09} - LCD_RS {P0.01} - LCD_EN {P0.14}
 
 #define I2C0_PINS	// I2C0_SCL - I2C0_SDA
 //#define I2C1_PINS	// I2C1_SCL - I2C1_SDA
 //#define I2C2_PINS	// I2C2_SCL - I2C2_SDA
-#define I2C3_PINS	// I2C3_SCL - I2C3_SDA
+//#define I2C3_PINS	// I2C3_SCL - I2C3_SDA
 
 //#define SPI0_PINS	// SPI0_SCK - SPI0_MOSI - SPI0_MISO - SPI0_SSEL0
 //#define SPI1_PINS	// SPI1_SCK - SPI1_MOSI - SPI1_MISO - SPI1_SSEL0
@@ -88,6 +90,14 @@
 
 #if defined(CN15_PINS) && defined(I2C0_PINS)
 #error "Macros CN15_PINS and I2C0_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN15_PINS) && defined(LCD_DEBUG_PINS)
+#error "Macros CN15_PINS and LCD_DEBUG_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN16_PINS) && defined(LCD_DEBUG_PINS)
+#error "Macros CN16_PINS and LCD_DEBUG_PINS cannot be defined simultaneously"
 #endif
 
 #if defined(SPI0_DEBUG_PINS) && defined(I2C0_PINS)
@@ -202,16 +212,16 @@
 #warning "Macro DAC_FST_CHANNEL_ENABLED is not defined and DAC pin will have no effect"
 #endif
 
+#if !defined(CN16_PINS) && !defined(LCD_DEBUG_PINS)
+#warning "Macro CN16_PINS is not defined and Matrix Keyboard module initialization will have no effect"
+#endif
+
 #if !(defined(CN8_PINS) && defined(ANALOG_SND_CHANNEL_ENABLED))
 #warning "Macros CN8_PINS and ANALOG_SND_CHANNEL_ENABLED are not defined and external ADC initialization will have no effect"
 #endif
 
 #if !defined(ANALOG_FST_CHANNEL_ENABLED)
 #warning "Macro ANALOG_FST_CHANNEL_ENABLED is not defined and internal preset initialization will have no effect"
-#endif
-
-#if !defined(CN16_PINS)
-#warning "Macro CN16_PINS is not defined and Matrix Keyboard module initialization will have no effect"
 #endif
 
 #if !defined(LED_TRIP_PIN) && !(defined(CN7_PINS) && defined(DAC_SND_CHANNEL_ENABLED))
@@ -231,7 +241,7 @@
 #endif
 
 #if !defined(CN15_PINS) && !defined(I2C0_PINS) && !defined(SPI0_DEBUG_PINS)
-#warning "Macro CN15_PINS is not defined and LCD1602 module initialization will have no effect"
+#warning "Macro CN15_PINS is not defined and LCD1602 or LCD2004 module initialization will have no effect"
 #endif
 
 #if !defined(I2C0_PINS) && !defined(CN15_PINS) && !defined(SPI0_DEBUG_PINS)
@@ -333,6 +343,15 @@ extern Gpio MG90S_SERVO;
 extern Gpio RX1_IN;
 extern Gpio TX1_OUT;
 #endif // USB0_PINS
+
+#ifdef LCD_DEBUG_PINS
+extern Gpio LCD_DEBUG_D7;
+extern Gpio LCD_DEBUG_D6;
+extern Gpio LCD_DEBUG_D5;
+extern Gpio LCD_DEBUG_D4;
+extern Gpio LCD_DEBUG_RS;
+extern Gpio LCD_DEBUG_EN;
+#endif // LCD_DEBUG_PINS
 
 #ifdef I2C0_PINS
 extern Gpio I2C0_SCL;

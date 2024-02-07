@@ -211,12 +211,12 @@ char* DS3231::printTimestamp(void) {
 /////////////////////////////
 
 void initDS3231(void) {
-	#if defined(I2C3_PINS)
+	#if defined(I2C0_PINS)
 
-	static DS3231 ds3231(I2C3_SCL, I2C3_SDA, I2C::TWI3);
+	static DS3231 ds3231(I2C0_SCL, I2C0_SDA, I2C::TWI0);
 	ds3231.set(0, 0, 0, 1, 1, 2000);
 
 	g_ds3231 = &ds3231;
 
-	#endif // defined(I2C3_PINS)
+	#endif // defined(I2C0_PINS)
 }

@@ -55,8 +55,6 @@ void Dialog::manejarTimeOut()
                 ui->ComboMusic->setCurrentIndex(valor);
             }else if(dato == "song" && value.length() != 4){
                 ui->VolumeMusic->setValue(valor);
-                ui->PlayMusic->setEnabled(false);
-                ui->PauseMusic->setEnabled(true);
             }
         }else{
             if(dato == "automatic" && value == "on"){
@@ -66,6 +64,9 @@ void Dialog::manejarTimeOut()
             }else if(dato == "song" && value == "pause"){
                 ui->PlayMusic->setEnabled(true);
                 ui->PauseMusic->setEnabled(false);
+            }else if(dato == "song" && value == "play"){
+                ui->PlayMusic->setEnabled(false);
+                ui->PauseMusic->setEnabled(true);
             }
         }
         //Database.PushDato(Information.Param, Information.Info.toInt());
