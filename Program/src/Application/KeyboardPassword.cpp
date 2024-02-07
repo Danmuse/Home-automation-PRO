@@ -14,7 +14,7 @@ KeyboardPassword::KeyboardPassword(const char* password, Keyboard* keyboard) : C
 m_keyboard{keyboard}, m_passwordIndex{0}, m_timeoutCounter{PASSWORD_TIMEOUT} {
     for (uint8_t i = 0; i < strlen(password); i++) {
         char entry = password[i];
-        if (entry >= '1' && entry <= '6') { // TODO: Change based on implementation
+        if (entry >= '1' && entry <= '2') { // TODO: Change based on implementation
             this->m_password.push_back(password[i] - '1'); //-1 if because of offset
         }
     }

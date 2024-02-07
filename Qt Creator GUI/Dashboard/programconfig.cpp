@@ -13,7 +13,7 @@ port Puerto;
 
 QStringList Canciones = {"Opening", "Eclipse", "Everlasting", "No Time To Waste", "Diamond", "Lost For Life", "Parasite Eve"};
 
-QString Codigo = "5542";
+QString Codigo = "1222112";
 
 QTimer* WaitingConnectTimer;
 
