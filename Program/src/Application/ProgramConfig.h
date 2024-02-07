@@ -11,7 +11,7 @@
 
 #include "GPIO.h"
 
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
 //////////////////////////////////////////////
 /// Hardware definitions (Infotronic 2023) ///

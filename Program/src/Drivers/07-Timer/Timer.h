@@ -13,7 +13,7 @@
 
 typedef void (*TimerHandler)(void);
 
-class Timer : public Callback {
+class Timer : protected Callback {
 public:
 	enum bases_t	{ MILLI, DEC, SEC, MIN, HOUR, DAY };
 	enum ticks_t	{ MILLIS = 1, DECIMALS = 100, SECONDS = 10, MINUTES = 60, HOURS = 60, DAYS = 24 };
@@ -25,6 +25,8 @@ protected:
 	TimerHandler		m_TmrHandler;	// Function to be executed when it's terminated
 	volatile standby_t	m_TmrStandBy; 	// Pause the timer
 	volatile uint8_t	m_TmrBase;		// Timer unit (DEC - SEG - MIN)
+	
+	void callbackMethod(void) override;
 public:
 	Timer();
 	Timer(const TimerHandler handler, const bases_t base);
@@ -41,7 +43,6 @@ public:
 	bool operator==(bool checkEvent);
 	friend bool operator==(bool checkEvent, Timer& timer);
 	explicit operator bool(void);
-	void callbackMethod(void) override;
 	virtual ~Timer() = default;
 };
 

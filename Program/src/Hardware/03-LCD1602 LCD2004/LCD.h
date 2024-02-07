@@ -27,7 +27,7 @@
 #define DDRAM_THIRD_ROW_ADDR	(0x14U)
 #define DDRAM_FOURTH_ROW_ADDR	(0x54U)
 
-class LCD : public Callback {
+class LCD : protected Callback {
 private:
 	enum mode_LCD_t { s_eigth_bits, s_four_bits, s_config_display, s_config_cursor, s_clear, s_print, s_row };
 
@@ -45,6 +45,8 @@ private:
 	uint32_t pow(uint32_t base, uint32_t exponent);
 	void _write(const int8_t *ptr_str);
 	void _write(const int32_t value);
+protected:
+	void callbackMethod(void) override;
 public:
 	enum { D7, D6, D5, D4, RS, ENABLE };
 
@@ -54,7 +56,6 @@ public:
 	void write(const int8_t *ptr_str, const uint8_t row = 0, const uint8_t column = 0);
 	void write(const int32_t value, const uint8_t row = 0, const uint8_t column = 0);
 	void clear(void);
-	void callbackMethod(void) override;
 	virtual ~LCD();
 };
 

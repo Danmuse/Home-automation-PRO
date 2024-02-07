@@ -20,7 +20,7 @@ extern "C" {
 }
 #endif
 
-typedef void (*CTimerHandler)(void);
+typedef void (*CTimerHandler)(uint16_t);
 
 class CTimer : protected Gpio {
 public:
@@ -40,6 +40,7 @@ private:
 	void enableSWM(void) const;
 	void disableSWM(void) const;
 protected:
+	uint16_t m_handlerParameter;
 	enum countUnit_t { MICROS, MILLIS };
 	void adjustTimeCount(uint32_t value, countUnit_t countUnit);
 public:

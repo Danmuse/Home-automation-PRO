@@ -18,12 +18,12 @@ int main(void) {
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
 //	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
     initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-    initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
+	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
     initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-    initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-    initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
     initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
-    initDFPlayer();	// Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
+//	initDFPlayer();	// Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
     initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
     initRFID();		// Initializes the g_rfid        ~ Define the SPI1_DEBUG_PINS macro in ProgramConfig.h {P0.19 - P0.22 - P0.21 - P0.20 - P0.18}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
@@ -47,7 +47,7 @@ int main(void) {
     iotManager.registerState("song", songId);
     iotManager.registerState("song", isSongPlaying, {"play", "pause"});
     iotManager.registerState("luz", ledBrightness);
-    iotManager.registerState("automatic", automaticMode,{"on", "off"});
+    iotManager.registerState("automatic", automaticMode, {"on", "off"});
 
     g_ds3231->set(0, 38, 20, 4, 2, 2024);
 
@@ -59,39 +59,41 @@ int main(void) {
     delay(5000);
     g_lcd->clear();
 
-    // TODO: Change when tests have passed
-    delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
     g_leds->turnOn();
-    delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
     g_leds->setColor(S5050DJ::WHITE);
-    delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
 
     while (true) {
         /// External preset acquisition
         if (automaticMode) {
             if (g_adcExternal != nullptr) {
-                uint16_t val = (uint16_t)((float) (g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
+                uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
                 g_lcd->write("ANALOG: ", 0, 0);
-                g_lcd->write(val, 0, 8);
-                g_lcd->write("%", 0, 11);
+                g_lcd->write(currentBright, 0, 8);
 
-                g_leds->setBrightness(val);
-                g_lcd->write("BRIGHT: ", 1, 0);
-                ledBrightness = g_leds->getBrightness();
-                g_lcd->write(ledBrightness, 1, 8);
-                g_lcd->write("%", 1, 11);
-                g_lcd->write("SPEED: ", 2, 0);
-                g_lcd->write(g_leds->getSpeed(), 2, 8);
-                g_lcd->write("%", 2, 11);
-                g_lcd->write("ERRCODE ", 2, 0);
-                g_lcd->write(g_ds3231->getStatus(), 2, 8);
+                if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
+                	ledBrightness = currentBright;
+                	uint16_t brightness = ledBrightness;
+                    g_leds->setBrightness(brightness);
+                    g_lcd->write("BRIGHT: ", 1, 0);
+                    brightness = g_leds->getBrightness();
+                    g_lcd->write(brightness, 1, 8);
+                    g_lcd->write("ERRCODE ", 2, 0);
+                    g_lcd->write(g_ds3231->getStatus(), 2, 8);
+                } else {
+                	g_lcd->write("BRIGHT: ", 1, 0);
+					g_lcd->write(ledBrightness, 1, 8);
+					g_lcd->write("ERRCODE ", 2, 0);
+					g_lcd->write(g_ds3231->getStatus(), 2, 8);
+                }
             }
         }
         /// Machine states
-        userRegistrationStateMachine(userRegistrationState);
-        doorOpeningStateMachine(doorOpeningState);
+//		userRegistrationStateMachine(userRegistrationState);
+//		doorOpeningStateMachine(doorOpeningState);
 
-        delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000 + 80);
+        delay(20);
+        g_lcd->write("  ", 0, 9);
+        g_lcd->write("  ", 1, 9);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
@@ -128,7 +130,6 @@ int main(void) {
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
     g_leds->turnOn();
-    delay((S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30); // Minimum waiting time to avoid conflicts during the transmission of commands through the NEC protocol.
 
     while (1) {
         for (uint8_t index = 0; index < 15; index++) {
@@ -147,24 +148,24 @@ int main(void) {
             else if (index == 12) g_leds->setColor(S5050DJ::SND_GREEN);
             else if (index == 13) g_leds->setColor(S5050DJ::TRD_GREEN);
             else if (index == 14) g_leds->setColor(S5050DJ::YELLOW);
-            delay(2000 + (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+//			delay(2000 + S5050DJ_COMMAND_SLOT_TICKS);
         }
 
         g_leds->setMode(S5050DJ::FLASH);
-        delay(3000 + (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+        delay(3000 + S5050DJ_COMMAND_SLOT_TICKS);
         g_leds->setMode(S5050DJ::STROBE);
-        delay(3000 + (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+        delay(3000 + S5050DJ_COMMAND_SLOT_TICKS);
         g_leds->setMode(S5050DJ::FADE);
-        delay(3000 + (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+        delay(3000 + S5050DJ_COMMAND_SLOT_TICKS);
         g_leds->setMode(S5050DJ::SMOOTH);
-        delay(3000 + (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+        delay(3000 + S5050DJ_COMMAND_SLOT_TICKS);
         break;
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 
     g_leds->turnOff();
-    delay((S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30); // Minimum waiting time to avoid conflicts during the transmission of commands through the NEC protocol.
+    delay(S5050DJ_COMMAND_SLOT_TICKS); // Minimum waiting time to avoid conflicts during the transmission of commands through the NEC protocol.
 
     return EXIT_SUCCESS;
 }
@@ -447,6 +448,8 @@ int main(void) {
 /// General Tests ///
 /////////////////////
 
+/*
+
 int main(void) {
     initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
@@ -457,7 +460,7 @@ int main(void) {
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 //	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
-//	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
+	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
 	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 //	initRFID();		// Initializes the g_rfid        ~ Define the SPI1_DEBUG_PINS macro in ProgramConfig.h {P0.19 - P0.22 - P0.21 - P0.20 - P0.18}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
@@ -468,27 +471,22 @@ int main(void) {
 	g_lcd->write("|     The Home     |", 1, 0);
 	g_lcd->write("|  Automation PRO  |", 2, 0);
 	g_lcd->write("*------------------*", 3, 0);
-	delay(5000);
-	g_lcd->clear();
-
-	char bufferUSB[4];
-	bufferUSB[1] = '\n';
-	bufferUSB[2] = '\n';
-	bufferUSB[3] = '\0';
-
-    LED_RED.clearPin();
-    LED_GREEN.clearPin();
-    LED_BLUE.clearPin();
-
-    if (g_ds3231->set(0, 38, 20, 4, 2, 2024)) {
-        LED_GREEN.setPin();
-        LED_RED.setPin();
-    } else LED_RED.clearPin();
-
-//	g_leds->turnOn();
-//	delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
-//	g_leds->setMode(S5050DJ::STROBE);
-//	delay(100); // (S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
+//	delay(5000);
+//	g_lcd->clear();
+//
+//	char bufferUSB[4];
+//	bufferUSB[1] = '\n';
+//	bufferUSB[2] = '\n';
+//	bufferUSB[3] = '\0';
+//
+//	LED_RED.clearPin();
+//	LED_GREEN.clearPin();
+//	LED_BLUE.clearPin();
+//
+//	if (g_ds3231->set(0, 38, 20, 4, 2, 2024)) {
+//		LED_GREEN.setPin();
+//		LED_RED.setPin();
+//	} else LED_RED.clearPin();
 
     while (1) {
         /// External preset acquisition
@@ -505,30 +503,29 @@ int main(void) {
 //    	g_lcd->write("   ", 0, 12);
 //    	g_lcd->write("   ", 1, 12);
 
-    	g_ds3231->get();
-    	g_usb->transmit(g_ds3231->printTimestamp());
-    	g_lcd->write(g_ds3231->printTimestamp(), 0, 0);
+//    	g_ds3231->get();
+//    	g_usb->transmit(g_ds3231->printTimestamp());
+//    	g_lcd->write(g_ds3231->printTimestamp(), 0, 0);
+//
+//    	bufferUSB[0] = g_ds3231->getStatus() + '0';
+//    	g_usb->transmit("ERRCODE ");
+//    	g_usb->transmit(bufferUSB);
+//
+//		g_lcd->write("ERRCODE ", 1, 0);
+//		g_lcd->write(bufferUSB[0] - '0', 1, 8);
+//
+//		delay(1000);
 
-    	bufferUSB[0] = g_ds3231->getStatus() + '0';
-    	g_usb->transmit("ERRCODE ");
-    	g_usb->transmit(bufferUSB);
-
-		g_lcd->write("ERRCODE ", 1, 0);
-		g_lcd->write(bufferUSB[0] - '0', 1, 8);
-
-        delay(1000);
-
-//    	g_dfplayer->volume(50); //Set volume value. From 0 to 30
-//    	g_dfplayer->play(1); //Play the first mp3
-//    	delay(10000);
+    	g_dfplayer->volume(50); //Set volume value. From 0 to 30
+    	g_dfplayer->play(1); //Play the first mp3
+    	delay(10000);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 
-//	g_leds->turnOff();
-//	delay((S5050DJ_COMMAND_PERIOD_TIME / 1000) + 30);
-
     return EXIT_SUCCESS;
 }
+
+*/
 
 #endif // DEBUG_MODE macro definition in precompile stage

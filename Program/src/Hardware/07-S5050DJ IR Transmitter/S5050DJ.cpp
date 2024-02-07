@@ -15,7 +15,7 @@ bool repeatCommand_instance;
 uint8_t repeatCounts_instance;
 uint32_t command_instance;
 
-S5050DJ::S5050DJ(const Gpio &output, actionInterruption_t idleExternalOutput) : CTimer(output, CTIMER_MATCH),
+S5050DJ::S5050DJ(const Gpio &output, actionInterruption_t idleExternalOutput) : CTimer(output, CTIMER_MATCH), Callback(),
 m_brightnessPoint{S5050DJ_MAX_BRIGHTNESS_SPEED_POINT},
 m_speedPoint{S5050DJ_MAX_BRIGHTNESS_SPEED_POINT},
 m_externalOutput{idleExternalOutput},
@@ -23,9 +23,10 @@ m_externalActivity{HIGH} {
 	if (idleExternalOutput == INACTIVE) this->m_externalOutput = CLEAR;
 	else if (idleExternalOutput == TOGGLE) this->m_externalOutput = this->m_activity == LOW ? SET : CLEAR;
 	changeExternalOutput(this->m_externalOutput);
+	g_callback_list.push_back(this);
 }
 
-void S5050DJ::transmitCommand(void) {
+void S5050DJ::transmitCommand(uint16_t command) {
 	static uint8_t indexBit = 0;
 	static bool activityBit, idleStateBit = false;
 	if (indexBit == 0) {
@@ -35,7 +36,8 @@ void S5050DJ::transmitCommand(void) {
 		indexBit++;
 		g_ctimer_instance->configMatch(S5050DJ_COMMAND_SLOT_BIT_TIME, externalOutput_instance == CLEAR ? SET : CLEAR);
 	} else if (indexBit > 1 && indexBit < (S5050DJ_COMMAND_LENGTH + 2)) {
-		if (!idleStateBit) activityBit = ((command_instance >> ((S5050DJ_COMMAND_LENGTH + 1) - indexBit)) & 0x01);
+//		if (!idleStateBit) activityBit = ((command_instance >> ((S5050DJ_COMMAND_LENGTH + 1) - indexBit)) & 0x01);
+		if (!idleStateBit) activityBit = ((command >> ((S5050DJ_COMMAND_LENGTH + 1) - indexBit)) & 0x01);
 		if (activityBit && !idleStateBit) {
 			idleStateBit = true;
 			g_ctimer_instance->configMatch(S5050DJ_COMMAND_HIGH_ACTIVE_BIT_TIME, externalOutput_instance == CLEAR ? CLEAR : SET);
@@ -55,7 +57,8 @@ void S5050DJ::transmitCommand(void) {
 		// Avoid conflicts with other classes that inherit from CTimer class.
 		// Stabilized the output pin by connecting it to the idle state.
 		g_ctimer_instance->bindHandler(nullptr);
-		g_ctimer_instance->configMatch(S5050DJ_DEBOUNCE_TIME, externalOutput_instance == CLEAR ? SET : CLEAR);
+//		g_ctimer_instance->configMatch(S5050DJ_DEBOUNCE_TIME, externalOutput_instance == CLEAR ? SET : CLEAR);
+		g_ctimer_instance->configMatch(S5050DJ_DEBOUNCE_TIME, externalOutput_instance == CLEAR ? CLEAR : SET);
 		g_ctimer_instance = nullptr;
 		indexBit = 0;
 	} else if (indexBit == (S5050DJ_COMMAND_LENGTH + 3) && repeatCommand_instance) {
@@ -85,6 +88,8 @@ void S5050DJ::prepareConditions(void) {
 	externalOutput_instance = this->m_externalOutput;
 	// Modularize this implementation with the interruption of the CTimer interface.
 	this->bindHandler(transmitCommand);
+	this->m_handlerParameter = this->m_commandQueue.front();
+	this->m_commandQueue.pop();
 	this->adjustTimeCount(1, MICROS);
 	this->configMatch(S5050DJ_DEBOUNCE_TIME, this->m_externalOutput == CLEAR ? SET : CLEAR);
 }
@@ -96,35 +101,23 @@ void S5050DJ::changeExternalOutput(actionInterruption_t actionInterrupt) {
 	this->configMatch(S5050DJ_DEBOUNCE_TIME, actionInterrupt);
 }
 
-bool S5050DJ::setAction(actionSetting_t action) {
-	// Avoid conflicts with other classes that inherit from CTimer class.
-	if (g_ctimer_instance == nullptr) {
-		if (action == TURNON_LEDS) this->m_externalActivity = HIGH;
-		else if (action == TURNOFF_LEDS) this->m_externalActivity = LOW;
-		command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | action);
-		this->prepareConditions();
-		return true;
-	} else return false;
+void S5050DJ::setAction(actionSetting_t action) {
+	if (action == TURNON_LEDS) this->m_externalActivity = HIGH;
+	else if (action == TURNOFF_LEDS) this->m_externalActivity = LOW;
+	command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | action);
+	this->m_commandQueue.push(command_instance);
 }
 
-bool S5050DJ::setColor(colorSetting_t color) {
-	// Avoid conflicts with other classes that inherit from CTimer class.
-	if (g_ctimer_instance == nullptr) {
-		repeatCommand_instance = false;
-		command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | color);
-		this->prepareConditions();
-		return true;
-	} else return false;
+void S5050DJ::setColor(colorSetting_t color) {
+	repeatCommand_instance = false;
+	command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | color);
+	this->m_commandQueue.push(command_instance);
 }
 
-bool S5050DJ::setMode(modeSetting_t mode) {
-	// Avoid conflicts with other classes that inherit from CTimer class.
-	if (g_ctimer_instance == nullptr) {
-		repeatCommand_instance = false;
-		command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | mode);
-		this->prepareConditions();
-		return true;
-	} else return false;
+void S5050DJ::setMode(modeSetting_t mode) {
+	repeatCommand_instance = false;
+	command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | mode);
+	this->m_commandQueue.push(command_instance);
 }
 
 bool S5050DJ::setBrightness(uint8_t percentage) {
@@ -200,14 +193,14 @@ bool S5050DJ::setSequenceSpeed(uint8_t percentage) {
 	} else return false;
 }
 
-bool S5050DJ::turnOn(void) {
+void S5050DJ::turnOn(void) {
 	repeatCommand_instance = false;
-	return this->setAction(TURNON_LEDS);
+	this->setAction(TURNON_LEDS);
 }
 
-bool S5050DJ::turnOff(void) {
+void S5050DJ::turnOff(void) {
 	repeatCommand_instance = false;
-	return this->setAction(TURNOFF_LEDS);
+	this->setAction(TURNOFF_LEDS);
 }
 
 uint8_t S5050DJ::getBrightness(void) const {
@@ -218,6 +211,17 @@ uint8_t S5050DJ::getBrightness(void) const {
 uint8_t S5050DJ::getSpeed(void) const {
 	// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
     return (uint8_t)(this->m_speedPoint * (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)));
+}
+
+void S5050DJ::callbackMethod(void) {
+    if (!(this->m_commandQueue.empty())) {
+        if (g_ctimer_instance == nullptr) {
+            if (!(this->m_timeCounter)) {
+            	this->prepareConditions();
+                this->m_timeCounter = (uint16_t)(S5050DJ_COMMAND_SLOT_TICKS * (g_systick_freq / 1000));
+            } else this->m_timeCounter--;
+        }
+    }
 }
 
 ///////////////////////////////
