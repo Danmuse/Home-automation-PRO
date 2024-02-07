@@ -48,7 +48,7 @@ class QTConnection : public IoTConnection, Callback {
 
         void establishConnection() override;
 
-        void uploadVariable(IoTVariable_st variable) override;
+        void uploadVariable(IoTVariable_st ioTVariable) override;
 
         void uploadLiteral(const char* literal) override;
 

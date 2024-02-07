@@ -17,7 +17,7 @@ IoTManager::IoTManager(IoTConnection* ioTConnection) : IoTListener(), Callback()
 }
 
 void IoTManager::addVariableToUpload(const char* name, int& variable, int uploadPeriod) {
-    IoTVariable_st iotVariable = {name, variable, uploadPeriod, 0};
+    IoTVariable_st iotVariable = {name, &variable, {}, uploadPeriod, 0};
     this->m_variablesToUpload.insert(std::pair<const char*, IoTVariable_st>(name, iotVariable));
 }
 
@@ -39,7 +39,7 @@ void IoTManager::processIoTMessage(char* message) {
 
     for (auto& actionPair: this->m_actions) {
         if (strcmp(actionPair.first, token) == 0) {
-            actionPair.second(strtok(nullptr, ":"));
+            actionPair.second(strtok(nullptr, ":")); //Maybe split this inside connection and not get message
             return;//Only one function per action TODO: Maybe change?
         }
     }
@@ -50,38 +50,18 @@ void IoTManager::registerAction(const char* topic, ActionListener actionListener
 }
 
 bool IoTManager::initializeConnection() {
-    char message[40] = {};
 
     for (auto& state: states) {
-        memset(message, 0, sizeof(message));
-        strcpy(message, state.name);
-        strcat(message, ":");//Pinchadísimo
-
-        char value[10];
-        memset(value, 0, sizeof(value));
-
-        if (state.stringsRepr.empty()) {
-            itoa(*((int*) state.data), value, 10);
-            strcat(message,value);
-        }
-        else {
-            strcpy(value, state.stringsRepr[*((int*) state.data)]);
-        }
-
-
-        this->m_ioTConnection->uploadLiteral(message);
+        m_ioTConnection->uploadVariable(state);
     }
 
     return true;
-
 }
 
-void IoTManager::registerState(const char* string, bool& variable, std::initializer_list<const char*> strings) {
-    states.push_back({string, &variable, strings});
-
+void IoTManager::registerState(const char* name, bool& variable, std::initializer_list<const char*> strings) {
+    states.push_back({name, &variable, strings, 0, 0});
 }
 
-void IoTManager::registerState(const char* string, int& variable) {
-    states.push_back({string, &variable, {}});
-
+void IoTManager::registerState(const char* name, int& variable) {
+    states.push_back({name, &variable, {}, 0, 0});
 }

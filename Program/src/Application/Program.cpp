@@ -45,9 +45,9 @@ int main(void) {
     iotManager.registerAction("volume", musicVolumeControl);
 
     iotManager.registerState("song", songId);
-    iotManager.registerState("song", isSongPlaying, {"play", "pause"});
+    iotManager.registerState("song", isSongPlaying, {"pause", "play"});
     iotManager.registerState("luz", ledBrightness);
-    iotManager.registerState("automatic", automaticMode, {"on", "off"});
+    iotManager.registerState("automatic", automaticMode, {"off", "on"});
 
     g_ds3231->set(0, 38, 20, 4, 2, 2024);
 

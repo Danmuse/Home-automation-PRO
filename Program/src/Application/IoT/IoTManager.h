@@ -28,7 +28,7 @@ class IoTManager : public IoTListener, Callback {
         std::map<const char*, IoTVariable_st> m_variablesToUpload;
         IoTConnection* m_ioTConnection;
         std::map<const char*, ActionListener> m_actions;
-        std::vector<IoTState> states;
+        std::vector<IoTVariable_st> states;
 
 
     public:
@@ -49,9 +49,9 @@ class IoTManager : public IoTListener, Callback {
 
         virtual ~IoTManager() = default;
 
-        void registerState(const char* string, bool& variable, std::initializer_list<const char*> strings);
+        void registerState(const char* name, bool& variable, std::initializer_list<const char*> strings);
 
-        void registerState(const char* string, int& vairable);
+        void registerState(const char* name, int& vairable);
 };
 
 #endif // IOT_MANAGER_H_
