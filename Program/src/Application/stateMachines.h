@@ -5,7 +5,7 @@
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @par Doxygen Editor
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
- * @date 24/08/2023 01:02:47
+ * @date 05/02/2024 17:06:04
  * @brief State Machines API (Application Programming Interface).
  */
 
@@ -22,6 +22,7 @@ enum class UserRegistrationState {
         WAITING_FOR_PASSWORD,
         WAITING_FOR_USER
 };
+
 enum class DoorOpeningState {
         WAITING_FOR_RFID,
         CHECKING_USER,

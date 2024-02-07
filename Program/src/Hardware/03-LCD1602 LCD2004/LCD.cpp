@@ -190,25 +190,25 @@ LCD::~LCD() {
 //////////////////////////////////////////
 
 void initLCD1602(void) {
-	#ifdef CN15_PINS
+	#if defined(CN15_PINS)
 
-	static std::vector<Gpio*> LCD_GPIOs_list;
-	LCD_GPIOs_list.push_back(&LCD_D7);
-	LCD_GPIOs_list.push_back(&LCD_D6);
-	LCD_GPIOs_list.push_back(&LCD_D5);
-	LCD_GPIOs_list.push_back(&LCD_D4);
-	LCD_GPIOs_list.push_back(&LCD_RS);
-	LCD_GPIOs_list.push_back(&LCD_EN);
+	static std::vector<Gpio*> LCD1602_GPIOs_list;
+	LCD1602_GPIOs_list.push_back(&LCD_D7);
+	LCD1602_GPIOs_list.push_back(&LCD_D6);
+	LCD1602_GPIOs_list.push_back(&LCD_D5);
+	LCD1602_GPIOs_list.push_back(&LCD_D4);
+	LCD1602_GPIOs_list.push_back(&LCD_RS);
+	LCD1602_GPIOs_list.push_back(&LCD_EN);
 
-	static LCD LCD(LCD_GPIOs_list, 2, 16);
+	static LCD lcd1602(LCD1602_GPIOs_list, 2, 16);
 
-	g_lcd = &LCD;
+	g_lcd = &lcd1602;
 
-	#endif // CN15_PINS
+	#endif // defined(CN15_PINS)
 }
 
 void initLCD2004(void) {
-	#ifdef CN15_PINS
+	#if defined(CN15_PINS)
 
 	static std::vector<Gpio*> LCD2004_GPIOs_list;
 	LCD2004_GPIOs_list.push_back(&LCD_D7);
@@ -222,5 +222,19 @@ void initLCD2004(void) {
 
 	g_lcd = &lcd2004;
 
-	#endif // CN15_PINS
+	#elif defined(LCD_DEBUG_PINS)
+
+	static std::vector<Gpio*> LCD2004_GPIOs_list;
+	LCD2004_GPIOs_list.push_back(&LCD_DEBUG_D7);
+	LCD2004_GPIOs_list.push_back(&LCD_DEBUG_D6);
+	LCD2004_GPIOs_list.push_back(&LCD_DEBUG_D5);
+	LCD2004_GPIOs_list.push_back(&LCD_DEBUG_D4);
+	LCD2004_GPIOs_list.push_back(&LCD_DEBUG_RS);
+	LCD2004_GPIOs_list.push_back(&LCD_DEBUG_EN);
+
+	static LCD lcd2004(LCD2004_GPIOs_list, 4, 20);
+
+	g_lcd = &lcd2004;
+
+	#endif
 }
