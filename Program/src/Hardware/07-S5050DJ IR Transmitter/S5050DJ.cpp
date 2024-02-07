@@ -120,77 +120,71 @@ void S5050DJ::setMode(modeSetting_t mode) {
 	this->m_commandQueue.push(command_instance);
 }
 
-bool S5050DJ::setBrightness(uint8_t percentage) {
+void S5050DJ::setBrightness(uint8_t percentage) {
 	uint8_t offsetThresholdPercentage = 10, result = percentage > 100 ? 100 : percentage;
 //	if (!((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
-//	if (g_ctimer_instance == nullptr) {
-		if (result > (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)) + (offsetThresholdPercentage / (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)))) {
-			// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
-			result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
-			if (this->m_brightnessPoint < result && this->m_externalActivity == LOW) {
+	if (result > (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)) + (offsetThresholdPercentage / (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)))) {
+		// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
+		result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
+		if (this->m_brightnessPoint < result && this->m_externalActivity == LOW) {
 //				this->m_brightnessPoint++;
-				this->turnOn();
-				// The following code fragment is correct,
-				// but due to the implementation there will be instabilities in the program.
+			this->turnOn();
+			// The following code fragment is correct,
+			// but due to the implementation there will be instabilities in the program.
 //				this->turnOn();
 //				repeatCommand_instance = result - this->m_brightnessPoint;
 //				this->m_brightnessPoint = result;
 //				this->setAction(INCREASE_BRIGHTNESS);
-			} else if (this->m_brightnessPoint < result) {
-				this->m_brightnessPoint++; // TODO: Check this code instruction!!
-				this->m_speedPoint = this->m_brightnessPoint;
-				// The following code fragment is correct,
-				// but due to the implementation there will be instabilities in the program.
+		} else if (this->m_brightnessPoint < result) {
+			this->m_brightnessPoint++; // TODO: Check this code instruction!!
+			this->m_speedPoint = this->m_brightnessPoint;
+			// The following code fragment is correct,
+			// but due to the implementation there will be instabilities in the program.
 //				repeatCommand_instance = true;
 //				repeatCounts_instance = result - this->m_brightnessPoint;
 //				this->m_brightnessPoint = result;
-				this->setAction(INCREASE_BRIGHTNESS);
-			} else if (this->m_brightnessPoint > result) {
-				this->m_brightnessPoint--; // TODO: Check this code instruction!!
-				this->m_speedPoint = this->m_brightnessPoint;
-				// The following code fragment is correct,
-				// but due to the implementation there will be instabilities in the program.
+			this->setAction(INCREASE_BRIGHTNESS);
+		} else if (this->m_brightnessPoint > result) {
+			this->m_brightnessPoint--; // TODO: Check this code instruction!!
+			this->m_speedPoint = this->m_brightnessPoint;
+			// The following code fragment is correct,
+			// but due to the implementation there will be instabilities in the program.
 //				repeatCommand_instance = true;
 //				repeatCounts_instance = this->m_brightnessPoint - result;
 //				this->m_brightnessPoint = result;
-				this->setAction(DECREASE_BRIGHTNESS);
-			}
-		} else {
-//			this->m_brightnessPoint--;
-			this->turnOff();
+			this->setAction(DECREASE_BRIGHTNESS);
 		}
-		return true;
-//	} else return false;
+	} else {
+//		this->m_brightnessPoint--;
+		this->turnOff();
+	}
 }
 
-bool S5050DJ::setSequenceSpeed(uint8_t percentage) {
+void S5050DJ::setSequenceSpeed(uint8_t percentage) {
 	uint8_t result = percentage > 100 ? 100 : percentage;
 //	if (((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
-//	if (g_ctimer_instance == nullptr) {
-		// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
-		result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
-		if (this->m_externalActivity == LOW) this->turnOn();
-		else if (this->m_speedPoint < result) {
-			this->m_speedPoint++; // TODO: Check this code instruction!!
-			this->m_brightnessPoint = this->m_speedPoint;
-			// The following code fragment is correct,
-			// but due to the implementation there will be instabilities in the program.
+	// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
+	result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
+	if (this->m_externalActivity == LOW) this->turnOn();
+	else if (this->m_speedPoint < result) {
+		this->m_speedPoint++; // TODO: Check this code instruction!!
+		this->m_brightnessPoint = this->m_speedPoint;
+		// The following code fragment is correct,
+		// but due to the implementation there will be instabilities in the program.
 //			repeatCommand_instance = true;
 //			repeatCounts_instance = result - this->m_speedPoint;
 //			this->m_speedPoint = result;
-			this->setAction(INCREASE_SPEED);
-		} else if (this->m_speedPoint > result) {
-			this->m_speedPoint--; // TODO: Check this code instruction!!
-			this->m_brightnessPoint = this->m_speedPoint;
-			// The following code fragment is correct,
-			// but due to the implementation there will be instabilities in the program.
+		this->setAction(INCREASE_SPEED);
+	} else if (this->m_speedPoint > result) {
+		this->m_speedPoint--; // TODO: Check this code instruction!!
+		this->m_brightnessPoint = this->m_speedPoint;
+		// The following code fragment is correct,
+		// but due to the implementation there will be instabilities in the program.
 //			repeatCommand_instance = true;
 //			repeatCounts_instance = this->m_speedPoint - result;
 //			this->m_speedPoint = result;
-			this->setAction(DECREASE_SPEED);
-		}
-		return true;
-//	} else return false;
+		this->setAction(DECREASE_SPEED);
+	}
 }
 
 void S5050DJ::turnOn(void) {
@@ -213,6 +207,9 @@ uint8_t S5050DJ::getSpeed(void) const {
     return (uint8_t)(this->m_speedPoint * (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)));
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void S5050DJ::callbackMethod(void) {
     if (!(this->m_commandQueue.empty())) {
         if (g_ctimer_instance == nullptr) {
@@ -223,6 +220,8 @@ void S5050DJ::callbackMethod(void) {
         }
     }
 }
+
+#pragma GCC pop_options
 
 ///////////////////////////////
 /// RGB LEDs initialization ///

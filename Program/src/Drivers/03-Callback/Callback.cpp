@@ -14,6 +14,11 @@ m_callback{function} {
 	if (m_callback != nullptr) g_callback_list.push_back(this);
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void Callback::callbackMethod(void) {
 	if (m_callback) m_callback();
 }
+
+#pragma GCC pop_options

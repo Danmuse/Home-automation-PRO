@@ -70,8 +70,8 @@ public:
 	S5050DJ(const Gpio &output, actionInterruption_t idleExternalOutput = CLEAR);
 	void setColor(colorSetting_t color);
 	void setMode(modeSetting_t mode);
-	bool setBrightness(uint8_t percentage);
-	bool setSequenceSpeed(uint8_t percentage);
+	void setBrightness(uint8_t percentage);
+	void setSequenceSpeed(uint8_t percentage);
 	void turnOn(void);
 	void turnOff(void);
     uint8_t getBrightness(void) const;

@@ -13,7 +13,6 @@
 #include "IoTActions.h"
 #include "DFPlayerMini.h"
 
-
 void manualLightControl(char* message) {
     int brightness = atoi(message);
 
@@ -36,7 +35,7 @@ void manualLightControl(char* message) {
     }
 }
 
-void modeSelection(char* message) {//Automatic/manual
+void modeSelection(char* message) { //Automatic/manual
     if (strcmp(message, "on") == 0) {
         automaticMode = true;
     }
@@ -52,10 +51,10 @@ void musicFlowControl(char* message) {
         g_dfplayer->play(songId);
     }
     else if (strcmp(message, "pause") == 0) {
-        g_dfplayer->pause();//Maybe stop
+        g_dfplayer->pause(); // Maybe stop
     }
     else if (strcmp(message, "play") == 0) {
-        //TODO: Play/resume music
+        // TODO: Play/resume music
     }
 }
 

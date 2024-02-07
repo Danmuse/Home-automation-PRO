@@ -118,6 +118,8 @@ private:
 	uint16_t read(void);
 	bool handleMessage(uint8_t type, uint16_t parameter = 0);
 	bool handleError(uint8_t type, uint16_t parameter = 0);
+protected:
+	void callbackMethod(void) override;
 public:
 	DFPlayer() = delete;
 	DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel = UART0);
@@ -140,7 +142,6 @@ public:
 	void disableLoop(void);
 //	DFPlayer_result_t getStatus(void) const;
 
-	void callbackMethod(void) override;
 	virtual ~DFPlayer() = default;
 };
 

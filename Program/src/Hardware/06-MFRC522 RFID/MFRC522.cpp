@@ -924,9 +924,14 @@ char *MFRC522::printUID(void) {
     return RFIDstr;
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void MFRC522::callbackMethod(void) {
     if (this->m_timeOut && this->m_statusRFID != RFID_SSEL_ERR) this->m_timeOut--;
 }
+
+#pragma GCC pop_options
 
 MFRC522::~MFRC522() {
     this->disable(); // According to the SPI implementation, the unbindSSEL function must be executed in the primitive classes.

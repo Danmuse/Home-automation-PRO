@@ -89,6 +89,9 @@ void LCD::clear(void) {
 	this->m_position = 0;
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void LCD::callbackMethod(void) {
 	this->m_ticks--;
 	if (this->m_ticks == 0) {
@@ -142,6 +145,8 @@ void LCD::callbackMethod(void) {
 		}
 	}
 }
+
+#pragma GCC pop_options
 
 void LCD::writeInstruction(const uint8_t data, const Gpio::activity_t mode) {
 	if (mode == Gpio::HIGH) this->m_outputs[RS]->setPin();

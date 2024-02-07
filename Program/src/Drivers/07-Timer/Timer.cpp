@@ -205,6 +205,9 @@ Timer::operator bool(void) {
 	return this->m_TmrEvent;
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void Timer::callbackMethod(void) {
 	if (this->m_TmrRun) {
 		if (this->m_TmrStandBy == RUN) {
@@ -213,3 +216,5 @@ void Timer::callbackMethod(void) {
 		}
 	}
 }
+
+#pragma GCC pop_options

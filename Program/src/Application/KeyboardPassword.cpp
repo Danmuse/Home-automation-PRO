@@ -38,6 +38,11 @@ bool KeyboardPassword::checkPassword(void) {
     return succeed;
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void KeyboardPassword::callbackMethod(void) {
     this->m_timeoutCounter > 0 ? this->m_timeoutCounter-- : this->m_passwordIndex = 0;
 }
+
+#pragma GCC pop_options

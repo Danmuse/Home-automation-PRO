@@ -19,11 +19,16 @@ m_debounces{DEBOUNCE_TIME} {
 	g_callback_list.push_back(this);
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void Keyboard::callbackMethod(void) {
 	uint8_t keyPressed;
 	keyPressed = this->keyboardHW();
     this->keyboardSW(keyPressed);
 }
+
+#pragma GCC pop_options
 
 uint8_t	Keyboard::get(void) {
 	uint8_t keyPressed = this->m_current_keyPressed;

@@ -39,10 +39,15 @@ void DigitalInput::getSW(bool statusPressed) {
 	}
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void DigitalInput::callbackMethod(void) {
 	bool keyPressed = this->getHW();
 	this->getSW(keyPressed);
 }
+
+#pragma GCC pop_options
 
 bool DigitalInput::get(void) {
 	bool statusPressed = this->m_currentPressed;

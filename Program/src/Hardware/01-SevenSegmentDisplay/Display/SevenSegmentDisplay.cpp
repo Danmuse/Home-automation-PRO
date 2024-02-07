@@ -29,6 +29,9 @@ m_relativePos{relativePos} {
 	this->m_index = 0;
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void SevenSegmentDisplay::callbackMethod(void) {
 	this->m_ticks--;
 	if (!this->m_blink_status) this->m_blink_ticks_on--;
@@ -50,6 +53,8 @@ void SevenSegmentDisplay::callbackMethod(void) {
 		this->m_index %= this->m_maxdigits;
 	}
 }
+
+#pragma GCC pop_options
 
 void SevenSegmentDisplay::set(uint32_t value, uint8_t display) {
 	uint16_t auxiliar[this->m_maxdigits], index = 0;

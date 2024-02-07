@@ -9,12 +9,14 @@
 
 DFPlayer *g_dfplayer = nullptr;
 
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+
 DFPlayer::DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel) : UART(RX, TX, channel), Callback(),
 m_timeOutTimer{(uint16_t)(0 * (g_systick_freq / 1000))}, m_receivedIndex{0}, m_isAvailable{false}, m_isSending{false} {
     g_callback_list.push_back(this);
 	if (!(this->begin())) { /* TODO: Make something */ }
 }
-
 
 void DFPlayer::uint16ToArray(uint16_t value, uint8_t *array) {
 	*array = (uint8_t)(value >> 8);
@@ -132,6 +134,7 @@ bool DFPlayer::available(void) {
 			if (this->m_receivedIndex == 0) {
 				this->m_received[Stack_Header] = bufferReceived[Stack_Header];
 				if (this->m_received[Stack_Header] == 0x7E) this->m_receivedIndex++;
+				else { if (!(this->receive(bufferReceived, DFPLAYER_RECEIVED_LENGTH))) break; }
 			} else {
 				this->m_received[this->m_receivedIndex] = bufferReceived[this->m_receivedIndex];
 				switch (this->m_receivedIndex) {
@@ -269,9 +272,14 @@ void DFPlayer::disableLoop(void) {
 	this->sendStack(0x19, 0x01);
 }
 
+//#pragma GCC push_options
+//#pragma GCC optimize ("O1")
+
 void DFPlayer::callbackMethod(void) {
 	if (this->m_timeOutTimer) this->m_timeOutTimer--;
 }
+
+#pragma GCC pop_options
 
 ///////////////////////////////////
 /// DFPlayerMini initialization ///

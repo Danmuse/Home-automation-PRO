@@ -28,7 +28,12 @@ DigitalOutput& DigitalOutput::operator=(Gpio::activity_t state) {
 	return *this;
 }
 
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
 void DigitalOutput::callbackMethod(void) {
 	if (this->getPin()) this->setPin();
 	else this->clearPin();
 }
+
+#pragma GCC pop_options
