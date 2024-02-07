@@ -19,7 +19,7 @@
 #define BLINK_TICKS_ON 100
 #define BLINK_TICKS_OFF 20
 
-class SevenSegmentDisplay : public Callback {
+class SevenSegmentDisplay : protected Callback {
 private:
 	std::vector<DigitsGroup*> m_groups;	 //!< Dynamic list of digits to be used
 	CD4511B *m_segments;				 //!< Pointer to Segments class
@@ -35,10 +35,11 @@ private:
 	std::vector<Digit*> m_bufferDisplay; //!< write buffer
 	const Digit::code_t m_system;		 //!< Usage system to be used
 	const uint8_t *m_relativePos;		 //!< Vector with user positions
+protected:
+	void callbackMethod(void) override;
 public:
 	SevenSegmentDisplay() = delete;
 	SevenSegmentDisplay(std::vector<DigitsGroup*> groups, CD4511B *segments_IC, CD4017 *sweep_IC, const uint8_t *relativePos, const Digit::code_t system);
-	void callbackMethod(void) override;
 	void set(uint32_t value, uint8_t display = 0);
 	void clear(uint8_t display = 0);
 	void mode(Digit::mode_t mode, uint8_t display = 0);

@@ -29,14 +29,11 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
             if (result != EEPROM_OK) return false;
             if (registeredUID == userId) isRegistered = true;
         }
-    }
-    else {
-    	// TODO: CHECK THIS FRAGMENT OF CODE
-    	// IS THE SAME INDEX ITERATING WITHIN THE SAME FOR LOOP??
-        for (uint8_t i = 0; i < userCount; i++) {
+    } else {
+        for (size_t index = 0; index < userCount; index++) {
             uint8_t registeredUID[RFID_USER_UID_SIZE];
-            for (uint8_t i = 0; i < RFID_USER_UID_SIZE; i++) {
-                result = g_eeprom->read(&registeredUID[i], M24C16::UINT8, i * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
+            for (size_t j_index = 0; j_index < RFID_USER_UID_SIZE; j_index++) {
+                result = g_eeprom->read(&registeredUID[j_index], M24C16::UINT8, index * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
                 if (result != EEPROM_OK) return false;
             }
             if (memcmp(registeredUID, uid.uidByte, RFID_USER_UID_SIZE) == 0) isRegistered = true;

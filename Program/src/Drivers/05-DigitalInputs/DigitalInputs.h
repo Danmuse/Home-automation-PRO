@@ -14,7 +14,7 @@
 
 #define BOUNCE_TIME 4
 
-class DigitalInput : protected Gpio, public Callback {
+class DigitalInput : protected Gpio, Callback {
 private:
 	const uint8_t m_maxBounces;
 	uint8_t m_bounceCounter;
@@ -23,13 +23,14 @@ private:
 
 	bool getHW(void);
 	void getSW(bool statusPressed);
+protected:
+	void callbackMethod(void) override;
 public:
 	DigitalInput() = delete;
 	DigitalInput(const Gpio& input, uint8_t maxBounces = BOUNCE_TIME);
 	bool get(void);
 	explicit operator bool(void);
 	bool operator!(void);
-	void callbackMethod(void) override;
 	virtual ~DigitalInput() = default;
 };
 

@@ -85,7 +85,7 @@ typedef enum {
 
 */
 
-class DFPlayer : protected UART, public Callback {
+class DFPlayer : protected UART, Callback {
 private:
 	uint16_t m_timeOutTimer;
 

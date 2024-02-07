@@ -12,14 +12,15 @@
 #include "systick.h"
 #include "GPIO.h"
 
-class DigitalOutput : protected Gpio, public Callback {
+class DigitalOutput : protected Gpio, Callback {
+protected:
+	void callbackMethod(void) override;
 public:
 	DigitalOutput() = delete;
 	DigitalOutput(const Gpio& output, Gpio::activity_t state);
 	void set(void);
 	void clear(void);
 	DigitalOutput& operator=(Gpio::activity_t state);
-	void callbackMethod(void) override;
 	virtual ~DigitalOutput() = default;
 };
 

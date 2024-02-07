@@ -163,7 +163,9 @@ bool DFPlayer::available(void) {
 
 bool DFPlayer::waitAvailable(uint32_t duration) {
 	this->m_timeOutTimer = (uint16_t)(duration * (g_systick_freq / 1000));
-	while (!(this->available())) if (!(this->m_timeOutTimer)) return this->handleError(TimeOut);
+	while (!(this->available())) {
+		if (!(this->m_timeOutTimer)) return this->handleError(TimeOut);
+	}
 	return true;
 }
 

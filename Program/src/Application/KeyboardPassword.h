@@ -17,18 +17,19 @@
 
 #define PASSWORD_TIMEOUT 2000
 
-class KeyboardPassword : public Callback {
+class KeyboardPassword : protected Callback {
 private:
 	std::vector<uint8_t> m_password;
 	Keyboard* m_keyboard;
 	uint8_t m_passwordIndex;
 	uint16_t m_timeoutCounter;
+protected:
+	void callbackMethod(void) override;
 public:
 	KeyboardPassword() = delete;
 	KeyboardPassword(const char* password, Keyboard* keyboard);
 	bool checkPassword(void);
-	void callbackMethod(void) override;
-	~KeyboardPassword() = default;
+	virtual ~KeyboardPassword() = default;
 };
 
 #endif // KEYBOARD_PASSWORD_H_

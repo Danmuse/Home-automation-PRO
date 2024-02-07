@@ -109,7 +109,7 @@ typedef enum {
 	RFID_MIFARE_NACK = 0xFF	//!< A MIFARE PICC responded with NAK.
 } RFID_result_t;
 
-class MFRC522 : protected SPI, Gpio, public Callback {
+class MFRC522 : protected SPI, Gpio, Callback {
 public:
 	//! MIFARE_st: Structure used for passing a MIFARE Crypto1 key.
 	typedef struct { uint8_t keyByte[RFID_MF_KEY_SIZE]; } MIFARE_st;
@@ -183,6 +183,8 @@ private:
 	RFID_result_t PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq, uint8_t *sendData, uint8_t sendLen, uint8_t *backData = nullptr, uint8_t *backLen = nullptr, uint8_t *validBits = nullptr, uint8_t rxAlign = 0, bool checkCRC = false);
 	RFID_result_t PICC_REQA(uint8_t *bufferATQA, uint8_t *bufferSize);
 	virtual RFID_result_t PICC_Select(uint8_t validBits = 0);
+protected:
+	void callbackMethod(void) override;
 public:
 	MFRC522(const Gpio& SCK, const Gpio& MOSI, const Gpio& MISO, const Gpio& SSEL, const Gpio& hardRST);
 
@@ -205,7 +207,6 @@ public:
 	void dumpDetails(UID_st* UID);
 	char* printUID(void);
 
-	void callbackMethod(void) override;
 	virtual ~MFRC522();
 };
 

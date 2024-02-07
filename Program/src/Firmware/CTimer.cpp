@@ -65,6 +65,7 @@ void CTimer::configMatch(uint32_t timeTicks, actionInterruption_t actionInterrup
 	CTIMER0->MR[matchInterruption] = timeTicks == 0 ? 1 : timeTicks; // Expressed in seconds: (1 / FREQ_CLOCK_MCU) * (CTIMER0->PR + 1) * timeTicks
 	CTIMER0->MCR |= (CTIMER_MCR_MR0I_MASK << (matchInterruption * 3)); // Interrupt on MRn: an interrupt is generated when MRn matches the value in the TC.
 	CTIMER0->MCR |= (CTIMER_MCR_MR0R_MASK << (matchInterruption * 3)); // Reset on MRn: the TC will be reset if MRn matches it. 0 = disabled. 1 = enabled.
+	CTIMER0->EMR &= ~(TOGGLE << (CTIMER_EMR_EMC0_SHIFT + (2 * matchInterruption))); // Determines the functionality of External Match.
 	CTIMER0->EMR |= (actionInterruption << (CTIMER_EMR_EMC0_SHIFT + (2 * matchInterruption))); // Determines the functionality of External Match.
 	CTIMER0->TCR = CTIMER_TCR_CRST_MASK; // Counter reset enabled.
 	CTIMER0->IR = (CTIMER_IR_MR0INT_MASK << matchInterruption);	// Interrupt flag for match channel.
@@ -89,7 +90,7 @@ void CTimer::CTIMER_IRQHandler(void) {
 		// Stop on MR0: the TC and PC will be stopped and TCR[0] will be set to 0 if MR0 matches the TC.
 		CTIMER0->MCR &= ~(CTIMER_MCR_MR0I_MASK | CTIMER_MCR_MR0R_MASK | CTIMER_MCR_MR0S_MASK);
 
-		if (this->m_handlerFunction != nullptr) this->m_handlerFunction();
+		if (this->m_handlerFunction != nullptr) this->m_handlerFunction(this->m_handlerParameter);
 	}
 	// Interrupt flag for match channel 1.
 	if (CTIMER0->IR & CTIMER_IR_MR1INT_MASK) {
@@ -99,7 +100,7 @@ void CTimer::CTIMER_IRQHandler(void) {
 		// Stop on MR1: the TC and PC will be stopped and TCR[1] will be set to 0 if MR1 matches the TC.
 		CTIMER0->MCR &= ~(CTIMER_MCR_MR1I_MASK | CTIMER_MCR_MR1R_MASK | CTIMER_MCR_MR1S_MASK);
 
-		if (this->m_handlerFunction != nullptr) this->m_handlerFunction();
+		if (this->m_handlerFunction != nullptr) this->m_handlerFunction(this->m_handlerParameter);
 	}
 	// Interrupt flag for match channel 2.
 	if (CTIMER0->IR & CTIMER_IR_MR2INT_MASK) {
@@ -109,7 +110,7 @@ void CTimer::CTIMER_IRQHandler(void) {
 		// Stop on MR2: the TC and PC will be stopped and TCR[2] will be set to 0 if MR2 matches the TC.
 		CTIMER0->MCR &= ~(CTIMER_MCR_MR2I_MASK | CTIMER_MCR_MR2R_MASK | CTIMER_MCR_MR2S_MASK);
 
-		if (this->m_handlerFunction != nullptr) this->m_handlerFunction();
+		if (this->m_handlerFunction != nullptr) this->m_handlerFunction(this->m_handlerParameter);
 	}
 	// Interrupt flag for match channel 3.
 	if (CTIMER0->IR & CTIMER_IR_MR3INT_MASK) {
@@ -119,7 +120,7 @@ void CTimer::CTIMER_IRQHandler(void) {
 		// Stop on MR3: the TC and PC will be stopped and TCR[3] will be set to 0 if MR3 matches the TC.
 		CTIMER0->MCR &= ~(CTIMER_MCR_MR3I_MASK | CTIMER_MCR_MR3R_MASK | CTIMER_MCR_MR3S_MASK);
 
-		if (this->m_handlerFunction != nullptr) this->m_handlerFunction();
+		if (this->m_handlerFunction != nullptr) this->m_handlerFunction(this->m_handlerParameter);
 	}
 	// Interrupt flag for capture channel 0 event.
 	if (CTIMER0->IR & CTIMER_IR_CR0INT_MASK) {
