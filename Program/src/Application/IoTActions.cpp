@@ -49,21 +49,17 @@ void musicFlowControl(char* message) {
     int songId = atoi(message);
 
     if (songId != 0) {
-        //TODO: Select Music
-
-
+        g_dfplayer->play(songId);
     }
     else if (strcmp(message, "pause") == 0) {
-        //TODO: Pause/stop
-
+        g_dfplayer->pause();//Maybe stop
     }
     else if (strcmp(message, "play") == 0) {
-        //TODO: Play music
+        //TODO: Play/resume music
     }
 }
 
 void musicVolumeControl(char* message) {
     int volume = atoi(message);
-
-    //TODO: Set volume
+    g_dfplayer->volume(volume);
 }
