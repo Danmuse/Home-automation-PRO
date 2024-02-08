@@ -17,7 +17,6 @@
 #include "DFPlayerMini.h"
 #include "DS3231.h"
 
-
 extern bool automaticMode;
 
 void manualLightControl(char* message);

@@ -19,7 +19,6 @@
 #include <vector>
 #include "Callback.h"
 #include "IoTConnection.h"
-#include "IoTState.h"
 
 typedef void(* ActionListener)(char* message);
 

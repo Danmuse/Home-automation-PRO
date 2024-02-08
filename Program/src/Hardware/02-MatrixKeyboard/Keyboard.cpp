@@ -71,12 +71,12 @@ void Keyboard::keyboardSW(uint8_t keyStatus) {
 //////////////////////////////////////
 
 void initKeyboard(void) {
-	#ifdef CN16_PINS
+	#if defined(CN16_PINS)
 
 	static std::vector<Gpio*> columns_GPIOs_list;
 	columns_GPIOs_list.push_back(&COL0_IN);
-//	columns_GPIOs_list.push_back(&COL1_IN);
-//	columns_GPIOs_list.push_back(&COL2_IN);
+	columns_GPIOs_list.push_back(&COL1_IN);
+	columns_GPIOs_list.push_back(&COL2_IN);
 
 	static std::vector<Gpio*> rows_GPIOs_list;
 	rows_GPIOs_list.push_back(&ROW0_OUT);
@@ -86,5 +86,18 @@ void initKeyboard(void) {
 
 	g_keyboard = &keyboard;
 
-	#endif // CN16_PINS
+	#elif defined(KEYBOARD_DEBUG_PINS)
+
+	static std::vector<Gpio*> columns_GPIOs_list;
+	columns_GPIOs_list.push_back(&COL0_DEBUG_IN);
+
+	static std::vector<Gpio*> rows_GPIOs_list;
+	rows_GPIOs_list.push_back(&ROW0_DEBUG_OUT);
+	rows_GPIOs_list.push_back(&ROW1_DEBUG_OUT);
+
+	static Keyboard keyboard(columns_GPIOs_list, rows_GPIOs_list);
+
+	g_keyboard = &keyboard;
+
+	#endif
 }

@@ -129,7 +129,7 @@ void DFPlayer::disableACK(void) {
 
 bool DFPlayer::available(void) {
 	char bufferReceived[DFPLAYER_RECEIVED_LENGTH];
-	if (this->receive(bufferReceived, DFPLAYER_RECEIVED_LENGTH)) {
+	if (this->receive(bufferReceived, DFPLAYER_RECEIVED_LENGTH - 1)) {
 		while (this->m_receivedIndex < DFPLAYER_RECEIVED_LENGTH) {
 			if (this->m_receivedIndex == 0) {
 				this->m_received[Stack_Header] = bufferReceived[Stack_Header];
@@ -165,9 +165,16 @@ bool DFPlayer::available(void) {
 }
 
 bool DFPlayer::waitAvailable(uint32_t duration) {
-	this->m_timeOutTimer = (uint16_t)(duration * (g_systick_freq / 1000));
+	static bool busyStatus = false;
+	if (!(this->m_timeOutTimer) && !busyStatus) {
+		this->m_timeOutTimer = duration ? (uint16_t)(duration * (g_systick_freq / 1000)) : (uint16_t)(DFPLAYER_TIMEOUT_TICKS * (g_systick_freq / 1000));
+		busyStatus = true;
+	}
 	while (!(this->available())) {
-		if (!(this->m_timeOutTimer)) return this->handleError(TimeOut);
+		if (!(this->m_timeOutTimer)) {
+			busyStatus = false;
+			return this->handleError(TimeOut);
+		}
 	}
 	return true;
 }
@@ -272,8 +279,10 @@ void DFPlayer::disableLoop(void) {
 	this->sendStack(0x19, 0x01);
 }
 
-//#pragma GCC push_options
-//#pragma GCC optimize ("O1")
+#pragma GCC pop_options
+
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
 
 void DFPlayer::callbackMethod(void) {
 	if (this->m_timeOutTimer) this->m_timeOutTimer--;

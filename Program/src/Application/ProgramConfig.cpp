@@ -75,6 +75,12 @@ Gpio DIG_OUT1(Gpio::PORT1, 1, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 Gpio DIG_OUT2(Gpio::PORT1, 2, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #endif // CN19_PINS
 
+#ifdef KEYBOARD_DEBUG_PINS
+Gpio ROW0_DEBUG_OUT(Gpio::PORT0, 28, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio ROW1_DEBUG_OUT(Gpio::PORT0, 27, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio COL0_DEBUG_IN(Gpio::PORT0, 8, Gpio::PULLUP, Gpio::INPUT, Gpio::LOW);
+#endif // KEYBOARD_DEBUG_PINS
+
 #ifdef LED_TRIP_PIN
 Gpio LED_TRIP(Gpio::PORT0, 29, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
 #endif // LED_TRIP_PIN

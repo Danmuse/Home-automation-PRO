@@ -8,39 +8,26 @@
  * @date 29/91/2024 02:36:05
  */
 
-#include "IoTActions.h"
 #include <cstdlib>
 #include <cstring>
+#include "IoTActions.h"
+
+bool automaticMode = true;
 
 void manualLightControl(char* message) {
     int brightness = atoi(message);
 
-    if (brightness > 0) {
-        g_leds->setBrightness(brightness * 10);
-    }
+    if (brightness > 0) g_leds->setBrightness(brightness * 10);
     else {
-        if (strcmp(message, "red") == 0) {
-            g_leds->setColor(S5050DJ::RED);
-        }
-        else if (strcmp(message, "white") == 0) {
-            g_leds->setColor(S5050DJ::WHITE);
-        }
-        else if (strcmp(message, "green") == 0) {
-            g_leds->setColor(S5050DJ::GREEN);
-        }
-        else if (strcmp(message, "blue") == 0) {
-            g_leds->setColor(S5050DJ::BLUE);
-        }
+        if (strcmp(message, "red") == 0) g_leds->setColor(S5050DJ::RED);
+        else if (strcmp(message, "white") == 0) g_leds->setColor(S5050DJ::WHITE);
+        else if (strcmp(message, "green") == 0) g_leds->setColor(S5050DJ::GREEN);
+        else if (strcmp(message, "blue") == 0) g_leds->setColor(S5050DJ::BLUE);
     }
 }
 
-void modeSelection(char* message) { //Automatic/manual
-    if (strcmp(message, "on") == 0) {
-        automaticMode = true;
-    }
-    else {
-        automaticMode = false;
-    }
+void modeSelection(char* message) { // Automatic/manual control
+    strcmp(message, "on") == 0 ? automaticMode = true : automaticMode = false;
 }
 
 void musicFlowControl(char* message) {
@@ -66,9 +53,9 @@ void musicVolumeControl(char* message) {
 void dateControl(char* message) {
     uint32_t timestamp = atoi(message);
 
-    timestamp-=10800; //GMT-3
+    timestamp -= 10800; // The result is expressed as GMT-3
 
-    Time_st date = epochToDate(timestamp);
+    time_st date = epochToDate(timestamp);
 
     g_ds3231->set(date.second, date.minute, date.hour, date.day, date.month, date.year);
 

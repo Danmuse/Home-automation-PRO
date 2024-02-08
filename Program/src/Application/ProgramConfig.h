@@ -29,6 +29,8 @@
 //#define CN16_PINS	// ROW0_IN {F0} - ROW1_IN {F1} - COL0_IN {C0} - COL1_IN {C1} - COL2_IN {C2}
 //#define CN19_PINS	// ~DIG_OUT0 {O0} - ~DIG_OUT1 {O1} - ~DIG_OUT2 {O2}
 
+#define KEYBOARD_DEBUG_PINS		// ROW0_IN {P0.28} - ROW1_IN {P0.27} - COL0_IN {P0.08}
+
 #define LED_TRIP_PIN	// LED_TRIP_PIN {P0.29}
 
 #define MG90S_SERVO_PIN	// MG90S_SERVO_PIN {P0.23}
@@ -94,6 +96,10 @@
 
 #if defined(CN15_PINS) && defined(LCD_DEBUG_PINS)
 #error "Macros CN15_PINS and LCD_DEBUG_PINS cannot be defined simultaneously"
+#endif
+
+#if defined(CN16_PINS) && defined(KEYBOARD_DEBUG_PINS)
+#error "Macros CN16_PINS and KEYBOARD_DEBUG_PINS cannot be defined simultaneously"
 #endif
 
 #if defined(CN16_PINS) && defined(LCD_DEBUG_PINS)
@@ -212,8 +218,8 @@
 #warning "Macro DAC_FST_CHANNEL_ENABLED is not defined and DAC pin will have no effect"
 #endif
 
-#if !defined(CN16_PINS) && !defined(LCD_DEBUG_PINS)
-#warning "Macro CN16_PINS is not defined and Matrix Keyboard module initialization will have no effect"
+#if !defined(CN16_PINS) && !defined(KEYBOARD_DEBUG_PINS) && !defined(LCD_DEBUG_PINS)
+#warning "Macro CN16_PINS or KEYBOARD_DEBUG_PINS are not defined and Matrix Keyboard module initialization will have no effect"
 #endif
 
 #if !(defined(CN8_PINS) && defined(ANALOG_SND_CHANNEL_ENABLED))
@@ -330,6 +336,12 @@ extern Gpio DIG_OUT0;
 extern Gpio DIG_OUT1;
 extern Gpio DIG_OUT2;
 #endif // CN19_PINS
+
+#ifdef KEYBOARD_DEBUG_PINS
+extern Gpio ROW0_DEBUG_OUT;
+extern Gpio ROW1_DEBUG_OUT;
+extern Gpio COL0_DEBUG_IN;
+#endif // KEYBOARD_DEBUG_PINS
 
 #ifdef LED_TRIP_PIN
 extern Gpio LED_TRIP;

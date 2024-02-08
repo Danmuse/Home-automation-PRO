@@ -20,7 +20,7 @@ typedef struct {
         uint8_t hour;
         uint8_t minute;
         uint8_t second;
-} Time_st;
+} time_st;
 
 extern Timers g_timers_list;
 
@@ -30,7 +30,7 @@ char* strreverse(char* cstring);
 
 char* byteToHEX(char* cstring, uint8_t value);
 
-Time_st epochToDate(uint32_t epochTimestamp);
+time_st epochToDate(uint32_t epochTimestamp);
 
 
 #endif // UTILITIES_H_

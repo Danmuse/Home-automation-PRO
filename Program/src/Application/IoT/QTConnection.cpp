@@ -16,7 +16,7 @@ QTConnection::QTConnection(UART& uart) : IoTConnection(), Callback(),
     g_callback_list.push_back(this);
 }
 
-void QTConnection::receiveMessage() {
+void QTConnection::receiveMessage(void) {
     this->m_recMessage[this->m_recMessagePos] = '\0';
 
     if (strcmp(this->m_recMessage + 1, "connect:ok") == 0) {
@@ -30,9 +30,7 @@ void QTConnection::receiveMessage() {
 
 }
 
-void QTConnection::establishConnection() {
-
-
+void QTConnection::establishConnection(void) {
     char message[MAX_MESSAGE_SIZE];
 
     message[0] = SERIAL_HEADER;
@@ -49,7 +47,6 @@ void QTConnection::establishConnection() {
         confirm &= listener->initializeConnection();
         //Make sure all of then return true
     }
-
 }
 
 void QTConnection::uploadVariable(IoTVariable_st ioTVariable) {
@@ -80,23 +77,14 @@ void QTConnection::uploadVariable(IoTVariable_st ioTVariable) {
     this->m_uart.transmit(message, strlen(message));
 }
 
-void QTConnection::uploadLiteral(const char* literal) {
-    char message[MAX_MESSAGE_SIZE];
-
-    message[0] = SERIAL_HEADER;
-    strcpy(message + 1, literal);
-    uint8_t size = strlen(message);
-    message[size] = SERIAL_FOOTER;
-    message[size + 1] = '\0';
-
-    this->m_uart.transmit(message, strlen(message));
-}
-
 void QTConnection::suscribeListener(IoTListener* listener) {
     this->m_listeners.push_back(listener);
 }
 
-void QTConnection::callbackMethod() {
+#pragma GCC push_options
+#pragma GCC optimize ("O1")
+
+void QTConnection::callbackMethod(void) {
     bool newChar = this->m_uart.receive(this->m_recMessage + this->m_recMessagePos, 1);
 
     if (newChar) {
@@ -137,7 +125,9 @@ void QTConnection::callbackMethod() {
     }
 }
 
-void QTConnection::communicationTimeout() {
+#pragma GCC pop_options
+
+void QTConnection::communicationTimeout(void) {
     this->m_serialState = WAITING_HEADER;
     memset(this->m_recMessage, 0, this->m_recMessagePos);
     this->m_recMessagePos = 0;

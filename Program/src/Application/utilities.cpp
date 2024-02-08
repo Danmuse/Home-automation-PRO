@@ -43,18 +43,10 @@ char* byteToHEX(char* cstring, uint8_t value) {
     return strreverse(cstring);
 }
 
-Time_st epochToDate(uint32_t epochTimestamp) {
-    const int SECONDS_IN_DAY = 86400;
-    const int SECONDS_IN_HOUR = 3600;
-    const int SECONDS_IN_MINUTE = 60;
-
+time_st epochToDate(uint32_t epochTimestamp) {
+    const int SECONDS_IN_DAY = 86400, SECONDS_IN_HOUR = 3600, SECONDS_IN_MINUTE = 60;
+    uint8_t hour, minute, second, day, month;
     uint16_t year;
-    uint8_t month;
-    uint8_t day;
-    uint8_t hour;
-    uint8_t minute;
-    uint8_t second;
-
 
     // Days since epoch (Jan 1, 1970)
     uint32_t daysSinceEpoch = epochTimestamp / SECONDS_IN_DAY;
@@ -65,8 +57,7 @@ Time_st epochToDate(uint32_t epochTimestamp) {
     // Compute year
     uint8_t numYears = 0;
     uint32_t totalDays = 0;
-    uint16_t yearDays = 0;
-    uint16_t yearStart = 1970;
+    uint16_t yearDays = 0, yearStart = 1970;
 
     while (totalDays <= daysSinceEpoch) {
         yearDays = (yearStart % 4 == 0 && (yearStart % 100 != 0 || yearStart % 400 == 0)) ? 366 : 365;
@@ -79,28 +70,20 @@ Time_st epochToDate(uint32_t epochTimestamp) {
 
     // Compute month and day
     int16_t remainingDays = daysSinceEpoch - (totalDays - yearDays);
-    static const uint8_t daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    static const uint8_t daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     for (month = 0; month < 12; month++) {
-        if (month == 1 && ((year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))) {
-            remainingDays -= 29;
-        }
-        else {
-            remainingDays -= daysInMonth[month];
-        }
-        if (remainingDays < 0) {
-            break;
-        }
+    	remainingDays -= (month == 1 && ((year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))) ? 29 : daysInMonth[month];
+        if (remainingDays < 0) break;
     }
-    day = remainingDays + daysInMonth[month] + 1;//+1 because days start from 1
-
+    day = remainingDays + daysInMonth[month] + 1; // +1 because days start from 1
     month++;
 
-    // Compute hours, minutes, and seconds
+    // Compute hours, minutes and seconds
     hour = secondsRemaining / SECONDS_IN_HOUR;
     secondsRemaining %= SECONDS_IN_HOUR;
     minute = secondsRemaining / SECONDS_IN_MINUTE;
     second = secondsRemaining % SECONDS_IN_MINUTE;
 
-    return {year, month, day, hour, minute, second};
+    return { year, month, day, hour, minute, second };
 }

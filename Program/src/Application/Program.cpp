@@ -11,14 +11,12 @@
 
 #if !DEBUG_MODE
 
-bool automaticMode = true;
-
 int main(void) {
     initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
 //	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
     initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
+	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
     initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
@@ -97,8 +95,8 @@ int main(void) {
             }
         }
         /// Machine states
-//		userRegistrationStateMachine(userRegistrationState);
-//		doorOpeningStateMachine(doorOpeningState);
+		userRegistrationStateMachine(userRegistrationState);
+		doorOpeningStateMachine(doorOpeningState);
 
         delay(20);
         g_lcd->write("  ", 0, 9);
@@ -126,7 +124,7 @@ int main(void) {
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
 //	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 //	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
+//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
     initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
@@ -195,7 +193,7 @@ int main(void) {
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
     initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 //	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
+//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
@@ -315,7 +313,7 @@ int main(void) {
     initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
 //	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 //	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
+//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
     initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
@@ -354,7 +352,7 @@ int main(void) {
     initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
 //	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 //	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
+//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
     initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
@@ -403,7 +401,7 @@ int main(void) {
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
     initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 //	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
+//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
@@ -462,7 +460,7 @@ int main(void) {
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
 //	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS macro in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26}
+//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
 //	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
@@ -523,8 +521,8 @@ int main(void) {
 //
 //		delay(1000);
 
-    	g_dfplayer->volume(50); //Set volume value. From 0 to 30
-    	g_dfplayer->play(1); //Play the first mp3
+    	g_dfplayer->volume(10); // Set volume value. From 0% to 100%
+    	g_dfplayer->play(1); // Play the first mp3
     	delay(10000);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.

@@ -44,17 +44,15 @@ class QTConnection : public IoTConnection, Callback {
 
         QTConnection(UART& uart);
 
-        void receiveMessage() override;
+        void receiveMessage(void) override;
 
-        void establishConnection() override;
+        void establishConnection(void) override;
 
         void uploadVariable(IoTVariable_st ioTVariable) override;
 
-        void uploadLiteral(const char* literal) override;
-
         void suscribeListener(IoTListener* listener) override;
 
-        void callbackMethod() override;
+        void callbackMethod(void) override;
 
         virtual ~QTConnection() = default;
 };
