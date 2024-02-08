@@ -8,10 +8,9 @@
  * @date 29/91/2024 02:36:05
  */
 
+#include "IoTActions.h"
 #include <cstdlib>
 #include <cstring>
-#include "IoTActions.h"
-#include "DFPlayerMini.h"
 
 
 void manualLightControl(char* message) {
@@ -62,4 +61,16 @@ void musicFlowControl(char* message) {
 void musicVolumeControl(char* message) {
     int volume = atoi(message);
     g_dfplayer->volume(volume);
+}
+
+
+void dateControl(char* message) {
+    uint32_t timestamp = atoi(message);
+
+    timestamp-=10800; //GMT-3
+
+    Time_st date = epochToDate(timestamp);
+
+    g_ds3231->set(date.second, date.minute, date.hour, date.day, date.month, date.year);
+
 }

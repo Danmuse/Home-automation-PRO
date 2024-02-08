@@ -13,11 +13,24 @@
 #include "ProgramConfig.h"
 #include "Timers.h"
 
+typedef struct {
+        uint16_t year;
+        uint8_t month;
+        uint8_t day;
+        uint8_t hour;
+        uint8_t minute;
+        uint8_t second;
+} Time_st;
+
 extern Timers g_timers_list;
 
 void delay(uint32_t milliseconds);
 
 char* strreverse(char* cstring);
+
 char* byteToHEX(char* cstring, uint8_t value);
+
+Time_st epochToDate(uint32_t epochTimestamp);
+
 
 #endif // UTILITIES_H_

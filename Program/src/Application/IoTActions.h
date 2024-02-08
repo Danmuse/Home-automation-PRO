@@ -14,6 +14,9 @@
 
 #include "utils.h"
 #include "S5050DJ.h"
+#include "DFPlayerMini.h"
+#include "DS3231.h"
+
 
 extern bool automaticMode;
 
@@ -24,5 +27,7 @@ void modeSelection(char* message);
 void musicFlowControl(char* message);
 
 void musicVolumeControl(char* message);
+
+void dateControl(char* message);
 
 #endif // IOT_ACTIONS_H_

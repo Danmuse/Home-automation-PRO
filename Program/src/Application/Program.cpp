@@ -43,6 +43,7 @@ int main(void) {
     iotManager.registerAction("automatic", modeSelection);
     iotManager.registerAction("song", musicFlowControl);
     iotManager.registerAction("volume", musicVolumeControl);
+    iotManager.registerAction("time", dateControl);
 
     iotManager.registerState("song", songId);
     iotManager.registerState("song", isSongPlaying, {"pause", "play"});
