@@ -50,6 +50,7 @@ private:
     QMovie *movie;
     QLabel *label;
     QTimer* PuertoConnectTimer;
+    bool flagTime;
 };
 
 #endif // MAINWINDOW_H

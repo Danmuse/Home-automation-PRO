@@ -190,6 +190,29 @@ bool database::VerificateUser(QString NameDat)
     }
 }
 
+int database::GetTime()
+{
+    if(!this->GetConnection()){
+        qDebug() << "Conexion fallida:" << this->m_query.lastError().text();
+        return 0;
+    }
+
+    this->m_query.prepare("SELECT UNIX_TIMESTAMP(NOW()) AS Fecha_Actual");
+
+    if (this->m_query.lastError().isValid()) {
+        qDebug() << "Error en la preparación de la consulta:" << this->m_query.lastError().text();
+        return 0; // O manejar el error de alguna manera
+    }
+
+    if (this->m_query.exec() && this->GetConnection()) {
+        if (this->m_query.next()) {
+            this->m_valor = this->m_query.value(0).toString();
+            return this->m_valor.toInt();
+        }
+    }
+    return 0;
+}
+
 database::~database()
 {
     this->m_database.close();

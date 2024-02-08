@@ -20,6 +20,7 @@ public:
     bool CreateUser(QString Username, QString Password);
     bool RemoveUser(QString Username);
     bool VerificateUser(QString NameDat);
+    int GetTime();
     ~database();
 private:
     QString m_host;

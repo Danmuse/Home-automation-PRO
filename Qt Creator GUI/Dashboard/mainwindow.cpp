@@ -179,7 +179,6 @@ void MainWindow::on_pushButton_clicked()
         ui->pushButton->setText("Desconectar");
         ui->comboBox->setEnabled(false);
         ui->Login->setEnabled(true);
-        
     }else if(ui->pushButton->text() == "Desconectar"){
         Puerto.ClosePort();
         ui->pushButton->setText("Conectar");
@@ -231,7 +230,6 @@ void MainWindow::WaitingConnect()
         Confirm = Puerto.GetDato();
     }
     if(Confirm.Info == "ok" && Confirm.Param == "connect" ){
-        qDebug() << "entro";
         movie->stop();
         label->close();
         Confirm.Info = "";
@@ -289,11 +287,15 @@ void MainWindow::verificatePort(){
     if(Puerto.GetPortStatus()){
         ui->PortConfirm->setStyleSheet("background-color: green;");
         ui->PortConfirm->setText("Conectado");
+        if(flagTime == false){
+            flagTime = true;
+            int Time = Database.GetTime();
+            //qDebug() << Time;
+            Puerto.SendData(QString("$time:%1%").arg(Time));
+        }
     }else{
         ui->PortConfirm->setStyleSheet("background-color: red;");
         ui->PortConfirm->setText("Desconectado");
+        flagTime = false;
     }
-
-        
-
 }
