@@ -88,7 +88,7 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
                 LED_GREEN.setPin();
             }
 
-            if(userRegistrationTimer.getTicks() == 0) {
+            if (userRegistrationTimer.getTicks() == 0) {
                 LED_GREEN.clearPin();
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
             }
@@ -103,9 +103,14 @@ MFRC522::UID_st uuid;
 void doorOpeningStateMachine(DoorOpeningState& state) {
     switch (state) {
         case DoorOpeningState::WAITING_FOR_RFID:
-            RFID_result_t result;
-            result = g_rfid->getUID(&uuid);
-            if (result == RFID_OK) { state = DoorOpeningState::CHECKING_USER; }
+            if (userRegistrationTimer.getTicks() == 0) {
+                RFID_result_t result;
+                result = g_rfid->getUID(&uuid);
+
+                if (result == RFID_OK) {
+                    state = DoorOpeningState::CHECKING_USER;
+                }
+            }
             break;
         case DoorOpeningState::CHECKING_USER:
             if (isUserRegistered(uuid)) {
