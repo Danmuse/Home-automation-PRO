@@ -82,6 +82,7 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
                 }
                 LED_GREEN.clearPin();
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
+                userRegistrationTimer.setTimer(0);
 //				g_lcd->write(g_rfid->printUID(), 0, 0);
             }
             else {
