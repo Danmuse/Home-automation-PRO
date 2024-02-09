@@ -19,26 +19,26 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
     EEPROM_result_t result = g_eeprom->read(&userCount, M24C16::UINT8, 0);
     bool isRegistered = false;
 
-    if (result != EEPROM_OK) return false;
-	#if RFID_USER_UID_SIZE == 4
-        uint32_t userId = 0;
-        for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) userId |= uid.uidByte[index] << (index * 8);
-        for (size_t index = 0; index < userCount; index++) {
-            uint32_t registeredUID = 0;
-            result = g_eeprom->read(&registeredUID, M24C16::UINT32, index * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
+    if (result != EEPROM_OK) { return false; }
+#if RFID_USER_UID_SIZE == 4
+    uint32_t userId = 0;
+    for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) { userId |= uid.uidByte[index] << (index * 8); }
+    for (size_t index = 0; index < userCount; index++) {
+        uint32_t registeredUID = 0;
+        result = g_eeprom->read(&registeredUID, M24C16::UINT32, index * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
+        if (result != EEPROM_OK) { return false; }
+        if (registeredUID == userId) { isRegistered = true; }
+    }
+#else
+    for (size_t index = 0; index < userCount; index++) {
+        uint8_t registeredUID[RFID_USER_UID_SIZE];
+        for (size_t j_index = 0; j_index < RFID_USER_UID_SIZE; j_index++) {
+            result = g_eeprom->read(&registeredUID[j_index], M24C16::UINT8, index * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
             if (result != EEPROM_OK) return false;
-            if (registeredUID == userId) isRegistered = true;
         }
-	#else
-        for (size_t index = 0; index < userCount; index++) {
-            uint8_t registeredUID[RFID_USER_UID_SIZE];
-            for (size_t j_index = 0; j_index < RFID_USER_UID_SIZE; j_index++) {
-                result = g_eeprom->read(&registeredUID[j_index], M24C16::UINT8, index * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
-                if (result != EEPROM_OK) return false;
-            }
-            if (memcmp(registeredUID, uid.uidByte, RFID_USER_UID_SIZE) == 0) isRegistered = true;
-        }
-	#endif
+        if (memcmp(registeredUID, uid.uidByte, RFID_USER_UID_SIZE) == 0) isRegistered = true;
+    }
+#endif
     return isRegistered;
 }
 
@@ -46,37 +46,52 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
     uint8_t userCount = 0;
     EEPROM_result_t result = g_eeprom->read(&userCount, M24C16::UINT8, 0);
 
-    if (result != EEPROM_OK) return false;
-	#if RFID_USER_UID_SIZE == 4
-        uint32_t userId = 0;
-        for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) userId |= uid.uidByte[index] << (index * 8);
-        result = g_eeprom->write(userId, userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
+    if (result != EEPROM_OK) { return false; }
+#if RFID_USER_UID_SIZE == 4
+    uint32_t userId = 0;
+    for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) { userId |= uid.uidByte[index] << (index * 8); }
+    result = g_eeprom->write(userId, userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
+    if (result != EEPROM_OK) { return false; }
+#else
+    for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) {
+        result = g_eeprom->write(uid.uidByte[index], userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
         if (result != EEPROM_OK) return false;
-	#else
-        for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) {
-            result = g_eeprom->write(uid.uidByte[index], userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
-            if (result != EEPROM_OK) return false;
-        }
-	#endif
+    }
+#endif
     return true;
 }
 
 KeyboardPassword keyBoardPassword("1222112", g_keyboard);
+Timer userRegistrationTimer(nullptr, Timer::SEC);
 
 void userRegistrationStateMachine(UserRegistrationState& state) {
     switch (state) {
         case UserRegistrationState::WAITING_FOR_PASSWORD:
-            if (keyBoardPassword.checkPassword()) state = UserRegistrationState::WAITING_FOR_USER;
+            if (keyBoardPassword.checkPassword()) {
+                state = UserRegistrationState::WAITING_FOR_USER;
+                userRegistrationTimer.timerStart(30);
+            }
             break;
         case UserRegistrationState::WAITING_FOR_USER:
             MFRC522::UID_st uuid;
             RFID_result_t result = g_rfid->getUID(&uuid);
 
             if (result == RFID_OK) {
-                if (isUserRegistered(uuid)) state = UserRegistrationState::WAITING_FOR_PASSWORD;
-                else registerNewUser(uuid);
+                if (!isUserRegistered(uuid)) {
+                    registerNewUser(uuid);
+                }
+                LED_GREEN.clearPin();
+                state = UserRegistrationState::WAITING_FOR_PASSWORD;
 //				g_lcd->write(g_rfid->printUID(), 0, 0);
-            } else LED_GREEN.setPin();
+            }
+            else {
+                LED_GREEN.setPin();
+            }
+
+            if(userRegistrationTimer.getTicks() == 0) {
+                LED_GREEN.clearPin();
+                state = UserRegistrationState::WAITING_FOR_PASSWORD;
+            }
             break;
     }
 }
@@ -84,19 +99,21 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
 Timer doorOpeningTimer(nullptr, Timer::SEC);
 MFRC522::UID_st uuid;
 
+
 void doorOpeningStateMachine(DoorOpeningState& state) {
     switch (state) {
         case DoorOpeningState::WAITING_FOR_RFID:
             RFID_result_t result;
             result = g_rfid->getUID(&uuid);
-            if (result == RFID_OK) state = DoorOpeningState::CHECKING_USER;
+            if (result == RFID_OK) { state = DoorOpeningState::CHECKING_USER; }
             break;
         case DoorOpeningState::CHECKING_USER:
             if (isUserRegistered(uuid)) {
                 g_servo->setAngle(90);
                 state = DoorOpeningState::DOOR_OPEN;
                 doorOpeningTimer.timerStart(3);
-            } else state = DoorOpeningState::WAITING_FOR_RFID;
+            }
+            else { state = DoorOpeningState::WAITING_FOR_RFID; }
             break;
         case DoorOpeningState::DOOR_OPEN:
             if (doorOpeningTimer.getTicks() == 0) {
