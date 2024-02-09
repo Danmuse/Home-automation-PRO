@@ -21,7 +21,7 @@ int main(void) {
 	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
     initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
-//	initDFPlayer();	// Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
+	initDFPlayer();	// Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
     initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
     initRFID();		// Initializes the g_rfid        ~ Define the SPI1_DEBUG_PINS macro in ProgramConfig.h {P0.19 - P0.22 - P0.21 - P0.20 - P0.18}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
@@ -61,7 +61,7 @@ int main(void) {
     g_leds->turnOn();
     g_leds->setColor(S5050DJ::WHITE);
 
-    bool increaseCheck = false;
+//  bool increaseCheck = false;
 
     while (true) {
 //		!increaseCheck ? ledBrightness-- : ledBrightness++;
@@ -71,36 +71,35 @@ int main(void) {
 //		delay(100);
 
         /// External preset acquisition
-        if (automaticMode) {
-            if (g_adcExternal != nullptr) {
-                uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
-                g_lcd->write("ANALOG: ", 0, 0);
-                g_lcd->write(currentBright, 0, 8);
-
-                if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
-                	ledBrightness = currentBright;
-                	uint16_t brightness = ledBrightness;
-                    g_leds->setBrightness(brightness);
-                    g_lcd->write("BRIGHT: ", 1, 0);
-                    brightness = g_leds->getBrightness();
-                    g_lcd->write(brightness, 1, 8);
-                    g_lcd->write("ERRCODE ", 2, 0);
-                    g_lcd->write(g_ds3231->getStatus(), 2, 8);
-                } else {
-                	g_lcd->write("BRIGHT: ", 1, 0);
-					g_lcd->write(ledBrightness, 1, 8);
-					g_lcd->write("ERRCODE ", 2, 0);
-					g_lcd->write(g_ds3231->getStatus(), 2, 8);
-                }
-            }
-        }
+//        if (automaticMode) {
+//            if (g_adcExternal != nullptr) {
+//                uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
+//                g_lcd->write("ANALOG: ", 0, 0);
+//                g_lcd->write(currentBright, 0, 8);
+//
+//                if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
+//                	ledBrightness = currentBright;
+//                	uint16_t brightness = ledBrightness;
+//                    g_leds->setBrightness(brightness);
+//                    g_lcd->write("BRIGHT: ", 1, 0);
+//                    brightness = g_leds->getBrightness();
+//                    g_lcd->write(brightness, 1, 8);
+//                    g_lcd->write("ERRCODE ", 2, 0);
+//                    g_lcd->write(g_ds3231->getStatus(), 2, 8);
+//                } else {
+//                	g_lcd->write("BRIGHT: ", 1, 0);
+//					g_lcd->write(ledBrightness, 1, 8);
+//					g_lcd->write("ERRCODE ", 2, 0);
+//					g_lcd->write(g_ds3231->getStatus(), 2, 8);
+//                }
+//            }
+//        }
         /// Machine states
 		userRegistrationStateMachine(userRegistrationState);
-		doorOpeningStateMachine(doorOpeningState);
+		//doorOpeningStateMachine(doorOpeningState);
 
-        delay(20);
-        g_lcd->write("  ", 0, 9);
-        g_lcd->write("  ", 1, 9);
+//		g_lcd->write("  ", 0, 9);
+//		g_lcd->write("  ", 1, 9);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
@@ -396,6 +395,7 @@ int main(void) {
 ////////////////////////////////
 
 /*
+
 int main(void) {
     initDevice();	// Initializes the System Tick Timer and Phase Locked Loop modifying the FREQ_CLOCK_MCU macro in LPC845.h
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
@@ -461,13 +461,13 @@ int main(void) {
 //	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 //	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
-//	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
+	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 //	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
-//	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
+	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
 //	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
-//	initRFID();		// Initializes the g_rfid        ~ Define the SPI1_DEBUG_PINS macro in ProgramConfig.h {P0.19 - P0.22 - P0.21 - P0.20 - P0.18}
+	initRFID();		// Initializes the g_rfid        ~ Define the SPI1_DEBUG_PINS macro in ProgramConfig.h {P0.19 - P0.22 - P0.21 - P0.20 - P0.18}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
@@ -476,9 +476,9 @@ int main(void) {
 	g_lcd->write("|     The Home     |", 1, 0);
 	g_lcd->write("|  Automation PRO  |", 2, 0);
 	g_lcd->write("*------------------*", 3, 0);
-//	delay(5000);
-//	g_lcd->clear();
-//
+	delay(1000);
+	g_lcd->clear();
+
 //	char bufferUSB[4];
 //	bufferUSB[1] = '\n';
 //	bufferUSB[2] = '\n';
@@ -487,31 +487,132 @@ int main(void) {
 //	LED_RED.clearPin();
 //	LED_GREEN.clearPin();
 //	LED_BLUE.clearPin();
-//
+
 //	if (g_ds3231->set(0, 38, 20, 4, 2, 2024)) {
 //		LED_GREEN.setPin();
 //		LED_RED.setPin();
 //	} else LED_RED.clearPin();
 
     while (1) {
-        /// External preset acquisition
-//		if (g_adcExternal != nullptr) {
-//			uint16_t val = (g_adcExternal->analogRead() / 40); // Range: 0 to 100 (Percentage)
-//			g_lcd->write("A0 ", 0, 0);
-//			g_lcd->write(val, 0, 3);
-//			g_leds->setSequenceSpeed(val);
-//		}
-//
-//		delay(100);
-//    	g_lcd->write("   ", 0, 4);
-//    	g_lcd->write("   ", 1, 4);
-//    	g_lcd->write("   ", 0, 12);
-//    	g_lcd->write("   ", 1, 12);
+    	/*/// DS3231 RTC
 
-//    	g_ds3231->get();
-//    	g_usb->transmit(g_ds3231->printTimestamp());
-//    	g_lcd->write(g_ds3231->printTimestamp(), 0, 0);
-//
+    	g_ds3231->get();
+    	g_lcd->write(g_ds3231->printTimestamp(), 0, 0);
+
+    	*/
+
+       	/*/// SevenSegmentDisplay
+
+		static uint8_t value = 0;
+		static bool toggleDisplay = false;
+
+		if (!(value)) {
+			g_display->set(value, 0);
+			g_display->set(value, 1);
+		}
+
+		if (!(value % 10)) toggleDisplay = !toggleDisplay;
+		if (toggleDisplay) {
+			g_display->mode(Digit::NONE, 0);
+    		g_display->mode(Digit::BLINK, 1);
+    		g_display->set(value, 0);
+		} else {
+			g_display->mode(Digit::NONE, 1);
+			g_display->mode(Digit::BLINK, 0);
+			g_display->set(value, 1);
+		}
+
+		value++;
+		if (value == 255) break;
+
+    	delay(500);
+
+		*/
+
+    	/*/// FM24C16 EEPROM
+
+		static uint32_t value = 0;
+		static uint32_t currentValue = 0;
+		static uint32_t position = 0;
+
+		static char bufferFST[10];
+		static char bufferSND[9];
+
+		bufferFST[0] = 'W';
+		bufferFST[1] = 'r';
+		bufferFST[2] = 'i';
+		bufferFST[3] = 't';
+		bufferFST[4] = 'e';
+		bufferFST[5] = ' ';
+		bufferFST[7] = ' ';
+		bufferFST[8] = ' ';
+		bufferFST[9] = '\0';
+
+		bufferSND[0] = 'R';
+		bufferSND[1] = 'e';
+		bufferSND[2] = 'a';
+		bufferSND[3] = 'd';
+		bufferSND[4] = ' ';
+		bufferSND[6] = ' ';
+		bufferSND[7] = ' ';
+		bufferSND[8] = '\0';
+
+        !(g_eeprom->write(value, position)) ? LED_RED.clearPin() : LED_RED.setPin();
+        !(g_eeprom->read(&currentValue, M24C16::UINT8, position)) ? LED_BLUE.clearPin() : LED_BLUE.setPin();
+        if (value < 10) bufferFST[6] = value + '0';
+        else if (value >= 10 && value < 100) {
+        	bufferFST[6] = (value / 10) + '0';
+        	bufferFST[7] = (value % 10) + '0';
+        } else if (value >= 100 && value < 1000) {
+        	bufferFST[6] = (value / 100) + '0';
+        	bufferFST[7] = ((value / 10) % 10) + '0';
+        	bufferFST[8] = (value % 10) + '0';
+        } else {
+        	bufferFST[6] = ((value / 100) % 10) + '0';
+			bufferFST[7] = ((value / 10) % 10) + '0';
+			bufferFST[8] = (value % 10) + '0';
+        }
+
+        if (currentValue < 10) bufferSND[5] = currentValue + '0';
+        else if (currentValue >= 10 && currentValue < 100) {
+        	bufferSND[5] = (currentValue / 10) + '0';
+        	bufferSND[6] = (currentValue % 10) + '0';
+        } else if(currentValue >= 100 && currentValue < 1000) {
+        	bufferSND[5] = (currentValue / 100) + '0';
+        	bufferSND[6] = ((currentValue / 10) % 10) + '0';
+        	bufferSND[7] = (currentValue % 10) + '0';
+        } else {
+        	bufferSND[5] = ((currentValue / 100) % 10) + '0';
+        	bufferSND[6] = ((currentValue / 10) % 10) + '0';
+        	bufferSND[7] = (currentValue % 10) + '0';
+        }
+
+        g_lcd->write(bufferFST, 0, 0);
+        g_lcd->write(bufferSND, 1, 0);
+        value++; position++; // These are may overflow...
+        if (value == 65535) {
+        	value = 0;
+			bufferFST[7] = ' ';
+			bufferFST[8] = ' ';
+		}
+        if (position == 65535) {
+        	position = 0;
+			bufferSND[6] = ' ';
+			bufferSND[7] = ' ';
+		}
+        delay(100);
+
+    	*/
+
+    	/*/// MG90S SERVO
+
+    	g_servo->setAngle(0);
+    	delay(500);
+		g_servo->setAngle(90);
+    	delay(500);
+
+		*/
+
 //    	bufferUSB[0] = g_ds3231->getStatus() + '0';
 //    	g_usb->transmit("ERRCODE ");
 //    	g_usb->transmit(bufferUSB);
@@ -521,9 +622,13 @@ int main(void) {
 //
 //		delay(1000);
 
+       	///*/// DFPlayer
+
     	g_dfplayer->volume(10); // Set volume value. From 0% to 100%
     	g_dfplayer->play(1); // Play the first mp3
     	delay(10000);
+
+		//*/
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }

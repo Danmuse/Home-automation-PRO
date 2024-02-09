@@ -23,7 +23,7 @@ m_keyboard{keyboard}, m_passwordIndex{0}, m_timeoutCounter{PASSWORD_TIMEOUT} {
 
 bool KeyboardPassword::checkPassword(void) {
     bool succeed = false;
-    uint8_t keyPressed = this->m_keyboard->get();
+    uint8_t keyPressed = g_keyboard->get();
 
     if (keyPressed != NO_KEY) {
         if (keyPressed == this->m_password[this->m_passwordIndex]) {

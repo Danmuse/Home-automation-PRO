@@ -60,6 +60,7 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
 	#endif
     return true;
 }
+
 KeyboardPassword keyBoardPassword("1222112", g_keyboard);
 
 void userRegistrationStateMachine(UserRegistrationState& state) {
@@ -74,8 +75,8 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
             if (result == RFID_OK) {
                 if (isUserRegistered(uuid)) state = UserRegistrationState::WAITING_FOR_PASSWORD;
                 else registerNewUser(uuid);
-                // TODO: Mostrar en el LCD algo?
-            }
+//				g_lcd->write(g_rfid->printUID(), 0, 0);
+            } else LED_GREEN.setPin();
             break;
     }
 }
