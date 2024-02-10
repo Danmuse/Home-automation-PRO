@@ -209,6 +209,7 @@ bool DFPlayer::handleMessage(uint8_t type, uint16_t parameter) {
 
 bool DFPlayer::handleError(uint8_t type, uint16_t parameter) {
 	this->handleMessage(type, parameter);
+//	this->m_isAvailable = false; // TODO: Check this code instruction
 	this->m_isSending = false;
 	return false;
 }

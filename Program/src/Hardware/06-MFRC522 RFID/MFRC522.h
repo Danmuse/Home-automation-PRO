@@ -109,6 +109,13 @@ typedef enum {
 	RFID_MIFARE_NACK = 0xFF	//!< A MIFARE PICC responded with NAK.
 } RFID_result_t;
 
+//! @brief <b>RFID_status_t</b> enumeration indicates the status of the connection between the PICC (<tt>Proximity Integrated Circuit Card</tt>) and PCD (<tt>Proximity Coupling Device</tt>).
+typedef enum {
+	RFID_SUCCESS,	//!< Successful operation.
+	RFID_FAILURE,	//!< Failure operation.
+	RFID_BUSY		//!< Pending status of carrying out operations.
+} RFID_status_t;
+
 class MFRC522 : protected SPI, Gpio, Callback {
 public:
 	//! MIFARE_st: Structure used for passing a MIFARE Crypto1 key.
@@ -199,7 +206,7 @@ public:
 	virtual bool isCardPICC(void);
 	virtual bool readCardPICC(void);
 	RFID_result_t haltPICC(void);
-	RFID_result_t getUID(UID_st *UID = nullptr);
+	RFID_status_t getUID(UID_st *UID = nullptr);
 
 	// Support functions for debugging
 	void dumpVersion(void);

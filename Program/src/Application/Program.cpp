@@ -95,8 +95,8 @@ int main(void) {
 //            }
 //        }
         /// Machine states
-		userRegistrationStateMachine(userRegistrationState);
-		//doorOpeningStateMachine(doorOpeningState);
+//		userRegistrationStateMachine(userRegistrationState);
+		doorOpeningStateMachine(doorOpeningState);
 
 //		g_lcd->write("  ", 0, 9);
 //		g_lcd->write("  ", 1, 9);
@@ -460,17 +460,20 @@ int main(void) {
 //	initDisplay();	// Initializes the g_display     ~ Define the CN12_PINS macro in ProgramConfig.h {P0.23 - P0.22 - P0.21 - P0.20 - P0.18 - P0.19}
 //	initLCD1602();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
 	initLCD2004();	// Initializes the g_lcd         ~ Define the CN15_PINS or LCD_DEBUG_PINS macros in ProgramConfig.h {P0.13 - P0.11 - P0.10 - P0.09 - P0.01 - P0.14} or {P0.13 - P0.15 - P0.26 - P0.09 - P0.01 - P0.14}
-//	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
+	initKeyboard();	// Initializes the g_keyboard    ~ Define the CN16_PINS or KEYBOARD_DEBUG_PINS macros in ProgramConfig.h {P0.28 - P0.27 - P0.08 - P0.15 - P0.26} or {P0.28 - P0.27 - P0.08}
 	initDS3231();	// Initializes the g_ds3231      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
 	initM24C16();	// Initializes the g_eeprom      ~ Define the I2C0_PINS macro in ProgramConfig.h {P0.11 - P0.10}
-//	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
+	initLEDs();		// Initializes the g_leds        ~ Define the LED_TRIP_PIN macro in ProgramConfig.h {P0.29}
 	initServo();	// Initializes the g_servo       ~ Define the SG90S_SERVO_PIN macro in ProgramConfig.h {P0.23}
 	initDFPlayer(); // Initializes the g_dfplayer    ~ Define the CN13_PINS macro in ProgramConfig.h {P0.17 - P0.16 - P0.00}
-//	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
+	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 	initRFID();		// Initializes the g_rfid        ~ Define the SPI1_DEBUG_PINS macro in ProgramConfig.h {P0.19 - P0.22 - P0.21 - P0.20 - P0.18}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
 //	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
+
+    UserRegistrationState userRegistrationState = UserRegistrationState::WAITING_FOR_PASSWORD;
+    DoorOpeningState doorOpeningState = DoorOpeningState::WAITING_FOR_RFID;
 
 	g_lcd->write("*------------------*", 0, 0);
 	g_lcd->write("|     The Home     |", 1, 0);
@@ -492,6 +495,8 @@ int main(void) {
 //		LED_GREEN.setPin();
 //		LED_RED.setPin();
 //	} else LED_RED.clearPin();
+
+	!(g_eeprom->write(0, 0)) ? LED_RED.clearPin() : LED_RED.setPin();
 
     while (1) {
     	/*/// DS3231 RTC
@@ -622,13 +627,16 @@ int main(void) {
 //
 //		delay(1000);
 
-       	///*/// DFPlayer
+       	/*/// DFPlayer
 
     	g_dfplayer->volume(10); // Set volume value. From 0% to 100%
     	g_dfplayer->play(1); // Play the first mp3
     	delay(10000);
 
-		//*/
+		*/
+
+    	userRegistrationStateMachine(userRegistrationState);
+    	doorOpeningStateMachine(doorOpeningState);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }

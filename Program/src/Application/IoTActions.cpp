@@ -33,14 +33,11 @@ void modeSelection(char* message) { // Automatic/manual control
 void musicFlowControl(char* message) {
     int songId = atoi(message);
 
-    if (songId != 0) {
-        g_dfplayer->play(songId);
-    }
-    else if (strcmp(message, "pause") == 0) {
-        g_dfplayer->pause(); // Maybe stop
-    }
+    if (songId != 0) g_dfplayer->play(songId);
+    else if (strcmp(message, "pause") == 0) g_dfplayer->pause();
     else if (strcmp(message, "play") == 0) {
-        // TODO: Play/resume music
+        // TODO: Implement the corresponding function to send the frame corresponding to the resumption of the song
+    	// Serial transmission section (without ACK): 7E FF 06 0D 00 00 00 FE EE EF
     }
 }
 

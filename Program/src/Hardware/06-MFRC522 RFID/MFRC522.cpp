@@ -866,7 +866,7 @@ RFID_result_t MFRC522::haltPICC(void) {
     return this->getStatus();
 }
 
-RFID_result_t MFRC522::getUID(UID_st *UID) {
+RFID_status_t MFRC522::getUID(UID_st *UID) {
 	static bool readingCard = false, releasingPCD = false;
 	if (this->m_statusRFID != RFID_SSEL_ERR) {
 		if (!(this->m_timeOut) && !(this->m_operationCompleted)) {
@@ -875,18 +875,18 @@ RFID_result_t MFRC522::getUID(UID_st *UID) {
 		}
 		if (!releasingPCD) {
 			if (!readingCard) {
-				if (!(this->isCardPICC())) return this->getStatus();
+				if (!(this->isCardPICC())) return RFID_FAILURE; // this->getStatus();
 				readingCard = true;
 			}
-			if (!(this->readCardPICC())) return this->getStatus();
+			if (!(this->readCardPICC())) return RFID_BUSY; // this->getStatus();
 			if (UID != nullptr) *UID = this->m_UID;
 			releasingPCD = true;
 		}
 		// The following instruction will be useful depending on the implementation of the program.
-		// if (!(this->haltPICC())) return this->getStatus();
+		// if (!(this->haltPICC())) return RFID_BUSY; // this->getStatus();
 	}
 
-    return this->getStatus();
+    return this->getStatus() == RFID_OK ? RFID_SUCCESS : RFID_FAILURE;
 }
 
 void MFRC522::dumpVersion(void) {
