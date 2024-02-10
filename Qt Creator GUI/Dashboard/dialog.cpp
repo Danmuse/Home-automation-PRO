@@ -13,7 +13,7 @@ Dialog::Dialog(QWidget *parent)
     ui->setupUi(this);
     miTemporizador->start();
     ui->LuzLevel->setMinimum(0);
-    ui->LuzLevel->setMaximum(10);
+    ui->LuzLevel->setMaximum(100);
     ui->VolumeMusic->setMinimum(0);
     ui->VolumeMusic->setMaximum(100);
     connect(ui->LuzLevel, &QSlider::valueChanged, this, &Dialog::on_LuzLevel_actionTriggered);
@@ -77,7 +77,7 @@ void Dialog::manejarTimeOut()
 void Dialog::on_ToggleLuz_clicked()
 {
     if(ui->ToggleLuz->text() == "Prender Luz"){
-        Puerto.SendData("$luz:10%");
+        Puerto.SendData("$luz:100%");
         ui->ToggleLuz->setText("Apagar Luz");
         ui->LuzLevel->setValue(10);
     }else{
@@ -95,7 +95,9 @@ void Dialog::on_LuzLevel_actionTriggered(int action)
     }else{
         ui->ToggleLuz->setText("Apagar Luz");
     }
-    Puerto.SendData(QString("$luz:%1%").arg(action));
+    if(action != 7){
+        Puerto.SendData(QString("$luz:%1%").arg(action));
+    }
 }
 
 
