@@ -70,10 +70,14 @@ time_st epochToDate(uint32_t epochTimestamp) {
 
     // Compute month and day
     int16_t remainingDays = daysSinceEpoch - (totalDays - yearDays);
-    static const uint8_t daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    static uint8_t daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     for (month = 0; month < 12; month++) {
-    	remainingDays -= (month == 1 && ((year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))) ? 29 : daysInMonth[month];
+        if (month == 1 && ((year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)))) {
+            daysInMonth[month] = 29;
+        }
+
+        remainingDays -= daysInMonth[month];
         if (remainingDays < 0) break;
     }
     day = remainingDays + daysInMonth[month] + 1; // +1 because days start from 1
