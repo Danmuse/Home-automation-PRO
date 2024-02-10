@@ -63,7 +63,7 @@ void port::onReadyRead() {
             m_Dato[m_IndexRead].append(Lectura[i]);
             if(Lectura[i] == FOOTER){
                 m_IndexRead++;
-                if(m_IndexRead == 4){
+                if(m_IndexRead == DATO_BUFFER){
                     m_IndexRead = 0;
                 }
             }
@@ -157,7 +157,7 @@ SerialParams port::GetDato()
         m_Dato[m_IndexWrite] = "";
         m_IndexWrite++;
         //qDebug() << datoStr;
-        if(m_IndexWrite == 4){
+        if(m_IndexWrite == DATO_BUFFER){
             m_IndexWrite = 0;
         }
 

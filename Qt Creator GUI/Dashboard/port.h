@@ -10,6 +10,7 @@
 #define HEADER '$'
 #define FOOTER '%'
 
+#define DATO_BUFFER 10
 
 struct SerialParams{
     QString Param;
@@ -33,7 +34,7 @@ private:
     QSerialPort* m_Puerto;
     QList<QSerialPortInfo> m_Totals_Ports;
     QString m_PortName;
-    QString m_Dato[4];
+    QString m_Dato[DATO_BUFFER];
     int m_IndexRead = 0;
     int m_IndexWrite = 0;
     bool m_Flag;
