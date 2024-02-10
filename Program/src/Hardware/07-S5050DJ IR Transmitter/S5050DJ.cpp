@@ -135,25 +135,31 @@ void S5050DJ::setBrightness(uint8_t percentage) {
 //				repeatCommand_instance = result - this->m_brightnessPoint;
 //				this->m_brightnessPoint = result;
 //				this->setAction(INCREASE_BRIGHTNESS);
-		} else if (this->m_brightnessPoint < result) {
-			this->m_brightnessPoint++; // TODO: Check this code instruction!!
-			this->m_speedPoint = this->m_brightnessPoint;
-			// The following code fragment is correct,
-			// but due to the implementation there will be instabilities in the program.
+		}
+        while (this->m_brightnessPoint < result) {
+            this->m_brightnessPoint++; // TODO: Check this code instruction!!
+            this->m_speedPoint = this->m_brightnessPoint;
+            // The following code fragment is correct,
+            // but due to the implementation there will be instabilities in the program.
 //				repeatCommand_instance = true;
 //				repeatCounts_instance = result - this->m_brightnessPoint;
 //				this->m_brightnessPoint = result;
-			this->setAction(INCREASE_BRIGHTNESS);
-		} else if (this->m_brightnessPoint > result) {
-			this->m_brightnessPoint--; // TODO: Check this code instruction!!
-			this->m_speedPoint = this->m_brightnessPoint;
-			// The following code fragment is correct,
-			// but due to the implementation there will be instabilities in the program.
+            this->setAction(INCREASE_BRIGHTNESS);
+        }
+        while (this->m_brightnessPoint > result) {
+            this->m_brightnessPoint--; // TODO: Check this code instruction!!
+            this->m_speedPoint = this->m_brightnessPoint;
+            // The following code fragment is correct,
+            // but due to the implementation there will be instabilities in the program.
 //				repeatCommand_instance = true;
-//				repeatCounts_instance = this->m_brightnessPoint - result;
+//				repeatCounts_instance = result - this->m_brightnessPoint;
 //				this->m_brightnessPoint = result;
-			this->setAction(DECREASE_BRIGHTNESS);
-		}
+            this->setAction(DECREASE_BRIGHTNESS);
+        }
+
+
+
+
 	} else {
 //		this->m_brightnessPoint--;
 		this->turnOff();
