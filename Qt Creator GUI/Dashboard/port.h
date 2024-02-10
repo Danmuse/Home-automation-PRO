@@ -7,7 +7,7 @@
 #include <QSerialPortInfo>
 #include <QObject>
 
-#define HEADER '}'
+#define HEADER '$'
 #define FOOTER '%'
 
 #define DATO_BUFFER 10
