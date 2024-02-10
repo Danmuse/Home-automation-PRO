@@ -20,7 +20,7 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
     bool isRegistered = false;
 
     if (result != EEPROM_OK) { return false; }
-#if RFID_USER_UID_SIZE == 4
+#if RFID_USER_UID_SIZE == 7
     uint32_t userId = 0;
     for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) { userId |= uid.uidByte[index] << (index * 8); }
     for (size_t index = 0; index < userCount; index++) {
@@ -80,6 +80,7 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
                 if (!isUserRegistered(uuid)) {
                     registerNewUser(uuid);
                 }
+                g_lcd->write("Usuario registrado", 0, 0);
                 LED_GREEN.clearPin();
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
                 userRegistrationTimer.setTimer(0);
@@ -92,6 +93,7 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
             if (userRegistrationTimer.getTicks() == 0) {
                 LED_GREEN.clearPin();
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
+                g_lcd->write("Timout", 0, 0);
             }
             break;
     }
