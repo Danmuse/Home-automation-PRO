@@ -48,7 +48,8 @@ SyncCommTWI::statusComm_t I2C::awaitNACK(void) {
 }
 
 SyncCommTWI::statusComm_t I2C::prepareConditions(const uint8_t address, const uint8_t regOffset, SyncCommTWI::actionComm_t action) {
-    this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
+	if (action != WRITE && action != WRITE_OFFSET_NONE && action != READ && action != READ_OFFSET_NONE) return TWI_FAILURE;
+	this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
     this->m_TWI->MSTCTL = (1 << 1); // Master Start control. A START bit will be generated on the I2C bus at the next allowed time.
     this->m_TWI->MSTDAT = (address << 1); // Charge the slave address into I2C buffer with WRITE bit command.
     this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
@@ -81,7 +82,7 @@ SyncCommTWI::statusComm_t I2C::prepareConditions(const uint8_t address, const ui
 			this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
 		} else return TWI_FAILURE;
 		return TWI_SUCCESS;
-	} else return TWI_FAILURE;
+	}
 }
 
 #pragma GCC pop_options

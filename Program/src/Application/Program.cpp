@@ -44,20 +44,26 @@ int main(void) {
     iotManager.registerAction("time", dateControl);
 
     iotManager.registerState("song", songId);
-    iotManager.registerState("song", isSongPlaying, {"pause", "play"});
+    iotManager.registerState("song", isSongPlaying, { "pause", "play" });
     iotManager.registerState("luz", ledBrightness);
-    iotManager.registerState("automatic", automaticMode, {"off", "on"});
-
-    g_lcd->clear();
-    g_lcd->write("*------------------*", 0, 0);
-    g_lcd->write("|     The Home     |", 1, 0);
-    g_lcd->write("|  Automation PRO  |", 2, 0);
-    g_lcd->write("*------------------*", 3, 0);
-    delay(1000);
-    g_lcd->clear();
+    iotManager.registerState("automatic", automaticMode, { "off", "on" });
 
     g_leds->turnOn();
-    g_leds->setColor(S5050DJ::WHITE);
+
+    // Initial condition to play the opening song.
+    if (UserSwitch.getPin()) {
+        g_lcd->write("*------------------*", 0, 0);
+        g_lcd->write("|     The Home     |", 1, 0);
+        g_lcd->write("|  Automation PRO  |", 2, 0);
+        g_lcd->write("*------------------*", 3, 0);
+		g_leds->setMode(S5050DJ::FADE);
+    	g_dfplayer->play(1);
+    	// NOTE: The opening song during approximately 30 seconds
+        delay(1000); // TODO: Replace this instruction by the method that corresponds.
+    }
+
+    g_lcd->clear();
+	g_leds->setColor(S5050DJ::WHITE);
 
     while (true) {
         /// External preset acquisition
@@ -467,7 +473,6 @@ int main(void) {
 	g_lcd->write("|  Automation PRO  |", 2, 0);
 	g_lcd->write("*------------------*", 3, 0);
 	delay(1000);
-	g_lcd->clear();
 
 //	char bufferUSB[4];
 //	bufferUSB[1] = '\n';
@@ -482,6 +487,12 @@ int main(void) {
 //		LED_GREEN.setPin();
 //		LED_RED.setPin();
 //	} else LED_RED.clearPin();
+
+	g_dfplayer->volume(50); // Set volume value. From 0% to 100%
+	g_dfplayer->play(1); // Play the first mp3
+
+	uint8_t volume = 50;
+	uint8_t keyPressed = NO_KEY;
 
     while (1) {
     	/*/// DS3231 RTC
@@ -614,9 +625,23 @@ int main(void) {
 
        	///*/// DFPlayer
 
-    	g_dfplayer->volume(10); // Set volume value. From 0% to 100%
-    	g_dfplayer->play(1); // Play the first mp3
-    	delay(10000);
+    	keyPressed = g_keyboard->get();
+    	if (keyPressed == 0) {
+    		volume += 10;
+    		g_dfplayer->volume(volume > 100 ? 100 : volume);
+    		if (volume == 100) volume = 90;
+    	} else if (keyPressed == 1) {
+    		volume -= 10;
+    		g_dfplayer->volume(volume);
+    		if (volume == 0) volume = 10;
+    	}
+
+    	if (UserSwitch.getPin()) {
+    		LED_GREEN.setPin();
+    		g_dfplayer->play(0);
+    	} else LED_GREEN.clearPin();
+
+    	g_lcd->clear();
 
 		//*/
 
