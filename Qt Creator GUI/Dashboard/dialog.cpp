@@ -17,13 +17,14 @@ Dialog::Dialog(QWidget *parent)
     ui->VolumeMusic->setMinimum(0);
     ui->VolumeMusic->setMaximum(100);
     connect(ui->LuzLevel, &QSlider::sliderReleased, this, &Dialog::on_LuzLevel);
-    connect(ui->VolumeMusic, &QSlider::valueChanged, this, &Dialog::on_VolumeMusic_actionTriggered);
+    connect(ui->VolumeMusic, &QSlider::sliderReleased, this, &Dialog::on_VolumeMusic);
     ui->Automatic->setChecked(true);
     this->on_checkBox_stateChanged(2);
     connect(ui->Automatic, &QCheckBox::stateChanged, this, &Dialog::on_checkBox_stateChanged);
     ui->ComboMusic->addItems(Canciones);
     ui->PauseMusic->setEnabled(false);
     ui->LuzLevel->setPageStep(0);
+    ui->VolumeMusic->setPageStep(0);
 }
 
 Dialog::~Dialog()
@@ -134,11 +135,9 @@ void Dialog::on_PauseMusic_clicked()
 
 
 
-void Dialog::on_VolumeMusic_actionTriggered(int action)
+void Dialog::on_VolumeMusic()
 {
-    if(action != 7){
-        Puerto.SendData(QString("$song:%1%").arg(action));
-    }
+        Puerto.SendData(QString("$volume:%1%").arg(ui->VolumeMusic->value()));
 }
 
 

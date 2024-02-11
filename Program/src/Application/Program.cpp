@@ -33,6 +33,7 @@ int main(void) {
     int ledBrightness = 0;
     int songId = 0;
     bool isSongPlaying = false;
+    int volume = DFPLAYER_INITIAL_VOLUME_PERCENTAGE;
 
     UserRegistrationState userRegistrationState = UserRegistrationState::WAITING_FOR_PASSWORD;
     DoorOpeningState doorOpeningState = DoorOpeningState::WAITING_FOR_RFID;
@@ -47,6 +48,7 @@ int main(void) {
     iotManager.registerState("song", isSongPlaying, { "pause", "play" });
     iotManager.registerState("luz", ledBrightness);
     iotManager.registerState("automatic", automaticMode, { "off", "on" });
+    iotManager.registerState("volume", volume);
 
     g_leds->turnOn();
 
@@ -93,6 +95,9 @@ int main(void) {
     	/// Machine states
 		userRegistrationStateMachine(userRegistrationState);
 		doorOpeningStateMachine(doorOpeningState);
+
+        //Todo: volume= g_dfplayer->getVolume();
+
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
