@@ -8,7 +8,7 @@ Dialog::Dialog(QWidget *parent)
     , ui(new Ui::Dialog)
 {
     miTemporizador = new QTimer(this);
-    miTemporizador->setInterval(50);
+    miTemporizador->setInterval(100);
     connect(miTemporizador, SIGNAL(timeout()), this, SLOT(manejarTimeOut()));
     ui->setupUi(this);
     miTemporizador->start();
@@ -46,7 +46,7 @@ void Dialog::manejarTimeOut()
 
     QString dato = Information.Param;
     QString value = Information.Info;
-
+    qDebug() << dato << " " << value;
     if(dato != nullptr && value != nullptr ){
         bool ok;
         int valor = value.toInt(&ok);
@@ -54,7 +54,7 @@ void Dialog::manejarTimeOut()
             if(dato == "luz"){
                 ui->LuzLevel->setValue(valor);
             }else if(dato == "song" && value.length() == 4){
-                ui->ComboMusic->setCurrentIndex(valor);
+                ui->ComboMusic->setCurrentIndex(valor - 1);
             }else if(dato == "song" && value.length() != 4){
                 ui->VolumeMusic->setValue(valor);
             }
@@ -145,7 +145,7 @@ void Dialog::on_PlayMusic_clicked()
 {
     ui->PauseMusic->setEnabled(true);
     ui->PlayMusic->setEnabled(false);
-    Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
+    Puerto.SendData(QString("$song:play%"));
 }
 
 
@@ -153,6 +153,7 @@ void Dialog::on_ComboMusic_currentIndexChanged(int index)
 {
     ui->PauseMusic->setEnabled(false);
     ui->PlayMusic->setEnabled(true);
+    Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
 }
 
 
