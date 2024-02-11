@@ -17,7 +17,7 @@
 class IoTListener {
 public:
 	IoTListener() = default;
-    virtual bool initializeConnection()=0;
+    virtual bool initializeConnection(void) = 0;
 	virtual void processIoTMessage(char* message) = 0;
 	virtual ~IoTListener() = default;
 };

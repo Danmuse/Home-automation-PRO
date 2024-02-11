@@ -59,45 +59,34 @@ int main(void) {
     g_leds->turnOn();
     g_leds->setColor(S5050DJ::WHITE);
 
-//  bool increaseCheck = true;
-
     while (true) {
-//		!increaseCheck ? ledBrightness -= 10 : ledBrightness += 10;
-//		if (ledBrightness == 0) increaseCheck = true;
-//		if (ledBrightness >= 100) increaseCheck = false;
-//		g_leds->setBrightness(ledBrightness);
-//		delay(100);
-
         /// External preset acquisition
         if (automaticMode) {
-            if (g_adcExternal != nullptr) {
-                uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
-                g_lcd->write("ANALOG: ", 0, 0);
-                g_lcd->write(currentBright, 0, 8);
+			uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
+//			g_lcd->write("ANALOG: ", 0, 0);
+//			g_lcd->write(currentBright, 0, 8);
 
-                if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
-                	ledBrightness = currentBright;
-                	uint16_t brightness = ledBrightness;
-                    g_leds->setBrightness(brightness);
-                    g_lcd->write("BRIGHT: ", 1, 0);
-                    brightness = g_leds->getBrightness();
-                    g_lcd->write(brightness, 1, 8);
-                    g_lcd->write("ERRCODE ", 2, 0);
-                    g_lcd->write(g_ds3231->getStatus(), 2, 8);
-                } else {
-                	g_lcd->write("BRIGHT: ", 1, 0);
-					g_lcd->write(ledBrightness, 1, 8);
-					g_lcd->write("ERRCODE ", 2, 0);
-					g_lcd->write(g_ds3231->getStatus(), 2, 8);
-                }
-            }
+			if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
+				ledBrightness = currentBright;
+				uint8_t brightness = ledBrightness;
+				g_leds->setBrightness(brightness);
+//				g_lcd->write("BRIGHT: ", 1, 0);
+//				brightness = g_leds->getBrightness();
+//				g_lcd->write(brightness, 1, 8);
+//				g_lcd->write("ERRCODE ", 2, 0);
+//				g_lcd->write(g_ds3231->getStatus(), 2, 8);
+			}
+//			else {
+//				g_lcd->write("BRIGHT: ", 1, 0);
+//				g_lcd->write(ledBrightness, 1, 8);
+//				g_lcd->write("ERRCODE ", 2, 0);
+//				g_lcd->write(g_ds3231->getStatus(), 2, 8);
+//			}
         }
-        /// Machine states
+
+    	/// Machine states
 		userRegistrationStateMachine(userRegistrationState);
 		doorOpeningStateMachine(doorOpeningState);
-
-//		g_lcd->write("  ", 0, 9);
-//		g_lcd->write("  ", 1, 9);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
@@ -623,16 +612,16 @@ int main(void) {
 //
 //		delay(1000);
 
-       	/*/// DFPlayer
+       	///*/// DFPlayer
 
     	g_dfplayer->volume(10); // Set volume value. From 0% to 100%
     	g_dfplayer->play(1); // Play the first mp3
     	delay(10000);
 
-		*/
+		//*/
 
-    	userRegistrationStateMachine(userRegistrationState);
-    	doorOpeningStateMachine(doorOpeningState);
+//    	userRegistrationStateMachine(userRegistrationState);
+//    	doorOpeningStateMachine(doorOpeningState);
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
