@@ -55,7 +55,7 @@ void Dialog::manejarTimeOut()
                 ui->LuzLevel->setValue(valor);
             }else if(dato == "song" && value.length() == 4){
                 ui->ComboMusic->setCurrentIndex(valor - 1);
-            }else if(dato == "song" && value.length() != 4){
+            }else if(dato == "volume" && value.length() != 4){
                 ui->VolumeMusic->setValue(valor);
             }
         }else{
