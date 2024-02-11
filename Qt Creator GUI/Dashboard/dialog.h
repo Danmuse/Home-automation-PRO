@@ -30,7 +30,7 @@ private slots:
 
     void on_PauseMusic_clicked();
 
-    void on_VolumeMusic_actionTriggered(int action);
+    void on_VolumeMusic();
 
     void on_PlayMusic_clicked();
 
