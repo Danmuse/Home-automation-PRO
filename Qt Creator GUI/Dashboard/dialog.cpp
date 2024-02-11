@@ -16,13 +16,14 @@ Dialog::Dialog(QWidget *parent)
     ui->LuzLevel->setMaximum(100);
     ui->VolumeMusic->setMinimum(0);
     ui->VolumeMusic->setMaximum(100);
-    connect(ui->LuzLevel, &QSlider::valueChanged, this, &Dialog::on_LuzLevel_actionTriggered);
+    connect(ui->LuzLevel, &QSlider::sliderReleased, this, &Dialog::on_LuzLevel);
     connect(ui->VolumeMusic, &QSlider::valueChanged, this, &Dialog::on_VolumeMusic_actionTriggered);
     ui->Automatic->setChecked(true);
     this->on_checkBox_stateChanged(2);
     connect(ui->Automatic, &QCheckBox::stateChanged, this, &Dialog::on_checkBox_stateChanged);
     ui->ComboMusic->addItems(Canciones);
     ui->PauseMusic->setEnabled(false);
+    ui->LuzLevel->setPageStep(0);
 }
 
 Dialog::~Dialog()
@@ -88,15 +89,15 @@ void Dialog::on_ToggleLuz_clicked()
 }
 
 
-void Dialog::on_LuzLevel_actionTriggered(int action)
+void Dialog::on_LuzLevel()
 {
-    if(action == 0){
+    if(ui->LuzLevel->value() == 0){
         ui->ToggleLuz->setText("Prender Luz");
     }else{
         ui->ToggleLuz->setText("Apagar Luz");
     }
-    if(action != 7){
-        Puerto.SendData(QString("$luz:%1%").arg(action));
+    if(ui->LuzLevel->value()!= 7){
+        Puerto.SendData(QString("$luz:%1%").arg(ui->LuzLevel->value()));
     }
 }
 

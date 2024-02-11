@@ -24,7 +24,7 @@ private slots:
 
     void on_ToggleLuz_clicked();
 
-    void on_LuzLevel_actionTriggered(int action);
+    void on_LuzLevel();
 
     void on_checkBox_stateChanged(int arg1);
 
