@@ -8,7 +8,7 @@ Dialog::Dialog(QWidget *parent)
     , ui(new Ui::Dialog)
 {
     miTemporizador = new QTimer(this);
-    miTemporizador->setInterval(50);
+    miTemporizador->setInterval(100);
     connect(miTemporizador, SIGNAL(timeout()), this, SLOT(manejarTimeOut()));
     ui->setupUi(this);
     miTemporizador->start();
@@ -17,7 +17,7 @@ Dialog::Dialog(QWidget *parent)
     ui->VolumeMusic->setMinimum(0);
     ui->VolumeMusic->setMaximum(100);
     connect(ui->LuzLevel, &QSlider::sliderReleased, this, &Dialog::on_LuzLevel);
-    connect(ui->VolumeMusic, &QSlider::valueChanged, this, &Dialog::on_VolumeMusic_actionTriggered);
+    connect(ui->VolumeMusic, &QSlider::sliderReleased, this, &Dialog::on_VolumeMusic);
     ui->Automatic->setChecked(true);
     this->on_checkBox_stateChanged(2);
     connect(ui->Automatic, &QCheckBox::stateChanged, this, &Dialog::on_checkBox_stateChanged);
@@ -45,7 +45,7 @@ void Dialog::manejarTimeOut()
 
     QString dato = Information.Param;
     QString value = Information.Info;
-
+    qDebug() << dato << " " << value;
     if(dato != nullptr && value != nullptr ){
         bool ok;
         int valor = value.toInt(&ok);
@@ -53,7 +53,7 @@ void Dialog::manejarTimeOut()
             if(dato == "luz"){
                 ui->LuzLevel->setValue(valor);
             }else if(dato == "song" && value.length() == 4){
-                ui->ComboMusic->setCurrentIndex(valor);
+                ui->ComboMusic->setCurrentIndex(valor - 1);
             }else if(dato == "song" && value.length() != 4){
                 ui->VolumeMusic->setValue(valor);
             }
@@ -134,10 +134,10 @@ void Dialog::on_PauseMusic_clicked()
 
 
 
-void Dialog::on_VolumeMusic_actionTriggered(int action)
+void Dialog::on_VolumeMusic()
 {
-    if(action != 7){
-        Puerto.SendData(QString("$song:%1%").arg(action));
+    if(ui->VolumeMusic->value() != 7){
+        Puerto.SendData(QString("$song:%1%").arg(ui->VolumeMusic->value()));
     }
 }
 
@@ -146,7 +146,7 @@ void Dialog::on_PlayMusic_clicked()
 {
     ui->PauseMusic->setEnabled(true);
     ui->PlayMusic->setEnabled(false);
-    Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
+    Puerto.SendData(QString("$song:play%"));
 }
 
 
@@ -154,6 +154,7 @@ void Dialog::on_ComboMusic_currentIndexChanged(int index)
 {
     ui->PauseMusic->setEnabled(false);
     ui->PlayMusic->setEnabled(true);
+    Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
 }
 
 
