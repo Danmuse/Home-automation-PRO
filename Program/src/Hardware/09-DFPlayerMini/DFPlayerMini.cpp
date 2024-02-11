@@ -9,9 +9,6 @@
 
 DFPlayer *g_dfplayer = nullptr;
 
-//#pragma GCC push_options
-//#pragma GCC optimize ("O0")
-
 DFPlayer::DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel) : UART(RX, TX, channel), Callback(),
 m_timeOutTimer{(uint16_t)(0 * (g_systick_freq / 1000))}, m_receivedIndex{0}, m_isAvailable{false}, m_isSending{false} {
     g_callback_list.push_back(this);
@@ -209,7 +206,6 @@ bool DFPlayer::handleMessage(uint8_t type, uint16_t parameter) {
 
 bool DFPlayer::handleError(uint8_t type, uint16_t parameter) {
 	this->handleMessage(type, parameter);
-//	this->m_isAvailable = false; // TODO: Check this code instruction
 	this->m_isSending = false;
 	return false;
 }
@@ -280,13 +276,14 @@ void DFPlayer::disableLoop(void) {
 	this->sendStack(0x19, 0x01);
 }
 
-//#pragma GCC pop_options
-
 #pragma GCC push_options
 #pragma GCC optimize ("O1")
 
 void DFPlayer::callbackMethod(void) {
-	if (this->m_timeOutTimer) this->m_timeOutTimer--;
+	if (this->m_timeOutTimer) {
+		this->m_timeOutTimer--;
+		if (!(this->m_timeOutTimer)) this->m_isAvailable = false;
+	}
 }
 
 #pragma GCC pop_options
@@ -299,6 +296,7 @@ void initDFPlayer(void) {
 	#ifdef CN13_PINS
 
 	static DFPlayer dfplayer(RX0_IN, TX0_OUT);
+	dfplayer.volume(DFPLAYER_INITIAL_VOLUME_PERCENTAGE);
 
 	g_dfplayer = &dfplayer;
 

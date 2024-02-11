@@ -11,7 +11,6 @@ S5050DJ *g_leds = nullptr;
 
 CTimer *g_ctimer_instance = nullptr;
 CTimer::actionInterruption_t externalOutput_instance;
-uint32_t command_instance;
 #if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 bool repeatCommand_instance;
 uint8_t repeatCounts_instance;
