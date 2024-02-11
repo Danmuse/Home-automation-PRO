@@ -17,6 +17,8 @@
 
 #define RFID_USER_UID_SIZE 4
 #define USERS_INIT_POSITION 2
+#define USER_ENTERED_POSITION 1
+#define USER_ENTERED_SIZE 1
 
 enum class UserRegistrationState {
         WAITING_FOR_PASSWORD,
