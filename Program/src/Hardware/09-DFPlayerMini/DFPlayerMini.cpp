@@ -9,8 +9,8 @@
 
 DFPlayer *g_dfplayer = nullptr;
 
-#pragma GCC push_options
-#pragma GCC optimize ("O0")
+//#pragma GCC push_options
+//#pragma GCC optimize ("O0")
 
 DFPlayer::DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel) : UART(RX, TX, channel), Callback(),
 m_timeOutTimer{(uint16_t)(0 * (g_systick_freq / 1000))}, m_receivedIndex{0}, m_isAvailable{false}, m_isSending{false} {
@@ -240,8 +240,8 @@ void DFPlayer::volume(uint8_t volume) {
 	this->sendStack(0x06, result);
 }
 
-void DFPlayer::equalizer(uint8_t equalizer) {
-	this->sendStack(0x07, equalizer);
+void DFPlayer::equalizer(equalizer_t equalizer) {
+	this->sendStack(0x07, (uint16_t)(equalizer));
 }
 
 void DFPlayer::loop(uint8_t fileNumber) {
@@ -280,7 +280,7 @@ void DFPlayer::disableLoop(void) {
 	this->sendStack(0x19, 0x01);
 }
 
-#pragma GCC pop_options
+//#pragma GCC pop_options
 
 #pragma GCC push_options
 #pragma GCC optimize ("O1")

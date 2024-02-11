@@ -48,54 +48,52 @@ int main(void) {
     iotManager.registerState("luz", ledBrightness);
     iotManager.registerState("automatic", automaticMode, {"off", "on"});
 
-    g_ds3231->set(0, 38, 20, 4, 2, 2024);
-
     g_lcd->clear();
     g_lcd->write("*------------------*", 0, 0);
     g_lcd->write("|     The Home     |", 1, 0);
     g_lcd->write("|  Automation PRO  |", 2, 0);
     g_lcd->write("*------------------*", 3, 0);
-    delay(5000);
+    delay(1000);
     g_lcd->clear();
 
     g_leds->turnOn();
     g_leds->setColor(S5050DJ::WHITE);
 
-//  bool increaseCheck = false;
+//  bool increaseCheck = true;
 
     while (true) {
-//		!increaseCheck ? ledBrightness-- : ledBrightness++;
+//		!increaseCheck ? ledBrightness -= 10 : ledBrightness += 10;
 //		if (ledBrightness == 0) increaseCheck = true;
 //		if (ledBrightness >= 100) increaseCheck = false;
 //		g_leds->setBrightness(ledBrightness);
 //		delay(100);
 
         /// External preset acquisition
-//        if (automaticMode) {
-//            if (g_adcExternal != nullptr) {
-//                uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
-//                g_lcd->write("ANALOG: ", 0, 0);
-//                g_lcd->write(currentBright, 0, 8);
-//
-//                if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
-//                	ledBrightness = currentBright;
-//                	uint16_t brightness = ledBrightness;
-//                    g_leds->setBrightness(brightness);
-//                    g_lcd->write("BRIGHT: ", 1, 0);
-//                    brightness = g_leds->getBrightness();
-//                    g_lcd->write(brightness, 1, 8);
-//                    g_lcd->write("ERRCODE ", 2, 0);
-//                    g_lcd->write(g_ds3231->getStatus(), 2, 8);
-//                } else {
-//                	g_lcd->write("BRIGHT: ", 1, 0);
-//					g_lcd->write(ledBrightness, 1, 8);
-//					g_lcd->write("ERRCODE ", 2, 0);
-//					g_lcd->write(g_ds3231->getStatus(), 2, 8);
-//                }
-//            }
-//        }
+        if (automaticMode) {
+            if (g_adcExternal != nullptr) {
+                uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
+                g_lcd->write("ANALOG: ", 0, 0);
+                g_lcd->write(currentBright, 0, 8);
+
+                if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
+                	ledBrightness = currentBright;
+                	uint16_t brightness = ledBrightness;
+                    g_leds->setBrightness(brightness);
+                    g_lcd->write("BRIGHT: ", 1, 0);
+                    brightness = g_leds->getBrightness();
+                    g_lcd->write(brightness, 1, 8);
+                    g_lcd->write("ERRCODE ", 2, 0);
+                    g_lcd->write(g_ds3231->getStatus(), 2, 8);
+                } else {
+                	g_lcd->write("BRIGHT: ", 1, 0);
+					g_lcd->write(ledBrightness, 1, 8);
+					g_lcd->write("ERRCODE ", 2, 0);
+					g_lcd->write(g_ds3231->getStatus(), 2, 8);
+                }
+            }
+        }
         /// Machine states
-//		userRegistrationStateMachine(userRegistrationState);
+		userRegistrationStateMachine(userRegistrationState);
 		doorOpeningStateMachine(doorOpeningState);
 
 //		g_lcd->write("  ", 0, 9);
@@ -105,7 +103,7 @@ int main(void) {
     }
 
     g_leds->turnOff();
-    delay((S5050DJ_COMMAND_PERIOD_TIME + S5050DJ_REPEAT_COMMAND_PERIOD_TIME) / 1000);
+    delay(S5050DJ_COMMAND_SLOT_TICKS); // Minimum waiting time to avoid conflicts during the transmission of commands through the NEC protocol.
 
     return EXIT_SUCCESS;
 }
@@ -495,8 +493,6 @@ int main(void) {
 //		LED_GREEN.setPin();
 //		LED_RED.setPin();
 //	} else LED_RED.clearPin();
-
-	!(g_eeprom->write(0, 0)) ? LED_RED.clearPin() : LED_RED.setPin();
 
     while (1) {
     	/*/// DS3231 RTC

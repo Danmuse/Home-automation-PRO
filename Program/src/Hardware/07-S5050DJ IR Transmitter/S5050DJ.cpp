@@ -11,9 +11,11 @@ S5050DJ *g_leds = nullptr;
 
 CTimer *g_ctimer_instance = nullptr;
 CTimer::actionInterruption_t externalOutput_instance;
+uint32_t command_instance;
+#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 bool repeatCommand_instance;
 uint8_t repeatCounts_instance;
-uint32_t command_instance;
+#endif
 
 S5050DJ::S5050DJ(const Gpio &output, actionInterruption_t idleExternalOutput) : CTimer(output, CTIMER_MATCH), Callback(),
 m_brightnessPoint{S5050DJ_MAX_BRIGHTNESS_SPEED_POINT},
@@ -53,7 +55,9 @@ void S5050DJ::transmitCommand(uint16_t command) {
 	} else if (indexBit == (S5050DJ_COMMAND_LENGTH + 2)) {
 		indexBit++;
 		g_ctimer_instance->configMatch(S5050DJ_COMMAND_STOP_BIT_TIME, externalOutput_instance == CLEAR ? CLEAR : SET);
-	} else if (indexBit > (S5050DJ_COMMAND_LENGTH + 2) && !repeatCommand_instance) {
+	}
+#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
+	else if (indexBit > (S5050DJ_COMMAND_LENGTH + 2) && !repeatCommand_instance) {
 		// Avoid conflicts with other classes that inherit from CTimer class.
 		// Stabilized the output pin by connecting it to the idle state.
 		g_ctimer_instance->bindHandler(nullptr);
@@ -81,6 +85,17 @@ void S5050DJ::transmitCommand(uint16_t command) {
 			g_ctimer_instance->configMatch(S5050DJ_REPEAT_COMMAND_STOP_BIT_TIME, externalOutput_instance == CLEAR ? CLEAR : SET);
 		}
 	}
+#elif S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 0
+	else if (indexBit > (S5050DJ_COMMAND_LENGTH + 2)) {
+		// Avoid conflicts with other classes that inherit from CTimer class.
+		// Stabilized the output pin by connecting it to the idle state.
+		g_ctimer_instance->bindHandler(nullptr);
+//		g_ctimer_instance->configMatch(S5050DJ_DEBOUNCE_TIME, externalOutput_instance == CLEAR ? SET : CLEAR);
+		g_ctimer_instance->configMatch(S5050DJ_DEBOUNCE_TIME, externalOutput_instance == CLEAR ? CLEAR : SET);
+		g_ctimer_instance = nullptr;
+		indexBit = 0;
+	}
+#endif
 }
 
 void S5050DJ::prepareConditions(void) {
@@ -109,91 +124,141 @@ void S5050DJ::setAction(actionSetting_t action) {
 }
 
 void S5050DJ::setColor(colorSetting_t color) {
+#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
+#endif
 	command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | color);
 	this->m_commandQueue.push(command_instance);
 }
 
 void S5050DJ::setMode(modeSetting_t mode) {
+#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
+#endif
 	command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | mode);
 	this->m_commandQueue.push(command_instance);
 }
 
 void S5050DJ::setBrightness(uint8_t percentage) {
 	uint8_t offsetThresholdPercentage = 10, result = percentage > 100 ? 100 : percentage;
+	#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 //	if (!((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
 	if (result > (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)) + (offsetThresholdPercentage / (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)))) {
 		// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
 		result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
 		if (this->m_brightnessPoint < result && this->m_externalActivity == LOW) {
-//				this->m_brightnessPoint++;
+			// The following code fragment is correct,
+			// but due to the implementation there will be instabilities in the program.
 			this->turnOn();
-			// The following code fragment is correct,
-			// but due to the implementation there will be instabilities in the program.
-//				this->turnOn();
-//				repeatCommand_instance = result - this->m_brightnessPoint;
-//				this->m_brightnessPoint = result;
-//				this->setAction(INCREASE_BRIGHTNESS);
-		} else if (this->m_brightnessPoint < result) {
-			this->m_brightnessPoint++; // TODO: Check this code instruction!!
+			repeatCommand_instance = result - this->m_brightnessPoint;
+			this->m_brightnessPoint = result;
 			this->m_speedPoint = this->m_brightnessPoint;
+			this->setAction(INCREASE_BRIGHTNESS);
+		} else if (this->m_brightnessPoint < result) {
 			// The following code fragment is correct,
 			// but due to the implementation there will be instabilities in the program.
-//				repeatCommand_instance = true;
-//				repeatCounts_instance = result - this->m_brightnessPoint;
-//				this->m_brightnessPoint = result;
+			repeatCommand_instance = true;
+			repeatCounts_instance = result - this->m_brightnessPoint;
+			this->m_brightnessPoint = result;
+			this->m_speedPoint = this->m_brightnessPoint;
 			this->setAction(INCREASE_BRIGHTNESS);
 		} else if (this->m_brightnessPoint > result) {
-			this->m_brightnessPoint--; // TODO: Check this code instruction!!
-			this->m_speedPoint = this->m_brightnessPoint;
 			// The following code fragment is correct,
 			// but due to the implementation there will be instabilities in the program.
-//				repeatCommand_instance = true;
-//				repeatCounts_instance = this->m_brightnessPoint - result;
-//				this->m_brightnessPoint = result;
+			repeatCommand_instance = true;
+			repeatCounts_instance = this->m_brightnessPoint - result;
+			this->m_brightnessPoint = result;
+			this->m_speedPoint = this->m_brightnessPoint;
+			this->setAction(DECREASE_BRIGHTNESS);
+		}
+	} else this->turnOff();
+	#elif S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 0
+//	if (!((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
+	if (result > (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)) + (offsetThresholdPercentage / (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)))) {
+		// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
+		result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
+		if (this->m_brightnessPoint < result && this->m_externalActivity == LOW) {
+			this->turnOn();
+			while (this->m_brightnessPoint < result) {
+				this->m_brightnessPoint++;
+				this->m_speedPoint = this->m_brightnessPoint;
+				this->setAction(INCREASE_BRIGHTNESS);
+			}
+		}
+		while (this->m_brightnessPoint < result) {
+			this->m_brightnessPoint++;
+			this->m_speedPoint = this->m_brightnessPoint;
+			this->setAction(INCREASE_BRIGHTNESS);
+		}
+		while (this->m_brightnessPoint > result) {
+			this->m_brightnessPoint--;
+			this->m_speedPoint = this->m_brightnessPoint;
 			this->setAction(DECREASE_BRIGHTNESS);
 		}
 	} else {
-//		this->m_brightnessPoint--;
+		while (this->m_brightnessPoint > (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)) + (offsetThresholdPercentage / (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)))) {
+			this->m_brightnessPoint--;
+			this->m_speedPoint = this->m_brightnessPoint;
+			this->setAction(DECREASE_BRIGHTNESS);
+		}
 		this->turnOff();
 	}
+	#endif
 }
 
 void S5050DJ::setSequenceSpeed(uint8_t percentage) {
 	uint8_t result = percentage > 100 ? 100 : percentage;
+	#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 //	if (((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
 	// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
 	result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
 	if (this->m_externalActivity == LOW) this->turnOn();
-	else if (this->m_speedPoint < result) {
-		this->m_speedPoint++; // TODO: Check this code instruction!!
-		this->m_brightnessPoint = this->m_speedPoint;
+	else if  (this->m_speedPoint < result) {
 		// The following code fragment is correct,
 		// but due to the implementation there will be instabilities in the program.
-//			repeatCommand_instance = true;
-//			repeatCounts_instance = result - this->m_speedPoint;
-//			this->m_speedPoint = result;
+		repeatCommand_instance = true;
+		repeatCounts_instance = result - this->m_speedPoint;
+		this->m_speedPoint = result;
+		this->m_brightnessPoint = this->m_speedPoint;
 		this->setAction(INCREASE_SPEED);
 	} else if (this->m_speedPoint > result) {
-		this->m_speedPoint--; // TODO: Check this code instruction!!
-		this->m_brightnessPoint = this->m_speedPoint;
 		// The following code fragment is correct,
 		// but due to the implementation there will be instabilities in the program.
-//			repeatCommand_instance = true;
-//			repeatCounts_instance = this->m_speedPoint - result;
-//			this->m_speedPoint = result;
+		repeatCommand_instance = true;
+		repeatCounts_instance = this->m_speedPoint - result;
+		this->m_speedPoint = result;
+		this->m_brightnessPoint = this->m_speedPoint;
 		this->setAction(DECREASE_SPEED);
 	}
+	#elif S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 0
+//	if (((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
+	// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
+	result /= (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT));
+	if (this->m_externalActivity == LOW) this->turnOn();
+	while (this->m_speedPoint < result) {
+		this->m_speedPoint++;
+		this->m_brightnessPoint = this->m_speedPoint;
+		this->setAction(INCREASE_SPEED);
+	}
+	while (this->m_speedPoint > result) {
+		this->m_speedPoint--;
+		this->m_brightnessPoint = this->m_speedPoint;
+		this->setAction(DECREASE_SPEED);
+	}
+	#endif
 }
 
 void S5050DJ::turnOn(void) {
+#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
+#endif
 	this->setAction(TURNON_LEDS);
 }
 
 void S5050DJ::turnOff(void) {
+#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
+#endif
 	this->setAction(TURNOFF_LEDS);
 }
 

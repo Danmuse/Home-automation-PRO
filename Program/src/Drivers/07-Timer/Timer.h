@@ -31,8 +31,7 @@ public:
 	Timer();
 	Timer(const TimerHandler handler, const bases_t base);
 	void timerStart(uint32_t counter, const TimerHandler handler, const bases_t base);
-	void timerStart(uint32_t counter);
-	void setTimer(uint32_t time);
+	void setTimer(uint32_t counter);
 	uint32_t getTimer(void) const;
 	uint32_t getTicks(void) const;
 	void standBy(standby_t action);

@@ -20,13 +20,6 @@
 
 #define DFPLAYER_TIMEOUT_TICKS 500
 
-//#define DFPLAYER_EQ_NORMAL 0
-//#define DFPLAYER_EQ_POP 1
-//#define DFPLAYER_EQ_ROCK 2
-//#define DFPLAYER_EQ_JAZZ 3
-//#define DFPLAYER_EQ_CLASSIC 4
-//#define DFPLAYER_EQ_BASS 5
-
 //#define DFPLAYER_DEVICE_U_DISK 1
 //#define DFPLAYER_DEVICE_SD 2
 //#define DFPLAYER_DEVICE_AUX 3
@@ -123,6 +116,8 @@ private:
 protected:
 	void callbackMethod(void) override;
 public:
+	enum equalizer_t { DFPLAYER_EQ_NORMAL, DFPLAYER_EQ_POP, DFPLAYER_EQ_ROCK, DFPLAYER_EQ_JAZZ, DFPLAYER_EQ_CLASSIC, DFPLAYER_EQ_BASS };
+
 	DFPlayer() = delete;
 	DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel = UART0);
 
@@ -132,7 +127,7 @@ public:
 	void volumeUp(void);
 	void volumeDown(void);
 	void volume(uint8_t volume);
-	void equalizer(uint8_t equalizer);
+	void equalizer(equalizer_t equalizer);
 	void loop(uint8_t fileNumber);
 	void sleep(void);
 	void reset(void);

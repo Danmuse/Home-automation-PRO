@@ -47,9 +47,10 @@ SyncCommTWI::statusComm_t M24C16::transmit(uint8_t values[], size_t numBytes, ui
 }
 
 template <typename T> EEPROM_result_t M24C16::read(T *data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte) {
-	byteReg_ut reg;
 	this->m_statusEEPROM = EEPROM_OK;
 
+	#if M24C16_USING_MODIFIERS == 1
+	byteReg_ut reg;
 	if ((position * BYTE_SIZE) + BYTE_SIZE > MAX_PAGE_BLOCK_BITS - (BYTE_SIZE * 2) && (modifier == FLOAT || modifier == INT32 || modifier == UINT32)) {
 		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
 		return this->getStatus();
@@ -87,9 +88,31 @@ template <typename T> EEPROM_result_t M24C16::read(T *data, modifierType_t modif
 			else if (modifier == CHAR) *data = (char)values[1];
 		}
 	} else this->m_statusEEPROM = EEPROM_INCORRECT_MODIFIER;
+	#elif M24C16_USING_MODIFIERS == 0
+	if ((position * BYTE_SIZE) + BYTE_SIZE > MAX_PAGE_BLOCK_BITS - BYTE_SIZE) {
+		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
+		return this->getStatus();
+	}
+
+	if (this->m_pageBlock != pageBlock) this->m_pageBlock = pageBlock;
+	if (modifier == INT8 || modifier == UINT8 || modifier == CHAR) {
+		uint8_t values[2];
+		if (this->acquire(values, sizeof(values), position, pageBlock)) return this->getStatus();
+		if (middleByte == FST_QUARTER_BYTE) {
+			if (modifier == INT8) *data = (int8_t)values[0];
+			else if (modifier == UINT8) *data = values[0];
+			else if (modifier == CHAR) *data = (char)values[0];
+		} else if (middleByte == SND_QUARTER_BYTE) {
+			if (modifier == INT8) *data = (int8_t)values[1];
+			else if (modifier == UINT8) *data = values[1];
+			else if (modifier == CHAR) *data = (char)values[1];
+		}
+	} else this->m_statusEEPROM = EEPROM_INCORRECT_MODIFIER;
+	#endif
 	return this->getStatus();
 }
 
+#if M24C16_USING_MODIFIERS == 1
 template EEPROM_result_t M24C16::read<float>(float* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 template EEPROM_result_t M24C16::read<int32_t>(int32_t* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 template EEPROM_result_t M24C16::read<uint32_t>(uint32_t* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
@@ -97,11 +120,16 @@ template EEPROM_result_t M24C16::read<int16_t>(int16_t* data, modifierType_t mod
 template EEPROM_result_t M24C16::read<uint16_t>(uint16_t* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 template EEPROM_result_t M24C16::read<int8_t>(int8_t* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 template EEPROM_result_t M24C16::read<uint8_t>(uint8_t* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
+#elif M24C16_USING_MODIFIERS == 0
+template EEPROM_result_t M24C16::read<int8_t>(int8_t* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
+template EEPROM_result_t M24C16::read<uint8_t>(uint8_t* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
+#endif
 
 template <typename T> EEPROM_result_t M24C16::write(T data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte) {
-	byteReg_ut reg;
 	this->m_statusEEPROM = EEPROM_OK;
 
+	#if M24C16_USING_MODIFIERS == 1
+	byteReg_ut reg;
 	if ((position * BYTE_SIZE) + BYTE_SIZE > MAX_PAGE_BLOCK_BITS - (BYTE_SIZE * 2) && (std::is_same<T, float>::value || std::is_same<T, int32_t>::value || std::is_same<T, uint32_t>::value)) {
 		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
 		return this->getStatus();
@@ -133,9 +161,29 @@ template <typename T> EEPROM_result_t M24C16::write(T data, uint8_t position, pa
 			if (this->transmit(values, sizeof(values), position, pageBlock)) return this->getStatus();
 		}
 	} else this->m_statusEEPROM = EEPROM_INCORRECT_MODIFIER;
+	#elif M24C16_USING_MODIFIERS == 0
+	 if ((position * BYTE_SIZE) + BYTE_SIZE > MAX_PAGE_BLOCK_BITS - BYTE_SIZE) {
+		this->m_statusEEPROM = EEPROM_OVERFLOW_INVALID;
+		return this->getStatus();
+	}
+
+	if (this->m_pageBlock != pageBlock) this->m_pageBlock = pageBlock;
+	if (std::is_same<T, int8_t>::value || std::is_same<T, uint8_t>::value) {
+		uint8_t values[2];
+		if (this->acquire(values, sizeof(values), position, pageBlock)) return this->getStatus();
+		if (middleByte == FST_QUARTER_BYTE) {
+			values[0] = data;
+			if (this->transmit(values, sizeof(values), position, pageBlock)) return this->getStatus();
+		} else if (middleByte == SND_QUARTER_BYTE) {
+			values[1] = data;
+			if (this->transmit(values, sizeof(values), position, pageBlock)) return this->getStatus();
+		}
+	} else this->m_statusEEPROM = EEPROM_INCORRECT_MODIFIER;
+	#endif
 	return this->getStatus();
 }
 
+#if M24C16_USING_MODIFIERS == 1
 template EEPROM_result_t M24C16::write<float>(float data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 template EEPROM_result_t M24C16::write<int32_t>(int32_t data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 template EEPROM_result_t M24C16::write<uint32_t>(uint32_t data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
@@ -143,6 +191,10 @@ template EEPROM_result_t M24C16::write<int16_t>(int16_t data, uint8_t position, 
 template EEPROM_result_t M24C16::write<uint16_t>(uint16_t data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 template EEPROM_result_t M24C16::write<int8_t>(int8_t data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 template EEPROM_result_t M24C16::write<uint8_t>(uint8_t data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
+#elif M24C16_USING_MODIFIERS == 0
+template EEPROM_result_t M24C16::write<int8_t>(int8_t data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
+template EEPROM_result_t M24C16::write<uint8_t>(uint8_t data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
+#endif
 
 EEPROM_result_t M24C16::getStatus(void) const {
 	return this->m_statusEEPROM;

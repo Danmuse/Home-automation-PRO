@@ -18,6 +18,8 @@
 #define MAX_PAGE_BLOCK_BITS (REG_BYTES_SIZE * BYTE_SIZE) * BYTE_SIZE // 2048 Bits
 #define MAX_EEPROM_BITS MAX_PAGE_BLOCK_BITS * MAX_PAGE_BLOCKS // 16384 Bits
 
+#define M24C16_USING_MODIFIERS 0
+
 //! @brief <b>EEPROM_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the EEPROM memory operations can be found.
 typedef enum {
 	EEPROM_OK,					//!< Successful operation.
@@ -36,10 +38,16 @@ typedef union {
 
 class M24C16 : protected I2C {
 public:
+#if M24C16_USING_MODIFIERS == 1
 	// FST_QUARTER_BYTE: Indicates a zero bit shift to the left of the 16-bit register. Useful for storing 8-bit values in EEPROM memory.
 	// SND_QUARTER_BYTE: Indicates an 8-bit shift to the left of the 16-bit register. Useful for storing 8-bit values in EEPROM memory.
-	enum middleByte_t { FST_QUARTER_BYTE, SND_QUARTER_BYTE };
 	enum modifierType_t { CHAR, UINT8, INT8, UINT16, INT16, UINT32, INT32, FLOAT };
+#elif M24C16_USING_MODIFIERS == 0
+	// FST_QUARTER_BYTE: Indicates a zero bit shift to the left of the 16-bit register. Useful for storing 8-bit values in EEPROM memory.
+	// SND_QUARTER_BYTE: Indicates an 8-bit shift to the left of the 16-bit register. Useful for storing 8-bit values in EEPROM memory.
+	enum modifierType_t { CHAR, UINT8, INT8 };
+#endif
+	enum middleByte_t { FST_QUARTER_BYTE, SND_QUARTER_BYTE };
 	enum pageBlock_t { FIRST_PAGE_BLOCK = (0x0U), SECOND_PAGE_BLOCK = (0x4U), THIRD_PAGE_BLOCK = (0x2U),
 		FOURTH_PAGE_BLOCK = (0x6U), FIFTH_PAGE_BLOCK = (0x1U), SIXTH_PAGE_BLOCK = (0x3U), SEVENTH_PAGE_BLOCK = (0x5U), EIGHTH_PAGE_BLOCK = (0x7U) };
 private:
