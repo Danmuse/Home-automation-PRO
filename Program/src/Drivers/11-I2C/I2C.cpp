@@ -82,7 +82,7 @@ SyncCommTWI::statusComm_t I2C::prepareConditions(const uint8_t address, const ui
 			this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
 		} else return TWI_FAILURE;
 		return TWI_SUCCESS;
-	}
+	} else return TWI_FAILURE;
 }
 
 #pragma GCC pop_options
