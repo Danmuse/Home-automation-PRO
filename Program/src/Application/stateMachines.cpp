@@ -130,6 +130,7 @@ Timer userRegistrationTimer(nullptr, Timer::SEC);
 Timer clearCommandTimer(clearHandler,Timer::SEC);
 
 void userRegistrationStateMachine(UserRegistrationState& state) {
+    clearCommandTimer.timerEvent();
     switch (state) {
         case UserRegistrationState::WAITING_FOR_PASSWORD:
             if (keyBoardPassword.checkPassword()) {
