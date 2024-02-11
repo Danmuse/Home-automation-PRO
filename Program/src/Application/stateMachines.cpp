@@ -137,6 +137,7 @@ void doorOpeningStateMachine(DoorOpeningState& state) {
             if (doorOpeningTimer.getTicks() == 0) {
                 g_servo->setAngle(0);
                 state = DoorOpeningState::WAITING_FOR_RFID;
+                userRegistrationTimer.setTimer(1);
             }
             break;
     }
