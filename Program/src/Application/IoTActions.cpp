@@ -17,7 +17,8 @@ bool automaticMode = true;
 void manualLightControl(char* message) {
     int brightness = atoi(message);
 
-    if (brightness > 0) g_leds->setBrightness(brightness * 10);
+    if (brightness > 0) g_leds->setBrightness(brightness);
+    else if(message[0]=='0') g_leds->setBrightness(0);
     else {
         if (strcmp(message, "red") == 0) g_leds->setColor(S5050DJ::RED);
         else if (strcmp(message, "white") == 0) g_leds->setColor(S5050DJ::WHITE);
