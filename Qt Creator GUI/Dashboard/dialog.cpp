@@ -24,6 +24,7 @@ Dialog::Dialog(QWidget *parent)
     ui->ComboMusic->addItems(Canciones);
     ui->PauseMusic->setEnabled(false);
     ui->LuzLevel->setPageStep(0);
+    ui->VolumeMusic->setPageStep(0);
 }
 
 Dialog::~Dialog()
@@ -136,9 +137,7 @@ void Dialog::on_PauseMusic_clicked()
 
 void Dialog::on_VolumeMusic()
 {
-    if(ui->VolumeMusic->value() != 7){
-        Puerto.SendData(QString("$song:%1%").arg(ui->VolumeMusic->value()));
-    }
+        Puerto.SendData(QString("$volume:%1%").arg(ui->VolumeMusic->value()));
 }
 
 
