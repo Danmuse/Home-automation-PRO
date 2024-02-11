@@ -48,27 +48,20 @@ SyncCommTWI::statusComm_t I2C::awaitNACK(void) {
 }
 
 SyncCommTWI::statusComm_t I2C::prepareConditions(const uint8_t address, const uint8_t regOffset, SyncCommTWI::actionComm_t action) {
+    this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
+    this->m_TWI->MSTCTL = (1 << 1); // Master Start control. A START bit will be generated on the I2C bus at the next allowed time.
+    this->m_TWI->MSTDAT = (address << 1); // Charge the slave address into I2C buffer with WRITE bit command.
+    this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
+
 	if (action == WRITE) {
-		this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
-		this->m_TWI->MSTCTL = (1 << 1); // Master Start control. A START bit will be generated on the I2C bus at the next allowed time.
-		this->m_TWI->MSTDAT = (address << 1); // Charge the slave address into I2C buffer with WRITE bit command.
-		this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
 		if (!(this->awaitACK())) {
 			this->m_TWI->MSTDAT = regOffset; // Charge the data into I2C buffer.
 			this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
 		} else return TWI_FAILURE;
 		return TWI_SUCCESS;
 	} else if (action == WRITE_OFFSET_NONE) {
-		this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
-		this->m_TWI->MSTCTL = (1 << 1); // Master Start control. A START bit will be generated on the I2C bus at the next allowed time.
-		this->m_TWI->MSTDAT = (address << 1); // Charge the slave address into I2C buffer with WRITE bit command.
-		this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
 		return TWI_SUCCESS;
 	} else if (action == READ) {
-		this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
-		this->m_TWI->MSTCTL = (1 << 1); // Master Start control. A START bit will be generated on the I2C bus at the next allowed time.
-		this->m_TWI->MSTDAT = (address << 1); // Charge the slave address into I2C buffer with WRITE bit command.
-		this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
 		if (!(this->awaitACK())) {
 			this->m_TWI->MSTDAT = regOffset; // Charge the data into I2C buffer.
 			this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
@@ -81,10 +74,6 @@ SyncCommTWI::statusComm_t I2C::prepareConditions(const uint8_t address, const ui
 		} else return TWI_FAILURE;
 		return TWI_SUCCESS;
 	} else if (action == READ_OFFSET_NONE) {
-		this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
-		this->m_TWI->MSTCTL = (1 << 1); // Master Start control. A START bit will be generated on the I2C bus at the next allowed time.
-		this->m_TWI->MSTDAT = (address << 1); // Charge the slave address into I2C buffer with WRITE bit command.
-		this->m_TWI->MSTCTL = (1 << 0); // Master Continue control. Informs the Master function to continue to the next operation.
 		if (!(this->awaitACK())) {
 			this->m_TWI->STAT &= ~(1 << 0); // MSTPENDING flag bit would be cleared at the same time as setting either the MSTSTOP or MSTSTART control bit.
 			this->m_TWI->MSTCTL = (1 << 1); // Master Start control. A START bit will be generated on the I2C bus at the next allowed time.
