@@ -46,7 +46,8 @@ void LCD::_write(const int8_t *ptr_str) {
 
 void LCD::_write(const int32_t value) {
 	int32_t auxiliar;
-	int8_t *ptr_number = new int8_t[12];
+	int8_t ptr_number[12];
+//	int8_t *ptr_number = new int8_t[12];
 	uint8_t position = 0;
 
 	if (value < 0) {
@@ -67,7 +68,6 @@ void LCD::_write(const int32_t value) {
 	}
 	ptr_number[position] = '\0';
     this->_write(ptr_number);
-	delete [] ptr_number;
 }
 
 void LCD::write(const int8_t *ptr_str, uint8_t row, uint8_t column) {
@@ -90,7 +90,7 @@ void LCD::clear(void) {
 }
 
 #pragma GCC push_options
-#pragma GCC optimize ("O1")
+#pragma GCC optimize ("O2")
 
 void LCD::callbackMethod(void) {
 	this->m_ticks--;
@@ -178,12 +178,16 @@ void LCD::writeInstruction(const uint8_t data, const Gpio::activity_t mode) {
 }
 
 uint32_t LCD::pow(uint32_t base, uint32_t exponent) {
-	int32_t auxiliar = 1;
-	for (uint32_t index = 0; index < exponent && auxiliar != 0; index++) {
-		if (auxiliar >= UINT32_MAX / base) auxiliar = 0;
-		auxiliar *= base;
-	}
-	return auxiliar;
+    uint32_t result = 1;
+
+    while(true) {
+        if (exponent & 1) result *= base;
+        exponent >>= 1;
+        if (!exponent) break;
+        base *= base;
+    }
+
+    return result;
 }
 
 LCD::~LCD() {

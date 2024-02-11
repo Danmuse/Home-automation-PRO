@@ -11,7 +11,6 @@ S5050DJ *g_leds = nullptr;
 
 CTimer *g_ctimer_instance = nullptr;
 CTimer::actionInterruption_t externalOutput_instance;
-uint32_t command_instance;
 #if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 bool repeatCommand_instance;
 uint8_t repeatCounts_instance;
@@ -119,24 +118,21 @@ void S5050DJ::changeExternalOutput(actionInterruption_t actionInterrupt) {
 void S5050DJ::setAction(actionSetting_t action) {
 	if (action == TURNON_LEDS) this->m_externalActivity = HIGH;
 	else if (action == TURNOFF_LEDS) this->m_externalActivity = LOW;
-	command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | action);
-	this->m_commandQueue.push(command_instance);
+	this->m_commandQueue.push(((S5050DJ_ADDR << (2 * BYTE_SIZE)) | action));
 }
 
 void S5050DJ::setColor(colorSetting_t color) {
 #if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
 #endif
-	command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | color);
-	this->m_commandQueue.push(command_instance);
+	this->m_commandQueue.push( ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | color));
 }
 
 void S5050DJ::setMode(modeSetting_t mode) {
 #if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
 #endif
-	command_instance = ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | mode);
-	this->m_commandQueue.push(command_instance);
+	this->m_commandQueue.push( ((S5050DJ_ADDR << (2 * BYTE_SIZE)) | mode));
 }
 
 void S5050DJ::setBrightness(uint8_t percentage) {
@@ -181,26 +177,24 @@ void S5050DJ::setBrightness(uint8_t percentage) {
 			this->turnOn();
 			while (this->m_brightnessPoint < result) {
 				this->m_brightnessPoint++;
-				this->m_speedPoint = this->m_brightnessPoint;
 				this->setAction(INCREASE_BRIGHTNESS);
 			}
 		}
 		while (this->m_brightnessPoint < result) {
 			this->m_brightnessPoint++;
-			this->m_speedPoint = this->m_brightnessPoint;
 			this->setAction(INCREASE_BRIGHTNESS);
 		}
 		while (this->m_brightnessPoint > result) {
 			this->m_brightnessPoint--;
-			this->m_speedPoint = this->m_brightnessPoint;
 			this->setAction(DECREASE_BRIGHTNESS);
 		}
+        this->m_speedPoint = this->m_brightnessPoint;
 	} else {
 		while (this->m_brightnessPoint > (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)) + (offsetThresholdPercentage / (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)))) {
 			this->m_brightnessPoint--;
-			this->m_speedPoint = this->m_brightnessPoint;
 			this->setAction(DECREASE_BRIGHTNESS);
 		}
+        this->m_speedPoint = this->m_brightnessPoint;
 		this->turnOff();
 	}
 	#endif
@@ -237,14 +231,13 @@ void S5050DJ::setSequenceSpeed(uint8_t percentage) {
 	if (this->m_externalActivity == LOW) this->turnOn();
 	while (this->m_speedPoint < result) {
 		this->m_speedPoint++;
-		this->m_brightnessPoint = this->m_speedPoint;
 		this->setAction(INCREASE_SPEED);
 	}
 	while (this->m_speedPoint > result) {
 		this->m_speedPoint--;
-		this->m_brightnessPoint = this->m_speedPoint;
 		this->setAction(DECREASE_SPEED);
 	}
+    this->m_brightnessPoint = this->m_speedPoint;
 	#endif
 }
 

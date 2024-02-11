@@ -132,7 +132,3 @@ void QTConnection::communicationTimeout(void) {
     memset(this->m_recMessage, 0, this->m_recMessagePos);
     this->m_recMessagePos = 0;
 }
-
-
-
-

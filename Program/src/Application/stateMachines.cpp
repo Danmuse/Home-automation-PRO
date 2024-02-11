@@ -118,6 +118,7 @@ void doorOpeningStateMachine(DoorOpeningState& state) {
             if (userRegistrationTimer.getTicks() == 0) {
                 RFID_status_t result = RFID_BUSY;
                 while (result == RFID_BUSY) result = g_rfid->getUID(&uuid);
+
                 if (result == RFID_SUCCESS) state = DoorOpeningState::CHECKING_USER;
             }
             break;

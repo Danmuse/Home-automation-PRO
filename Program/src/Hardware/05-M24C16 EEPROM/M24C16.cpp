@@ -99,13 +99,15 @@ template <typename T> EEPROM_result_t M24C16::read(T *data, modifierType_t modif
 		uint8_t values[2];
 		if (this->acquire(values, sizeof(values), position, pageBlock)) return this->getStatus();
 		if (middleByte == FST_QUARTER_BYTE) {
-			if (modifier == INT8) *data = (int8_t)values[0];
-			else if (modifier == UINT8) *data = values[0];
-			else if (modifier == CHAR) *data = (char)values[0];
+//			if (modifier == INT8) *data = (int8_t)values[0];
+//			else if (modifier == UINT8) *data = values[0];
+//			else if (modifier == CHAR) *data = (char)values[0];
+            *data = values[0];
 		} else if (middleByte == SND_QUARTER_BYTE) {
-			if (modifier == INT8) *data = (int8_t)values[1];
-			else if (modifier == UINT8) *data = values[1];
-			else if (modifier == CHAR) *data = (char)values[1];
+//			if (modifier == INT8) *data = (int8_t)values[1];
+//			else if (modifier == UINT8) *data = values[1];
+//			else if (modifier == CHAR) *data = (char)values[1];
+            *data = values[1];
 		}
 	} else this->m_statusEEPROM = EEPROM_INCORRECT_MODIFIER;
 	#endif
