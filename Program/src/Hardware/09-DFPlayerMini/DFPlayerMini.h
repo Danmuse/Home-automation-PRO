@@ -55,6 +55,8 @@ class DFPlayer : protected Gpio, UART, Callback {
 private:
 	bool m_pauseState;
 	uint8_t m_backupFile;
+	uint8_t m_volume;
+
 	uint16_t m_timeOutTimer;
 
 	uint8_t m_received[DFPLAYER_RECEIVED_LENGTH];
@@ -97,12 +99,9 @@ public:
 	void reset(void);
 	void pause(void);
 	void resume(void);
-//	void enableLoopAll(void);
-//	void disableLoopAll(void);
-//	void enableLoop(void);
-//	void disableLoop(void);
 
 	void prepareSong(uint8_t fileNumber = 1);
+	uint8_t getVolume(void) const;
 	DFPlayer_result_t getStatus(void) const;
 
 	virtual ~DFPlayer() = default;

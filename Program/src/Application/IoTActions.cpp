@@ -49,9 +49,7 @@ void musicVolumeControl(char* message) {
 
 void dateControl(char* message) {
     uint32_t timestamp = atoi(message);
-
     timestamp -= 10800; // The result is expressed as GMT-3
-
     time_st date = epochToDate(timestamp);
 
     g_ds3231->set(date.second, date.minute, date.hour, date.day, date.month, date.year);

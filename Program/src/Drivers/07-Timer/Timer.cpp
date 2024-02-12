@@ -21,7 +21,7 @@ m_TmrRun{0}, m_TmrEvent{false}, m_TmrHandler{handler}, m_TmrStandBy{RUN}, m_TmrB
  * @brief Starts timer with the following parameters, setting it to 0 will call the handler immediately.
  * @param counter Time to wait.
  * @param handler Function to call when the timer ends.
- * @param base Time base.
+ * @param base Time unit.
  */
 void Timer::timerStart(uint32_t counter, const TimerHandler handler, const bases_t base) {
 	switch (base) {
@@ -112,8 +112,13 @@ uint32_t Timer::getTicks(void) const {
 }
 
 /*!
- * @brief Sets the timer into pause/run mode
- * @param action
+ * @brief Set the standby mode of the Timer.
+ * @details This function sets the standby mode of the Timer object. The standby mode
+ * determines the action to be taken when the timer is in a standby state.
+ * @param action The standby action to be set for the Timer.
+ *
+ * @note This function sets the standby action but does not immediately perform the standby action.
+ *       The actual action is triggered when the timer enters the standby state.
  */
 void Timer::standBy(standby_t action) {
 	this->m_TmrStandBy = action;
@@ -130,8 +135,17 @@ void Timer::timerStop(void) {
 }
 
 /*!
- * @brief Timer event handler, calls the handler if time has past.
- * @return OK if the handler was called, ERROR if not.
+ * @brief Timer event handler function.
+ * @details This function is responsible for handling timer events. It checks if a valid timer event handler
+ * is registered (`m_TmrHandler` is not nullptr) and if a timer event has occurred (`m_TmrEvent` is true).
+ * If both conditions are met, the timer event is processed by invoking the registered handler function.
+ * After processing the event, the `m_TmrEvent` flag is reset to false.
+ * @return Timer error status.
+ *    - OK: Timer event handled successfully.
+ *    - ERROR: An error occurred during the timer event handling process.
+ *
+ * @note To use this function effectively, make sure to set a valid timer event handler using `setTimerHandler`
+ *       and enable the timer event by calling `setTimerEvent`.
  */
 Timer::error_t Timer::timerEvent(void) {
 	if (this->m_TmrHandler != nullptr) {

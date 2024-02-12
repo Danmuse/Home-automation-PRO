@@ -10,7 +10,7 @@
 DFPlayer *g_dfplayer = nullptr;
 
 DFPlayer::DFPlayer(const Gpio& busyPin, const Gpio& RX, const Gpio& TX, channelUART_t channel) : Gpio(busyPin), UART(RX, TX, channel), Callback(),
-m_pauseState{false}, m_backupFile{1}, m_timeOutTimer{(uint16_t)(0 * (g_systick_freq / 1000))}, m_statusDFPlayer{DFPLAYER_READY}, m_receivedIndex{0}, m_isAvailable{false}, m_isSending{false} {
+m_pauseState{false}, m_backupFile{1}, m_volume{100}, m_timeOutTimer{(uint16_t)(0 * (g_systick_freq / 1000))}, m_statusDFPlayer{DFPLAYER_READY}, m_receivedIndex{0}, m_isAvailable{false}, m_isSending{false} {
 	if (this->m_direction != Gpio::INPUT) this->toggleDir();
 	g_callback_list.push_back(this);
 	this->begin();
@@ -210,7 +210,7 @@ void DFPlayer::begin(bool isACK, bool doReset) {
 		this->reset();
 		this->waitAvailable(2000);
 		delay(200);
-	} // else this->m_handleType = DFPlayerCardOnline; // Assume same state as with reset(): online
+	}
 	this->m_isAvailable = false;
 }
 
@@ -237,6 +237,7 @@ void DFPlayer::volume(uint8_t volume) {
 	uint8_t result = volume > 100 ? 100 : volume;
 	result /= (100 / (float)(DFPLAYER_MAX_VOLUME_VALUE));
 	this->sendStack(0x06, result);
+	this->m_volume = result;
 }
 
 void DFPlayer::equalizer(equalizer_t equalizer) {
@@ -271,28 +272,12 @@ void DFPlayer::resume(void) {
 	}
 }
 
-/*
-
-void DFPlayer::enableLoopAll(void) {
-	this->sendStack(0x11, 0x01);
-}
-
-void DFPlayer::disableLoopAll(void) {
-	this->sendStack(0x11, 0x00);
-}
-
-void DFPlayer::enableLoop(void) {
-	this->sendStack(0x19, 0x00);
-}
-
-void DFPlayer::disableLoop(void) {
-	this->sendStack(0x19, 0x01);
-}
-
-*/
-
 void DFPlayer::prepareSong(uint8_t fileNumber) {
 	this->m_backupFile = fileNumber;
+}
+
+uint8_t DFPlayer::getVolume(void) const {
+	return this->m_volume;
 }
 
 DFPlayer_result_t DFPlayer::getStatus(void) const {

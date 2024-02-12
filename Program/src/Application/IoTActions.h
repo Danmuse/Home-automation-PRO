@@ -6,7 +6,7 @@
  * @par Doxygen Editor
  * 	Daniel Di Módica ~ <a href = "mailto: danifabriziodmodica@gmail.com">danifabriziodmodica@@gmail.com</a>
  * @date 29/91/2024 02:36:05
- * @brief IoT Actions Class API (Application Programming Interface).
+ * @brief IoT Actions API (Application Programming Interface).
  */
 
 #ifndef IOT_ACTIONS_H_
@@ -20,13 +20,9 @@
 extern bool automaticMode;
 
 void manualLightControl(char* message);
-
 void modeSelection(char* message);
-
 void musicFlowControl(char* message);
-
 void musicVolumeControl(char* message);
-
 void dateControl(char* message);
 
 #endif // IOT_ACTIONS_H_

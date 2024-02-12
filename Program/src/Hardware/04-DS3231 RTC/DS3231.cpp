@@ -34,6 +34,10 @@ m_statusRTC{RTC_OK},
 m_hoursMode{TWENTY_FOUR_HOURS_MODE},
 m_flagPM{false} { }
 
+/*!
+ * @brief Acquire the time from the RTC and load it into internal variable.
+ * @return TWI_SUCCESS if the time is acquired successfully, otherwise TWI_FAILURE.
+ */
 SyncCommTWI::statusComm_t DS3231::acquireTime(void) {
 	uint8_t auxiliarSecond = 0, auxiliarMinute = 0, auxiliarHour = 0;
 	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_SEC_REG, &auxiliarSecond)) && !(this->getStatus())) {
@@ -57,6 +61,13 @@ SyncCommTWI::statusComm_t DS3231::acquireTime(void) {
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
+/*!
+ * @brief Transmit the time to the RTC.
+ * @param second Seconds to be transmitted.
+ * @param minute Minutes to be transmitted.
+ * @param hour Hours to be transmitted.
+ * @return TWI_SUCCESS if the time is transmitted successfully, otherwise TWI_FAILURE.
+ */
 SyncCommTWI::statusComm_t DS3231::transmitTime(uint8_t second, uint8_t minute, uint8_t hour) {
 	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_SEC_REG, second)) && !(this->getStatus())) this->m_statusRTC = RTC_OK;
 	else this->m_statusRTC = RTC_UPDATE_ERR;
@@ -67,6 +78,10 @@ SyncCommTWI::statusComm_t DS3231::transmitTime(uint8_t second, uint8_t minute, u
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
+/*!
+ * @brief Acquire the calendar from the RTC and load it into internal variable.
+ * @return TWI_SUCCESS if the calendar is acquired successfully, otherwise TWI_FAILURE.
+ */
 SyncCommTWI::statusComm_t DS3231::acquireCalendar(void) {
 	uint8_t auxiliarDate = 0, auxiliarMonth = 0, auxiliarYear = 0;
 	if (!(this->receiveByte(DS3231_ADDR_REG, DS3231_DATE_REG, &auxiliarDate)) && !(this->getStatus())) {
@@ -84,6 +99,13 @@ SyncCommTWI::statusComm_t DS3231::acquireCalendar(void) {
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
+/*!
+ * @brief Transmit a date to the RTC.
+ * @param date Day to be transmitted.
+ * @param month Month to be transmitted.
+ * @param year Year to be transmitted.
+ * @return TWI_SUCCESS if the date is transmitted successfully, otherwise TWI_FAILURE.
+ */
 SyncCommTWI::statusComm_t DS3231::transmitCalendar(uint8_t date, uint8_t month, uint8_t year) {
 	if (!(this->transmitByte(DS3231_ADDR_REG, DS3231_DATE_REG, date)) && !(this->getStatus())) this->m_statusRTC = RTC_OK;
 	else this->m_statusRTC = RTC_UPDATE_ERR;
@@ -94,6 +116,10 @@ SyncCommTWI::statusComm_t DS3231::transmitCalendar(uint8_t date, uint8_t month, 
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
+/*!
+ * @brief Returns the current time and date from the RTC.
+ * @return RTC structure that contains the current time and date.
+ */
 RTC_st DS3231::get(void) {
 	this->getTime();
 	if (this->getStatus()) return this->m_RTC; // Returns the RTC structure with some errors.
@@ -102,6 +128,10 @@ RTC_st DS3231::get(void) {
 	return this->m_RTC;
 }
 
+/*!
+ * @brief Returns the current time from the RTC.
+ * @return RTC structure that contains the current time.
+ */
 RTC_time_st DS3231::getTime(void) {
 	this->m_statusRTC = RTC_OK;
 	this->m_RTC.TIME.SEC = 0; this->m_RTC.TIME.MIN = 0; this->m_RTC.TIME.HOUR = 0;
@@ -109,6 +139,10 @@ RTC_time_st DS3231::getTime(void) {
 	return this->m_RTC.TIME;
 }
 
+/*!
+ * @brief Returns the current date from the RTC.
+ * @return RTC structure that contains the current date.
+ */
 RTC_calendar_st DS3231::getCalendar(void) {
 	this->m_statusRTC = RTC_OK;
 	this->m_RTC.CALENDAR.DATE = 0; this->m_RTC.CALENDAR.MONTH = 0; this->m_RTC.CALENDAR.YEAR = 0;
@@ -116,16 +150,37 @@ RTC_calendar_st DS3231::getCalendar(void) {
 	return this->m_RTC.CALENDAR;
 }
 
+/*!
+ * @brief Returns the current status of the RTC.
+ * @return RTC status
+ */
 RTC_result_t DS3231::getStatus(void) const {
 	return this->m_statusRTC;
 }
 
+/*!
+ * @brief Set the current time and date to the RTC.
+ * @param second Seconds to be set.
+ * @param minute Minutes to be set.
+ * @param hour Hours to be set.
+ * @param date Day to be set.
+ * @param month Month to be set.
+ * @param year Year to be set.
+ * @return Status of the RTC. RTC_OK if successful.
+ */
 RTC_result_t DS3231::set(uint8_t second, uint8_t minute, uint8_t hour, uint8_t date, uint8_t month, uint16_t year) {
 	if (this->setTime(second, minute, hour)) return this->getStatus(); // Returns with some errors during the configuration.
 	if (this->setCalendar(date, month, year)) return this->getStatus(); // Returns with some errors during the configuration.
 	return this->getStatus();
 }
 
+/*!
+ * @brief Set the specified time to the RTC.
+ * @param second Seconds to be set.
+ * @param minute Minutes to be set.
+ * @param hour Hours to be set.
+ * @return Status of the RTC. RTC_OK if successful.
+ */
 RTC_result_t DS3231::setTime(uint8_t second, uint8_t minute, uint8_t hour) {
 	uint8_t auxiliarSecond = 0, auxiliarMinute = 0, auxiliarHour = 0;
 	this->m_statusRTC = RTC_OK;
@@ -166,6 +221,13 @@ RTC_result_t DS3231::setTime(uint8_t second, uint8_t minute, uint8_t hour) {
 	return this->getStatus();
 }
 
+/*!
+ * @brief Set the specified date to the RTC.
+ * @param date Day to be set.
+ * @param month Month to be set.
+ * @param year Year to be set.
+ * @return Status of the RTC. RTC_OK if successful.
+ */
 RTC_result_t DS3231::setCalendar(uint8_t date, uint8_t month, uint16_t year) {
 	uint8_t auxiliarDate = 0, auxiliarMonth = 0, auxiliarYear = 0;
 	this->m_statusRTC = RTC_OK;
@@ -189,20 +251,36 @@ RTC_result_t DS3231::setCalendar(uint8_t date, uint8_t month, uint16_t year) {
 	return this->getStatus();
 }
 
+/*!
+ * @brief Change the hours mode of the RTC (24-hour or 12-hour).
+ * @param hoursMode Mode to set the RTC into.
+ */
 void DS3231::changeHoursMode(hoursMode_t hoursMode) {
 	this->m_hoursMode = hoursMode;
 	this->m_flagPM = false;
 }
 
-char* DS3231::printTimestamp(void) {
+/*!
+ * @brief Get a formatted string with current time and date.
+ * @param appendLineFeed Flag indicating whether to append a line feed at the end of the timestamp.
+ * @return Formatted string with current time and date.
+ */
+char* DS3231::printTimestamp(bool appendLineFeed) {
 	static char RTCstr[RTC_STR_SIZE];
     RTCstr[0] = this->m_RTC.TIME.HOUR / 10 + '0'; RTCstr[1] = this->m_RTC.TIME.HOUR % 10 + '0'; RTCstr[2] = ':';
     RTCstr[3] = this->m_RTC.TIME.MIN / 10 + '0'; RTCstr[4] = this->m_RTC.TIME.MIN % 10 + '0'; RTCstr[5] = ':';
     RTCstr[6] = this->m_RTC.TIME.SEC / 10 + '0'; RTCstr[7] = this->m_RTC.TIME.SEC % 10 + '0'; RTCstr[8] = ' ';
-    RTCstr[9] = this->m_RTC.CALENDAR.DATE / 10 + '0'; RTCstr[10] = this->m_RTC.CALENDAR.DATE % 10 + '0'; RTCstr[11] = '/';
-    RTCstr[12] = this->m_RTC.CALENDAR.MONTH / 10 + '0'; RTCstr[13] = this->m_RTC.CALENDAR.MONTH % 10 + '0'; RTCstr[14] = '/';
-    RTCstr[15] = this->m_RTC.CALENDAR.YEAR / 1000 + '0'; RTCstr[16] = (this->m_RTC.CALENDAR.YEAR / 100) % 10 + '0';
-    RTCstr[17] = (this->m_RTC.CALENDAR.YEAR / 10) % 10 + '0'; RTCstr[18] = this->m_RTC.CALENDAR.YEAR % 10 + '0'; RTCstr[19] = '\n'; RTCstr[20] = '\0';
+    if (appendLineFeed) {
+		RTCstr[9] = this->m_RTC.CALENDAR.DATE / 10 + '0'; RTCstr[10] = this->m_RTC.CALENDAR.DATE % 10 + '0'; RTCstr[11] = '/';
+		RTCstr[12] = this->m_RTC.CALENDAR.MONTH / 10 + '0'; RTCstr[13] = this->m_RTC.CALENDAR.MONTH % 10 + '0'; RTCstr[14] = '/';
+		RTCstr[15] = this->m_RTC.CALENDAR.YEAR / 1000 + '0'; RTCstr[16] = (this->m_RTC.CALENDAR.YEAR / 100) % 10 + '0';
+		RTCstr[17] = (this->m_RTC.CALENDAR.YEAR / 10) % 10 + '0'; RTCstr[18] = this->m_RTC.CALENDAR.YEAR % 10 + '0'; RTCstr[19] = '\n'; RTCstr[20] = '\0';
+    } else {
+    	RTCstr[9] = ' '; RTCstr[10] = this->m_RTC.CALENDAR.DATE / 10 + '0'; RTCstr[11] = this->m_RTC.CALENDAR.DATE % 10 + '0'; RTCstr[12] = '/';
+		RTCstr[13] = this->m_RTC.CALENDAR.MONTH / 10 + '0'; RTCstr[14] = this->m_RTC.CALENDAR.MONTH % 10 + '0'; RTCstr[15] = '/';
+		RTCstr[16] = this->m_RTC.CALENDAR.YEAR / 1000 + '0'; RTCstr[17] = (this->m_RTC.CALENDAR.YEAR / 100) % 10 + '0';
+		RTCstr[18] = (this->m_RTC.CALENDAR.YEAR / 10) % 10 + '0'; RTCstr[19] = this->m_RTC.CALENDAR.YEAR % 10 + '0'; RTCstr[20] = '\0';
+    }
 	return RTCstr;
 }
 
@@ -214,7 +292,7 @@ void initDS3231(void) {
 	#if defined(I2C0_PINS)
 
 	static DS3231 ds3231(I2C0_SCL, I2C0_SDA, I2C::TWI0);
-	ds3231.set(0, 0, 0, 1, 1, 2000);
+//	ds3231.set(0, 0, 0, 1, 1, 2000); // The DS3231 model already has this timestamp recorded by default.
 
 	g_ds3231 = &ds3231;
 

@@ -30,12 +30,20 @@ void Keyboard::callbackMethod(void) {
 
 #pragma GCC pop_options
 
+/*!
+ * @brief Get the key pressed.
+ * @return Key pressed or NO_KEY if no key was pressed.
+ */
 uint8_t	Keyboard::get(void) {
 	uint8_t keyPressed = this->m_current_keyPressed;
 	this->m_current_keyPressed = NO_KEY;
 	return keyPressed;
 }
 
+/*!
+ * @brief Gets which key was pressed.
+ * @return Key pressed or NO_KEY if no key was pressed.
+ */
 uint8_t Keyboard::keyboardHW(void) {
 	for (uint8_t index = 0; index < this->m_rows.size(); index++) {
 		for (uint8_t j_index = 0; j_index < this->m_rows.size(); j_index++)
@@ -47,6 +55,10 @@ uint8_t Keyboard::keyboardHW(void) {
 	return NO_KEY;
 }
 
+/*!
+ * @brief Adds debounce to the keyboard.
+ * @param keyStatus Key pressed.
+ */
 void Keyboard::keyboardSW(uint8_t keyStatus) {
 	if (keyStatus == NO_KEY) {
 		this->m_debounceCounter = 0;

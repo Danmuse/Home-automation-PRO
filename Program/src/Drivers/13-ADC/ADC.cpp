@@ -30,7 +30,7 @@ void ADC::initialize(void) {
 }
 
 /*!
- * @brief Uses the switching matrix to link ADC module to the established pin.
+ * @brief Uses the switching matrix to link Analog-Digital Converter (<tt>ADC</tt>) module to the established pin.
  */
 void ADC::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
@@ -39,7 +39,7 @@ void ADC::enableSWM(void) {
 }
 
 /*!
- * @brief Uses the switching matrix to unlink ADC module from the established pin.
+ * @brief Uses the switching matrix to unlink Analog-Digital Converter (<tt>ADC</tt>) module from the established pin.
  */
 void ADC::disableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
@@ -52,8 +52,8 @@ uint32_t ADC::calculateDivisor(void) {
 }
 
 /*!
- * @brief Configures the voltage range of the ADC. TODO: Explain a bit more
- * @param config: The voltage range configuration.
+ * @brief Configures the voltage range of the Analog-Digital Converter (<tt>ADC</tt>).
+ * @param config The voltage range configuration.
  */
 void ADC::configVoltage(trm_voltage_config_t config) {
 	if (config) ADC0->TRM |= (1 << ADC_TRM_VRANGE_SHIFT);
@@ -61,8 +61,7 @@ void ADC::configVoltage(trm_voltage_config_t config) {
 }
 
 /*!
- * @brief Turns of the ADC module
-
+ * @brief Turns of the Analog-Digital Converter (<tt>ADC</tt>) module.
  */
 void ADC::enablePower(void) {
 	// Turn on the Analog-Digital Converter (<tt>ADC</tt>).

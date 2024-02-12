@@ -14,20 +14,12 @@
 
 #include "utils.h"
 
-/*
 typedef struct {
-    const char *name;
-    // TODO: MAYBE NOT INTEGRER
-    int &variable;
-    int uploadPeriod;
-    int uploadCounter;
+	const char* name;
+	void* variable; //!< NOTE: Only int (or derivate) and bool are supported.
+	std::vector<const char*> stringRepresent;
+	int uploadPeriod;
+	int uploadCounter;
 } IoTVariable_st;
-*/
-typedef struct {
-        const char* name;
-        void* variable; //NOTE: only int(or derivate) and bool are supported
-        std::vector<const char*> stringRepresent;
-        int uploadPeriod;
-        int uploadCounter;
-} IoTVariable_st;
+
 #endif // IOT_VARIABLE_H_

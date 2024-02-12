@@ -19,7 +19,6 @@ Timers& Timers::operator<<(Timer& timer) {
 	return *this;
 }
 
-
 void Timers::allStandBy(Timer::standby_t action) {
 	for (Timer* q : this->m_timers) q->standBy(action);
 }

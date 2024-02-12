@@ -16,6 +16,13 @@ m_ioTConnection{ioTConnection} {
     g_callback_list.push_back(this);
 }
 
+/*!
+ * @brief Adds a variable to upload to the IoT platform.
+ * @param name Variable name.
+ * @param variable Reference for the variable to upload.
+ * @param uploadPeriod Period(in ms) in which variable will be uploaded
+ * @Note Variable should be updated normally, the manager will upload get its value when it is time to upload it
+ */
 void IoTManager::addVariableToUpload(const char* name, int& variable, int uploadPeriod) {
     IoTVariable_st iotVariable = { name, &variable, { }, uploadPeriod, 0} ;
     this->m_variablesToUpload.insert(std::pair<const char*, IoTVariable_st>(name, iotVariable));
@@ -32,6 +39,11 @@ void IoTManager::processIoTMessage(char* message) {
     }
 }
 
+/*!
+ * @brief Registers an action to be executed when a message is received from the IoT platform.
+ * @param topic The topic to listen to.
+ * @param actionListener The function to be executed when a message of specified topic is received.
+ */
 void IoTManager::registerAction(const char* topic, ActionListener actionListener) {
     this->m_actions.insert(std::pair<const char*, ActionListener>(topic, actionListener));
 }
@@ -41,10 +53,21 @@ bool IoTManager::initializeConnection(void) {
     return true;
 }
 
+/*!
+ * @brief Registers a variable to be uploaded when the IoT platform initializes the connection.
+ * @param name Name of the variable to be uploaded.
+ * @param variable Reference to the variable to be uploaded.
+ * @param strings String representation for the variable, first is for 'false' condition. (e.g. {"OFF", "ON"})
+ */
 void IoTManager::registerState(const char* name, bool& variable, std::initializer_list<const char*> strings) {
     states.push_back({name, &variable, strings, 0, 0});
 }
 
+/*!
+ * @brief Registers a variable to be uploaded when the IoT platform initializes the connection.
+ * @param name Name of the variable to be uploaded.
+ * @param variable Reference to the variable to be uploaded.
+ */
 void IoTManager::registerState(const char* name, uint8_t& variable) {
     states.push_back({ name, &variable, { }, 0, 0 });
 }

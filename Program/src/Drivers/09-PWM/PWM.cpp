@@ -89,7 +89,7 @@ void PWM::setDuty(float duty) {
 }
 
 /*!
- * @brief Select which of the SCTimer match registers to use
+ * @brief Select which of the SCTimer match registers to use.
  */
 void PWM::bindChannel(void) {
     uint8_t eventNumber = this->m_channel + 1;
@@ -99,8 +99,9 @@ void PWM::bindChannel(void) {
     SCT0->OUT[this->m_channel].CLR = (1 << eventNumber); // Turn off the following channel
     this->enableSWM();
 }
+
 /*!
- * @brief Unselects the SCTimer match register being used
+ * @brief Unbind the SCTimer match register being used.
  */
 void PWM::unbindChannel(void) {
     uint8_t eventNumber = this->m_channel + 1;

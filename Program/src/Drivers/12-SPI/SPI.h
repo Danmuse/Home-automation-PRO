@@ -43,7 +43,6 @@ class SPI : protected std::vector<Gpio>, public SyncCommSPI {
         static uint8_t m_SPI1_SSELs;
         uint8_t m_bindSSELs;
         bitOrder_t m_bitOrder;
-        // TODO: You need one per SSEL, also should change RX, TX accordingly.
         // Buffers are uint8_t because in TXDATCTL LEN is set on eight.
         uint8_t m_receiveBuffer[RECEIVE_BUFFER_SIZE];
         uint8_t m_receiveBufferIndexIn;
