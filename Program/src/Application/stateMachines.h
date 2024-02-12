@@ -19,6 +19,7 @@
 #define USERS_INIT_POSITION 2
 #define USER_ENTERED_POSITION 1
 #define USER_ENTERED_SIZE 1
+#define MAX_USERS 50
 
 enum class UserRegistrationState {
         WAITING_FOR_PASSWORD,

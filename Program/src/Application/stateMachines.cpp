@@ -16,6 +16,9 @@ static bool isUserRegistered(const MFRC522::UID_st& uid);
 static bool registerNewUser(const MFRC522::UID_st& uid);
 static bool manageUserLocation(const MFRC522::UID_st& uid);
 
+uint8_t registeredUsers = 0;
+uint8_t loggedInUsers = 0;
+
 static bool isUserRegistered(const MFRC522::UID_st& uid) {
     uint8_t userCount = 0;
     EEPROM_result_t result = g_eeprom->read(&userCount, M24C16::UINT8, 0);
@@ -48,6 +51,8 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
     uint8_t userCount = 0;
     EEPROM_result_t result = g_eeprom->read(&userCount, M24C16::UINT8, 0);
 
+    if(userCount >= MAX_USERS) return false;
+
     if (result != EEPROM_OK) return false;
 	#if RFID_USER_UID_SIZE == 4 && M24C16_USING_MODIFIERS == 1
     uint32_t userId = 0;
@@ -64,6 +69,7 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
     result = g_eeprom->write((uint8_t)0, USER_ENTERED_POSITION);
     if (result != EEPROM_OK) return false;
     result = g_eeprom->write(++userCount, 0);
+    registeredUsers = userCount;
     if (result != EEPROM_OK) return false;
     return true;
 }
@@ -103,9 +109,14 @@ bool manageUserLocation(const MFRC522::UID_st& uid) {
             result = g_eeprom->read(&location, M24C16::UINT8, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
             if (result != EEPROM_OK) return false;
 
-            if (!location) g_dfplayer->play(8);
-            else g_dfplayer->play(9);
-
+            if (!location){
+                g_dfplayer->play(8);
+                loggedInUsers++;
+            }
+            else {
+                g_dfplayer->play(9);
+                loggedInUsers--;
+            }
             result = g_eeprom->write((uint8_t)!location, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
             if (result != EEPROM_OK) return false;
         }
@@ -128,11 +139,11 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
         case UserRegistrationState::WAITING_FOR_PASSWORD:
         	if (!(clearCommandTimer.getTicks())) {
 				g_lcd->write("Registered users: ", 0, 0);
-				g_lcd->write(0 /* TODO: Change by the correspond value */, 0, 18);
-//				if (GLOBAL_REGISTERED_USERS_VARIABLE < 10) g_lcd->write(" ", 0, 19); // TODO: Edit and uncomment when implemented
+				g_lcd->write(registeredUsers, 0, 18);
+				if (registeredUsers< 10) g_lcd->write(" ", 0, 19);
         		g_lcd->write("Logged in users:  ", 1, 0);
-        		g_lcd->write(0 /* TODO: Change by the correspond value */, 1, 18);
-//        		if (GLOBAL_LOGGED_IN_USERS_VARIABLE < 10) g_lcd->write(" ", 1, 19); // TODO: Edit and uncomment when implemented
+        		g_lcd->write(loggedInUsers, 1, 18);
+        		if (loggedInUsers< 10) g_lcd->write(" ", 1, 19);
         	}
             if (keyBoardPassword.checkPassword()) {
             	g_lcd->clear();
@@ -149,15 +160,13 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
                 if (!isUserRegistered(uuid)) {
                     uint8_t registerAttempts = 0;
                     while (!registerNewUser(uuid) && registerAttempts < 3) registerAttempts++;
+                    if(registerAttempts==3) g_lcd->write("Error while registering", 1, 0);
+                    else g_lcd->write("Success registering!", 1, 0);
                 }
-
-                // TODO: Edit and uncomment when implemented
-//                if (USER_HAS_BEEN_REGISTERED) {
-//					g_lcd->write("The user has already", 0, 0);
-//					g_lcd->write("been registered!", 1, 2);
-//                } else {
-					g_lcd->write("Success registering!", 1, 0);
-//                }
+                else {
+					g_lcd->write("The user has already", 0, 0);
+                    g_lcd->write("been registered!", 1, 2);
+                }
 
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
                 clearCommandTimer.setTimer(6);
