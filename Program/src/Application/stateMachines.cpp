@@ -150,15 +150,15 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
                 }
 
                 g_lcd->write("Registered user");
-                LED_GREEN.clearPin();
+//                LED_GREEN.clearPin();
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
 
                 clearCommandTimer.setTimer(5);
                 userRegistrationTimer.setTimer(5);
-            } else LED_GREEN.setPin();
+            } // else LED_GREEN.setPin();
 
             if (userRegistrationTimer.getTicks() == 0) {
-                LED_GREEN.clearPin();
+//                LED_GREEN.clearPin();
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
 
                 g_lcd->write("Timeout error");

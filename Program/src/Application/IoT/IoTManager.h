@@ -38,7 +38,7 @@ public:
 	void processIoTMessage(char* message) override;
 	void registerAction(const char* topic, ActionListener actionListener);
 	void registerState(const char* name, bool& variable, std::initializer_list<const char*> strings);
-	void registerState(const char* name, int& vairable);
+	void registerState(const char* name, uint8_t& variable);
 	virtual ~IoTManager(void) = default;
 };
 

@@ -19,34 +19,20 @@
 #define DFPLAYER_SEND_LENGTH 10
 
 #define DFPLAYER_INITIAL_VOLUME_PERCENTAGE 70
-#define DFPLAYER_TIMEOUT_TICKS 100
+#define DFPLAYER_TIMEOUT_TICKS 200
 
-//#define DFPLAYER_DEVICE_U_DISK 1
-//#define DFPLAYER_DEVICE_SD 2
-//#define DFPLAYER_DEVICE_AUX 3
-//#define DFPLAYER_DEVICE_SLEEP 4
-//#define DFPLAYER_DEVICE_FLASH 5
-
-#define TimeOut 0
-#define WrongStack 1
-#define DFPlayerCardInserted 2
-#define DFPlayerCardRemoved 3
-#define DFPlayerCardOnline 4
-#define DFPlayerPlayFinished 5
-#define DFPlayerError 6
-#define DFPlayerUSBInserted 7
-#define DFPlayerUSBRemoved 8
-#define DFPlayerUSBOnline 9
-#define DFPlayerCardUSBOnline 10
-#define DFPlayerFeedBack 11
-
-//#define Busy 1
-//#define Sleeping 2
-//#define SerialWrongStack 3
-//#define CheckSumNotMatch 4
-//#define FileIndexOut 5
-//#define FileMismatch 6
-//#define Advertise 7
+//#define TimeOut 0
+//#define WrongStack 1
+//#define DFPlayerCardInserted 2
+//#define DFPlayerCardRemoved 3
+//#define DFPlayerCardOnline 4
+//#define DFPlayerPlayFinished 5
+//#define DFPlayerError 6
+//#define DFPlayerUSBInserted 7
+//#define DFPlayerUSBRemoved 8
+//#define DFPlayerUSBOnline 9
+//#define DFPlayerCardUSBOnline 10
+//#define DFPlayerFeedBack 11
 
 #define Stack_Header 0
 #define Stack_Version 1
@@ -57,48 +43,32 @@
 #define Stack_CheckSum 7
 #define Stack_End 9
 
-/*
-
-TODO (Medium priority): Complete the enumeration and modify the parameters of the methods involved in said definitions.
-
-#define TimeOut 0
-#define WrongStack 1
-#define DFPlayerCardInserted 2
-#define DFPlayerCardRemoved 3
-#define DFPlayerCardOnline 4
-#define DFPlayerPlayFinished 5
-#define DFPlayerError 6
-#define DFPlayerUSBInserted 7
-#define DFPlayerUSBRemoved 8
-#define DFPlayerUSBOnline 9
-#define DFPlayerCardUSBOnline 10
-#define DFPlayerFeedBack 11
-
 //! @brief <b>DFPlayer_result_t</b> enumeration reports all possible errors, conditions, warnings, and states in which the DFPlayer module operations can be found.
 typedef enum {
-	DFPLAYER_OK,	//!< Successful operation.
+	DFPLAYER_READY,		//!< Indicates that the player is ready to play a song.
+	DFPLAYER_BUSY,		//!< Indicates that the player is busy playing a song.
+	DFPLAYER_PAUSE		//!< Indicates that the player has paused a song.
+//	DFPLAYER_FAILURE	//!< Indicates that the player could not be configured correctly due to some hardware incompatibility.
 } DFPlayer_result_t;
 
-*/
-
-class DFPlayer : protected UART, Callback {
+class DFPlayer : protected Gpio, UART, Callback {
 private:
+	bool m_pauseState;
+	uint8_t m_backupFile;
 	uint16_t m_timeOutTimer;
 
 	uint8_t m_received[DFPLAYER_RECEIVED_LENGTH];
 	uint8_t m_sending[DFPLAYER_SEND_LENGTH] = { 0x7E, 0xFF, 06, 00, 01, 00, 00, 00, 00, 0xEF };
 
-//	DFPlayer_result_t m_statusDFPlayer;
+	DFPlayer_result_t m_statusDFPlayer;
 	uint8_t m_receivedIndex;
-	uint8_t m_handleType;
-	uint8_t m_handleCommand;
-	uint16_t m_handleParameter;
 	bool m_isAvailable;
 	bool m_isSending;
 
 	void uint16ToArray(uint16_t value, uint8_t *array);
 	uint16_t arrayToUint16(uint8_t *array);
 	uint16_t calculateCheckSum(uint8_t *buffer);
+	void resetConditions(void);
 	void parseStack(void);
 	bool validateStack(void);
 	void sendStack(void);
@@ -109,36 +79,31 @@ private:
 	void disableACK(void);
 	bool available(void);
 	bool waitAvailable(uint32_t duration = 0);
-	bool begin(bool isACK = true, bool doReset = true);
-	uint8_t readType(void);
-	uint16_t read(void);
-	bool handleMessage(uint8_t type, uint16_t parameter = 0);
-	bool handleError(uint8_t type, uint16_t parameter = 0);
+	void begin(bool isACK = true, bool doReset = true);
 protected:
 	void callbackMethod(void) override;
 public:
 	enum equalizer_t { DFPLAYER_EQ_NORMAL, DFPLAYER_EQ_POP, DFPLAYER_EQ_ROCK, DFPLAYER_EQ_JAZZ, DFPLAYER_EQ_CLASSIC, DFPLAYER_EQ_BASS };
 
 	DFPlayer() = delete;
-	DFPlayer(const Gpio& RX, const Gpio& TX, channelUART_t channel = UART0);
+	DFPlayer(const Gpio& busyPin, const Gpio& RX, const Gpio& TX, channelUART_t channel = UART0);
 
 	void next(void);
 	void previous(void);
-	void play(uint8_t fileNumber = 1);
-	void volumeUp(void);
-	void volumeDown(void);
+	void play(uint8_t fileNumber = 0);
 	void volume(uint8_t volume);
 	void equalizer(equalizer_t equalizer);
 	void loop(uint8_t fileNumber);
-	void sleep(void);
 	void reset(void);
-	void start(void);
 	void pause(void);
-	void enableLoopAll(void);
-	void disableLoopAll(void);
-	void enableLoop(void);
-	void disableLoop(void);
-//	DFPlayer_result_t getStatus(void) const;
+	void resume(void);
+//	void enableLoopAll(void);
+//	void disableLoopAll(void);
+//	void enableLoop(void);
+//	void disableLoop(void);
+
+	void prepareSong(uint8_t fileNumber = 1);
+	DFPlayer_result_t getStatus(void) const;
 
 	virtual ~DFPlayer() = default;
 };

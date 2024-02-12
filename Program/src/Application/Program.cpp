@@ -30,10 +30,10 @@ int main(void) {
 
     QTConnection connection(*g_usb);
     IoTManager iotManager(&connection);
-    int ledBrightness = 0;
-    int songId = 0;
+    uint8_t ledBrightness = 0;
+    uint8_t songId = 0;
     bool isSongPlaying = false;
-    int volume = DFPLAYER_INITIAL_VOLUME_PERCENTAGE;
+    uint8_t volume = DFPLAYER_INITIAL_VOLUME_PERCENTAGE;
 
     UserRegistrationState userRegistrationState = UserRegistrationState::WAITING_FOR_PASSWORD;
     DoorOpeningState doorOpeningState = DoorOpeningState::WAITING_FOR_RFID;
@@ -59,9 +59,9 @@ int main(void) {
         g_lcd->write("|  Automation PRO  |", 2, 0);
         g_lcd->write("*------------------*", 3, 0);
 		g_leds->setMode(S5050DJ::FADE);
-    	g_dfplayer->play(1);
+    	g_dfplayer->play(3);
     	// NOTE: The opening song during approximately 30 seconds
-        delay(1000); // TODO: Replace this instruction by the method that corresponds.
+        delay(15000); // TODO: Replace this instruction by the method that corresponds.
     }
 
     g_lcd->clear();
@@ -96,8 +96,7 @@ int main(void) {
 		userRegistrationStateMachine(userRegistrationState);
 		doorOpeningStateMachine(doorOpeningState);
 
-        //Todo: volume= g_dfplayer->getVolume();
-
+		// TODO: volume= g_dfplayer->getVolume();
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
