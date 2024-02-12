@@ -17,6 +17,12 @@ m_TmrRun{0}, m_TmrEvent{false}, m_TmrHandler{handler}, m_TmrStandBy{RUN}, m_TmrB
 	g_callback_list.push_back(this);
 }
 
+/*!
+ * @brief Starts timer with the following parameters, setting it to 0 will call the handler immediately.
+ * @param counter Time to wait.
+ * @param handler Function to call when the timer ends.
+ * @param base Time base.
+ */
 void Timer::timerStart(uint32_t counter, const TimerHandler handler, const bases_t base) {
 	switch (base) {
 		case DAY:
@@ -43,6 +49,10 @@ void Timer::timerStart(uint32_t counter, const TimerHandler handler, const bases
 	this->m_TmrBase = base;
 }
 
+/*!
+ * @brief Restarts the timer to the given time.
+ * @param counter Time to wait.
+ */
 void Timer::setTimer(uint32_t counter) {
 	switch (this->m_TmrBase) {
 		case DAY:
@@ -66,6 +76,10 @@ void Timer::setTimer(uint32_t counter) {
 	this->m_TmrEvent = !counter;
 }
 
+/*!
+ * @brief Returns the time remaining expressed on timer's base.
+ * @return Time remaining in the timer.
+ */
 uint32_t Timer::getTimer(void) const {
 	uint32_t time = this->m_TmrRun;
 
@@ -89,14 +103,25 @@ uint32_t Timer::getTimer(void) const {
 	return time;
 }
 
+/*!
+ * @brief Returns the time remaining ticks.
+ * @return Ticks remaining in the timer.
+ */
 uint32_t Timer::getTicks(void) const {
 	return this->m_TmrRun;
 }
 
+/*!
+ * @brief Sets the timer into pause/run mode
+ * @param action
+ */
 void Timer::standBy(standby_t action) {
 	this->m_TmrStandBy = action;
 }
 
+/*!
+ * @brief Stops the timer and removes the handler.
+ */
 void Timer::timerStop(void) {
 	this->m_TmrRun = 0;
 	this->m_TmrEvent = false;
@@ -104,6 +129,10 @@ void Timer::timerStop(void) {
 	this->m_TmrStandBy = RUN;
 }
 
+/*!
+ * @brief Timer event handler, calls the handler if time has past.
+ * @return OK if the handler was called, ERROR if not.
+ */
 Timer::error_t Timer::timerEvent(void) {
 	if (this->m_TmrHandler != nullptr) {
 		if (this->m_TmrEvent) {

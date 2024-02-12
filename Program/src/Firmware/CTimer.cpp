@@ -26,6 +26,9 @@ m_handlerFunction{handlerFunction} {
 	this->enableSWM();
 }
 
+/*!
+ * @brief Initialize the CTimer peripheral with default values.
+ */
 void CTimer::initCTimer(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_CTIMER_MASK;
 	SYSCON->PRESETCTRL0 &= ~SYSCON_PRESETCTRL0_CTIMER_RST_N_MASK;
@@ -40,6 +43,9 @@ void CTimer::initCTimer(void) const {
 	NVIC->ISER[0] |= (1 << 23); // Enable CT32B0_IRQ
 }
 
+/*!
+ * @brief Uses the switching matrix to link CTimer match output to the established pin.
+ */
 void CTimer::enableSWM(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	if (this->m_channelFunction == CTIMER_MATCH && this->m_match_channel < MAX_CTIMER0_MATCH_CHANNELS - 1) SWM->PINASSIGN.PINASSIGN13 &= (((0x20 * this->m_port + this->m_bit) << (8 * (this->m_match_channel + 1))) | ~(0xFF << (8 * (this->m_match_channel + 1))));
@@ -48,6 +54,9 @@ void CTimer::enableSWM(void) const {
     SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
+/*!
+ * @brief Uses the switching matrix to unlink CTimer match output from the established pin.
+ */
 void CTimer::disableSWM(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	if (this->m_channelFunction == CTIMER_MATCH && this->m_match_channel < MAX_CTIMER0_MATCH_CHANNELS - 1) SWM->PINASSIGN.PINASSIGN13 |= ((~(0x20 * this->m_port + this->m_bit) << (8 * (this->m_match_channel + 1))));
@@ -56,11 +65,22 @@ void CTimer::disableSWM(void) const {
 	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
+/*!
+ * @brief Adjust the preescaler counter value with a determined unit.
+ * @param value value to set the prescaler counter
+ * @param countUnit unit to set the prescaler counter
+ */
 void CTimer::adjustTimeCount(uint32_t value, countUnit_t countUnit) {
 	float clockPulseMicros = (100 / (FREQ_CLOCK_MCU / 1000000));
 	countUnit == MICROS ? CTIMER0->PR = ((100 * (1 / clockPulseMicros)) - 1) * value : CTIMER0->PR = ((100000 * (1 / clockPulseMicros)) - 1) * value; // Prescale counter value.
 }
 
+/*!
+ * @brief Configure the match register with a determined tick count.
+ * @param timeTicks Quantity of ticks to configure to the match register.
+ * @param actionInterruption Action the match should execute when is reached.
+ * @param matchInterruption Match register to configure.
+ */
 void CTimer::configMatch(uint32_t timeTicks, actionInterruption_t actionInterruption, matchInterruption_t matchInterruption) {
 	CTIMER0->MR[matchInterruption] = timeTicks == 0 ? 1 : timeTicks; // Expressed in seconds: (1 / FREQ_CLOCK_MCU) * (CTIMER0->PR + 1) * timeTicks
 	CTIMER0->MCR |= (CTIMER_MCR_MR0I_MASK << (matchInterruption * 3)); // Interrupt on MRn: an interrupt is generated when MRn matches the value in the TC.
@@ -73,10 +93,16 @@ void CTimer::configMatch(uint32_t timeTicks, actionInterruption_t actionInterrup
 	CTIMER0->TCR = CTIMER_TCR_CEN_MASK; // Counter enable enabled.
 }
 
+/*!
+ * @brief Binds handler for match interrupt.
+ * @param handlerFunction function to execute when the match interrupt is triggered.
+ */
 void CTimer::bindHandler(const CTimerHandler handlerFunction) {
 	this->m_handlerFunction = handlerFunction;
 }
-
+/*!
+ * @brief Unbind handler for match interrupt.
+ */
 void CTimer::unbindHandler(void) {
 	this->m_handlerFunction = nullptr;
 }

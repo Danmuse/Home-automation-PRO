@@ -38,10 +38,15 @@ void Gpio::clearPin(void) {
 	else GPIO->SET[this->m_port] |= (1 << this->m_bit);
 }
 
+/*!
+ * @brief Sets the pin as an output.
+ */
 void Gpio::setDirOutputs(void) {
 	GPIO->DIRSET[this->m_port] |= (1 << this->m_bit);
 }
-
+/*!
+ * @brief Sets the pin as an input.
+ */
 void Gpio::setDirInputs(void) {
 	GPIO->DIRCLR[this->m_port] |= (1 << this->m_bit);
 }
@@ -56,6 +61,9 @@ bool Gpio::getPin(void) const {
 			!((GPIO->PIN[this->m_port] >> this->m_bit) & 0x01);
 }
 
+/*!
+ * @brief Enables the open drain mode.
+ */
 void Gpio::setPinMode(void) {
 	uint8_t index = 0;
 	if (this->m_port == PORT0) index = IOCON_INDEX_PIO0[this->m_bit];
@@ -64,6 +72,9 @@ void Gpio::setPinMode(void) {
 	IOCON->PIO[index] |= (this->m_mode << 10);
 }
 
+/*!
+ * @brief Enables pull-up/pull-down internal resistor.
+ */
 void Gpio::setPinResistor(void) {
 	uint8_t index = 0;
 	if (this->m_port == PORT0) index = IOCON_INDEX_PIO0[this->m_bit];
@@ -72,7 +83,9 @@ void Gpio::setPinResistor(void) {
 	IOCON->PIO[index] |= (this->m_mode << 3);
 	// IOCON_PIO_OD(this->m_mode);
 }
-
+/*!
+ * @brief Configures the pin as an input or output with the corresponding modifications.
+ */
 Gpio::error_t Gpio::setDir(void) {
 	if (this->m_error == OK) {
 		if (this->m_direction == INPUT) {

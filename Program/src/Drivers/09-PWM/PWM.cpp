@@ -25,6 +25,9 @@ m_channel{m_quantity++} {
     this->setDuty(duty);
 }
 
+/*!
+ * @brief Initializes the SCTimer peripheral for PWM management.
+ */
 void PWM::initSCTimer(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= (1 << 8);
 	SCT0->CONFIG |= (1 << 0) | (1 << 17);
@@ -40,6 +43,9 @@ void PWM::initSCTimer(void) const {
 	SCT0->CTRL &= ~(1 << 2);
 }
 
+/*!
+ * @brief Uses the switching matrix to link the PWM to the established pin.
+ */
 void PWM::enableSWM(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
     if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 &= (((0x20 * this->m_port + this->m_bit) << 24) | ~(0xFF << 24));
@@ -48,6 +54,9 @@ void PWM::enableSWM(void) const {
     SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
+/*!
+ * @brief Uses the switching matrix to unlink the PWM to the established pin.
+ */
 void PWM::disableSWM(void) const {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
     if (!this->m_channel) SWM->PINASSIGN.PINASSIGN7 |= ((~(0x20 * this->m_port + this->m_bit)) << 24);
@@ -56,10 +65,18 @@ void PWM::disableSWM(void) const {
     SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
+/*!
+ * @brief Returns the PWM duty cycle.
+ * @return The PWM duty cycle.
+ */
 float PWM::getDuty(void) const {
     return this->m_duty;
 }
 
+/*!
+ * @brief Sets the PWM duty cycle.
+ * @param duty The PWM duty cycle.
+ */
 void PWM::setDuty(float duty) {
     if (duty > 100) duty = 100;
     else if (duty < 0) duty = 0;
@@ -71,6 +88,9 @@ void PWM::setDuty(float duty) {
     SCT0->MATCHREL[this->m_channel + 1] = FREQ_CLOCK_MCU / (this->m_frequency) * duty;
 }
 
+/*!
+ * @brief Select which of the SCTimer match registers to use
+ */
 void PWM::bindChannel(void) {
     uint8_t eventNumber = this->m_channel + 1;
     SCT0->EV[eventNumber].STATE = 1; // Other than '0'
@@ -79,7 +99,9 @@ void PWM::bindChannel(void) {
     SCT0->OUT[this->m_channel].CLR = (1 << eventNumber); // Turn off the following channel
     this->enableSWM();
 }
-
+/*!
+ * @brief Unselects the SCTimer match register being used
+ */
 void PWM::unbindChannel(void) {
     uint8_t eventNumber = this->m_channel + 1;
     SCT0->EV[eventNumber].STATE = 0;

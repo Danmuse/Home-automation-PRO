@@ -29,12 +29,18 @@ void ADC::initialize(void) {
 	else if (this->m_sequence == ADC_SEQB) this->configSEQB();
 }
 
+/*!
+ * @brief Uses the switching matrix to link ADC module to the established pin.
+ */
 void ADC::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	SWM->PINENABLE0 &= ~(1 << (this->m_channel + 14)); // Bits 14 to 25 for each channel.
 	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
+/*!
+ * @brief Uses the switching matrix to unlink ADC module from the established pin.
+ */
 void ADC::disableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	SWM->PINENABLE0 |= (1 << (this->m_channel + 14)); // Bits 14 to 25 for each channel.
@@ -45,11 +51,19 @@ uint32_t ADC::calculateDivisor(void) {
 	return (uint32_t)(((this->m_clk_freq / ADC_STD_SAMPLE_RATE) - 1) / ADC_CLOCKS_PER_SAMPLE);
 }
 
+/*!
+ * @brief Configures the voltage range of the ADC. TODO: Explain a bit more
+ * @param config: The voltage range configuration.
+ */
 void ADC::configVoltage(trm_voltage_config_t config) {
 	if (config) ADC0->TRM |= (1 << ADC_TRM_VRANGE_SHIFT);
 	else ADC0->TRM &= ~(1 << ADC_TRM_VRANGE_SHIFT);
 }
 
+/*!
+ * @brief Turns of the ADC module
+
+ */
 void ADC::enablePower(void) {
 	// Turn on the Analog-Digital Converter (<tt>ADC</tt>).
 	// To turn off tied it on low consumption.

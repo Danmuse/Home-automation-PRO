@@ -17,6 +17,9 @@ m_callback{function} {
 #pragma GCC push_options
 #pragma GCC optimize ("O1")
 
+/*!
+ * @brief This method is periodically called by the SysTick interrupt
+ */
 void Callback::callbackMethod(void) {
 	if (m_callback) m_callback();
 }

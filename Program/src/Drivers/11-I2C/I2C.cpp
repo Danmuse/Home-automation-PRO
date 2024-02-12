@@ -95,6 +95,14 @@ SyncCommTWI::statusComm_t I2C::transmitStopBit(void) {
 	return TWI_SUCCESS;
 }
 
+/*!
+ * @brief Transmits a byte to the I2C bus.
+ * @param address Address of the I2C slave to communicate with
+ * @param regOffset
+ * @param value Byte to be transmitted
+ * @param action Action to perform on the I2C bus
+ * @return Status of the I2C communication
+ */
 SyncCommTWI::statusComm_t I2C::transmitByte(const uint8_t address, const uint8_t regOffset, uint8_t value, actionComm_t action) {
 	if (action != WRITE && action != WRITE_OFFSET_NONE) return UNREQUITED_ACTION;
 	prepareConditions(address, regOffset, action);
@@ -108,6 +116,14 @@ SyncCommTWI::statusComm_t I2C::transmitByte(const uint8_t address, const uint8_t
 	return TWI_SUCCESS;
 }
 
+/*!
+ * @brief Receives a byte from the I2C bus.
+ * @param address Address of the I2C slave to communicate with
+ * @param regOffset
+ * @param[out] value Pointer to the byte where the received data will be stored
+ * @param action Action to perform on the I2C bus
+ * @return Status of the I2C communication
+ */
 SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t regOffset, uint8_t* value, actionComm_t action) {
 	if (action != READ && action != READ_OFFSET_NONE) return UNREQUITED_ACTION;
 	prepareConditions(address, regOffset, action);
@@ -124,6 +140,15 @@ SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t 
 	return TWI_SUCCESS;
 }
 
+/*!
+ * @brief Transmits a sequence of bytes to the I2C bus.
+ * @param address Address of the I2C slave to communicate with.
+ * @param regOffset
+ * @param values Array of bytes to be transmitted.
+ * @param numBytes Number of bytes to be transmitted.
+ * @param action Action to perform on the I2C bus.
+ * @return Status of the I2C communication.
+ */
 SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, actionComm_t action) {
 	if (action != WRITE && action != WRITE_OFFSET_NONE) return UNREQUITED_ACTION;
 	prepareConditions(address, regOffset, action);
@@ -139,6 +164,15 @@ SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_
 	return TWI_SUCCESS;
 }
 
+/*!
+ * @brief Receives a sequence of bytes from the I2C bus.
+ * @param address Address of the I2C slave to communicate with.
+ * @param regOffset
+ * @param[out] values Pointer to the array of bytes where the received data will be stored.
+ * @param numBytes Number of bytes to be received.
+ * @param action Action to perform on the I2C bus.
+ * @return Status on the I2C communication.
+ */
 SyncCommTWI::statusComm_t I2C::receiveBytes(const uint8_t address, const uint8_t regOffset, uint8_t values[], size_t numBytes, actionComm_t action) {
 	if (action != READ && action != READ_OFFSET_NONE) return UNREQUITED_ACTION;
 	prepareConditions(address, regOffset, action);
@@ -166,7 +200,9 @@ void I2C::disableInterrupt(void) {
 	this->m_TWI->INTENCLR = I2C_INTENCLR_MSTPENDINGCLR_MASK; // Master Pending interrupt Disable.
 //	this->m_TWI->INTENCLR = I2C_INTENCLR_SCLTIMEOUTCLR_MASK; // Disable SCL time-out interruption.
 }
-
+/*!
+ * @brief Uses the switching matrix to link I2C module to the established pins.
+ */
 void I2C::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	// I2C0_SCL enabled on pin PIO0_10 and I2C0_SDA enabled on pin PIO0_11
@@ -177,6 +213,9 @@ void I2C::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
+/*!
+ * @brief Enables the corresponding I2C interruption
+ */
 void I2C::config(void) {
 	if (this->m_TWI == I2C0) NVIC->ISER[0] |= (1 << 8);       // Enable I2C0_IRQ
 	else if (this->m_TWI == I2C1) NVIC->ISER[0] |= (1 << 7);  // Enable I2C1_IRQ
