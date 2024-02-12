@@ -18,7 +18,7 @@
 //////////////////////////////////////////////
 
 #define CN5_PINS	// SENSOR_IN {Sensor}
-#define CN6_PINS	// DIG_OUT0 {O0} - DIG_OUT1 {O1} - DIG_OUT2 {O2} - DIG_OUT3 {A0} - DIG_OUT4 {A1}
+//#define CN6_PINS	// DIG_OUT0 {O0} - DIG_OUT1 {O1} - DIG_OUT2 {O2} - DIG_OUT3 {A0} - DIG_OUT4 {A1}
 //#define CN7_PINS	// ANALOG_OUT ~ DAC1_PIN {AOUT}
 #define CN8_PINS	// ANALOG_IN ~ ANALOG1_PIN {AIN}
 //#define CN9_PINS	// SWDIO [PIN 2] - SWCLK [PIN 3] - DIG_IN [PIN 4] - KEY_RESET [PIN 5]

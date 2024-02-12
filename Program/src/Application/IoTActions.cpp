@@ -37,6 +37,7 @@ void musicFlowControl(char* message) {
     if (songId != 0) g_dfplayer->play(songId);
     else if (strcmp(message, "pause") == 0) g_dfplayer->pause();
     else if (strcmp(message, "play") == 0) {
+    	g_dfplayer->resume();
         // TODO: Implement the corresponding function to send the frame corresponding to the resumption of the song
     	// Serial transmission section (without ACK): 7E FF 06 0D 00 00 00 FE EE EF
     }
@@ -47,7 +48,6 @@ void musicVolumeControl(char* message) {
     g_dfplayer->volume(volume);
 }
 
-
 void dateControl(char* message) {
     uint32_t timestamp = atoi(message);
 
@@ -56,5 +56,4 @@ void dateControl(char* message) {
     time_st date = epochToDate(timestamp);
 
     g_ds3231->set(date.second, date.minute, date.hour, date.day, date.month, date.year);
-
 }

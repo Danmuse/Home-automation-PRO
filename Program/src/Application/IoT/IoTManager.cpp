@@ -45,7 +45,7 @@ void IoTManager::registerState(const char* name, bool& variable, std::initialize
     states.push_back({name, &variable, strings, 0, 0});
 }
 
-void IoTManager::registerState(const char* name, int& variable) {
+void IoTManager::registerState(const char* name, uint8_t& variable) {
     states.push_back({ name, &variable, { }, 0, 0 });
 }
 
