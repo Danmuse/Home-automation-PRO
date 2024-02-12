@@ -36,7 +36,7 @@ void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) {
     	// The SPI captures serial data on the first clock transition of the transfer. Data is changed on the following edge.
     	// The rest state of the clock is low.
         case MODE0: // CPOL = 0, CPHA = 0
-            break;
+        	break;
 		// The SPI captures serial data on the first clock transition of the transfer. Data is changed on the following edge.
 		// The rest state of the clock is high.
         case MODE1: // CPOL = 0, CPHA = 1
@@ -167,9 +167,11 @@ void SPI::disableSSEL(uint8_t SSEL) {
 }
 
 /*!
- * @brief Transmit message through the SPI channel.
- * @param message Message to be transmitted.
- * @note The message must be null-terminated.
+ * @brief Transmits a message via SPI.
+ * @param message A pointer to the null-terminated character array (C-string) to be transmitted.
+ *
+ * @note The function sets a bit in the SPI status register to force an end to the current zero transfer when the transmitter completes any ongoing activity. This simulates the behavior as if the End of Transfer (EOT) flag had been set before the last transmission.
+ * @warning This function assumes that the SPI instance (`m_SPI`) and related variables are properly initialized before calling.
  */
 void SPI::transmit(const char *message) {
     while (*message) {
@@ -188,9 +190,13 @@ void SPI::transmit(const char *message) {
 }
 
 /*!
- * @brief Transmit message through the SPI channel.
- * @param message Array of bytes to be transmitted.
- * @param length Length of the message.
+ * @brief Transmits an array of bytes using SPI communication.
+ * @param[in] message Pointer to the array of bytes to be transmitted.
+ * @param[in] length  The number of bytes to transmit from the message array.
+ *
+ * @note This function assumes that the SPI instance (m_SPI) is properly configured before calling.
+ *       It also relies on the existence of certain member functions such as pushSend, enableSendInterrupt, and
+ *       the presence of m_isSending and m_SPI->STAT.
  */
 void SPI::transmitBytes(uint8_t *message, uint8_t length) {
     for (size_t index = 0; index < length; index++) {
@@ -207,10 +213,13 @@ void SPI::transmitBytes(uint8_t *message, uint8_t length) {
 }
 
 /*!
- * @brief Receive a message through the SPI channel.
- * @param address TODO: FINISH THIS
- * @param message
- * @return
+ * @brief Receive data over SPI communication.
+ * @param address Pointer to the address for communication.
+ * @param message Reference to a variable where the received message will be stored.
+ * @return Boolean indicating the success of the communication. 'true' if successful, 'false' otherwise.
+ *
+ * @note The function relies on the SPI object's methods for communication and interrupts.
+ * @see SPI::enableReceiveInterrupt(), SPI::transmitBytes(), SPI::popReceive(), SPI::disableReceiveInterrupt()
  */
 bool SPI::receive(uint8_t *address, uint8_t &message) {
     bool resultCommunication = false;
@@ -281,7 +290,11 @@ void SPI::enableClock(void) {
 }
 
 /*!
- * @brief Uses the switching matrix to link SPI module to the established pins.
+ * @brief Enable the Switch Matrix (SWM) for SPI configuration.
+ * @details This function enables the Switch Matrix (SWM) for configuring the SPI (Serial Peripheral Interface).
+ * It sets the necessary pin assignments for SCK, MOSI, and MISO based on the selected SPI instance (SPI0 or SPI1).
+ *
+ * @note This function assumes that the SPI instance has been previously configured.
  */
 void SPI::enableSWM(void) {
     SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;

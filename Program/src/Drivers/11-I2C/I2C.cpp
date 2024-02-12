@@ -98,7 +98,7 @@ SyncCommTWI::statusComm_t I2C::transmitStopBit(void) {
 /*!
  * @brief Transmits a byte to the I2C bus.
  * @param address Address of the I2C slave to communicate with
- * @param regOffset
+ * @param regOffset The register offset from where the transmission should begin.
  * @param value Byte to be transmitted
  * @param action Action to perform on the I2C bus
  * @return Status of the I2C communication
@@ -119,7 +119,7 @@ SyncCommTWI::statusComm_t I2C::transmitByte(const uint8_t address, const uint8_t
 /*!
  * @brief Receives a byte from the I2C bus.
  * @param address Address of the I2C slave to communicate with
- * @param regOffset
+ * @param regOffset The register offset from where the reception should begin.
  * @param[out] value Pointer to the byte where the received data will be stored
  * @param action Action to perform on the I2C bus
  * @return Status of the I2C communication
@@ -143,7 +143,7 @@ SyncCommTWI::statusComm_t I2C::receiveByte(const uint8_t address, const uint8_t 
 /*!
  * @brief Transmits a sequence of bytes to the I2C bus.
  * @param address Address of the I2C slave to communicate with.
- * @param regOffset
+ * @param regOffset The register offset from where the transmission should begin.
  * @param values Array of bytes to be transmitted.
  * @param numBytes Number of bytes to be transmitted.
  * @param action Action to perform on the I2C bus.
@@ -167,7 +167,7 @@ SyncCommTWI::statusComm_t I2C::transmitBytes(const uint8_t address, const uint8_
 /*!
  * @brief Receives a sequence of bytes from the I2C bus.
  * @param address Address of the I2C slave to communicate with.
- * @param regOffset
+ * @param regOffset The register offset from where the reception should begin.
  * @param[out] values Pointer to the array of bytes where the received data will be stored.
  * @param numBytes Number of bytes to be received.
  * @param action Action to perform on the I2C bus.

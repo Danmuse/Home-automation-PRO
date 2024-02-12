@@ -41,7 +41,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 
 ### 📚️ __Documentation & Doxygen__
 
-- [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2) `DDM ~ 10`
+- [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2) `DDM ~ 13` `AO ~ 3.5`
 - [x] [Presentation of the project idea.](https://github.com/Danmuse/Home-automation/issues/4) `DDM ~ 9`
 - [ ] [Comprehensive and extensive project report.](https://github.com/Danmuse/Home-automation/issues/8) `CY ~ 22`
 - [ ] Illustrations of the experience and trials.
