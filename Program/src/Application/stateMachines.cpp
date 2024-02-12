@@ -30,7 +30,7 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
     for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) userId |= uid.uidByte[index] << (index * 8);
     for (size_t index = 0; index < userCount; index++) {
         uint32_t registeredUID = 0;
-        result = g_eeprom->read(&registeredUID, M24C16::UINT32, index * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
+        result = g_eeprom->read(&registeredUID, M24C16::UINT32, index * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USERS_INIT_POSITION);
         if (result != EEPROM_OK) return false;
         if (registeredUID == userId) isRegistered = true;
     }
@@ -38,7 +38,7 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
     for (size_t index = 0; index < userCount; index++) {
         uint8_t registeredUID[RFID_USER_UID_SIZE];
         for (size_t j_index = 0; j_index < RFID_USER_UID_SIZE; j_index++) {
-            result = g_eeprom->read(&registeredUID[j_index], M24C16::UINT8, index * RFID_USER_UID_SIZE + USERS_INIT_POSITION + j_index);
+            result = g_eeprom->read(&registeredUID[j_index], M24C16::UINT8, index * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USERS_INIT_POSITION + j_index);
             if (result != EEPROM_OK) return false;
         }
         if (memcmp(registeredUID, uid.uidByte, RFID_USER_UID_SIZE) == 0) isRegistered = true;
@@ -56,11 +56,11 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
 	#if RFID_USER_UID_SIZE == 4 && M24C16_USING_MODIFIERS == 1
     uint32_t userId = 0;
     for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) userId |= uid.uidByte[index] << (index * 8);
-    result = g_eeprom->write(userId, userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
+    result = g_eeprom->write(userId, userCount * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USERS_INIT_POSITION);
     if (result != EEPROM_OK) return false;
 	#else
     for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) {
-        result = g_eeprom->write(uid.uidByte[index], userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION + index);
+        result = g_eeprom->write(uid.uidByte[index], userCount * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USERS_INIT_POSITION + index);
         if (result != EEPROM_OK) return false;
     }
 	#endif
@@ -87,7 +87,8 @@ bool manageUserLocation(const MFRC522::UID_st& uid) {
         if (registeredUID == userId) {
             uint8_t location = 0;
             result = g_eeprom->read(&location, M24C16::UINT8, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
-
+            result = g_eeprom->write((uint8_t)!location, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
+            if (result != EEPROM_OK) return false;
             if (!location) {
                 g_dfplayer->play(8);
                 loggedInUsers++;
@@ -95,9 +96,6 @@ bool manageUserLocation(const MFRC522::UID_st& uid) {
                 g_dfplayer->play(9);
                 loggedInUsers--;
             }
-
-            result = g_eeprom->write((uint8_t)!location, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
-            if (result != EEPROM_OK) return false;
         }
     }
 	#else
@@ -111,18 +109,15 @@ bool manageUserLocation(const MFRC522::UID_st& uid) {
             uint8_t location = 0;
             result = g_eeprom->read(&location, M24C16::UINT8, index * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USER_ENTERED_POSITION);
             if (result != EEPROM_OK) return false;
-
-            if (!location) {
-                g_dfplayer->play(8);
-                loggedInUsers++;
-            } else {
-                g_dfplayer->play(9);
-                loggedInUsers--;
-            }
-            
             result = g_eeprom->write((uint8_t)!location, index * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USER_ENTERED_POSITION);
-
             if (result != EEPROM_OK) return false;
+            if (!location) {
+				g_dfplayer->play(8);
+				loggedInUsers++;
+			} else {
+				g_dfplayer->play(9);
+				loggedInUsers--;
+			}
         }
     }
 	#endif
@@ -210,7 +205,7 @@ void doorOpeningStateMachine(DoorOpeningState& state) {
                 doorOpeningTimer.setTimer(3);
 
                 checkCount = 0;
-                while (manageUserLocation(uuid) && checkCount < 3) checkCount++;
+                while (!manageUserLocation(uuid) && checkCount < 3) checkCount++;
             } else state = DoorOpeningState::WAITING_FOR_RFID;
             break;
         case DoorOpeningState::DOOR_OPEN:
@@ -223,25 +218,24 @@ void doorOpeningStateMachine(DoorOpeningState& state) {
     }
 }
 
-void initUsers() {
+void initUsers(void) {
     bool actionConfirmed = false;
     uint8_t retryCount = 0;
     EEPROM_result_t result;
 
-
     while (!actionConfirmed && retryCount < 3) {
         result = g_eeprom->read(&registeredUsers, M24C16::UINT8, USER_COUNT_POSITION);
         retryCount++;
-        if(result==EEPROM_OK) actionConfirmed = true;
+        if (result == EEPROM_OK) actionConfirmed = true;
     }
     actionConfirmed = false;
     retryCount = 0;
 
-    for(uint8_t i = 0; i < registeredUsers; i++) {
+    for (size_t index = 0; index < registeredUsers; index++) {
         uint8_t location = 0;
 
         while (!actionConfirmed && retryCount < 3) {
-            result = g_eeprom->read(&location, M24C16::UINT8, i * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USER_ENTERED_POSITION);
+            result = g_eeprom->read(&location, M24C16::UINT8, index * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USER_ENTERED_POSITION);
             retryCount++;
             if (result != EEPROM_OK) actionConfirmed = true;
         }

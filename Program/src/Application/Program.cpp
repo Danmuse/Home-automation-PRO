@@ -27,7 +27,8 @@ int main(void) {
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
     initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
-    initUsers();    // Initializes user counter inside userRegistrationStateMachine
+
+    initUsers();    // Initializes the user counter inside userRegistrationStateMachine
 
     QTConnection connection(*g_usb);
     IoTManager iotManager(&connection);
@@ -39,17 +40,17 @@ int main(void) {
     UserRegistrationState userRegistrationState = UserRegistrationState::WAITING_FOR_PASSWORD;
     DoorOpeningState doorOpeningState = DoorOpeningState::WAITING_FOR_RFID;
 
-//    iotManager.registerAction("luz", manualLightControl);
-//    iotManager.registerAction("automatic", modeSelection);
-//    iotManager.registerAction("song", musicFlowControl);
-//    iotManager.registerAction("volume", musicVolumeControl);
-//    iotManager.registerAction("time", dateControl);
-//
-//    iotManager.registerState("song", songId);
-//    iotManager.registerState("song", isSongPlaying, { "pause", "play" });
-//    iotManager.registerState("luz", ledBrightness);
-//    iotManager.registerState("automatic", automaticMode, { "off", "on" });
-//    iotManager.registerState("volume", volume);
+    iotManager.registerAction("luz", manualLightControl);
+    iotManager.registerAction("automatic", modeSelection);
+    iotManager.registerAction("song", musicFlowControl);
+    iotManager.registerAction("volume", musicVolumeControl);
+    iotManager.registerAction("time", dateControl);
+
+    iotManager.registerState("song", songId);
+    iotManager.registerState("song", isSongPlaying, { "pause", "play" });
+    iotManager.registerState("luz", ledBrightness);
+    iotManager.registerState("automatic", automaticMode, { "off", "on" });
+    iotManager.registerState("volume", volume);
 
     g_leds->turnOn();
 
@@ -69,8 +70,8 @@ int main(void) {
 	g_leds->setColor(S5050DJ::WHITE);
 
     /// Code instructions to reset the registered users
-//	#define CN6_PINS
-//	!(g_eeprom->write((uint8_t) 0, 0)) ? LED_RED.clearPin() : LED_RED.setPin();
+//	for (size_t index = 0; index < 255; index++) !(g_eeprom->write((uint8_t)0, index)) ? LED_RED.clearPin() : LED_RED.setPin();
+//	return EXIT_SUCCESS;
 
     while (true) {
         /// External LDR sensor acquisition

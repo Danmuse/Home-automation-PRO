@@ -34,7 +34,7 @@ enum class DoorOpeningState {
         DOOR_OPEN
 };
 
-void initUsers();
+void initUsers(void);
 
 void userRegistrationStateMachine(UserRegistrationState& state);
 void doorOpeningStateMachine(DoorOpeningState& state);
