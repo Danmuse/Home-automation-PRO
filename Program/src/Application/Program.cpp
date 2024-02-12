@@ -101,8 +101,8 @@ int main(void) {
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 
-    g_leds->turnOff();
-    delay(S5050DJ_COMMAND_SLOT_TICKS); // Minimum waiting time to avoid conflicts during the transmission of commands through the NEC protocol.
+//    g_leds->turnOff();
+//    delay(S5050DJ_COMMAND_SLOT_TICKS); // Minimum waiting time to avoid conflicts during the transmission of commands through the NEC protocol.
 
     return EXIT_SUCCESS;
 }

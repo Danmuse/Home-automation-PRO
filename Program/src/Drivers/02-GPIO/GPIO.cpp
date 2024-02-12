@@ -39,13 +39,14 @@ void Gpio::clearPin(void) {
 }
 
 /*!
- * @brief Sets the pin as an output.
+ * @brief Configures the pin as an output.
  */
 void Gpio::setDirOutputs(void) {
 	GPIO->DIRSET[this->m_port] |= (1 << this->m_bit);
 }
+
 /*!
- * @brief Sets the pin as an input.
+ * @brief Configures the pin as an input.
  */
 void Gpio::setDirInputs(void) {
 	GPIO->DIRCLR[this->m_port] |= (1 << this->m_bit);
@@ -83,6 +84,7 @@ void Gpio::setPinResistor(void) {
 	IOCON->PIO[index] |= (this->m_mode << 3);
 	// IOCON_PIO_OD(this->m_mode);
 }
+
 /*!
  * @brief Configures the pin as an input or output with the corresponding modifications.
  */

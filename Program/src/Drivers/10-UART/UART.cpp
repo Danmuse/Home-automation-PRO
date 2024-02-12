@@ -135,6 +135,7 @@ void UART::enableInterrupt(void) {
 void UART::disableInterrupt(void) {
 	this->m_usart->INTENCLR = (1 << 2); // Disable TX interruption.
 }
+
 /*!
  * @brief Uses the switching matrix to link the UART module to the established pins.
  */

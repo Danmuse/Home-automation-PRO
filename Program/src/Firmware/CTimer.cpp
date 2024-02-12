@@ -100,6 +100,7 @@ void CTimer::configMatch(uint32_t timeTicks, actionInterruption_t actionInterrup
 void CTimer::bindHandler(const CTimerHandler handlerFunction) {
 	this->m_handlerFunction = handlerFunction;
 }
+
 /*!
  * @brief Unbind handler for match interrupt.
  */
