@@ -18,7 +18,9 @@
 #define RFID_USER_UID_SIZE 4
 #define USERS_INIT_POSITION 2
 #define USER_ENTERED_POSITION 1
+#define USER_COUNT_POSITION 0
 #define USER_ENTERED_SIZE 1
+
 #define MAX_USERS 50
 
 enum class UserRegistrationState {
@@ -31,6 +33,8 @@ enum class DoorOpeningState {
         CHECKING_USER,
         DOOR_OPEN
 };
+
+void initUsers();
 
 void userRegistrationStateMachine(UserRegistrationState& state);
 void doorOpeningStateMachine(DoorOpeningState& state);

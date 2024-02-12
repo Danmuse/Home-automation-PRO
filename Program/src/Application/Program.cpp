@@ -27,6 +27,7 @@ int main(void) {
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
     initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
+    initUsers();    // Initializes user counter inside userRegistrationStateMachine
 
     QTConnection connection(*g_usb);
     IoTManager iotManager(&connection);
