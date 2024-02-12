@@ -212,7 +212,7 @@ public:
 	void dumpVersion(void);
 	void dumpUID(UID_st* UID);
 	void dumpDetails(UID_st* UID);
-	char* printUID(void);
+	char* printUID(bool appendLineFeed = true);
 
 	virtual ~MFRC522();
 };

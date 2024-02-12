@@ -905,7 +905,7 @@ void MFRC522::dumpDetails(UID_st* UID) {
 }
 
 
-char *MFRC522::printUID(void) {
+char *MFRC522::printUID(bool appendLineFeed) {
     static char RFIDstr[RFID_STR_SIZE];
     RFIDstr[0] = 'U';
     RFIDstr[1] = 'I';
@@ -919,8 +919,8 @@ char *MFRC522::printUID(void) {
     byteToHEX(&RFIDstr[11], this->m_UID.uidByte[2]);
     RFIDstr[13] = ' ';
     byteToHEX(&RFIDstr[14], this->m_UID.uidByte[3]);
-    RFIDstr[16] = '\n';
-    RFIDstr[17] = '\0';
+    if (appendLineFeed) { RFIDstr[16] = '\n'; RFIDstr[17] = '\0'; }
+    else RFIDstr[16] = '\0';
     return RFIDstr;
 }
 

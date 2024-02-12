@@ -59,16 +59,16 @@ int main(void) {
         g_lcd->write("|  Automation PRO  |", 2, 0);
         g_lcd->write("*------------------*", 3, 0);
 		g_leds->setMode(S5050DJ::FADE);
-    	g_dfplayer->play(3);
-    	// NOTE: The opening song during approximately 30 seconds
-        delay(15000); // TODO: Replace this instruction by the method that corresponds.
+    	g_dfplayer->play(1);
+        delay(DFPLAYER_TIMEOUT_TICKS);
+        while (g_dfplayer->getStatus() != DFPLAYER_READY) { }
+        g_lcd->clear();
     }
 
-    g_lcd->clear();
 	g_leds->setColor(S5050DJ::WHITE);
 
     while (true) {
-        /// External preset acquisition
+        /// External LDR sensor acquisition
         if (automaticMode) {
 			uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
 //			g_lcd->write("ANALOG: ", 0, 0);
@@ -78,31 +78,22 @@ int main(void) {
 				ledBrightness = currentBright;
 				uint8_t brightness = ledBrightness;
 				g_leds->setBrightness(brightness);
-//				g_lcd->write("BRIGHT: ", 1, 0);
-//				brightness = g_leds->getBrightness();
-//				g_lcd->write(brightness, 1, 8);
-//				g_lcd->write("ERRCODE ", 2, 0);
-//				g_lcd->write(g_ds3231->getStatus(), 2, 8);
 			}
-//			else {
-//				g_lcd->write("BRIGHT: ", 1, 0);
-//				g_lcd->write(ledBrightness, 1, 8);
-//				g_lcd->write("ERRCODE ", 2, 0);
-//				g_lcd->write(g_ds3231->getStatus(), 2, 8);
-//			}
         }
+
+        /// Upgrade RTC timestamp legend
+        g_ds3231->get();
+        if (!(g_ds3231->getStatus())) g_lcd->write(g_ds3231->printTimestamp(false), 3, 0);
 
     	/// Machine states
 		userRegistrationStateMachine(userRegistrationState);
 		doorOpeningStateMachine(doorOpeningState);
 
-		// TODO: volume= g_dfplayer->getVolume();
+		/// Upgrade the DFPLayer's volume
+		volume = g_dfplayer->getVolume();
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
-
-//    g_leds->turnOff();
-//    delay(S5050DJ_COMMAND_SLOT_TICKS); // Minimum waiting time to avoid conflicts during the transmission of commands through the NEC protocol.
 
     return EXIT_SUCCESS;
 }
@@ -466,7 +457,7 @@ int main(void) {
 	initUSB0();		// Initializes the g_usb         ~ Define the USB0_PINS macro in ProgramConfig.h {P0.24 - P0.25}
 	initRFID();		// Initializes the g_rfid        ~ Define the SPI1_DEBUG_PINS macro in ProgramConfig.h {P0.19 - P0.22 - P0.21 - P0.20 - P0.18}
 //	initPreset();	// Initializes the g_preset      ~ Define the ANALOG_FST_CHANNEL_ENABLED macro in ProgramConfig.h {P0.07}
-//	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
+	initADC();		// Initializes the g_adcExternal ~ Define the ANALOG_SND_CHANNEL_ENABLED macro in ProgramConfig.h {P0.06}
 //	initDAC();		// Initializes the g_dacExternal ~ Define the CN7_PINS and DAC_SND_CHANNEL_ENABLED macros in ProgramConfig.h {P0.29}
 
     UserRegistrationState userRegistrationState = UserRegistrationState::WAITING_FOR_PASSWORD;
@@ -487,24 +478,26 @@ int main(void) {
 //	LED_GREEN.clearPin();
 //	LED_BLUE.clearPin();
 
+	g_ds3231->set(0, 38, 20, 4, 2, 2024);
+
 //	if (g_ds3231->set(0, 38, 20, 4, 2, 2024)) {
 //		LED_GREEN.setPin();
 //		LED_RED.setPin();
 //	} else LED_RED.clearPin();
 
-	g_dfplayer->volume(50); // Set volume value. From 0% to 100%
-	g_dfplayer->play(1); // Play the first mp3
-
-	uint8_t volume = 50;
-	uint8_t keyPressed = NO_KEY;
+//	g_dfplayer->volume(50); // Set volume value. From 0% to 100%
+//	g_dfplayer->play(1); // Play the first mp3
+//
+//	uint8_t volume = 50;
+//	uint8_t keyPressed = NO_KEY;
 
     while (1) {
-    	/*/// DS3231 RTC
+    	///*/// DS3231 RTC
 
     	g_ds3231->get();
-    	g_lcd->write(g_ds3231->printTimestamp(), 0, 0);
+    	g_lcd->write(g_ds3231->printTimestamp(false), 0, 0);
 
-    	*/
+    	//*/
 
        	/*/// SevenSegmentDisplay
 
@@ -627,7 +620,7 @@ int main(void) {
 //
 //		delay(1000);
 
-       	///*/// DFPlayer
+       	/*/// DFPlayer
 
     	keyPressed = g_keyboard->get();
     	if (keyPressed == 0) {
@@ -647,7 +640,7 @@ int main(void) {
 
     	g_lcd->clear();
 
-		//*/
+		*/
 
 //    	userRegistrationStateMachine(userRegistrationState);
 //    	doorOpeningStateMachine(doorOpeningState);

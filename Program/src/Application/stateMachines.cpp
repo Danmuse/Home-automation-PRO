@@ -10,7 +10,7 @@
 
 #include "stateMachines.h"
 
-static void clearHandler();
+static void clearHandler(void);
 static bool isUserRegistered(const MFRC522::UID_st& uid);
 
 static bool registerNewUser(const MFRC522::UID_st& uid);
@@ -22,7 +22,7 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
     bool isRegistered = false;
 
     if (result != EEPROM_OK) return false;
-#if RFID_USER_UID_SIZE == 4 && M24C16_USING_MODIFIERS == 1
+	#if RFID_USER_UID_SIZE == 4 && M24C16_USING_MODIFIERS == 1
     uint32_t userId = 0;
     for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) userId |= uid.uidByte[index] << (index * 8);
     for (size_t index = 0; index < userCount; index++) {
@@ -31,7 +31,7 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
         if (result != EEPROM_OK) return false;
         if (registeredUID == userId) isRegistered = true;
     }
-#else
+	#else
     for (size_t index = 0; index < userCount; index++) {
         uint8_t registeredUID[RFID_USER_UID_SIZE];
         for (size_t j_index = 0; j_index < RFID_USER_UID_SIZE; j_index++) {
@@ -40,7 +40,7 @@ static bool isUserRegistered(const MFRC522::UID_st& uid) {
         }
         if (memcmp(registeredUID, uid.uidByte, RFID_USER_UID_SIZE) == 0) isRegistered = true;
     }
-#endif
+	#endif
     return isRegistered;
 }
 
@@ -49,17 +49,17 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
     EEPROM_result_t result = g_eeprom->read(&userCount, M24C16::UINT8, 0);
 
     if (result != EEPROM_OK) return false;
-#if RFID_USER_UID_SIZE == 4 && M24C16_USING_MODIFIERS == 1
+	#if RFID_USER_UID_SIZE == 4 && M24C16_USING_MODIFIERS == 1
     uint32_t userId = 0;
     for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) userId |= uid.uidByte[index] << (index * 8);
     result = g_eeprom->write(userId, userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION);
     if (result != EEPROM_OK) return false;
-#else
+	#else
     for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) {
         result = g_eeprom->write(uid.uidByte[index], userCount * RFID_USER_UID_SIZE + USERS_INIT_POSITION + index);
         if (result != EEPROM_OK) return false;
     }
-#endif
+	#endif
 
     result = g_eeprom->write((uint8_t)0, USER_ENTERED_POSITION);
     if (result != EEPROM_OK) return false;
@@ -67,12 +67,13 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
     if (result != EEPROM_OK) return false;
     return true;
 }
+
 bool manageUserLocation(const MFRC522::UID_st& uid) {
     uint8_t userCount = 0;
     EEPROM_result_t result = g_eeprom->read(&userCount, M24C16::UINT8, 0);
 
     if (result != EEPROM_OK) return false;
-#if RFID_USER_UID_SIZE == 4 && M24C16_USING_MODIFIERS == 1
+	#if RFID_USER_UID_SIZE == 4 && M24C16_USING_MODIFIERS == 1
     uint32_t userId = 0;
     for (size_t index = 0; index < RFID_USER_UID_SIZE; index++) userId |= uid.uidByte[index] << (index * 8);
     for (size_t index = 0; index < userCount; index++) {
@@ -83,18 +84,14 @@ bool manageUserLocation(const MFRC522::UID_st& uid) {
             uint8_t location = 0;
             result = g_eeprom->read(&location, M24C16::UINT8, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
 
-            if(location == 0) {
-                g_dfplayer->play(8);
-            }
-            else {
-                g_dfplayer->play(9);
-            }
+            if (!location) g_dfplayer->play(8);
+            else g_dfplayer->play(9);
 
             result = g_eeprom->write((uint8_t)!location, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
             if (result != EEPROM_OK) return false;
         }
     }
-#else
+	#else
     for (size_t index = 0; index < userCount; index++) {
         uint8_t registeredUID[RFID_USER_UID_SIZE];
         for (size_t j_index = 0; j_index < RFID_USER_UID_SIZE; j_index++) {
@@ -106,36 +103,41 @@ bool manageUserLocation(const MFRC522::UID_st& uid) {
             result = g_eeprom->read(&location, M24C16::UINT8, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
             if (result != EEPROM_OK) return false;
 
-            if(location == 0) {
-                g_dfplayer->play(8);
-            }
-            else {
-                g_dfplayer->play(9);
-            }
+            if (!location) g_dfplayer->play(8);
+            else g_dfplayer->play(9);
 
             result = g_eeprom->write((uint8_t)!location, index * RFID_USER_UID_SIZE - USER_ENTERED_POSITION);
             if (result != EEPROM_OK) return false;
         }
     }
-#endif
+	#endif
     return true;
 }
 
-void clearHandler() {
+void clearHandler(void) {
     g_lcd->clear();
 }
 
 KeyboardPassword keyBoardPassword("1222112", g_keyboard);
 Timer userRegistrationTimer(nullptr, Timer::SEC);
-Timer clearCommandTimer(clearHandler,Timer::SEC);
+Timer clearCommandTimer(clearHandler, Timer::SEC);
 
 void userRegistrationStateMachine(UserRegistrationState& state) {
     clearCommandTimer.timerEvent();
     switch (state) {
         case UserRegistrationState::WAITING_FOR_PASSWORD:
+        	if (!(clearCommandTimer.getTicks())) {
+				g_lcd->write("Registered users: ", 0, 0);
+				g_lcd->write(0 /* TODO: Change by the correspond value */, 0, 18);
+//				if (GLOBAL_REGISTERED_USERS_VARIABLE < 10) g_lcd->write(" ", 0, 19); // TODO: Edit and uncomment when implemented
+        		g_lcd->write("Logged in users:  ", 1, 0);
+        		g_lcd->write(0 /* TODO: Change by the correspond value */, 1, 18);
+//        		if (GLOBAL_LOGGED_IN_USERS_VARIABLE < 10) g_lcd->write(" ", 1, 19); // TODO: Edit and uncomment when implemented
+        	}
             if (keyBoardPassword.checkPassword()) {
+            	g_lcd->clear();
                 state = UserRegistrationState::WAITING_FOR_USER;
-                userRegistrationTimer.setTimer(30);
+                userRegistrationTimer.setTimer(20);
             }
             break;
         case UserRegistrationState::WAITING_FOR_USER:
@@ -149,20 +151,22 @@ void userRegistrationStateMachine(UserRegistrationState& state) {
                     while (!registerNewUser(uuid) && registerAttempts < 3) registerAttempts++;
                 }
 
-                g_lcd->write("Registered user");
-//                LED_GREEN.clearPin();
+                // TODO: Edit and uncomment when implemented
+//                if (USER_HAS_BEEN_REGISTERED) {
+//					g_lcd->write("The user has already", 0, 0);
+//					g_lcd->write("been registered!", 1, 2);
+//                } else {
+					g_lcd->write("Success registering!", 1, 0);
+//                }
+
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
-
-                clearCommandTimer.setTimer(5);
-                userRegistrationTimer.setTimer(5);
-            } // else LED_GREEN.setPin();
-
+                clearCommandTimer.setTimer(6);
+                userRegistrationTimer.setTimer(6);
+            } else g_lcd->write("Present the RFID", 1, 2);
             if (userRegistrationTimer.getTicks() == 0) {
-//                LED_GREEN.clearPin();
                 state = UserRegistrationState::WAITING_FOR_PASSWORD;
-
-                g_lcd->write("Timeout error");
-                clearCommandTimer.setTimer(2);
+                g_lcd->write("Timeout, try again", 1, 1);
+                clearCommandTimer.setTimer(5);
             }
             break;
     }
@@ -177,10 +181,9 @@ void doorOpeningStateMachine(DoorOpeningState& state) {
 
     switch (state) {
         case DoorOpeningState::WAITING_FOR_RFID:
-            if (userRegistrationTimer.getTicks() == 0) {
+            if (!(userRegistrationTimer.getTicks())) {
                 RFID_status_t result = RFID_BUSY;
                 while (result == RFID_BUSY) result = g_rfid->getUID(&uuid);
-
                 if (result == RFID_SUCCESS) state = DoorOpeningState::CHECKING_USER;
             }
             break;
@@ -195,14 +198,11 @@ void doorOpeningStateMachine(DoorOpeningState& state) {
                 doorOpeningTimer.setTimer(3);
 
                 checkCount = 0;
-                while (manageUserLocation(uuid) && checkCount < 3) {
-                    checkCount++;
-                }
-
+                while (manageUserLocation(uuid) && checkCount < 3) checkCount++;
             } else state = DoorOpeningState::WAITING_FOR_RFID;
             break;
         case DoorOpeningState::DOOR_OPEN:
-            if (doorOpeningTimer.getTicks() == 0) {
+            if (!(doorOpeningTimer.getTicks())) {
                 g_servo->setAngle(0);
                 state = DoorOpeningState::WAITING_FOR_RFID;
                 userRegistrationTimer.setTimer(1);

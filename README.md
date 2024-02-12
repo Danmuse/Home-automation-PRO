@@ -35,13 +35,13 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 - [ ] [Relational database implementation to manage automation created in Qt Creator.](https://github.com/Danmuse/Home-automation-PRO/issues/13) `LC ~ 29` `AO ~ 20`
 - [ ] Implementation of AT commands for WiFi module configuration and voice commands.
 - [ ] [Achieving connectivity between sensors and modules with **LPC845-BRK**.](https://github.com/Danmuse/Home-automation/issues/6) <br>
-`DDM ~ 250` `AO ~ 116.5` `LC ~ 14` `CY ~ 8`
+`DDM ~ 254` `AO ~ 117` `LC ~ 14` `CY ~ 8`
 - [ ] [Communication with **MySQL** Relational Database.](https://github.com/Danmuse/Home-automation/issues/7) `LC ~ 6` `AO ~ 4`
 - [ ] [Micro SD card adaptation for data handling and ".mp3" files using DFPlayer module.](https://github.com/Danmuse/Home-automation-PRO/issues/27) `DDM ~ 16`
 
 ### 📚️ __Documentation & Doxygen__
 
-- [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2) `DDM ~ 13` `AO ~ 3.5`
+- [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2) `DDM ~ 13` `AO ~ 6`
 - [x] [Presentation of the project idea.](https://github.com/Danmuse/Home-automation/issues/4) `DDM ~ 9`
 - [ ] [Comprehensive and extensive project report.](https://github.com/Danmuse/Home-automation/issues/8) `CY ~ 22`
 - [ ] Illustrations of the experience and trials.

@@ -32,8 +32,6 @@ enum class DoorOpeningState {
 };
 
 void userRegistrationStateMachine(UserRegistrationState& state);
-
 void doorOpeningStateMachine(DoorOpeningState& state);
-
 
 #endif /* STATE_MACHINES_H_ */
