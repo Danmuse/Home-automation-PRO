@@ -14,15 +14,6 @@
 
 #include "utils.h"
 
-/*
-typedef struct {
-    const char *name;
-    // TODO: MAYBE NOT INTEGRER
-    int &variable;
-    int uploadPeriod;
-    int uploadCounter;
-} IoTVariable_st;
-*/
 typedef struct {
         const char* name;
         void* variable; //NOTE: only int(or derivate) and bool are supported
