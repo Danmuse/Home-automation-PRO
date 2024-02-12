@@ -23,6 +23,12 @@ m_SPI{(SPI_Type *)(SPI0_BASE + channel * SPI_OFFSET_BASE)}, m_bindSSELs{0}, m_bi
 	}
 }
 
+/*!
+ * @brief Configures the SPI channel.
+ * @param master Whether the SPI is master or slave.
+ * @param mode Mode of the SPI communication
+ * @param frequency Frequency for the SPI communication
+ */
 void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) {
     uint8_t CPHA = 0, CPOL = 0;
 
@@ -66,7 +72,8 @@ void SPI::config(bool master, mode_t mode, frequencyComm_t frequency) {
     this->m_SPI->CFG |= SPI_CFG_ENABLE_MASK; // Enable SPI channel
 }
 
-/* @brief Binds SSEL GPIO to the channel.
+/*!
+ * @brief Binds SSEL GPIO to the SPI channel.
  * @param SSEL GPIO to be binded.
  * @param bindedSSEL Number of the SSEL, use it for transmission and reception.
  * @return Whether or not the SSEL was added.
@@ -94,7 +101,8 @@ bool SPI::bindSSEL(const Gpio &SSEL, uint8_t &bindedSSEL) {
     return true;
 }
 
-/* @brief Unbinds SSEL GPIO to the channel.
+/*!
+ * @brief Unbinds SSEL GPIO to the channel.
  * @param SSEL GPIO to be unbinded.
  * @param unbindedSSEL Number of the SSEL, use it for transmission and reception.
  * @return Whether or not the SSEL was added.
@@ -122,12 +130,20 @@ bool SPI::unbindSSEL(uint8_t unbindedSSEL) {
     return true;
 }
 
+/*!
+ * @brief Changes the baud rate for the SPI communication.
+ * @param frequency New frequency for the SPI communication.
+ */
 void SPI::setBaudRate(frequencyComm_t frequency) {
 	this->m_SPI->CFG &= ~SPI_CFG_ENABLE_MASK; // Disable SPI channel
 	this->m_SPI->DIV = (FREQ_CLOCK_MCU / frequency) - 1;
 	this->m_SPI->CFG |= SPI_CFG_ENABLE_MASK; // Enable SPI channel
 }
 
+/*!
+ * @brief Enables the Slave Select for the SPI communication.
+ * @param SSEL Number of the Slave.
+ */
 void SPI::enableSSEL(uint8_t SSEL) {
 	if (this->m_SPI == SPI0) g_SPI[SPI_CHANNEL0] = this;
 	if (this->m_SPI == SPI1) g_SPI[SPI_CHANNEL1] = this;
@@ -137,6 +153,10 @@ void SPI::enableSSEL(uint8_t SSEL) {
 //	this->m_SPI->CFG |= SPI_CFG_ENABLE_MASK; // Enable SPI channel
 }
 
+/*!
+ * @brief Disables the Slave Select for the SPI communication.
+ * @param SSEL Number for the slave.
+ */
 void SPI::disableSSEL(uint8_t SSEL) {
 	if (this->m_SPI == SPI0) g_SPI[SPI_CHANNEL0] = this;
 	if (this->m_SPI == SPI1) g_SPI[SPI_CHANNEL1] = this;
@@ -146,6 +166,11 @@ void SPI::disableSSEL(uint8_t SSEL) {
 //	this->m_SPI->CFG |= SPI_CFG_ENABLE_MASK; // Enable SPI channel
 }
 
+/*!
+ * @brief Transmit message through the SPI channel.
+ * @param message Message to be transmitted.
+ * @note The message must be null-terminated.
+ */
 void SPI::transmit(const char *message) {
     while (*message) {
         this->pushSend(*message);
@@ -162,6 +187,11 @@ void SPI::transmit(const char *message) {
     this->m_SPI->STAT |= SPI_STAT_ENDTRANSFER_MASK;
 }
 
+/*!
+ * @brief Transmit message through the SPI channel.
+ * @param message Array of bytes to be transmitted.
+ * @param length Length of the message.
+ */
 void SPI::transmitBytes(uint8_t *message, uint8_t length) {
     for (size_t index = 0; index < length; index++) {
     	this->pushSend(message[index]);
@@ -176,6 +206,12 @@ void SPI::transmitBytes(uint8_t *message, uint8_t length) {
     this->m_SPI->STAT |= SPI_STAT_ENDTRANSFER_MASK;
 }
 
+/*!
+ * @brief Receive a message through the SPI channel.
+ * @param address TODO: FINISH THIS
+ * @param message
+ * @return
+ */
 bool SPI::receive(uint8_t *address, uint8_t &message) {
     bool resultCommunication = false;
 	this->enableReceiveInterrupt();
@@ -244,6 +280,9 @@ void SPI::enableClock(void) {
 	else if (this->m_SPI == SPI1) SYSCON->FCLKSEL[10] = 1;
 }
 
+/*!
+ * @brief Uses the switching matrix to link SPI module to the established pins.
+ */
 void SPI::enableSWM(void) {
     SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	if (this->m_SPI == SPI0) {
@@ -256,11 +295,20 @@ void SPI::enableSWM(void) {
     SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
+/*!
+ * @brief Pushes data to the receive buffer.
+ * @param data Data to be pushed.
+ */
 void SPI::pushReceive(uint8_t data) {
 	this->m_receiveBuffer[this->m_receiveBufferIndexIn++] = data;
 	this->m_receiveBufferIndexIn %= RECEIVE_BUFFER_SIZE;
 }
 
+/*!
+ * @brief Pops data from the receive buffer.
+ * @param[out] data Pointer to where the data will be stored.
+ * @return Whether or not there was data to pop.
+ */
 bool SPI::popReceive(uint8_t *data) {
     if (this->m_receiveBufferIndexIn != this->m_receiveBufferIndexOut) {
         *data = this->m_receiveBuffer[this->m_receiveBufferIndexOut++];
@@ -270,11 +318,20 @@ bool SPI::popReceive(uint8_t *data) {
     return false;
 }
 
+/*!
+ * @brief Pushes data to the send buffer.
+ * @param data Data to be pushed.
+ */
 void SPI::pushSend(uint8_t data) {
 	this->m_sendBuffer[this->m_sendBufferIndexIn++] = data;
 	this->m_sendBufferIndexIn %= SEND_BUFFER_SIZE;
 }
 
+/*!
+ * @brief Pops data from the send buffer.
+ * @param[out] data Pointer to where the data will be stored.
+ * @return Whether or not there was data to pop.
+ */
 bool SPI::popSend(uint8_t *data) {
     if (this->m_sendBufferIndexIn != this->m_sendBufferIndexOut) {
         *data = this->m_sendBuffer[this->m_sendBufferIndexOut++];

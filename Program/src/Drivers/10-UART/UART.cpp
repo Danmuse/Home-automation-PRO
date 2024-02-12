@@ -29,11 +29,20 @@ m_indexRXIn{0}, m_indexRXOut{0}, m_indexTXIn{0}, m_indexTXOut{0}, m_flagTX{false
 	}
 }
 
+/*!
+ * @brief Pushes a byte into the RX buffer.
+ * @param data Byte to be pushed into the RX buffer.
+ */
 void UART::pushRX(uint8_t data) {
 	this->m_bufferRX[this->m_indexRXIn++] = data;
 	this->m_indexRXIn %= RX_BUFFER_SIZE;
 }
 
+/*!
+ * @brief Pops a byte from the RX buffer.
+ * @param[out] data Pointer to where the byte will be stored.
+ * @return True if the RX buffer was not empty, false otherwise.
+ */
 bool UART::popRX(uint8_t *data) {
 	if (this->m_indexRXIn != this->m_indexRXOut) {
 		*data = this->m_bufferRX[this->m_indexRXOut++];
@@ -43,11 +52,20 @@ bool UART::popRX(uint8_t *data) {
 	return false;
 }
 
+/*!
+ * @brief Pushes a byte into the TX buffer.
+ * @param data Byte to be pushed into the TX buffer.
+ */
 void UART::pushTX(uint8_t data) {
 	this->m_bufferTX[this->m_indexTXIn++] = data;
 	this->m_indexTXIn %= TX_BUFFER_SIZE;
 }
 
+/*!
+ * @brief Pops a byte from the TX buffer.
+ * @param[out] data Pointer to where the byte will be stored.
+ * @return True if the TX buffer was not empty, false otherwise.
+ */
 bool UART::popTX(uint8_t *data) {
 	if (this->m_indexTXIn != this->m_indexTXOut) {
 		*data = this->m_bufferTX[this->m_indexTXOut++];
@@ -57,6 +75,11 @@ bool UART::popTX(uint8_t *data) {
 	return false;
 }
 
+/*!
+ * @brief Transmits a message through the UART channel.
+ * @param message Message to be transmitted.
+ * @note The message must be null-terminated
+ */
 void UART::transmit(const char *message) {
 	while (*message) {
 		this->pushTX(*message);
@@ -69,6 +92,11 @@ void UART::transmit(const char *message) {
 	}
 }
 
+/*!
+ * @brief Transmits a message through the UART channel.
+ * @param message Message to be transmitted.
+ * @param length Length of the message.
+ */
 void UART::transmit(const char *message, uint8_t length) {
 	for (uint8_t index = 0; index < length; index++) {
 		this->pushTX(message[index]);
@@ -79,6 +107,12 @@ void UART::transmit(const char *message, uint8_t length) {
 	}
 }
 
+/*!
+ * @brief Receives a message of the specified length through the UART channel.
+ * @param[out] message Pointer to where the message will be stored.
+ * @param length Length of the message.
+ * @return True if the message was received, false otherwise.
+ */
 bool UART::receive(char *message, uint8_t length) {
 	uint8_t data;
 	static uint8_t cont = 0;
@@ -101,7 +135,9 @@ void UART::enableInterrupt(void) {
 void UART::disableInterrupt(void) {
 	this->m_usart->INTENCLR = (1 << 2); // Disable TX interruption.
 }
-
+/*!
+ * @brief Uses the switching matrix to link the UART module to the established pins.
+ */
 void UART::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 |= SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 	if (this->m_usart == USART0) SWM->PINASSIGN.PINASSIGN0 &= ((((at(TX_IDX).getBit() + at(TX_IDX).getPort() * 0x20) << 0) | ((at(RX_IDX).getBit() + at(RX_IDX).getPort() * 0x20) << 8)) | ~(0xFFFF << 0));
@@ -114,6 +150,12 @@ void UART::enableSWM(void) {
 	SYSCON->SYSAHBCLKCTRL0 &= ~SYSCON_SYSAHBCLKCTRL0_SWM_MASK;
 }
 
+/*!
+ * @brief Configures the UART module with the specified parameters.
+ * @param baudrate Baudrate of the UART module.
+ * @param data_bits Number of data bits.
+ * @param parity Parity of the UART module.
+ */
 void UART::config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 	this->m_usart->CFG = ((0 << 0) // 0 = DISABLE 		1 = ENABLE
 	| (data_bits << 2) 		  	   // 0 = 7 BITS 		1 = 8 BITS 		2 = 9 BITS
@@ -138,6 +180,10 @@ void UART::config(uint32_t baudrate, data_bits_t data_bits, parity_t parity) {
 	this->m_usart->CFG |= (1 << 0); // Enable USART
 }
 
+/*!
+ * @brief Changes the baudrate of the UART module.
+ * @param baudrate New baudrate of the UART module.
+ */
 void UART::setBaudRate(uint32_t baudrate) {
 	this->m_usart->CFG &= ~(1 << 0); // Disable UART
 	this->m_usart->BRG = ((FREQ_CLOCK_MCU / baudrate) / (this->m_usart->OSR + 1)) - 1; // Change baudrate

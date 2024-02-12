@@ -24,7 +24,7 @@ protected:
 	volatile bool		m_TmrEvent;		// Terminated timer (Shot a flag)
 	TimerHandler		m_TmrHandler;	// Function to be executed when it's terminated
 	volatile standby_t	m_TmrStandBy; 	// Pause the timer
-	volatile uint8_t	m_TmrBase;		// Timer unit (DEC - SEG - MIN)
+	volatile bases_t	m_TmrBase;		// Timer unit (DEC - SEG - MIN)
 	
 	void callbackMethod(void) override;
 public:
