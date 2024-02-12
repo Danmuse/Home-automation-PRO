@@ -70,6 +70,12 @@ void LCD::_write(const int32_t value) {
     this->_write(ptr_number);
 }
 
+/*!
+ * @brief Writes a string in the LCD on the specified position.
+ * @param ptr_str String to be written to the display.
+ * @param row Row where the string will be written.
+ * @param column Column where the string will be written.
+ */
 void LCD::write(const int8_t *ptr_str, uint8_t row, uint8_t column) {
 	if ((this->m_columns * row) + column <= this->m_columns * this->m_rows) {
 		this->m_position = (this->m_columns * row) + column;
@@ -77,6 +83,12 @@ void LCD::write(const int8_t *ptr_str, uint8_t row, uint8_t column) {
 	}
 }
 
+/*!
+ * @brief Writes a number in the LCD on the specified position.
+ * @param value Number to be written to the display.
+ * @param row Row where the number will be written.
+ * @param column Column where the number will be written.
+ */
 void LCD::write(const int32_t value, const uint8_t row, const uint8_t column) {
 	if ((this->m_columns * row) + column <= this->m_columns * this->m_rows) {
 		this->m_position = (this->m_columns * row) + column;
@@ -84,6 +96,9 @@ void LCD::write(const int32_t value, const uint8_t row, const uint8_t column) {
 	}
 }
 
+/*!
+ * @brief Clears the LCD display.
+ */
 void LCD::clear(void) {
 	for (uint8_t index = 0; index < (this->m_rows * this->m_columns); index++) this->m_buffer[index] = ' ';
 	this->m_position = 0;

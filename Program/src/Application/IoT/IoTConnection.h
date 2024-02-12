@@ -20,11 +20,24 @@ class IoTConnection {
     public:
         IoTConnection() = default;
 
+        /*!
+         * @brief Processes the incoming message
+         */
         virtual void receiveMessage() = 0; // TODO: This returned char*, maybe I'll need it
+
+        /*!
+         * @brief Manages the initialization of the communication.
+         */
         virtual void establishConnection() = 0;
 
+        /*!
+         * @brief Uploads a IoTVariable to the cloud.
+         */
         virtual void uploadVariable(IoTVariable_st variable) = 0;
 
+        /*!
+         * @brief Suscribes a listener to the IoTConnection.
+         */
         virtual void suscribeListener(IoTListener* listener) = 0;
 
         virtual ~IoTConnection() = default;
