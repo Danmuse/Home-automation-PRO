@@ -67,8 +67,8 @@ private:
 	bool m_isAvailable;
 	bool m_isSending;
 
-	void uint16ToArray(uint16_t value, uint8_t *array);
-	uint16_t arrayToUint16(uint8_t *array);
+//	void uint16ToArray(uint16_t value, uint8_t *array);
+//	uint16_t arrayToUint16(uint8_t *array);
 	uint16_t calculateCheckSum(uint8_t *buffer);
 	void resetConditions(void);
 	void parseStack(void);

@@ -27,6 +27,10 @@ m_externalActivity{HIGH} {
 	g_callback_list.push_back(this);
 }
 
+/*!
+ * @brief Transmission command used by CTimer's match interruption.
+ * @param command Command to send to the LED strip
+ */
 void S5050DJ::transmitCommand(uint16_t command) {
 	static uint8_t indexBit = 0;
 	static bool activityBit, idleStateBit = false;
@@ -97,6 +101,10 @@ void S5050DJ::transmitCommand(uint16_t command) {
 	#endif
 }
 
+/*!
+ * @breif Prepares conditions for the command transmission.
+ * @Note This function is periodically called by Systick.
+ */
 void S5050DJ::prepareConditions(void) {
 	g_ctimer_instance = this;
 	externalOutput_instance = this->m_externalOutput;
@@ -115,12 +123,20 @@ void S5050DJ::changeExternalOutput(actionInterruption_t actionInterrupt) {
 	this->configMatch(S5050DJ_DEBOUNCE_TIME, actionInterrupt);
 }
 
+/*!
+ * @brief Adds an action to the command queue.
+ * @param action Action to add to the queue
+ */
 void S5050DJ::setAction(actionSetting_t action) {
 	if (action == TURNON_LEDS) this->m_externalActivity = HIGH;
 	else if (action == TURNOFF_LEDS) this->m_externalActivity = LOW;
 	this->m_commandQueue.push(((S5050DJ_ADDR << (2 * BYTE_SIZE)) | action));
 }
 
+/*!
+ * @brief Sets the color of the LED strip.
+ * @param color Color to set.
+ */
 void S5050DJ::setColor(colorSetting_t color) {
 #if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
@@ -128,6 +144,10 @@ void S5050DJ::setColor(colorSetting_t color) {
 	this->m_commandQueue.push(((S5050DJ_ADDR << (2 * BYTE_SIZE)) | color));
 }
 
+/*!
+ * @brief Sets the mode of the LED strip.
+ * @param mode The mode setting to be applied to the S5050DJ device.
+ */
 void S5050DJ::setMode(modeSetting_t mode) {
 #if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
@@ -135,6 +155,10 @@ void S5050DJ::setMode(modeSetting_t mode) {
 	this->m_commandQueue.push(((S5050DJ_ADDR << (2 * BYTE_SIZE)) | mode));
 }
 
+/*!
+ * @brief Sets the brightness of the LED strip.
+ * @param percentage Percentage of brightness to set.
+ */
 void S5050DJ::setBrightness(uint8_t percentage) {
 	#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 //	if (!((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
@@ -187,6 +211,10 @@ void S5050DJ::setBrightness(uint8_t percentage) {
 	#endif
 }
 
+/*!
+ * @brief Sets the speed of the LED strip sequence.
+ * @param percentage Percentage of speed to set.
+ */
 void S5050DJ::setSequenceSpeed(uint8_t percentage) {
 	#if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 //	if (((command_instance == FLASH) || (command_instance == STROBE) || (command_instance == FADE) || (command_instance == SMOOTH)) && g_ctimer_instance == nullptr) {
@@ -228,6 +256,9 @@ void S5050DJ::setSequenceSpeed(uint8_t percentage) {
 	#endif
 }
 
+/*!
+ * @brief Turns on the LED strip.
+ */
 void S5050DJ::turnOn(void) {
 #if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
@@ -235,6 +266,9 @@ void S5050DJ::turnOn(void) {
 	this->setAction(TURNON_LEDS);
 }
 
+/*!
+ * @brief Turns off the LED strip.
+ */
 void S5050DJ::turnOff(void) {
 #if S5050DJ_USING_REPEAT_COMMAND_INSTANCE == 1
 	repeatCommand_instance = false;
@@ -242,11 +276,19 @@ void S5050DJ::turnOff(void) {
 	this->setAction(TURNOFF_LEDS);
 }
 
+/*!
+ * @brief Returns the brightness of the LED strip.
+ * @return Percentage brightness of the LED strip.
+ */
 uint8_t S5050DJ::getBrightness(void) const {
 	// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
     return (uint8_t)(this->m_brightnessPoint * (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)));
 }
 
+/*!
+ * @brief Returns the speed of the LED strip sequence.
+ * @return Percentage speed of the LED strip sequence.
+ */
 uint8_t S5050DJ::getSpeed(void) const {
 	// NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
     return (uint8_t)(this->m_speedPoint * (100 / (float)(S5050DJ_MAX_BRIGHTNESS_SPEED_POINT)));
