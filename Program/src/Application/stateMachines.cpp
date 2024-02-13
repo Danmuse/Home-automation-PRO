@@ -93,7 +93,7 @@ bool manageUserLocation(const MFRC522::UID_st& uid) {
                 g_dfplayer->play(8);
                 loggedInUsers++;
             } else {
-                g_dfplayer->play(9);
+                g_dfplayer->play(7);
                 loggedInUsers--;
             }
         }
@@ -115,7 +115,7 @@ bool manageUserLocation(const MFRC522::UID_st& uid) {
 				g_dfplayer->play(8);
 				loggedInUsers++;
 			} else {
-				g_dfplayer->play(9);
+				g_dfplayer->play(7);
 				loggedInUsers--;
 			}
         }
