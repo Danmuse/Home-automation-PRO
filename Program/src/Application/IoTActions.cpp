@@ -32,12 +32,16 @@ void modeSelection(char* message) { // Automatic/manual control
 }
 
 void musicFlowControl(char* message) {
-    int songId = atoi(message);
+	static uint8_t lastId = 1;
+	int songId = atoi(message);
 
-    if (songId != 0) g_dfplayer->prepareSong(songId);
+    if (songId != 0){
+    	g_dfplayer->prepareSong(songId);
+    	lastId = songId;
+    }
     else if (strcmp(message, "pause") == 0) g_dfplayer->pause();
     else if (strcmp(message, "play") == 0) {
-        if (g_dfplayer->getStatus() == DFPLAYER_READY) g_dfplayer->play();
+        if (g_dfplayer->getStatus() == DFPLAYER_READY || (g_dfplayer->getStatus() == DFPLAYER_PAUSE && g_dfplayer->getBackupSong()!=lastId)) g_dfplayer->play();
         else g_dfplayer->resume();
     }
 }

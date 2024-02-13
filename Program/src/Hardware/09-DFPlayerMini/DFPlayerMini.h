@@ -101,6 +101,7 @@ public:
 	void resume(void);
 
 	void prepareSong(uint8_t fileNumber = 1);
+	uint8_t getBackupSong(void) const;
 	uint8_t getVolume(void) const;
 	DFPlayer_result_t getStatus(void) const;
 

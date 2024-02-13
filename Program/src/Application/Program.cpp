@@ -61,7 +61,7 @@ int main(void) {
         g_lcd->write("|  Automation PRO  |", 2, 0);
         g_lcd->write("*------------------*", 3, 0);
 		g_leds->setMode(S5050DJ::FADE);
-    	g_dfplayer->play(1);
+    	g_dfplayer->play(4);
         delay(DFPLAYER_TIMEOUT_TICKS + 800); // Time lapse to engage the opening song.
         while (g_dfplayer->getStatus() != DFPLAYER_READY) { }
         g_lcd->clear();

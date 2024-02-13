@@ -49,7 +49,8 @@ void IoTManager::registerAction(const char* topic, ActionListener actionListener
 }
 
 bool IoTManager::initializeConnection(void) {
-    for (auto& state: states) this->m_ioTConnection->uploadVariable(state);
+    for (auto& state: states)
+    	this->m_ioTConnection->uploadVariable(state);
     return true;
 }
 

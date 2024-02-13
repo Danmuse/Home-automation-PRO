@@ -57,7 +57,7 @@ void QTConnection::uploadVariable(IoTVariable_st ioTVariable) {
     strcat(message, ":");
 
     if (ioTVariable.stringRepresent.empty()) {
-        itoa(*((int*) ioTVariable.variable), message + strlen(message), 10);
+        itoa(*((uint8_t*) ioTVariable.variable), message + strlen(message), 10);
     }
     else {
         uint8_t value = *((uint8_t*) ioTVariable.variable); //uint8 because if for booleans(if it is an integer :/)
