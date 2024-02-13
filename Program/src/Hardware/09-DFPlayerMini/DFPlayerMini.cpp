@@ -16,18 +16,12 @@ m_pauseState{false}, m_backupFile{1}, m_volume{100}, m_timeOutTimer{(uint16_t)(0
 	this->begin();
 }
 
-void DFPlayer::uint16ToArray(uint16_t value, uint8_t *array) {
-	*array = (uint8_t)(value >> 8);
-	*(array + 1) = (uint8_t)(value);
-}
 
-uint16_t DFPlayer::arrayToUint16(uint8_t *array) {
-	uint16_t value = *array;
-	value <<= 8;
-	value += *(array + 1);
-	return value;
-}
-
+/*!
+ * @brief Calculates checksum for the stack.
+ * @param buffer Array with the stack.
+ * @return Checksum for the stack.
+ */
 uint16_t DFPlayer::calculateCheckSum(uint8_t *buffer) {
 	uint16_t sum = 0;
 	for (size_t index = Stack_Version; index < Stack_CheckSum; index++) sum += buffer[index];
@@ -39,6 +33,9 @@ void DFPlayer::resetConditions(void) {
 	this->m_isAvailable = true;
 }
 
+/*!
+ * @brief Parses the response received from the DFPlayer.
+ */
 void DFPlayer::parseStack(void) {
 	uint8_t handleCommand = *(this->m_received + Stack_Command);
 	if (handleCommand == 0x41) { // Handle the 0x41 ACK feedback as a special case, in case the pollusion of _handleCommand, _handleParameter, and _handleType.
@@ -93,10 +90,17 @@ void DFPlayer::parseStack(void) {
 	}
 }
 
+/*!
+ * Validates the stack received from the DFPlayer.
+ * @return True if the stack is valid, false otherwise.
+ */
 bool DFPlayer::validateStack(void) {
-	return this->calculateCheckSum(this->m_received) == this->arrayToUint16(this->m_received + Stack_CheckSum);
+	return this->calculateCheckSum(this->m_received) == arrayToUint16(this->m_received + Stack_CheckSum);
 }
 
+/*!
+ * @brief Transmits the stack to the DFPlayer.
+ */
 void DFPlayer::sendStack(void) {
 	// If the ACK mode is on wait until the last transmition
 	if (this->m_sending[Stack_ACK]) while (this->m_isSending) this->waitAvailable();
@@ -106,17 +110,32 @@ void DFPlayer::sendStack(void) {
 	if (!(this->m_sending[Stack_ACK])) delay(10);
 }
 
+/*!
+ * @brief Sends a stack with the specified command with default argument.
+ * @param command Command to be sent.
+ */
 void DFPlayer::sendStack(uint8_t command) {
 	this->sendStack(command, 0);
 }
 
+/*!
+ * @brief Sends a stack with the specified command and argument.
+ * @param command Command to be sent.
+ * @param argument Parameter for command.
+ */
 void DFPlayer::sendStack(uint8_t command, uint16_t argument) {
 	this->m_sending[Stack_Command] = command;
-	this->uint16ToArray(argument, this->m_sending + Stack_Parameter);
-	this->uint16ToArray(calculateCheckSum(this->m_sending), this->m_sending + Stack_CheckSum);
+	uint16ToArray(argument, this->m_sending + Stack_Parameter);
+	uint16ToArray(calculateCheckSum(this->m_sending), this->m_sending + Stack_CheckSum);
 	this->sendStack();
 }
 
+/*!
+ * @brief Sends a stack with the specified command and argument.
+ * @param command Command to be sent.
+ * @param argumentHigh High byte of the argument.
+ * @param argumentLow Low byte of the argument.
+ */
 void DFPlayer::sendStack(uint8_t command, uint8_t argumentHigh, uint8_t argumentLow) {
 	uint16_t buffer = argumentHigh;
 	buffer <<= 8;
@@ -131,6 +150,15 @@ void DFPlayer::disableACK(void) {
 	this->m_sending[Stack_ACK] = 0x00;
 }
 
+/**
+ * @brief Checks if data is available from the DFPlayer module.
+ *
+ * It receives data from the module and verifies its integrity to ensure it matches the expected stack structure.
+ * If the received data is valid, it parses the stack and sets the availability flag accordingly.
+ *
+ * @return True if data is available and successfully parsed, false otherwise.
+ * @note If the received data does not match the expected stack structure, it resets internal conditions and flags.
+ */
 bool DFPlayer::available(void) {
 	char bufferReceived[DFPLAYER_RECEIVED_LENGTH];
 	if (this->receive(bufferReceived, DFPLAYER_RECEIVED_LENGTH - 1)) {
@@ -187,6 +215,11 @@ bool DFPlayer::available(void) {
 	return this->m_isAvailable;
 }
 
+/*!
+ * @brief Waits for data to become available from the DFPlayer module.
+ * @param duration The maximum time  to wait for data to become available in ms.
+ * @return True if data is available, false otherwise.
+ */
 bool DFPlayer::waitAvailable(uint32_t duration) {
 	static bool busyStatus = false;
 	if (!(this->m_timeOutTimer) && !busyStatus) {
@@ -204,6 +237,11 @@ bool DFPlayer::waitAvailable(uint32_t duration) {
 	return true;
 }
 
+/*!
+ * @brief Initializes the DFPlayer module.
+ * @param isACK Boolean flag indicating whether to enable or disable the ACK feature
+ * @param doReset Whether to reset the module or not
+ */
 void DFPlayer::begin(bool isACK, bool doReset) {
 	isACK ? this->enableACK() : this->disableACK();
 	if (doReset) {
@@ -214,18 +252,29 @@ void DFPlayer::begin(bool isACK, bool doReset) {
 	this->m_isAvailable = false;
 }
 
+/*!
+ * @brief Selects next track.
+ */
 void DFPlayer::next(void) {
 	this->sendStack(0x01);
 	this->m_pauseState = false;
 	this->m_statusDFPlayer = DFPLAYER_BUSY;
 }
 
+/*!
+ * @brief Selects previous track.
+ */
 void DFPlayer::previous(void) {
 	this->sendStack(0x02);
 	this->m_pauseState = false;
 	this->m_statusDFPlayer = DFPLAYER_BUSY;
 }
 
+/*!
+ * @brief Plays the specified track.
+ * @param fileNumber Track number to be played.
+ * @note If fileNumber is 0(or empty), the track selected by `prepareSong` method will be played.
+ */
 void DFPlayer::play(uint8_t fileNumber) {
 	if (!fileNumber) this->sendStack(0x03,this->m_backupFile);
 	else this->sendStack(0x03, fileNumber);
@@ -233,6 +282,10 @@ void DFPlayer::play(uint8_t fileNumber) {
 	this->m_statusDFPlayer = DFPLAYER_BUSY;
 }
 
+/*!
+ * @brief Sets the volume of the DFPlayer module.
+ * @param volume percentage volume level
+ */
 void DFPlayer::volume(uint8_t volume) {
 	uint8_t result = volume > 100 ? 100 : volume;
 	result /= (100 / (float)(DFPLAYER_MAX_VOLUME_VALUE));
@@ -240,22 +293,36 @@ void DFPlayer::volume(uint8_t volume) {
 	this->m_volume = result;
 }
 
+/*!
+ * @brief Sets the equalization mode for the DFPlayer module.
+ * @param equalizer Equalization mode to be set.
+ */
 void DFPlayer::equalizer(equalizer_t equalizer) {
 	this->sendStack(0x07, (uint16_t)(equalizer));
 }
 
+/*!
+ * @brief Loops the specified track.
+ * @param fileNumber
+ */
 void DFPlayer::loop(uint8_t fileNumber) {
 	this->sendStack(0x08, fileNumber);
 	this->m_pauseState = false;
 	this->m_statusDFPlayer = DFPLAYER_BUSY;
 }
 
+/*!
+ * @brief Resets the DFPlayer module.
+ */
 void DFPlayer::reset(void) {
 	this->sendStack(0x0C);
 	this->m_pauseState = false;
 	this->m_statusDFPlayer = DFPLAYER_READY;
 }
 
+/*!
+ * @brief Pauses the current track.
+ */
 void DFPlayer::pause(void) {
 	if (this->getStatus() == DFPLAYER_BUSY && this->getPin()) {
 		this->sendStack(0x0E);
@@ -264,6 +331,9 @@ void DFPlayer::pause(void) {
 	}
 }
 
+/*!
+ * @brief Resumes the current track.
+ */
 void DFPlayer::resume(void) {
 	if (this->getStatus() == DFPLAYER_PAUSE && !(this->getPin())) {
 		this->sendStack(0x0D);
@@ -272,14 +342,29 @@ void DFPlayer::resume(void) {
 	}
 }
 
+/*!
+ * @brief Prepares a track to be played when `play()` is called.
+ * @param fileNumber Track number to be prepared.
+ */
 void DFPlayer::prepareSong(uint8_t fileNumber) {
 	this->m_backupFile = fileNumber;
 }
 
+/*!
+ * @brief Gets the current volume level.
+ * @return Current percentage volume.
+ */
 uint8_t DFPlayer::getVolume(void) const {
 	return this->m_volume;
 }
 
+/*!
+ * @brief Gets the current status of the DFPlayer module.
+ * @return Current status for the DFPlayer module.
+ * @retval DFPLAYER_READY The module is not reproducing a track.
+ * @retval DFPLAYER_BUSY The module is currently playing a track.
+ * @retval DFPLAYER_PAUSE The module has a song paused.
+ */
 DFPlayer_result_t DFPlayer::getStatus(void) const {
 	return this->m_statusDFPlayer;
 }

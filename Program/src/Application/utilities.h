@@ -28,7 +28,11 @@ void delay(uint32_t milliseconds);
 
 char* strreverse(char* cstring);
 
-char* byteToHEX(char* cstring, uint8_t value);
+void byteToHEX(char* cstring, uint8_t value);
+
+void uint16ToArray(uint16_t value, uint8_t *array);
+
+uint16_t arrayToUint16(uint8_t *array);
 
 time_st epochToDate(uint32_t epochTimestamp);
 

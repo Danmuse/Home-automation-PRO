@@ -15,6 +15,10 @@ MG90S *g_servo = nullptr;
 MG90S::MG90S(const Gpio& controlPin) : PWM(controlPin, MG90S_MIN_DUTY, 75),
 m_currentPosition{0} { }
 
+/*!
+ * @brief Set the angle servo's angle.
+ * @param angle Angle to set.
+ */
 void MG90S::setAngle(uint8_t angle) {
     angle = angle > MG90S_MAX_ANGLE ? MG90S_MAX_ANGLE : angle;
     // NOTE: The incorrect conversion of this result to float would produce instabilities in the program.
@@ -22,6 +26,10 @@ void MG90S::setAngle(uint8_t angle) {
     this->m_currentPosition = angle;
 }
 
+/*!
+ * @brief Get the servo's current angle.
+ * @return Angle.
+ */
 uint8_t MG90S::getAngle(void) const {
 	return this->m_currentPosition;
 }

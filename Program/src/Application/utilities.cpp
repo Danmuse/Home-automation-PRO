@@ -20,6 +20,11 @@ void delay(uint32_t milliseconds) {
     while (delayTIMER.getTicks());
 }
 
+/*!
+ * @brief Rverses a string.
+ * @param[in,out] cstring String to be reversed.
+ * @return Reversed string.
+ */
 char* strreverse(char* cstring) {
     size_t lenght = strlen(cstring);
     uint8_t left, right;
@@ -31,7 +36,13 @@ char* strreverse(char* cstring) {
     return cstring;
 }
 
-char* byteToHEX(char* cstring, uint8_t value) {
+/*!
+ * @brief Converts a uint8_t to a hexadecimal string.
+ * @param[out] cstring String where the value will be stored.
+ * @param value
+ * @return
+ */
+void byteToHEX(char* cstring, uint8_t value) {
     size_t index = 0;
     for (index = 0; value > 0; index++) {
         if (value % 16 < 10) cstring[index] = (value % 16) + '0';
@@ -40,9 +51,36 @@ char* byteToHEX(char* cstring, uint8_t value) {
     }
     cstring[index] = '\0';
     if (strlen(cstring) == 0) strcpy(cstring, "0");
-    return strreverse(cstring);
+    strreverse(cstring);
 }
 
+/*!
+ * @brief Converts a uint16_t to an array of uint8_t.
+ * @param value uint16_t value to be converted.
+ * @param[out] array Pointer to the array where the value will be stored.
+ */
+void uint16ToArray(uint16_t value, uint8_t *array) {
+    *array = (uint8_t)(value >> 8);
+    *(array + 1) = (uint8_t)(value);
+}
+
+/*!
+ * @brief Converts an array of uint8_t to a uint16_t.
+ * @param array Array to be converted
+ * @return uint16_t value.
+ */
+uint16_t arrayToUint16(uint8_t *array) {
+    uint16_t value = *array;
+    value <<= 8;
+    value += *(array + 1);
+    return value;
+}
+
+/*!
+ * @brief Converts an epoch timestamp to a date.
+ * @param epochTimestamp Timestamp to be converted.
+ * @return Time structure.
+ */
 time_st epochToDate(uint32_t epochTimestamp) {
     const int SECONDS_IN_DAY = 86400, SECONDS_IN_HOUR = 3600, SECONDS_IN_MINUTE = 60;
     uint8_t hour, minute, second, day, month;

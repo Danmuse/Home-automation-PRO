@@ -33,6 +33,8 @@ m_SSEL{SSEL}, m_statusRFID{RFID_OK}, m_timeOut{0}, m_operationCompleted{false} {
 
 /*!
  * @brief Writes a byte to the specified register in the MFRC522 chip.
+ * @param reg The register to write to.
+ * @param value The value to write.
  * @details The interface is described in the datasheet section 8.1.2.
  */
 void MFRC522::writeRegisterPCD(uint8_t reg, uint8_t value) {
@@ -43,7 +45,10 @@ void MFRC522::writeRegisterPCD(uint8_t reg, uint8_t value) {
 }
 
 /*!
- * @brief Writes a number of bytes to the specified register in the MFRC522 chip.
+ * @brief Writes multiple bytes to the specified register in the MFRC522 chip.
+ * @param reg The register to write to.
+ * @param count The number of bytes to write.
+ * @param values Data array to write.
  * @details The interface is described in the datasheet section 8.1.2.
  */
 void MFRC522::writeRegisterPCD(uint8_t reg, uint8_t count, uint8_t *values) {
@@ -57,6 +62,7 @@ void MFRC522::writeRegisterPCD(uint8_t reg, uint8_t count, uint8_t *values) {
 
 /*!
  * @brief Reads a byte from the specified register in the MFRC522 chip.
+ * @param reg The register to read from.
  * @details The interface is described in the datasheet section 8.1.2.
  */
 uint8_t MFRC522::readRegisterPCD(uint8_t reg) {
@@ -69,7 +75,11 @@ uint8_t MFRC522::readRegisterPCD(uint8_t reg) {
 }
 
 /*!
- * @brief Reads a number of bytes from the specified register in the MFRC522 chip.
+ * @brief Reads multiple bytes from the specified register in the MFRC522 chip.
+ * @param reg The register to read from.
+ * @param count The quantity of bytes to read.
+ * @param[out] values Pointer to the array that will store the values.
+ * @param rxAlign Bit alignment for reading values.
  * @details The interface is described in the datasheet section 8.1.2.
  */
 void MFRC522::readRegisterPCD(uint8_t reg, uint8_t count, uint8_t *values, uint8_t rxAlign) {
@@ -99,6 +109,8 @@ void MFRC522::readRegisterPCD(uint8_t reg, uint8_t count, uint8_t *values, uint8
 
 /*!
  * @brief Sets the bits given in mask in register.
+ * @param reg The register to write to.
+ * @param mask The bits to set.
  */
 void MFRC522::setRegisterBitMaskPCD(uint8_t reg, uint8_t mask) {
     uint8_t temporallyVariable;
@@ -108,6 +120,8 @@ void MFRC522::setRegisterBitMaskPCD(uint8_t reg, uint8_t mask) {
 
 /*!
  * @brief Clears the bits given in mask from register.
+ * @param reg The register to write to.
+ * @param mask The bits to clear.
  */
 void MFRC522::clearRegisterBitMaskPCD(uint8_t reg, uint8_t mask) {
     uint8_t temporallyVariable;
@@ -117,6 +131,9 @@ void MFRC522::clearRegisterBitMaskPCD(uint8_t reg, uint8_t mask) {
 
 /*!
  * @brief Use the CRC coprocessor in the MFRC522 to calculate a CRC_A.
+ * @param data Pointer to the data to transfer to the CRC coprocessor for calculation.
+ * @param length The number of bytes to transfer.
+ * @param[out] result Pointer to the result buffer. Result is written to result[0..1], low byte first.
  * @return RFID_OK on success.
  */
 RFID_result_t MFRC522::PCD_CalculateCRC(uint8_t *data, uint8_t length, uint8_t *result) {
@@ -154,6 +171,15 @@ RFID_result_t MFRC522::PCD_CalculateCRC(uint8_t *data, uint8_t length, uint8_t *
 
 /*!
  * @brief Transfers data to the MFRC522 FIFO, executes a command, waits for completion and transfers data back from the FIFO.
+ * @param command The command to execute.
+ * @param waitIRq The bits in the ComIrqReg register that signals successful completion of the command.
+ * @param sendData Pointer to the data to transfer to the FIFO.
+ * @param sendLen The number of bytes to transfer to the FIFO.
+ * @param[out] backData Pointer to the buffer to receive data back from the FIFO.
+ * @param backLen The number of bytes that were received from the FIFO.
+ * @param validBits The number of valid bits in the last byte. 0 for 8 valid bits.
+ * @param rxAlign Bit alignment for reading values.
+ * @param checkCRC True if the CRC_A is to be validated.
  * @details CRC validation can only be done if backData and backLen are specified.
  * @return RFID_OK on success.
  */
@@ -269,7 +295,9 @@ RFID_result_t MFRC522::PCD_CommunicateWithPICC(uint8_t command, uint8_t waitIRq,
 
 /*!
  * @brief Transmits REQA command.
- * Beware: When two PICCs are in the field at the same time I often get STATUS_TIMEOUT - probably due do bad antenna design.
+ * @param[out] bufferATQA Pointer to the buffer to store the ATQA (Answer to Request Acknowledge).
+ * @param bufferSize The number of bytes in the bufferATQA.
+ * @warning When two PICCs are in the field at the same time I often get STATUS_TIMEOUT - probably due do bad antenna design.
  * @return RFID_OK on success.
  */
 RFID_result_t MFRC522::PICC_REQA(uint8_t *bufferATQA, uint8_t *bufferSize) {
@@ -319,6 +347,7 @@ RFID_result_t MFRC522::PICC_REQA(uint8_t *bufferATQA, uint8_t *bufferSize) {
  * 		double				 7						2				MIFARE Ultralight
  * 		triple				10						3				Not currently in use?
  *
+ * @param validBits The number of known valid bits in the UID. It is used to determine the Cascade Level.
  * @return RFID_OK on success.
  */
 RFID_result_t MFRC522::PICC_Select(uint8_t validBits) {
@@ -710,6 +739,20 @@ RFID_result_t MFRC522::disable(void) {
     return this->getStatus();
 }
 
+/*!
+ * @brief Returns the current status of the MFRC522 chip.
+ * @return RFID status.
+ * @retval RFID_OK if operation was successful
+ * @retval RFID_UPDATE_ERR if the buffer is too small or the data is invalid
+ * @retval RFID_SSEL_ERR if the SSEL pin is not correctly configured
+ * @retval RFID_COLLISION_ERR if there was a collision on the SDA line
+ * @retval RFID_TIMEOUT_ERR if the operation timed out
+ * @retval RFID_NO_ROOM_ERR if the buffer is too small
+ * @retval RFID_INTERNAL_ERR if some internal error occurred
+ * @retval RFID_INVALID if the data is invalid
+ * @retval RFID_CRC_WRONG if the calculated CRC_A does not match the response from the PICC
+ * @retval RFID_MIFARE_NACK if a MIFARE PICC responded with NAK.
+ */
 RFID_result_t MFRC522::getStatus(void) const {
     return this->m_statusRFID;
 }
@@ -866,6 +909,14 @@ RFID_result_t MFRC522::haltPICC(void) {
     return this->getStatus();
 }
 
+/*!
+ * @brief Gets PICC UUID.
+ * @param[out] UID Pointer to UID struct to store the UUID.
+ * @return Status of the operation.
+ * @retval RFID_SUCCESS if an UUID was successfully read.
+ * @retval RFID_FAILURE if an error occurred or there was no PICC to read.
+ * @retval RFID_BUSY if the operation is still in progress.
+ */
 RFID_status_t MFRC522::getUID(UID_st *UID) {
 	static bool readingCard = false, releasingPCD = false;
 	if (this->m_statusRFID != RFID_SSEL_ERR) {
@@ -905,6 +956,11 @@ void MFRC522::dumpDetails(UID_st* UID) {
 }
 
 
+/*!
+ * @brief Get a formatted string with the current UID.
+ * @param appendLineFeed If true, append a line feed at the end of the string.
+ * @return A formatted string with the current UID.
+ */
 char *MFRC522::printUID(bool appendLineFeed) {
     static char RFIDstr[RFID_STR_SIZE];
     RFIDstr[0] = 'U';

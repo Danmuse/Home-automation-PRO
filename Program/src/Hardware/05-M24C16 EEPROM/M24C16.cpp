@@ -34,18 +34,44 @@ int main(void) {
 M24C16::M24C16(const Gpio& SCL, const Gpio& SDA, channelTWI_t channel) : I2C(SCL, SDA, channel),
 m_statusEEPROM{EEPROM_OK} { }
 
+/*!
+ * @brief Acquire data from the EEPROM memory.
+ * @param[out] values Array where the data will be stored.
+ * @param numBytes Number of bytes to be acquired.
+ * @param position Position where the data will be read from.
+ * @param pageBlock EEPROM page where the data will be read from.
+ * @return EEPROM status,TWI_SUCCESS if the operation was successful, TWI_FAILURE otherwise.
+ */
 SyncCommTWI::statusComm_t M24C16::acquire(uint8_t values[], size_t numBytes, uint8_t position, pageBlock_t pageBlock) {
 	if (!(this->receiveBytes((M24C16_ADDR_REG | pageBlock), position, values, numBytes)) && !(this->getStatus())) this->m_statusEEPROM = EEPROM_OK;
 	else this->m_statusEEPROM = EEPROM_UPDATE_ERR;
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
+/*!
+ * @brief Transmit data to the EEPROM memory.
+ * @param values Array where the data will be stored.
+ * @param numBytes Number of bytes to be transmitted.
+ * @param position Position where the data will be written to.
+ * @param pageBlock EEPROM page where the data will be written to.
+ * @return EEPROM status,TWI_SUCCESS if the operation was successful, TWI_FAILURE otherwise.
+ */
 SyncCommTWI::statusComm_t M24C16::transmit(uint8_t values[], size_t numBytes, uint8_t position, pageBlock_t pageBlock) {
 	if (!(this->transmitBytes((M24C16_ADDR_REG | pageBlock), position, values, numBytes)) && !(this->getStatus())) this->m_statusEEPROM = EEPROM_OK;
 	else this->m_statusEEPROM = EEPROM_UPDATE_ERR;
 	return this->getStatus() ? TWI_FAILURE : TWI_SUCCESS;
 }
 
+/*!
+ * @brief Read one byte of data from the EEPROM memory.
+ * @tparam T Type to be read, only char,uin8t_t and int8_t are permitted.
+ * @param[out] data Pointer to where the data will be stored.
+ * @param modifier Type of data to be read.
+ * @param position Position where the data will be read from.
+ * @param pageBlock EEPROM page where the data will be read from.
+ * @param middleByte TODO: FINISH THIS
+ * @return EEPROM status,EEPROM_OK if the operation was successful.
+ */
 template <typename T> EEPROM_result_t M24C16::read(T *data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte) {
 	this->m_statusEEPROM = EEPROM_OK;
 
@@ -127,6 +153,15 @@ template EEPROM_result_t M24C16::read<int8_t>(int8_t* data, modifierType_t modif
 template EEPROM_result_t M24C16::read<uint8_t>(uint8_t* data, modifierType_t modifier, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 #endif
 
+/*!
+ * @brief Write one byte of data to the EEPROM memory.
+ * @tparam T Type to be written, only char,uin8t_t and int8_t are permitted.
+ * @param data Data to be written.
+ * @param position Position where the data will be written to.
+ * @param pageBlock EEPROM page where the data will be written to.
+ * @param middleByte TODO:FINISH THIS
+ * @return
+ */
 template <typename T> EEPROM_result_t M24C16::write(T data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte) {
 	this->m_statusEEPROM = EEPROM_OK;
 
@@ -198,6 +233,15 @@ template EEPROM_result_t M24C16::write<int8_t>(int8_t data, uint8_t position, pa
 template EEPROM_result_t M24C16::write<uint8_t>(uint8_t data, uint8_t position, pageBlock_t pageBlock, middleByte_t middleByte);
 #endif
 
+/*!
+ * @brief Get the EEPROM status.
+ * @return EEPROM status.
+ * @retval EEPROM_OK if the operation was successful.
+ * @retval EEPROM_UPDATE_ERR if no valid data has been acquired or transmitted via I2C communication.
+ * @retval EEPROM_PAGE_BLOCK_INVALID if the page block exceeds the limit of allowed pages block.
+ * @retval EEPROM_OVERFLOW_INVALID if the bytes exceed the limit of allowed bytes into the desired page block.
+ * @retval EEPROM_INCORRECT_MODIFIER if the method parameter does not match the supported modifiers.
+ */
 EEPROM_result_t M24C16::getStatus(void) const {
 	return this->m_statusEEPROM;
 }
