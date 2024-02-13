@@ -11,7 +11,7 @@ database Database("brb0vzvtpbxxloikqzji-mysql.services.clever-cloud.com",
               "brb0vzvtpbxxloikqzji");
 port Puerto;
 
-QStringList Canciones = {"Opening", "Eclipse", "Everlasting", "No Time To Waste", "Diamond", "Lost For Life", "Parasite Eve"};
+QStringList Canciones = {"Eclipse", "Lost For life", "Diamong", "Opening", "No Time To Waste","Everlasting","Parasite Eve"};
 
 QString Codigo = "1222112";
 
