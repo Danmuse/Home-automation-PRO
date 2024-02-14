@@ -239,8 +239,8 @@ UART::~UART() {
 	else if (this->m_usart == USART2) NVIC->ICER[0] |= (1 << 5);  // Disable UART2_IRQ
 	else if (this->m_usart == USART3) NVIC->ICER[0] |= (1 << 30); // Disable UART3_IRQ
 	else if (this->m_usart == USART4) NVIC->ICER[0] |= (1 << 31); // Disable UART4_IRQ
-	delete[] this->m_bufferRX;
-	delete[] this->m_bufferTX;
+//	delete[] this->m_bufferRX;
+//	delete[] this->m_bufferTX;
 }
 
 ///////////////////////////
