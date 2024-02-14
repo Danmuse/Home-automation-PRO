@@ -359,7 +359,7 @@ uint8_t DFPlayer::getBackupSong(void) const{
  * @return Current percentage volume.
  */
 uint8_t DFPlayer::getVolume(void) const {
-	return this->m_volume;
+	return this->m_volume*(100 / (float)(DFPLAYER_MAX_VOLUME_VALUE));
 }
 
 /*!
