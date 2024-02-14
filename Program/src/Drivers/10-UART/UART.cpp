@@ -20,8 +20,8 @@ m_indexRXIn{0}, m_indexRXOut{0}, m_indexTXIn{0}, m_indexTXOut{0}, m_flagTX{false
 	else if (this->m_usart == USART3 && g_usart[UART3] != nullptr);
 	else if (this->m_usart == USART3 && g_usart[UART4] != nullptr);
 	else { // Initialize the corresponding USART channel.
-		this->m_bufferRX = new uint8_t[RX_BUFFER_SIZE];
-		this->m_bufferTX = new uint8_t[TX_BUFFER_SIZE];
+//		this->m_bufferRX = new uint8_t[RX_BUFFER_SIZE];
+//		this->m_bufferTX = new uint8_t[TX_BUFFER_SIZE];
 
 		this->enableClock();
 		this->enableSWM();
