@@ -75,14 +75,14 @@ int main(void) {
 
     while (true) {
         /// External LDR sensor acquisition
-//        if (automaticMode) {
-//			uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
-//			if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
-//				ledBrightness = currentBright;
-//				uint8_t brightness = ledBrightness;
-//				g_leds->setBrightness(brightness);
-//			}
-//        }
+        if (automaticMode) {
+			uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
+			if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
+				ledBrightness = currentBright;
+				uint8_t brightness = ledBrightness;
+				g_leds->setBrightness(brightness);
+			}
+        }
 
         /// Upgrade RTC timestamp legend
         g_ds3231->get();
