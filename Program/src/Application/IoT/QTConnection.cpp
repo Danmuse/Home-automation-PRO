@@ -39,7 +39,7 @@ void QTConnection::establishConnection(void) {
     message[size] = SERIAL_FOOTER;
     message[size + 1] = '\0';
 
-    this->m_uart.transmit(message, strlen(message));
+    this->m_uart.transmit(message);
 
     bool confirm = true;
 
