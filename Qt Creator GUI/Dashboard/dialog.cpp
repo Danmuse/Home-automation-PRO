@@ -46,7 +46,7 @@ void Dialog::manejarTimeOut()
 
     QString dato = Information.Param;
     QString value = Information.Info;
-    qDebug() << dato << " " << value;
+//    qDebug() << dato << " " << value;
     if(dato != nullptr && value != nullptr ){
         bool ok;
         int valor = value.toInt(&ok);

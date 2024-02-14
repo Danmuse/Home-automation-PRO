@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #define RX_BUFFER_SIZE 64
-#define TX_BUFFER_SIZE 64
+#define TX_BUFFER_SIZE 80
 
 #define RX_IDX 0
 #define TX_IDX 1

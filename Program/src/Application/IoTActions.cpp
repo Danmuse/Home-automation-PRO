@@ -39,10 +39,13 @@ void musicFlowControl(char* message) {
     	g_dfplayer->prepareSong(songId);
     	lastId = songId;
     }
-    else if (strcmp(message, "pause") == 0) g_dfplayer->pause();
+    else if (strcmp(message, "pause") == 0)
+        g_dfplayer->pause();
     else if (strcmp(message, "play") == 0) {
-        if (g_dfplayer->getStatus() == DFPLAYER_READY || (g_dfplayer->getStatus() == DFPLAYER_PAUSE && g_dfplayer->getBackupSong()!=lastId)) g_dfplayer->play();
-        else g_dfplayer->resume();
+        if (g_dfplayer->getStatus() == DFPLAYER_READY || (g_dfplayer->getStatus() == DFPLAYER_PAUSE && g_dfplayer->getBackupSong()!=lastId))
+            g_dfplayer->play();
+        else
+            g_dfplayer->resume();
     }
 }
 
