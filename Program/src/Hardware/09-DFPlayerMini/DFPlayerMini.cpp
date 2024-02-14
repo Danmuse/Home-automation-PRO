@@ -350,6 +350,10 @@ void DFPlayer::prepareSong(uint8_t fileNumber) {
 	this->m_backupFile = fileNumber;
 }
 
+uint8_t DFPlayer::getBackupSong(void) const{
+	return this->m_backupFile;
+}
+
 /*!
  * @brief Gets the current volume level.
  * @return Current percentage volume.
