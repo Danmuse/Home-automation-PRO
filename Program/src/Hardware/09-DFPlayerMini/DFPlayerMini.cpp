@@ -350,6 +350,10 @@ void DFPlayer::prepareSong(uint8_t fileNumber) {
 	this->m_backupFile = fileNumber;
 }
 
+/*!
+ * @brief Gets the current backed up track.
+ * @return Id of the currently backed up track.
+ */
 uint8_t DFPlayer::getBackupSong(void) const{
 	return this->m_backupFile;
 }
