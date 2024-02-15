@@ -37,9 +37,9 @@ extern "C" {
 class UART : protected std::vector<Gpio>, public AsyncComm {
 private:
 	USART_Type*	m_usart;							//!< Register to be used
-	uint8_t*	m_bufferRX;							//!< Reception buffer
+	uint8_t	    m_bufferRX[RX_BUFFER_SIZE];         //!< Reception buffer
 	uint32_t	m_indexRXIn, m_indexRXOut;			//!< RX buffer input position - RX buffer output position - RX buffer size
-	uint8_t*	m_bufferTX;							//!< Transmission buffer
+	uint8_t    	m_bufferTX[TX_BUFFER_SIZE];			//!< Transmission buffer
 	uint32_t	m_indexTXIn, m_indexTXOut;			//!< TX buffer input position - TX buffer output position - TX buffer size
 	bool 		m_flagTX;							//!< Error in sending data (Buffer overload)
 public:

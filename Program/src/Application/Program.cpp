@@ -95,6 +95,7 @@ int main(void) {
 		/// Upgrade the DFPLayer's volume
 		volume = g_dfplayer->getVolume();
 
+        songId = g_dfplayer->getBackupSong();
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 
