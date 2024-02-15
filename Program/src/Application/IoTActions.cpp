@@ -42,7 +42,8 @@ void musicFlowControl(char* message) {
     else if (strcmp(message, "pause") == 0)
         g_dfplayer->pause();
     else if (strcmp(message, "play") == 0) {
-        if (g_dfplayer->getStatus() == DFPLAYER_READY || (g_dfplayer->getStatus() == DFPLAYER_PAUSE && g_dfplayer->getBackupSong()!=lastId))
+        DFPlayer_result_t status = g_dfplayer->getStatus();
+        if (status == DFPLAYER_READY || (status == DFPLAYER_PAUSE && g_dfplayer->getBackupSong() != lastId))
             g_dfplayer->play();
         else
             g_dfplayer->resume();
