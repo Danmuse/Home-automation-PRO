@@ -48,6 +48,7 @@ private:
     Ui::Dialog *ui;
     QTimer *miTemporizador;
     SerialParams Information;
+    bool Reproduciendo = false;
 };
 
 #endif // DIALOG_H
