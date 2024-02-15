@@ -25,7 +25,7 @@ ui(new Ui::MainWindow) {
     label = new QLabel(this);
     movie->setScaledSize(QSize(50, 50));
     label->setMovie(movie);
-
+    label->hide();
     // Iniciar la animación del GIF
 
 
@@ -49,7 +49,7 @@ ui(new Ui::MainWindow) {
     //    qDebug() << "No hay un puerto disponible";
     //}
     Dial->setWindowTitle("Home Controller");
-
+    ui->label_confirmLogin->setEnabled(false);
 
 }
 
@@ -177,8 +177,7 @@ void MainWindow::on_pushButton_clicked()
         Puerto.SetPort(ui->comboBox->currentText());
         Puerto.OpenPort();
         ui->pushButton->setText("Desconectar");
-        ui->comboBox->setEnabled(false);
-        ui->Login->setEnabled(true);
+
     }else if(ui->pushButton->text() == "Desconectar"){
         Puerto.ClosePort();
         ui->pushButton->setText("Conectar");
@@ -201,7 +200,15 @@ void MainWindow::on_Login_clicked()
         ui->lineEdit_password->clear();
         ui->lineEdit_user->clear();
     }else{
-        ui->label_confirmLogin->setText("Usuario o Contraseña incorrectos");
+        ui->label_confirmLogin->setEnabled(true);
+        ui->label_confirmLogin->setStyleSheet(" color: #D8000C;"
+                                                "font-size: 14px;"
+                                                "font-weight: bold;"
+                                                "background-color: #FFD2D2;"
+                                                "border: 1px solid #B30000; "
+                                                "border-radius: 5px; "
+                                                "padding: 5px;");
+        ui->label_confirmLogin->setText("Su usuario o contraseña es incorrecta");
     }
 }
 
@@ -287,6 +294,8 @@ void MainWindow::verificatePort(){
     if(Puerto.GetPortStatus()){
         ui->PortConfirm->setStyleSheet("background-color: green;");
         ui->PortConfirm->setText("Conectado");
+        ui->comboBox->setEnabled(false);
+        ui->Login->setEnabled(true);
         if(flagTime == false){
             flagTime = true;
             int Time = Database.GetTime();

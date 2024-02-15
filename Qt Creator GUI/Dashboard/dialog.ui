@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #FAF3E0;
+</string>
+  </property>
   <widget class="QLabel" name="label_lightLevel">
    <property name="geometry">
     <rect>
@@ -24,8 +28,17 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>14</pointsize>
+     <pointsize>-1</pointsize>
+     <bold>false</bold>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+    color: #666; /* Color del texto */
+    font-size: 16px; /* Tamaño de la fuente */
+    font-weight: normal; /* Texto en peso normal */
+}
+</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
@@ -43,6 +56,27 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+     background-color: red;
+     border: 1px solid black;
+     border-radius: 10px;
+     color: white;
+     padding: 5px 10px;
+     font-size: 12px;
+ }
+ QPushButton:hover {
+     background-color: #45a049;
+ }
+ QPushButton:pressed {
+     background-color: #45a049;
+     border: none;
+ }
+
+QPushButton:disabled {
+         background-color: gray;
+}</string>
+   </property>
    <property name="text">
     <string>Cerrar Sesión</string>
    </property>
@@ -52,9 +86,31 @@
     <rect>
      <x>50</x>
      <y>260</y>
-     <width>81</width>
+     <width>91</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+     background-color: #4CAF50;
+     border: 2px solid #4CAF50;
+     border-radius: 10px;
+     color: white;
+     padding: 5px 10px;
+	 width:5px 10px;
+     font-size: 12px;
+ }
+ QPushButton:hover {
+     background-color: #45a049;
+ }
+ QPushButton:pressed {
+     background-color: #45a049;
+     border: none;
+ }
+
+QPushButton:disabled {
+         background-color: gray;
+}</string>
    </property>
    <property name="text">
     <string>Prender Luz</string>
@@ -68,6 +124,29 @@
      <width>211</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QSlider {
+    background: transparent; /* Fondo transparente */
+}
+
+QSlider::groove:horizontal {
+    border: 1px solid #bbb; /* Borde del riel del slider */
+    height: 10px; /* Altura del riel del slider */
+    background: #f1f1f1; /* Color de fondo del riel del slider */
+    margin: 0px; /* Margen */
+    border-radius: 5px; /* Radio de borde */
+}
+
+QSlider::handle:horizontal {
+    background: #007BFF; /* Color del mango del slider */
+    border: 1px solid #0056b3; /* Borde del mango del slider */
+    width: 20px; /* Ancho del mango del slider */
+    height: 20px; /* Altura del mango del slider */
+    margin: -5px 0; /* Margen */
+    border-radius: 10px; /* Radio de borde */
+}
+</string>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -84,8 +163,17 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>14</pointsize>
+     <pointsize>-1</pointsize>
+     <bold>false</bold>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+    color: #666; /* Color del texto */
+    font-size: 16px; /* Tamaño de la fuente */
+    font-weight: normal; /* Texto en peso normal */
+}
+</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
@@ -106,6 +194,32 @@
      <height>41</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QCheckBox {
+    spacing: 5px; /* Espacio entre el icono y el texto */
+	color:black;
+}
+
+QCheckBox::indicator {
+    width: 16px; /* Ancho del indicador */
+    height: 16px; /* Altura del indicador */
+}
+
+QCheckBox::indicator::unchecked {
+    border: 2px solid #999999; /* Borde del indicador cuando está desmarcado */
+    background-color: white; /* Color de fondo del indicador cuando está desmarcado */
+}
+
+QCheckBox::indicator::checked {
+    border: 2px solid #007BFF; /* Borde del indicador cuando está marcado */
+    background-color: #007BFF; /* Color de fondo del indicador cuando está marcado */
+}
+
+QCheckBox::indicator::unchecked:hover,
+QCheckBox::indicator::checked:hover {
+    border-color: #0056b3; /* Cambia el color del borde cuando el mouse está sobre el QCheckBox */
+}</string>
+   </property>
    <property name="text">
     <string>Luz Automatica</string>
    </property>
@@ -116,11 +230,11 @@
      <x>300</x>
      <y>190</y>
      <width>101</width>
-     <height>81</height>
+     <height>91</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(0, 0, 0);</string>
+    <string notr="true">background-color: #f5f5f5;</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -134,10 +248,30 @@
       <x>10</x>
       <y>10</y>
       <width>80</width>
-      <height>56</height>
+      <height>72</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="1">
+      <widget class="QPushButton" name="Green">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(0, 255, 0);</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="Blue">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(0, 0, 255);</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QPushButton" name="Red">
        <property name="styleSheet">
@@ -158,26 +292,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="Blue">
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(0, 0, 255);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="Green">
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(0, 255, 0);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
   </widget>
@@ -192,8 +306,17 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>14</pointsize>
+     <pointsize>-1</pointsize>
+     <bold>false</bold>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+    color: #666; /* Color del texto */
+    font-size: 16px; /* Tamaño de la fuente */
+    font-weight: normal; /* Texto en peso normal */
+}
+</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
@@ -210,13 +333,40 @@
     <rect>
      <x>480</x>
      <y>190</y>
-     <width>191</width>
-     <height>91</height>
+     <width>222</width>
+     <height>103</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QComboBox" name="ComboMusic"/>
+     <widget class="QComboBox" name="ComboMusic">
+      <property name="styleSheet">
+       <string notr="true">QComboBox {
+    background-color: #FFFFFF; 
+    border: 1px solid #CCCCCC;
+    border-radius: 5px; 
+    padding: 5px; 
+    font-size: 12px; 
+    color: #333333;
+}
+QComboBox {
+    background-color: #FFFFFF; 
+    border: 1px solid #CCCCCC;
+    border-radius: 5px; 
+    padding: 5px; 
+    font-size: 12px; 
+    color: #333333;
+}
+
+QComboBox::drop-down {
+
+    border: none; /* Sin borde */
+
+}
+
+</string>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -224,6 +374,27 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="PlayMusic">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+     background-color: #4CAF50;
+     border: 2px solid #4CAF50;
+     border-radius: 10px;
+     color: white;
+     padding: 5px 10px;
+     font-size: 12px;
+ }
+ QPushButton:hover {
+     background-color: #45a049;
+ }
+ QPushButton:pressed {
+     background-color: #45a049;
+     border: none;
+ }
+
+QPushButton:disabled {
+         background-color: gray;
+}</string>
+          </property>
           <property name="text">
            <string>Reproducir</string>
           </property>
@@ -235,6 +406,27 @@
         </item>
         <item>
          <widget class="QPushButton" name="PauseMusic">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+     background-color: #008CBA;
+     border: 2px solid #008CBA;
+     border-radius: 10px;
+     color: white;
+     padding: 5px 10px;
+     font-size: 12px;
+ }
+ QPushButton:hover {
+     background-color: #007B9C;
+ }
+ QPushButton:pressed {
+     background-color: #007B9C;
+     border: none;
+ }
+
+QPushButton:disabled {
+     background-color: gray;
+}</string>
+          </property>
           <property name="text">
            <string>Pausar</string>
           </property>
@@ -244,6 +436,29 @@
       </item>
       <item>
        <widget class="QSlider" name="VolumeMusic">
+        <property name="styleSheet">
+         <string notr="true">QSlider {
+    background: transparent; /* Fondo transparente */
+}
+
+QSlider::groove:horizontal {
+    border: 1px solid #bbb; /* Borde del riel del slider */
+    height: 10px; /* Altura del riel del slider */
+    background: #f1f1f1; /* Color de fondo del riel del slider */
+    margin: 0px; /* Margen */
+    border-radius: 5px; /* Radio de borde */
+}
+
+QSlider::handle:horizontal {
+    background: #007BFF; /* Color del mango del slider */
+    border: 1px solid #0056b3; /* Borde del mango del slider */
+    width: 20px; /* Ancho del mango del slider */
+    height: 20px; /* Altura del mango del slider */
+    margin: -5px 0; /* Margen */
+    border-radius: 10px; /* Radio de borde */
+}
+</string>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -258,14 +473,22 @@
     <rect>
      <x>240</x>
      <y>50</y>
-     <width>221</width>
+     <width>231</width>
      <height>61</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>20</pointsize>
+     <pointsize>-1</pointsize>
+     <bold>true</bold>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+    color: #333; /* Color del texto */
+    font-size: 18px; /* Tamaño de la fuente */
+    font-weight: bold; /* Texto en negrita */
+}</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::Box</enum>

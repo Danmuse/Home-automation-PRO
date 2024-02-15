@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #FAF3E0;
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label_titulo">
     <property name="geometry">
@@ -25,11 +29,16 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <pointsize>-1</pointsize>
+      <bold>true</bold>
      </font>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::Box</enum>
+    <property name="styleSheet">
+     <string notr="true">QLabel {
+    color: #333; /* Color del texto */
+    font-size: 18px; /* Tamaño de la fuente */
+    font-weight: bold; /* Texto en negrita */
+}</string>
     </property>
     <property name="text">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; color:#000000;&quot;&gt;Bienvenido a casa&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -38,16 +47,25 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>310</x>
       <y>150</y>
-      <width>421</width>
+      <width>291</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>-1</pointsize>
+      <bold>false</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel {
+    color: #666; /* Color del texto */
+    font-size: 16px; /* Tamaño de la fuente */
+    font-weight: normal; /* Texto en peso normal */
+}
+</string>
     </property>
     <property name="text">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#000000;&quot;&gt;Por favor ingrese su usuario y contraseña&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -70,14 +88,17 @@
       <widget class="QLabel" name="label_password">
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
+         <pointsize>-1</pointsize>
         </font>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+    color: #333;
+    font-size: 18px;
+}</string>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;Contraseña&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>Contraseña:</string>
        </property>
       </widget>
      </item>
@@ -85,22 +106,59 @@
       <widget class="QLabel" name="label_user">
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
+         <pointsize>-1</pointsize>
         </font>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+    color: #333;
+    font-size: 18px;
+}</string>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;Usuario&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>Usuario:</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit_user"/>
+      <widget class="QLineEdit" name="lineEdit_user">
+       <property name="styleSheet">
+        <string notr="true">QLineEdit {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+QLineEdit:hover {
+    border-color: #aaa;
+}
+
+QLineEdit:focus {
+    border-color: #007B9C;
+}</string>
+       </property>
+      </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit_password"/>
+      <widget class="QLineEdit" name="lineEdit_password">
+       <property name="styleSheet">
+        <string notr="true">QLineEdit {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+QLineEdit:hover {
+    border-color: #aaa;
+}
+
+QLineEdit:focus {
+    border-color: #007B9C;
+}</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -109,30 +167,22 @@
      <rect>
       <x>360</x>
       <y>300</y>
-      <width>261</width>
-      <height>80</height>
+      <width>271</width>
+      <height>101</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
+      <number>20</number>
      </property>
      <item>
       <widget class="QLabel" name="label_confirmLogin">
-       <property name="autoFillBackground">
-        <bool>false</bool>
+       <property name="styleSheet">
+        <string notr="true">
+</string>
        </property>
        <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
+        <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="text">
         <string/>
@@ -141,19 +191,28 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
         <widget class="QPushButton" name="CreateUser">
          <property name="styleSheet">
-          <string notr="true">color: black;</string>
+          <string notr="true">QPushButton {
+     background-color: #4CAF50;
+     border: 2px solid #4CAF50;
+     border-radius: 10px;
+     color: white;
+     padding: 10px 24px;
+     font-size: 12px;
+ }
+ QPushButton:hover {
+     background-color: #45a049;
+ }
+ QPushButton:pressed {
+     background-color: #45a049;
+     border: none;
+ }
+
+QPushButton:disabled {
+         background-color: gray;
+}</string>
          </property>
          <property name="text">
           <string>Crear un usuario</string>
@@ -162,14 +221,26 @@
        </item>
        <item>
         <widget class="QPushButton" name="Login">
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
          <property name="styleSheet">
-          <string notr="true">color: black;</string>
+          <string notr="true">QPushButton {
+     background-color: #008CBA;
+     border: 2px solid #008CBA;
+     border-radius: 10px;
+     color: white;
+     padding: 10px 24px;
+     font-size: 12px;
+ }
+ QPushButton:hover {
+     background-color: #007B9C;
+ }
+ QPushButton:pressed {
+     background-color: #007B9C;
+     border: none;
+ }
+
+QPushButton:disabled {
+     background-color: gray;
+}</string>
          </property>
          <property name="text">
           <string>Login</string>
@@ -183,18 +254,66 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>70</y>
-      <width>106</width>
-      <height>85</height>
+      <x>90</x>
+      <y>60</y>
+      <width>131</width>
+      <height>107</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="comboBox">
+       <property name="styleSheet">
+        <string notr="true">QComboBox {
+    background-color: #FFFFFF; 
+    border: 1px solid #CCCCCC;
+    border-radius: 5px; 
+    padding: 5px; 
+    font-size: 12px; 
+    color: #333333;
+}
+
+QComboBox::drop-down {
+    background-color: #FFFFFF; /* Color de fondo del botón */
+	width:10px;
+    border: none; /* Sin borde */
+    width: 20px; /* Ancho del botón */
+    border-top-right-radius: 5px; /* Radio de borde superior derecho */
+    border-bottom-right-radius: 5px; /* Radio de borde inferior derecho */
+}
+
+QComboBox::drop-down::down-arrow {
+    image: url(down_arrow.png); /* Icono de flecha hacia abajo */
+    width: 15px; /* Ancho de la flecha */
+    height: 15px; /* Altura de la flecha */
+}</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+     background-color: #008CBA;
+     border: 2px solid #008CBA;
+     border-radius: 10px;
+     color: white;
+     padding: 10px 24px;
+     font-size: 12px;
+ }
+ QPushButton:hover {
+     background-color: #007B9C;
+ }
+ QPushButton:pressed {
+     background-color: #007B9C;
+     border: none;
+ }
+
+
+QPushButton:disabled {
+     background-color: gray;
+}</string>
+       </property>
        <property name="text">
         <string>Conectar</string>
        </property>
@@ -208,7 +327,7 @@
         </font>
        </property>
        <property name="frameShape">
-        <enum>QFrame::Box</enum>
+        <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;desconectado&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

@@ -24,6 +24,15 @@ void ValidatorModal::on_ButtonValidator_clicked()
         }
         this->close();
     }else{
+
+        ui->TextValidator->setEnabled(true);
+        ui->TextValidator->setStyleSheet(" color: #D8000C;"
+                                              "font-size: 14px;"
+                                              "font-weight: bold;"
+                                              "background-color: #FFD2D2;"
+                                              "border: 1px solid #B30000; "
+                                              "border-radius: 5px; "
+                                              "padding: 5px;");
         ui->TextValidator->setText("Codigo Invalido");
     }
 }
