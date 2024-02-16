@@ -18,3 +18,5 @@ QString Codigo = "1222112";
 QTimer* WaitingConnectTimer;
 
 
+bool DialogActive = false;
+
