@@ -228,11 +228,12 @@ void initUsers(void) {
         retryCount++;
         if (result == EEPROM_OK) actionConfirmed = true;
     }
-    actionConfirmed = false;
-    retryCount = 0;
 
     for (size_t index = 0; index < registeredUsers; index++) {
         uint8_t location = 0;
+
+        actionConfirmed = false;
+        retryCount = 0;
 
         while (!actionConfirmed && retryCount < 3) {
             result = g_eeprom->read(&location, M24C16::UINT8, index * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USER_ENTERED_POSITION);
