@@ -123,26 +123,28 @@ bool port::GetPortStatus(){
 
 bool port::SendData(QString Data)
 {
-    qint64 bytesWritten = m_Puerto->write(Data.toUtf8());
-
-    if (bytesWritten == -1) {
-        qDebug() << "Error al escribir en el puerto serial:" << m_Puerto->errorString();
-        return 0;
-    } else if (bytesWritten != Data.size()) {
-        qDebug() << "No se escribieron todos los bytes en el puerto serial.";
-        return 0;
-    } else {
-        qDebug() << "Escritura exitosa. Esperando confirmación...";
-        return 1;
-        /*
-        if (m_Puerto->waitForBytesWritten(3000)) {  // Espera un máximo de 3000 milisegundos (3 segundos)
-            return 1;
-            qDebug() << "Confirmación recibida. Escritura completada.";
-        } else {
-            qDebug() << "Error: No se recibió confirmación dentro del tiempo especificado.";
+    for(int i = 0; i < 2; i++){
+        qint64 bytesWritten = m_Puerto->write(Data.toUtf8());
+    
+        if (bytesWritten == -1) {
+            qDebug() << "Error al escribir en el puerto serial:" << m_Puerto->errorString();
             return 0;
+        } else if (bytesWritten != Data.size()) {
+            qDebug() << "No se escribieron todos los bytes en el puerto serial.";
+            return 0;
+        } else {
+            qDebug() << "Escritura exitosa. Esperando confirmación...";
+            return 1;
+            /*
+            if (m_Puerto->waitForBytesWritten(3000)) {  // Espera un máximo de 3000 milisegundos (3 segundos)
+                return 1;
+                qDebug() << "Confirmación recibida. Escritura completada.";
+            } else {
+                qDebug() << "Error: No se recibió confirmación dentro del tiempo especificado.";
+                return 0;
+            }
+            */
         }
-        */
     }
 }
 
