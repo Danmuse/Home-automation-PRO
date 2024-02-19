@@ -76,7 +76,7 @@ int main(void) {
     while (true) {
         /// External LDR sensor acquisition
        if (automaticMode) {
-			uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
+			uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 30); // Range: 0 to 100 (Percentage)
 			if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
 				ledBrightness = currentBright;
 				uint8_t brightness = ledBrightness;
