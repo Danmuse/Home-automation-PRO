@@ -151,8 +151,7 @@ void Dialog::on_PlayMusic_clicked()
 
 void Dialog::on_ComboMusic_currentIndexChanged(int index)
 {
-    ui->PauseMusic->setEnabled(false);
-    ui->PlayMusic->setEnabled(true);
+
     if(ui->ComboMusic->currentIndex() != 6){
     	Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
     }else{
