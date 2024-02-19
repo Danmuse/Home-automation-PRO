@@ -99,15 +99,10 @@ int main(void) {
         songId = g_dfplayer->getBackupSong();
         isSongPlaying = g_dfplayer->getStatus() != DFPLAYER_PAUSE;
 
-        if(songStatus == SONG_PLAY){
-        	g_dfplayer->play();
-        }
-        else if(songStatus == SONG_RESUME){
-        	g_dfplayer->resume();
-        }
-        else if(songStatus == SONG_PAUSE) {
-        	g_dfplayer->pause();
-        }
+        if (songStatus == SONG_PLAY) g_dfplayer->play();
+        else if (songStatus == SONG_RESUME) g_dfplayer->resume();
+        else if (songStatus == SONG_PAUSE) g_dfplayer->pause();
+        else if (songStatus == SONG_VOLUME) g_dfplayer->volume(setVolume);
         songStatus = SONG_IDLE;
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
