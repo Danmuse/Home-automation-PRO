@@ -18,11 +18,23 @@
 #include "DS3231.h"
 
 extern bool automaticMode;
+typedef enum SongStatus_t {
+        SONG_IDLE,
+        SONG_PAUSE,
+        SONG_PLAY,
+        SONG_RESUME
+} SongStatus_t;
+
+extern SongStatus_t songStatus;
 
 void manualLightControl(char* message);
+
 void modeSelection(char* message);
+
 void musicFlowControl(char* message);
+
 void musicVolumeControl(char* message);
+
 void dateControl(char* message);
 
 #endif // IOT_ACTIONS_H_
