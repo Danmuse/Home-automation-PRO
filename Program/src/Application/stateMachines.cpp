@@ -65,7 +65,7 @@ static bool registerNewUser(const MFRC522::UID_st& uid) {
     }
 	#endif
 
-    result = g_eeprom->write((uint8_t)0, USER_ENTERED_POSITION);
+    result = g_eeprom->write((uint8_t)0, userCount * (RFID_USER_UID_SIZE + USER_ENTERED_SIZE) + USER_ENTERED_POSITION);
     if (result != EEPROM_OK) return false;
     result = g_eeprom->write(++userCount, USER_COUNT_POSITION);
     if (result != EEPROM_OK) return false;

@@ -13,6 +13,12 @@
 #include "IoTActions.h"
 
 bool automaticMode = true;
+//bool play = false;
+//bool resume = false;
+//bool pause = false;
+
+uint8_t songStatus = 0;
+
 
 void manualLightControl(char* message) {
     int brightness = atoi(message);
@@ -36,17 +42,25 @@ void musicFlowControl(char* message) {
 	int songId = atoi(message);
 
     if (songId != 0){
+    	lastId = g_dfplayer->getBackupSong();
     	g_dfplayer->prepareSong(songId);
-    	lastId = songId;
     }
     else if (strcmp(message, "pause") == 0)
-        g_dfplayer->pause();
+    	songStatus = 1;
+//    	g_dfplayer->pause();
     else if (strcmp(message, "play") == 0) {
         DFPlayer_result_t status = g_dfplayer->getStatus();
-        if (status == DFPLAYER_READY || (status == DFPLAYER_PAUSE && g_dfplayer->getBackupSong() != lastId))
-            g_dfplayer->play();
-        else
-            g_dfplayer->resume();
+        if (status == DFPLAYER_READY || (status == DFPLAYER_PAUSE && g_dfplayer->getBackupSong() != lastId)) {
+        	songStatus = 2;
+        	lastId = g_dfplayer->getBackupSong();
+        	//g_dfplayer->play();
+//        	play = true;
+        }
+        else{
+        	songStatus = 3;
+        }
+//        	resume = true;
+        //g_dfplayer->resume();
     }
 }
 

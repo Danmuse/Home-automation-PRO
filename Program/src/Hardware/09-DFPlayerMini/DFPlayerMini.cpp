@@ -398,7 +398,7 @@ void DFPlayer::callbackMethod(void) {
 void initDFPlayer(void) {
 	#ifdef CN13_PINS
 
-	static DFPlayer dfplayer(INT1_IN, RX0_IN, TX0_OUT);
+	static DFPlayer dfplayer(EN_OUT, RX0_IN, TX0_OUT);
 	dfplayer.volume(DFPLAYER_INITIAL_VOLUME_PERCENTAGE);
 
 	g_dfplayer = &dfplayer;

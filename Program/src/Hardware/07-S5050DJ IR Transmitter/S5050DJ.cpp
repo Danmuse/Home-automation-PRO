@@ -318,7 +318,7 @@ void initLEDs(void) {
 	#if defined(LED_TRIP_PIN)
 
     static S5050DJ leds(LED_TRIP, CTimer::SET);
-    leds.turnOff();
+//    leds.turnOff();
 
     g_leds = &leds;
 

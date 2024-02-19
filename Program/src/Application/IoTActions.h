@@ -18,6 +18,10 @@
 #include "DS3231.h"
 
 extern bool automaticMode;
+//extern bool play;
+//extern bool resume;
+//extern bool pause;
+extern uint8_t songStatus;
 
 void manualLightControl(char* message);
 void modeSelection(char* message);

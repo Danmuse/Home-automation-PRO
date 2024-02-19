@@ -49,7 +49,7 @@ Gpio BCD_CLK(Gpio::PORT0, 19, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
 #ifdef CN13_PINS
 Gpio RX0_IN(Gpio::PORT0, 17, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
 Gpio TX0_OUT(Gpio::PORT0, 16, Gpio::INACTIVE, Gpio::INPUT, Gpio::LOW);
-Gpio EN_OUT(Gpio::PORT0, 0, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::HIGH);
+Gpio EN_OUT(Gpio::PORT0, 0, Gpio::PUSHPULL, Gpio::OUTPUT, Gpio::LOW);
 #endif // CN13_PINS
 
 #ifdef CN15_PINS

@@ -70,19 +70,20 @@ int main(void) {
 	g_leds->setColor(S5050DJ::WHITE);
 
     /// Code instructions to reset the registered users
-//	for (size_t index = 0; index < 255; index++) !(g_eeprom->write((uint8_t)0, index)) ? LED_RED.clearPin() : LED_RED.setPin();
+//	for (size_t index = 0; index < 255; index++) (g_eeprom->write((uint8_t)0, index)) ;
 //	return EXIT_SUCCESS;
 
     while (true) {
         /// External LDR sensor acquisition
-        if (automaticMode) {
+      /* if (automaticMode) {
 			uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
 			if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
 				ledBrightness = currentBright;
 				uint8_t brightness = ledBrightness;
 				g_leds->setBrightness(brightness);
+				delay(10);
 			}
-        }
+        }*/
 
         /// Upgrade RTC timestamp legend
         g_ds3231->get();
@@ -96,6 +97,21 @@ int main(void) {
 		volume = g_dfplayer->getVolume();
 
         songId = g_dfplayer->getBackupSong();
+
+
+        if(songStatus == 2){
+        	songStatus = 0;
+        	g_dfplayer->play();
+        }
+        else if(songStatus == 3){
+        	songStatus = 0;
+        	g_dfplayer->resume();
+        }
+        else if(songStatus == 1){
+        	songStatus = 0;
+        	g_dfplayer->pause();
+        }
+
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }
 
