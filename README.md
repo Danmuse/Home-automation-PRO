@@ -4,7 +4,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 
 ### 🔌️ __Hardware & Setup__
 
-- [ ] [Identification of the sensors, modules and controllers used.](https://github.com/Danmuse/Home-automation/issues/3) `DDM ~ 3`
+- [x] [Identification of the sensors, modules and controllers used.](https://github.com/Danmuse/Home-automation/issues/3) `DDM ~ 2`
   <details>
   <summary><strong><span>&#160;</span>Electronic components</strong></summary>
   <ul>
