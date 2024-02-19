@@ -16,7 +16,7 @@
 #include "ProgramConfig.h"
 
 #define MG90S_MAX_ANGLE 180
-#define MG90S_MIN_DUTY 5
+#define MG90S_MIN_DUTY 4
 #define MG90S_PULSE_MAX_INCREMENT 14
 
 class MG90S : protected PWM {
