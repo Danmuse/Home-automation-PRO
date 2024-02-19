@@ -145,14 +145,6 @@ void Dialog::on_PlayMusic_clicked()
 {
     ui->PauseMusic->setEnabled(true);
     ui->PlayMusic->setEnabled(false);
-    if( Reproduciendo == false){
-        if(ui->ComboMusic->currentIndex() != 6 ){
-            Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
-        }else{
-            Puerto.SendData(QString("$song:0009%"));
-        }
-        Reproduciendo = true;
-    }
     Puerto.SendData(QString("$song:play%"));
 }
 
@@ -161,7 +153,6 @@ void Dialog::on_ComboMusic_currentIndexChanged(int index)
 {
     ui->PauseMusic->setEnabled(false);
     ui->PlayMusic->setEnabled(true);
-    Reproduciendo = false;
     if(ui->ComboMusic->currentIndex() != 6){
     	Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
     }else{
