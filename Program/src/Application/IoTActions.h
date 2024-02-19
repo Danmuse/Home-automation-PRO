@@ -17,12 +17,15 @@
 #include "DFPlayerMini.h"
 #include "DS3231.h"
 
+extern uint8_t setVolume;
+
 extern bool automaticMode;
 typedef enum SongStatus_t {
         SONG_IDLE,
         SONG_PAUSE,
         SONG_PLAY,
-        SONG_RESUME
+        SONG_RESUME,
+		SONG_VOLUME
 } SongStatus_t;
 
 extern SongStatus_t songStatus;
