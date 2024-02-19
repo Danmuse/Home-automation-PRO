@@ -1,4 +1,5 @@
 #include "port.h"
+#include <QThread>
 
 port::port() {
     m_Puerto = new QSerialPort();
@@ -134,7 +135,8 @@ bool port::SendData(QString Data)
             return 0;
         } else {
             qDebug() << "Escritura exitosa. Esperando confirmación...";
-            return 1;
+            QThread::msleep(30);
+
             /*
             if (m_Puerto->waitForBytesWritten(3000)) {  // Espera un máximo de 3000 milisegundos (3 segundos)
                 return 1;
@@ -146,6 +148,7 @@ bool port::SendData(QString Data)
             */
         }
     }
+    return 1;
 }
 
 SerialParams port::GetDato()
