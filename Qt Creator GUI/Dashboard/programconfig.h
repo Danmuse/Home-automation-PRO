@@ -9,3 +9,4 @@ extern port Puerto;
 extern QStringList Canciones;
 extern QString Codigo;
 extern QTimer* WaitingConnectTimer;
+extern bool DialogActive;
