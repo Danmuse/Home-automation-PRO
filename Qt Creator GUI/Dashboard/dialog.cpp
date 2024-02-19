@@ -35,43 +35,43 @@ Dialog::~Dialog()
 
 void Dialog::on_pushButton_closeSession_clicked()
 {
-    miTemporizador->stop();
     this->close();
-
 }
 
 void Dialog::manejarTimeOut()
 {
-    Information = Puerto.GetDato();
+    if(this->isActiveWindow()){
+        Information = Puerto.GetDato();
 
-    QString dato = Information.Param;
-    QString value = Information.Info;
-//    qDebug() << dato << " " << value;
-    if(dato != nullptr && value != nullptr ){
-        bool ok;
-        int valor = value.toInt(&ok);
-        if(ok){
-            if(dato == "luz"){
-                ui->LuzLevel->setValue(valor);
-            }else if(dato == "song" && value.length() == 4){
-                ui->ComboMusic->setCurrentIndex(valor - 1);
-            }else if(dato == "volume" && value.length() != 4){
-                ui->VolumeMusic->setValue(valor);
+        QString dato = Information.Param;
+        QString value = Information.Info;
+        //    qDebug() << dato << " " << value;
+        if(dato != nullptr && value != nullptr ){
+            bool ok;
+            int valor = value.toInt(&ok);
+            if(ok){
+                if(dato == "luz"){
+                    ui->LuzLevel->setValue(valor);
+                }else if(dato == "song" && value.length() == 4){
+                    ui->ComboMusic->setCurrentIndex(valor - 1);
+                }else if(dato == "volume" && value.length() != 4){
+                    ui->VolumeMusic->setValue(valor);
+                }
+            }else{
+                if(dato == "automatic" && value == "on"){
+                    ui->Automatic->setChecked(true);
+                }else if(dato == "automatic" && value == "off"){
+                    ui->Automatic->setChecked(false);
+                }else if(dato == "song" && value == "pause"){
+                    ui->PlayMusic->setEnabled(true);
+                    ui->PauseMusic->setEnabled(false);
+                }else if(dato == "song" && value == "play"){
+                    ui->PlayMusic->setEnabled(false);
+                    ui->PauseMusic->setEnabled(true);
+                }
             }
-        }else{
-            if(dato == "automatic" && value == "on"){
-                ui->Automatic->setChecked(true);
-            }else if(dato == "automatic" && value == "off"){
-                ui->Automatic->setChecked(false);
-            }else if(dato == "song" && value == "pause"){
-                ui->PlayMusic->setEnabled(true);
-                ui->PauseMusic->setEnabled(false);
-            }else if(dato == "song" && value == "play"){
-                ui->PlayMusic->setEnabled(false);
-                ui->PauseMusic->setEnabled(true);
-            }
+            //Database.PushDato(Information.Param, Information.Info.toInt());
         }
-        //Database.PushDato(Information.Param, Information.Info.toInt());
     }
 }
 
@@ -145,14 +145,6 @@ void Dialog::on_PlayMusic_clicked()
 {
     ui->PauseMusic->setEnabled(true);
     ui->PlayMusic->setEnabled(false);
-    if( Reproduciendo == false){
-        if(ui->ComboMusic->currentIndex() != 6 ){
-            Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
-        }else{
-            Puerto.SendData(QString("$song:0009%"));
-        }
-        Reproduciendo = true;
-    }
     Puerto.SendData(QString("$song:play%"));
 }
 
@@ -161,7 +153,6 @@ void Dialog::on_ComboMusic_currentIndexChanged(int index)
 {
     ui->PauseMusic->setEnabled(false);
     ui->PlayMusic->setEnabled(true);
-    Reproduciendo = false;
     if(ui->ComboMusic->currentIndex() != 6){
     	Puerto.SendData(QString("$song:000%1%").arg(ui->ComboMusic->currentIndex() + 1));
     }else{
@@ -193,6 +184,5 @@ void Dialog::on_Blue_clicked()
 void Dialog::on_Green_clicked()
 {
     Puerto.SendData(QString("$luz:green%"));
-
 }
 

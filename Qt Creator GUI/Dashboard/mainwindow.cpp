@@ -183,7 +183,6 @@ void MainWindow::on_pushButton_clicked()
         ui->pushButton->setText("Conectar");
         ui->comboBox->setEnabled(true);
         ui->Login->setEnabled(false);
-        
     }
 }
 
@@ -199,6 +198,7 @@ void MainWindow::on_Login_clicked()
         inicializateTimer(WaitingConnectTimer, &MainWindow::WaitingConnect);
         ui->lineEdit_password->clear();
         ui->lineEdit_user->clear();
+        DialogActive = false;
     }else{
         ui->label_confirmLogin->setEnabled(true);
         ui->label_confirmLogin->setStyleSheet(" color: #D8000C;"
@@ -233,7 +233,7 @@ void MainWindow::CreateUserEnable()
 
 void MainWindow::WaitingConnect()
 {
-    if(!Dial->isActiveWindow()){
+    if(!DialogActive){
         Confirm = Puerto.GetDato();
     }
     if(Confirm.Info == "ok" && Confirm.Param == "connect" ){
@@ -245,6 +245,7 @@ void MainWindow::WaitingConnect()
         //CancelateTimer(WaitingConnectTimer);
         //CancelateTimer(WaitingConnectTimer);
         Dial->show();
+        DialogActive = true;
     }
 }
 
@@ -266,7 +267,6 @@ void MainWindow::PortsAvailable(){
 
 
     if(change){
-        qDebug() << "entro";
         ui->pushButton->setText("Conectar");
         ui->PortConfirm->setStyleSheet("background-color: red;");
         ui->PortConfirm->setText("Desconectado");
