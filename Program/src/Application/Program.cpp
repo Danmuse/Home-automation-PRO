@@ -75,7 +75,7 @@ int main(void) {
 
     while (true) {
         /// External LDR sensor acquisition
-      /* if (automaticMode) {
+       if (automaticMode) {
 			uint16_t currentBright = (uint16_t)((float)(g_adcExternal->analogRead()) / 40.9); // Range: 0 to 100 (Percentage)
 			if (currentBright <= ledBrightness - 5 || currentBright >= ledBrightness + 5) {
 				ledBrightness = currentBright;
@@ -83,7 +83,7 @@ int main(void) {
 				g_leds->setBrightness(brightness);
 				delay(10);
 			}
-        }*/
+       }
 
         /// Upgrade RTC timestamp legend
         g_ds3231->get();
@@ -93,24 +93,22 @@ int main(void) {
 		userRegistrationStateMachine(userRegistrationState);
 		doorOpeningStateMachine(doorOpeningState);
 
-		/// Upgrade the DFPLayer's volume
+		/// Update the DFPLayer's volume
 		volume = g_dfplayer->getVolume();
 
         songId = g_dfplayer->getBackupSong();
+        isSongPlaying = g_dfplayer->getStatus() != DFPLAYER_PAUSE;
 
-
-        if(songStatus == 2){
-        	songStatus = 0;
+        if(songStatus == SONG_PLAY){
         	g_dfplayer->play();
         }
-        else if(songStatus == 3){
-        	songStatus = 0;
+        else if(songStatus == SONG_RESUME){
         	g_dfplayer->resume();
         }
-        else if(songStatus == 1){
-        	songStatus = 0;
+        else if(songStatus == SONG_PAUSE) {
         	g_dfplayer->pause();
         }
+        songStatus = SONG_IDLE;
 
 //    	g_timers_list.timerEvents(); // If only the "delay(milliseconds)" function is used in the program then this instruction will not be necessary.
     }

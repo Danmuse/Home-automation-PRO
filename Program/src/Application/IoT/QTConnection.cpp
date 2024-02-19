@@ -74,7 +74,7 @@ void QTConnection::uploadVariable(IoTVariable_st ioTVariable) {
     message[size] = SERIAL_FOOTER;
     message[size + 1] = '\0';
 
-    this->m_uart.transmit(message, strlen(message));
+    this->m_uart.transmit(message);
 }
 
 void QTConnection::suscribeListener(IoTListener* listener) {
