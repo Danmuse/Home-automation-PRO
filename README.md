@@ -1,3 +1,5 @@
+<!-- Official repository: https://github.com/Danmuse/Home-automation-PRO -->
+
 ## 📕️ __Overview__
 
 The **Home Automation PRO** (Personalized Residential Operations) project aims to create a system that enables the control and monitoring of Internet of Things (**IoT**) devices, including but not limited to, smart home appliances, security systems, and lighting systems. The overall management of various sensors and actuators is handled by the **LPC845-BRK** controller, which allows for efficient and reliable communication between the system components. With this system in place, users can enjoy the convenience of managing their home devices with ease and flexibility, using the latest technologies available.
@@ -39,7 +41,7 @@ The **Home Automation PRO** (Personalized Residential Operations) project aims t
 - [ ] [Doxygen v1.9.6 Implementation for Code Documentation.](https://github.com/Danmuse/Home-automation/issues/2) `DDM ~ 13` `AO ~ 13`
 - [x] [Presentation of the project idea.](https://github.com/Danmuse/Home-automation/issues/4) `DDM ~ 9`
 - [x] [Comprehensive and extensive project report.](https://github.com/Danmuse/Home-automation/issues/8) `CY ~ 28`
-- [ ] Illustrations of the experience and trials.
+- [x] Illustrations of the experience and trials.
 - [x] [Load component datasheet.](https://github.com/Danmuse/Home-automation/issues/5) `DDM ~ 2`
 
 ---
